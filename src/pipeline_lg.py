@@ -337,18 +337,21 @@ def node_evaluate(state: dict) -> dict:
     trials = max(1, getattr(cfg.evaluate, "trials_per_test", 3) or 1)
     logger.info(f"5. Evaluate: running real A/B benchmark ({trials} trial(s) per arm)...")
     try:
-        from src.benchmark import load_tasks, run_all, compare as bench_compare
+        # v1.5.1 (ISS-004): single A/B path.  Both arms use the same
+        # benchmark.run_all; the only difference is whether
+        # core/planner.py is the original or the patched one.  The
+        # atomic .tmp + os.replace swap is done *between* the two
+        # arms so the upgraded arm actually runs the patched code.
+        from src.benchmark import run_all, load_tasks as _load_tasks
+        from src.evaluate import compare_results as _eval_compare
 
-        tasks = load_tasks()
+        tasks = _load_tasks()
 
-        # Run N trials on the original core/, then N trials on the
-        # patched core/.  We aggregate the per-trial success rates
-        # into mean success_rate + a per-task success list for stats.
+        # ── Arm 1: baseline (original core/) ────────────────────
         logger.info(f"   Running {trials} baseline trial(s)...")
         baseline_trials = [run_all(tasks) for _ in range(trials)]
         baseline_rates = [b["success_rate"] for b in baseline_trials]
         baseline_rate = sum(baseline_rates) / len(baseline_rates)
-        # Flatten per-trial per-task success into one boolean list for stats.
         baseline_results = [
             r.get("success", False)
             for b in baseline_trials
@@ -364,10 +367,9 @@ def node_evaluate(state: dict) -> dict:
         # (preserves imports, __version__, and module metadata).
         #
         # We write through .tmp + os.replace to make the swap atomic
-        # (matches switcher.promote_patch behaviour, line 222-230 of
-        # src/switcher.py).  If the process is killed mid-write, the
-        # original .py file is untouched and the .tmp file is the
-        # only side-effect (cleaned up on next start, see _cleanup_tmp).
+        # (matches switcher.promote_patch behaviour).  If the
+        # process is killed mid-write, the original .py file is
+        # untouched and the .tmp file is the only side-effect.
         orig_path = "core/planner.py"
         bak_path = orig_path + ".bench_bak"
         tmp_path = orig_path + ".bench_tmp"
@@ -397,6 +399,7 @@ def node_evaluate(state: dict) -> dict:
             os.fsync(f.fileno())
         os.replace(tmp_path, orig_path)
 
+        # ── Arm 2: upgraded (patched core/) ───────────────────
         try:
             logger.info(f"   Running {trials} upgraded trial(s)...")
             upgraded_trials = [run_all(tasks) for _ in range(trials)]
@@ -423,9 +426,9 @@ def node_evaluate(state: dict) -> dict:
                     shutil.copy2(bak_path, orig_path)
                     os.remove(bak_path)
 
-        comparison = bench_compare(
-            {"success_rate": baseline_rate, "total": baseline_total},
-            {"success_rate": upgraded_rate, "total": upgraded_total},
+        comparison = _eval_compare(
+            baseline_rate, upgraded_rate,
+            baseline_total, upgraded_total,
         )
 
         logger.info(

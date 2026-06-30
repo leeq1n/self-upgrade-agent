@@ -174,10 +174,17 @@ HERMES_FAST=1 python -m pytest tests/ -q
 - [API Reference](docs/API_REFERENCE.md) — 所有模块和函数的完整签名
 - [LLM Calls & Key Rotation](docs/LLM_CALLS.md) — 多 key 轮换、quota 持久化、模型路由
 - [Project Brief](PROJECT_BRIEF.md) — 项目状态和能力评估
+- [Delivery](docs/DELIVERY.md) — v1.5.0 端到端 promote 案例 + 交付水平评估
+- [Design Philosophy](docs/DESIGN_PHILOSOPHY.md) — 10 条设计原则（来自项目迭代）
+- [Issues](ISSUES.md) — 已知问题 + v1.6.0 路线图
 - [Plans](.hermes/plans/) — 历史改进计划和验收报告
 
 ## 版本历史
 
-- **v1.2.0** (2026-06-30): 修复 benchmark 补丁应用（surgical merge）、--live 标志生效、多源搜索（S2/PwC/GitHub）、benchmark 任务 8→21、docs 更新
+- **v1.5.1** (2026-06-30): atomic A/B bootloader write + sys.modules 缓存清理；ISS-004 评估路径统一
+- **v1.5.0**: ISS-001 filter 关键词 boost + ISS-002 诊断 + ISS-004 status；真实端到端 promote `planner.py` 成功
+- **v1.4.0**: surgical-merge bootloader + LLM JSON 围栏清洗
+- **v1.3.0**: LLM 默认 model = Qwen3.5-2B + total_timeout + diagnostic
+- **v1.2.0**: 修复 benchmark 补丁应用（surgical merge）、--live 标志生效、多源搜索（S2/PwC/GitHub）、benchmark 任务 8→21
 - **v1.1.0**: bootloader 原子写入 core/、pipeline_lg 重构、stats.py bootstrap、research_s2.py、keyword_expander.py
 - **v1.0.0**: 完整闭环原型（LangGraph pipeline、patchgen、switcher、评估）

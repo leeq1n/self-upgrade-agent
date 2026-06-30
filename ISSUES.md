@@ -47,6 +47,7 @@
 - **影响**：DeepSeek 之前提过的"两套并行评估"。`src/evaluate.py` 是独立模块，`pipeline_lg.node_evaluate` 也跑评估，两份代码可能漂移
 - **当前 workaround**：只用 pipeline_lg；evaluate.py 仍被 `run.py --legacy` 调用
 - **建议修复**：让 `pipeline_lg.node_evaluate` 调 `src.evaluate.evaluate_skill()`，消除重复
+- **状态**：✅ v1.5.1 修（`src/evaluate.py` 现在是 `src/benchmark.run_all` 的薄包装；`node_evaluate` 调 `src.evaluate.compare_results`；6 个新测试覆盖）
 
 ### ISS-005: cost tracking 是 placeholder
 - **级别**：P1
