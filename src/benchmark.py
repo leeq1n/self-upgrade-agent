@@ -13,13 +13,20 @@ def load_tasks(path: str = "benchmarks/tasks.json") -> List[Dict]:
         return json.load(f)
 
 
-def run_single(task: Dict, llm_config=None, verbose: bool = False) -> Dict:
+def run_single(task: Dict, llm_config=None, verbose: bool = False,
+               skill_context: str = "") -> Dict:
     """Run agent on a single benchmark task."""
     if llm_config is None:
         llm_config = LLMConfig.from_env()
 
-    def llm_call(prompt):
-        return chat_simple(prompt, config=llm_config) or ""
+    if skill_context:
+        def llm_call(prompt):
+            # Prepend skill context as system behavior
+            sys_prompt = "You are an AI agent. " + skill_context[:500]
+            return chat_simple(prompt, system=sys_prompt, config=llm_config) or ""
+    else:
+        def llm_call(prompt):
+            return chat_simple(prompt, config=llm_config) or ""
 
     t0 = time.time()
     result = agent_run(task["task"], llm_call, verbose=verbose)
@@ -29,14 +36,15 @@ def run_single(task: Dict, llm_config=None, verbose: bool = False) -> Dict:
     return result
 
 
-def run_all(tasks: List[Dict] = None, llm_config=None, verbose: bool = False) -> Dict:
+def run_all(tasks: List[Dict] = None, llm_config=None, verbose: bool = False,
+            skill_context: str = "") -> Dict:
     """Run agent on all benchmark tasks, return aggregate results."""
     if tasks is None:
         tasks = load_tasks()
     
     results = []
     for t in tasks:
-        r = run_single(t, llm_config, verbose)
+        r = run_single(t, llm_config, verbose, skill_context=skill_context)
         results.append(r)
         if verbose:
             logger.info(f"  {t['id']}: steps={r['steps_planned']}, tools={r['tools_used']}, time={r['elapsed']}s")

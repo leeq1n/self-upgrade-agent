@@ -36,13 +36,15 @@ class ScoredPaper:
     abstract_score: float
     applicability_score: float
     novelty_score: float
+    citation_score: float = 0.0
 
     @property
     def total_score(self) -> float:
         return round(
-            self.applicability_score * 0.5 +
-            self.novelty_score * 0.3 +
-            self.abstract_score * 0.2,
+            self.applicability_score * 0.40 +
+            self.novelty_score * 0.25 +
+            self.abstract_score * 0.15 +
+            self.citation_score * 0.20,
             2,
         )
 
@@ -129,12 +131,30 @@ def filter_papers(
     config: FilterConfig,
     use_llm: bool = False,
     llm_config: Optional[LLMConfig] = None,
+    enrich_citations: bool = True,
 ) -> List[ScoredPaper]:
-    """Score all papers, filter by thresholds, return top candidates."""
-    scored = [
-        score_paper(p, config, use_llm=use_llm, llm_config=llm_config)
-        for p in papers
-    ]
+    """Score all papers, enrich with citation data, filter by thresholds.
+
+    When enrich_citations=True, calls Semantic Scholar to get real citation
+    counts (adds ~1-2s per paper due to API calls).
+    """
+    scored = []
+
+    for p in papers:
+        sp = score_paper(p, config, use_llm=use_llm, llm_config=llm_config)
+
+        # Enrich with real citation data from Semantic Scholar
+        if enrich_citations and sp.meets_thresholds(config):
+            try:
+                from src.research_s2 import enrich_paper, citation_score
+                s2_data = enrich_paper(p.arxiv_id)
+                sp.citation_score = citation_score(s2_data.get("citation_count", 0))
+                p.citation_count = s2_data.get("citation_count", 0)
+            except Exception:
+                pass  # S2 unavailable — keep citation_score=0
+
+        scored.append(sp)
+
     qualified = [s for s in scored if s.meets_thresholds(config)]
     qualified.sort(key=lambda s: s.total_score, reverse=True)
     return qualified[:config.max_papers_to_consider]

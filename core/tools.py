@@ -1,4 +1,5 @@
 """Built-in tools for the self-upgrade agent."""
+__version__ = "1.0.0"
 import subprocess, os, math as _math
 
 

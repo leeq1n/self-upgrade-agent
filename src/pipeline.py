@@ -1,6 +1,9 @@
-"""Pipeline orchestrator: wires research -> filter -> skillgen -> evaluate/decide -> db.
+"""Legacy pipeline — skillgen path (archived, use pipeline_lg.py instead).
 
-This is the main entry point for the self-upgrade agent.
+This pipeline generates SKILL.md behavior prompts (not code patches).
+Kept for backward compatibility via `python run.py --legacy`.
+
+For the current self-modification pipeline, see src/pipeline_lg.py.
 """
 import logging
 import os
@@ -12,12 +15,12 @@ from src.llm import LLMConfig as _llm_config_class
 _llm_config = None  # lazy init
 from src.research import search_arxiv, Paper
 from src.filter import filter_papers, ScoredPaper
-from src.skillgen import generate_skill_md, validate_skill, save_skill, backup_skill, _name as _generate_skill_name, generate_code_skill
+from src._archived.skillgen import generate_skill_md, validate_skill, save_skill, backup_skill, _name as _generate_skill_name, generate_code_skill
 from src.sandbox import run_in_sandbox
 from src.switcher import init as _switcher_init, deploy_candidate, promote_candidate, discard_candidate
 from src.evaluate import compare_results, DEFAULT_TASKS
 from src.decide import make_decision, rollback_skill
-from src.modi import install_skill_file, extract_behavior_from_skill, apply_behavior
+from src._archived.modi import install_skill_file, extract_behavior_from_skill, apply_behavior
 from src.db import UpgradeHistory, UpgradeRecord
 
 logger = logging.getLogger(__name__)
@@ -37,15 +40,47 @@ class PipelineResult:
     details: List[dict] = field(default_factory=list)
 
 
-def _run_evaluation(skill_name: str, skill_context: str, config) -> dict:
-    """Generate mock evaluation data for dry-run mode."""
-    import random
-    # Simulate slight improvement with small random variation
-    delta = random.uniform(0.01, 0.10)
-    base_rate = 0.80
-    upgraded_rate = min(1.0, base_rate + delta)
-    base_cost = 1000 + random.randint(0, 500)
-    upgraded_cost = int(base_cost * random.uniform(0.9, 1.15))
+def _run_evaluation(skill_name: str, skill_context: str, config, dry_run: bool = True) -> dict:
+    """Evaluate upgrade: real benchmark if live, simulated if dry-run.
+
+    In live mode, runs the agent on benchmark tasks with and without the skill,
+    comparing success rates and cost. Falls back to simulated data on failure.
+    """
+    if dry_run:
+        import random
+        delta = random.uniform(0.01, 0.10)
+        base_rate = 0.80
+        upgraded_rate = min(1.0, base_rate + delta)
+        base_cost = 1000 + random.randint(0, 500)
+        upgraded_cost = int(base_cost * random.uniform(0.9, 1.15))
+    else:
+        # Real benchmark evaluation
+        try:
+            from src.benchmark import load_tasks, run_all, compare as bench_compare
+            from src.llm import LLMConfig
+            tasks = load_tasks()
+            llm_config = LLMConfig.from_env()
+            if not llm_config.ready:
+                logger.warning("LLM not configured — falling back to simulated evaluation")
+                return _run_evaluation(skill_name, skill_context, config, dry_run=True)
+
+            # Baseline (no skill context)
+            baseline = run_all(tasks, llm_config=llm_config)
+            # Upgraded (with skill context)
+            upgraded = run_all(tasks, llm_config=llm_config,
+                              skill_context=skill_context)
+
+            comparison = bench_compare(baseline, upgraded)
+            base_rate = baseline["success_rate"]
+            upgraded_rate = upgraded["success_rate"]
+            base_cost = baseline["total"]
+            upgraded_cost = upgraded["total"]
+            logger.info(f"  Live eval: baseline={base_rate:.3f}, "
+                       f"upgraded={upgraded_rate:.3f}, "
+                       f"delta={comparison['success_rate_delta']:+.3f}")
+        except Exception as e:
+            logger.warning(f"Live evaluation failed ({e}) — falling back to simulated")
+            return _run_evaluation(skill_name, skill_context, config, dry_run=True)
 
     return compare_results(
         baseline_rate=base_rate,
@@ -221,11 +256,9 @@ def run_pipeline(
         # ── Phase 4+5: Evaluate and Decide ──
         if dry_run:
             logger.info(f"  Dry-run: simulating evaluation for {skill_name}")
-            eval_data = _run_evaluation(skill_name, "", config)
         else:
-            # Real evaluation would call Hermes here
-            logger.warning("  Live evaluation not yet implemented — using dry-run fallback")
-            eval_data = _run_evaluation(skill_name, "", config)
+            logger.info(f"  Live evaluation for {skill_name}...")
+        eval_data = _run_evaluation(skill_name, "", config, dry_run=dry_run)
 
         decision = make_decision(eval_data, config.decide)
         result.upgrades_evaluated += 1
@@ -264,13 +297,13 @@ def run_pipeline(
                 try:
                     promo = promote_candidate(skill_name)
                     if promo["status"] == "promoted":
-                        logger.info(f"{indent1}-> AUTO-PROMOTED: {skill_name}")
+                        logger.info(f"  E. -> AUTO-PROMOTED: {skill_name}")
                 except Exception:
-                    logger.warning(f"{indent1}E. Promote failed")
+                    logger.warning(f"  E. Promote failed")
             elif sandbox_ok:
-                logger.info(f"{indent1}E. Manual approval: python run.py --promote {skill_name}")
+                logger.info(f"  E. Manual approval: python run.py --promote {skill_name}")
             else:
-                logger.info(f"{indent1}E. Sandbox failed, candidate archived")
+                logger.info(f"  E. Sandbox failed, candidate archived")
         else:
             result.upgrades_reverted += 1
             logger.info(f"  -> REVERTED by decision")

@@ -11,7 +11,9 @@ class TestLLMConfig:
         """When env vars are not set, from_env should use defaults."""
         # Save and clear relevant env vars
         saved = {}
-        for key in ["LLM_API_KEY", "LLM_BASE_URL", "LLM_MODEL", "MODELSCOPE_API_KEY", "SELFUPGRADE_DRY_RUN"]:
+        for key in ["LLM_API_KEY", "LLM_BASE_URL", "LLM_MODEL", "LLM_MAX_TOKENS",
+                     "LLM_TEMPERATURE", "LLM_TIMEOUT", "LLM_MAX_RETRIES",
+                     "MODELSCOPE_API_KEY", "SELFUPGRADE_DRY_RUN"]:
             saved[key] = os.environ.pop(key, None)
 
         config = LLMConfig.from_env()

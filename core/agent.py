@@ -5,10 +5,10 @@ Self-Upgrade Agent 核心 —— 可被自主改进的推理引擎。
   agent.py   — 主推理循环 (run)
   tools.py   — 工具调用接口
   planner.py — 任务规划模块 (可被 patch 改进)
-  memory.py  — 上下文管理 (可被 patch 改进)
 
 每个模块都是独立的 .py 文件，patchgen 可以单独修改任意模块。
 """
+__version__ = "1.0.0"
 import json, time
 from core.planner import plan_task
 from typing import List, Dict, Optional, Callable

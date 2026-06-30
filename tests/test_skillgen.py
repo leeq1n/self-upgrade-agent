@@ -1,9 +1,9 @@
-"""Tests for src/skillgen.py"""
+"""Tests for src/_archived/skillgen.py (legacy)"""
 import pytest
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from src.skillgen import generate_skill_md, validate_skill, save_skill, backup_skill, extract_behavior
+from src._archived.skillgen import generate_skill_md, validate_skill, save_skill, backup_skill, extract_behavior
 from src.research import Paper
 
 
