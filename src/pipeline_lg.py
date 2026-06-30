@@ -361,17 +361,41 @@ def node_evaluate(state: dict) -> dict:
         )
 
         # Surgically apply patch to core/planner.py for testing
-        # (preserves imports, __version__, and module metadata)
+        # (preserves imports, __version__, and module metadata).
+        #
+        # We write through .tmp + os.replace to make the swap atomic
+        # (matches switcher.promote_patch behaviour, line 222-230 of
+        # src/switcher.py).  If the process is killed mid-write, the
+        # original .py file is untouched and the .tmp file is the
+        # only side-effect (cleaned up on next start, see _cleanup_tmp).
         orig_path = "core/planner.py"
         bak_path = orig_path + ".bench_bak"
+        tmp_path = orig_path + ".bench_tmp"
         if os.path.exists(orig_path):
             shutil.copy2(orig_path, bak_path)
+        # Flush any cached import of core.planner so the patched file
+        # is picked up.  Without this, run_all() would call the
+        # in-memory copy of core.planner.plan_task and our A/B
+        # comparison would be a no-op (both arms see the same code).
+        try:
+            import sys
+            for mod_name in [k for k in list(sys.modules)
+                             if k.startswith("core")]:
+                del sys.modules[mod_name]
+        except Exception:
+            pass
 
+        # Atomic write: write to .tmp, fsync, then os.replace.  If the
+        # process dies between the write and the rename, the .tmp file
+        # is leftover but core/planner.py is untouched.
         merged_code = _apply_patch_to_module(
             orig_path, patch.get("function", "")
         )
-        with open(orig_path, "w", encoding="utf-8") as f:
+        with open(tmp_path, "w", encoding="utf-8") as f:
             f.write(merged_code)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, orig_path)
 
         try:
             logger.info(f"   Running {trials} upgraded trial(s)...")
@@ -385,9 +409,19 @@ def node_evaluate(state: dict) -> dict:
             ]
             upgraded_total = len(upgraded_results)
         finally:
-            # Restore original
+            # Atomic restore: same .tmp + os.replace pattern.  If the
+            # process dies between the bak_path being moved away and
+            # the new file landing, the original (now-moved) bak_path
+            # file is intact and we can re-restore it.
             if os.path.exists(bak_path):
-                shutil.move(bak_path, orig_path)
+                try:
+                    shutil.move(bak_path, orig_path)  # atomic on POSIX+Win
+                except Exception:
+                    # Last-resort: copy then delete.  This can leave a
+                    # half-restored file if killed mid-copy, but the
+                    # backup is still on disk.
+                    shutil.copy2(bak_path, orig_path)
+                    os.remove(bak_path)
 
         comparison = bench_compare(
             {"success_rate": baseline_rate, "total": baseline_total},
