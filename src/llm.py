@@ -80,71 +80,94 @@ def get_config() -> LLMConfig:
     return _config
 
 
+# Fallback models to try only when primary model returns 404 (not found)
 _FALLBACK_MODELS = [
     "deepseek-ai/DeepSeek-V3.2",
-    "Qwen/Qwen3-Coder-30B-A3B-Instruct",  
+    "Qwen/Qwen3-Coder-30B-A3B-Instruct",
     "Qwen/Qwen3-235B-A22B",
     "moonshotai/Kimi-K2.5",
     "ZhipuAI/GLM-5.1",
     "mistralai/Mistral-Large-Instruct-2407",
 ]
 
-def _get_key_pool(config):
-    """Build list of (model, key) pairs to try, rotating models and keys."""
-    models = [config.model] + [m for m in _FALLBACK_MODELS if m != config.model]
-    keys = [config.api_key]
-    # Load additional keys from env
-    import os
-    count = int(os.environ.get("LLM_API_KEY_COUNT", "0"))
-    for i in range(count):
-        k = os.environ.get(f"LLM_API_KEY_{i}", "")
-        if k and k not in keys:
-            keys.append(k)
-    # Build matrix: try each key with each model
-    pairs = []
-    for k in keys:
-        for m in models:
-            pairs.append((m, k))
-    return pairs
 
 def _try_with_fallback(messages, system, config, response_format) -> LLMResponse:
-    """Try model×key combinations on quota errors."""
-    import httpx, time, os
-    pairs = _get_key_pool(config)
+    """Try primary model first, retry on 429, fallback only on 404."""
+    import httpx, time, warnings
+
     full_messages = []
-    if system: full_messages.append({"role": "system", "content": system})
+    if system:
+        full_messages.append({"role": "system", "content": system})
     full_messages.extend(messages)
-    body_template = {"messages": full_messages, "max_tokens": config.max_tokens, "temperature": config.temperature}
-    if response_format: body_template["response_format"] = response_format
-    
-    for model, key in pairs:
-        try:
-            start = time.time()
-            body = dict(body_template, model=model)
-            
-            import warnings
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-            resp = httpx.post(f"{config.base_url}/chat/completions", proxy=None,
-                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-                json=body, timeout=config.timeout)
-            elapsed = int((time.time() - start) * 1000)
-            if resp.status_code == 429:
-                short_key = key[:10] + "..." + key[-4:]
-                logger.warning(f"429: {short_key} + {model}, trying next combo")
-                continue
-            resp.raise_for_status()
-            data = resp.json()
-            choices = data.get("choices")
-            if choices and len(choices) > 0:
-                return LLMResponse(content=choices[0].get("message",{}).get("content",""),
-                    model=data.get("model",model),
-                    total_tokens=data.get("usage",{}).get("total_tokens",0),
-                    latency_ms=elapsed)
-        except Exception as e:
-            logger.warning(f"Fail: {key[:10]}... + {model}: {str(e)[:50]}")
-            continue
-    return LLMResponse(content="", error="All API keys + models exhausted")
+
+    body_template = {
+        "messages": full_messages,
+        "max_tokens": config.max_tokens,
+        "temperature": config.temperature,
+    }
+    if response_format:
+        body_template["response_format"] = response_format
+
+    # Only try fallback models if primary returns 404 (model not found)
+    fallback_models = [m for m in _FALLBACK_MODELS if m != config.model]
+    models_to_try = [config.model] + fallback_models
+
+    for model in models_to_try:
+        body = dict(body_template, model=model)
+        # Retry 429 up to 3 times with backoff on the same model
+        for attempt in range(4):
+            try:
+                start = time.time()
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                resp = httpx.post(
+                    f"{config.base_url}/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {config.api_key}",
+                        "Content-Type": "application/json",
+                    },
+                    json=body,
+                    timeout=config.timeout,
+                )
+                elapsed = int((time.time() - start) * 1000)
+
+                if resp.status_code == 429:
+                    if attempt < 3:
+                        wait = 2 ** attempt
+                        logger.warning(
+                            f"429 on {model}, retry {attempt + 1}/3 in {wait}s"
+                        )
+                        time.sleep(wait)
+                        continue
+                    logger.warning(f"429 exhausted on {model}, trying next model")
+                    break
+
+                if resp.status_code == 404:
+                    logger.warning(f"404: model {model} not found, trying next")
+                    break
+
+                resp.raise_for_status()
+                data = resp.json()
+                choices = data.get("choices")
+                if choices and len(choices) > 0:
+                    return LLMResponse(
+                        content=choices[0].get("message", {}).get("content", ""),
+                        model=data.get("model", model),
+                        total_tokens=data.get("usage", {}).get("total_tokens", 0),
+                        latency_ms=elapsed,
+                    )
+            except httpx.HTTPError as e:
+                logger.warning(f"HTTP error: {model}: {e}")
+                break
+            except Exception as e:
+                if attempt < 3:
+                    time.sleep(1)
+                    continue
+                logger.warning(f"Fail: {model}: {str(e)[:50]}")
+                break
+
+    return LLMResponse(content="", error="All models exhausted")
+
 
 def chat(
     messages: List[Dict[str, str]],
@@ -158,21 +181,13 @@ def chat(
         return LLMResponse(content="", error="LLM not configured")
     return _try_with_fallback(messages, system, config, response_format)
 
+
 def chat_simple(
     prompt: str,
     system: Optional[str] = None,
     **kwargs,
 ) -> str:
-    """Convenience: send a simple prompt, get content string back.
-
-    Args:
-        prompt: The user message.
-        system: Optional system prompt.
-        **kwargs: Passed to chat() — config, response_format, etc.
-
-    Returns:
-        Content string, or empty string on error.
-    """
+    """Convenience: send a simple prompt, get content string back."""
     result = chat(
         messages=[{"role": "user", "content": prompt}],
         system=system,
