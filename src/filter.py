@@ -6,6 +6,7 @@ Supports two modes:
 """
 import json
 import logging
+import re
 from dataclasses import dataclass
 from typing import List, Optional
 from src.research import Paper
@@ -13,6 +14,55 @@ from src.config import FilterConfig
 from src.llm import chat_simple, LLMConfig
 
 logger = logging.getLogger(__name__)
+
+# LLM JSON responses are frequently wrapped in markdown fences (```json ... ```)
+# or have leading prose ("Here is the JSON: {...}").  We try a sequence of
+# increasingly tolerant parse strategies.
+def _parse_llm_json(content: str) -> dict:
+    """Robustly extract a JSON object from an LLM response.
+
+    Tries, in order:
+      1. Direct json.loads on the whole string.
+      2. Strip ```json / ``` fences, parse the inside.
+      3. Find the first {...} block, parse it.
+
+    Returns {} on any failure.
+    """
+    if not content:
+        return {}
+    content = content.strip()
+
+    # 1) Direct parse.
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        pass
+
+    # 2) Strip ```json / ``` fences (possibly with leading "json" hint).
+    fenced = re.sub(
+        r"^\s*```(?:json)?\s*|\s*```\s*$",
+        "",
+        content,
+        flags=re.IGNORECASE | re.MULTILINE,
+    ).strip()
+    if fenced and fenced != content:
+        try:
+            return json.loads(fenced)
+        except json.JSONDecodeError:
+            pass
+
+    # 3) First balanced {...} block.  We don't do full brace-matching — that
+    #    is overkill for a 3-field response.  A non-greedy regex covers 99%
+    #    of LLM outputs.
+    m = re.search(r"\{[^{}]*\}", content, flags=re.DOTALL)
+    if m:
+        try:
+            return json.loads(m.group(0))
+        except json.JSONDecodeError:
+            pass
+
+    return {}
+
 
 # Keyword dictionaries for fallback scoring
 _ABSTRACT_QUALITY = [
@@ -94,11 +144,9 @@ def _llm_score_paper(paper: Paper, llm_config: Optional[LLMConfig] = None) -> Sc
     )
 
     content = chat_simple(prompt, system=system, config=llm_config)
-    try:
-        data = json.loads(content) if content else {}
-    except json.JSONDecodeError:
+    data = _parse_llm_json(content)
+    if not data:
         logger.warning(f"LLM returned invalid JSON: {str(content)[:100]}")
-        data = {}
 
     def _safe(s, default=5.0):
         try: return max(0.0, min(10.0, float(s)))

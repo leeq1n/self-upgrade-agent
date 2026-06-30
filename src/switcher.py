@@ -206,24 +206,38 @@ def promote_patch(skill_name: str) -> dict:
     if not backup_path:
         return {"status": "backup_failed", "target_module": target_module}
 
+    # Apply the patch via the shared surgical-merge function so imports,
+    # __version__, and module-level metadata are preserved.  This is the
+    # same code path used by pipeline_lg.node_evaluate for A/B comparison,
+    # so the deployed version matches what was benchmarked.
+    dst = CORE_MODULES[target_module]
+    try:
+        from src.pipeline_lg import _apply_patch_to_module
+        merged_code = _apply_patch_to_module(dst, function_code)
+    except ImportError:
+        # Fallback: if pipeline_lg can't be imported (e.g. langgraph missing),
+        # use the legacy full-file write so we never silently lose the patch.
+        logger.warning("pipeline_lg not importable, using legacy full-file write")
+        merged_code = function_code
+
     # Check available disk space before writing to core/
     try:
         import shutil as _shutil
-        dst = CORE_MODULES[target_module]
         free_space = _shutil.disk_usage(os.path.dirname(dst) or ".").free
-        if free_space < len(function_code) * 2 + 4096:
-            logger.error(f"Insufficient disk space: {free_space} bytes free, "
-                         f"need at least {len(function_code) * 2 + 4096}")
+        if free_space < len(merged_code) * 2 + 4096:
+            logger.error(
+                f"Insufficient disk space: {free_space} bytes free, "
+                f"need at least {len(merged_code) * 2 + 4096}"
+            )
             return {"status": "out_of_disk_space", "target_module": target_module}
     except Exception:
         pass  # disk_usage not available on all platforms
 
     # Write to core module (atomic: write to temp, then rename)
-    dst = CORE_MODULES[target_module]
     tmp_dst = dst + ".tmp"
     try:
         with open(tmp_dst, "w", encoding="utf-8") as f:
-            f.write(function_code)
+            f.write(merged_code)
             f.flush()
             os.fsync(f.fileno())
         os.replace(tmp_dst, dst)  # atomic on POSIX + Windows
@@ -239,18 +253,23 @@ def promote_patch(skill_name: str) -> dict:
         "target_module": target_module,
         "promoted_at": datetime.now().isoformat(),
         "backup": backup_path,
-        "code_size": len(function_code),
+        "code_size": len(merged_code),
     }
     manifest["history"].append(version_entry)
     manifest["modules"][target_module] = version_entry
     _write_manifest(manifest)
 
-    logger.info(f"Promoted {skill_name} → core/{target_module} (backup: {backup_path})")
+    logger.info(
+        f"Promoted {skill_name} → core/{target_module} "
+        f"(surgical merge, {len(merged_code)} bytes, backup: {backup_path})"
+    )
     return {
         "status": "promoted",
         "target_module": target_module,
         "backup": backup_path,
         "skill": skill_name,
+        "code_size": len(merged_code),
+        "merge_strategy": "surgical",
     }
 
 

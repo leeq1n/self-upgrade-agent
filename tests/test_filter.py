@@ -3,9 +3,44 @@ import pytest
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from src.filter import score_paper, filter_papers
+from src.filter import score_paper, filter_papers, _parse_llm_json
 from src.research import Paper
 from src.config import FilterConfig
+
+
+class TestParseLLMJson:
+    """Test robust LLM JSON parser — handles markdown fences, prose wrappers."""
+
+    def test_plain_json(self):
+        assert _parse_llm_json('{"a": 1, "b": 2}') == {"a": 1, "b": 2}
+
+    def test_json_in_markdown_fence_with_json_hint(self):
+        body = '```json\n{"abstract_quality": 8, "applicability_to_agents": 1, "novelty": 7}\n```'
+        assert _parse_llm_json(body) == {
+            "abstract_quality": 8,
+            "applicability_to_agents": 1,
+            "novelty": 7,
+        }
+
+    def test_json_in_markdown_fence_no_hint(self):
+        body = '```\n{"x": 5}\n```'
+        assert _parse_llm_json(body) == {"x": 5}
+
+    def test_json_with_prose_wrapper(self):
+        body = 'Here is the score:\n{"abstract_quality": 6, "novelty": 4}\nHope that helps!'
+        assert _parse_llm_json(body) == {
+            "abstract_quality": 6,
+            "novelty": 4,
+        }
+
+    def test_empty_string(self):
+        assert _parse_llm_json("") == {}
+
+    def test_garbage_returns_empty(self):
+        assert _parse_llm_json("not even close to JSON") == {}
+
+    def test_none_like_returns_empty(self):
+        assert _parse_llm_json("   \n  ") == {}
 
 
 class TestKeywordFilter:

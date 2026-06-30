@@ -99,13 +99,23 @@ def test_promote_and_rollback(clean_switcher):
     result = promote_patch("test-boot")
     assert result["status"] == "promoted"
     assert result["target_module"] == "planner.py"
+    assert result.get("merge_strategy") == "surgical", (
+        "promote_patch must use surgical merge to preserve imports/version"
+    )
     assert os.path.exists(result["backup"])
 
     # Verify core/planner.py was changed
     with open(planner_path, "r", encoding="utf-8") as f:
         patched_content = f.read()
     assert "patched planner" in patched_content
+    assert "step1" in patched_content
     assert patched_content != original_content
+
+    # CRITICAL: surgical merge must preserve module-level metadata
+    assert '__version__' in patched_content, "surgical merge dropped __version__"
+    assert "from typing" in patched_content or "import typing" in patched_content, (
+        "surgical merge dropped typing imports"
+    )
 
     # Rollback
     result2 = rollback_patch("planner.py")
