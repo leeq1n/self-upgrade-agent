@@ -53,10 +53,12 @@ class TestBuildQueryString:
 
 
 class TestSearchArxiv:
-    """Integration tests that hit the real arXiv API."""
+    """Integration tests that hit the real arXiv API (requires network)."""
 
+    @pytest.mark.network
     def test_returns_papers_for_known_topic(self):
-        config = ResearchConfig(keywords=["transformer"], max_papers_per_query=3)
+        config = ResearchConfig(keywords=["transformer"], max_papers_per_query=3,
+                                arxiv_selenium_first=False)
         papers = search_arxiv(config)
         assert len(papers) > 0
         for p in papers:
@@ -65,9 +67,11 @@ class TestSearchArxiv:
             assert p.abstract
             assert p.categories
 
+    @pytest.mark.network
     def test_filters_withdrawn_papers(self):
         """Withdrawn papers should be excluded from results."""
-        config = ResearchConfig(keywords=["transformer"], max_papers_per_query=3)
+        config = ResearchConfig(keywords=["transformer"], max_papers_per_query=3,
+                                arxiv_selenium_first=False)
         papers = search_arxiv(config)
         for p in papers:
             assert "withdrawn" not in p.abstract.lower()

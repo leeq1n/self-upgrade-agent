@@ -21,6 +21,7 @@ research:
   sort_by: submittedDate
   lookback_days: 90
   multi_source: false    # true=arXiv+S2+PwC+GitHub, false=arXiv only
+  arxiv_selenium_first: true  # true=Selenium primary, false=API primary
 
 filter:
   min_abstract_score: 3.0

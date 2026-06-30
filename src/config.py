@@ -15,6 +15,7 @@ class ResearchConfig:
     sort_by: str = "submittedDate"
     lookback_days: int = 90
     multi_source: bool = False   # Enable arXiv+S2+PwC+GitHub search
+    arxiv_selenium_first: bool = True  # Selenium as primary, API as fallback
 
 
 @dataclass

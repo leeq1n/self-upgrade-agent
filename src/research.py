@@ -128,17 +128,32 @@ def _cached_fetch(url, cache_seconds=3600):
 def search_arxiv(config) -> List[Paper]:
     """Search arXiv for papers matching configured keywords and categories.
 
+    Strategy: Selenium first (user requirement), API as fallback.
     Uses local cache (1 hour) and exponential backoff for rate limiting.
     """
     query = build_query_string(config)
     if not query:
         return []
 
-    # arXiv uses custom query syntax (+ as space, +OR+ as OR operator).
+    # ── Primary: Selenium scraping (user's explicit requirement) ──
+    use_selenium = getattr(config, 'arxiv_selenium_first', True)
+    if use_selenium:
+        try:
+            from src.scraper import search_arxiv_scrape, check_selenium_available
+            if check_selenium_available():
+                papers = search_arxiv_scrape(
+                    config.keywords, config.categories, config.max_papers_per_query
+                )
+                if papers:
+                    logger.info(f"arXiv (Selenium): {len(papers)} papers")
+                    return papers
+        except Exception as e:
+            logger.debug(f"Selenium arXiv failed ({e}), falling back to API")
+
+    # ── Fallback: arXiv API (faster, no browser needed) ──
     params = f"search_query={query}&max_results={config.max_papers_per_query}&sortBy={config.sort_by}&sortOrder=descending"
     url = "https://export.arxiv.org/api/query?" + params
 
-    # Try cached/API first
     try:
         data = _cached_fetch(url)
     except Exception as e:

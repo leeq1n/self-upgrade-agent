@@ -98,8 +98,10 @@ class TestNoNetworkCalls:
             assert result == []
 
     def test_search_trending_weekly_handles_error(self):
-        """search_trending_weekly should return [] on error."""
+        """search_trending_weekly should return [] on all paths failing."""
         from src.research_github import search_trending_weekly
-        with patch("src.research_github._cached_fetch", side_effect=Exception("timeout")):
+        # Mock both Selenium and regex paths
+        with patch("src.scraper.check_selenium_available", return_value=False), \
+             patch("src.research_github._cached_fetch", side_effect=Exception("timeout")):
             result = search_trending_weekly()
             assert result == []

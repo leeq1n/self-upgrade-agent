@@ -73,8 +73,10 @@ class TestNoNetworkCalls:
     """Verify that module functions accept mock responses gracefully."""
 
     def test_fetch_trending_papers_handles_network_error(self):
-        """fetch_trending_papers should return [] on network error, not crash."""
+        """fetch_trending_papers should return [] on all paths failing."""
         from src.research_pwc import fetch_trending_papers
-        with patch("src.research_pwc._cached_fetch", side_effect=Exception("timeout")):
+        # Mock both Selenium and regex paths (import is local in function)
+        with patch("src.scraper.check_selenium_available", return_value=False), \
+             patch("src.research_pwc._cached_fetch", side_effect=Exception("timeout")):
             result = fetch_trending_papers(max_results=5)
             assert result == []

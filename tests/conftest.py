@@ -18,5 +18,6 @@ if os.path.exists(env_path):
 
 def pytest_configure(config):
     """Register custom markers."""
-    config.addinivalue_line("markers", "llm: marks tests that require LLM API (skipped if not configured)")
-    config.addinivalue_line("markers", "slow: marks slow tests (>5s)")
+    config.addinivalue_line("markers", "llm: tests that require LLM API (skipped if not configured)")
+    config.addinivalue_line("markers", "network: tests that require network access (arXiv API, S2, etc.)")
+    config.addinivalue_line("markers", "slow: tests that are slow (Selenium, multi-trial, >5s)")
