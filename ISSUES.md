@@ -1,7 +1,7 @@
 # Self-Upgrade Agent — Known Issues & Roadmap
 
-> **状态**：活跃 (v1.5.0)
-> **更新**：2026-06-30
+> **状态**：活跃 (v1.5.1)
+> **更新**：2026-07-01
 
 这份文件跟踪"项目本身没做好的事"和"v1.6.0 计划"。每条 issue 都有：
 - **级别**：P0 必修 / P1 应修 / P2 nice-to-have
@@ -90,24 +90,45 @@
 - **影响**：输出格式可能在两处漂移
 - **建议修复**：移到 `src/pipeline_lg.py` 作为 public function
 
+### ISS-012: `BenchmarkTask` 与 `benchmark.run_single` 类型不匹配（pre-existing，新发现）
+- **级别**：P1
+- **影响**：`src/evaluate.py:41` 定义了 `@dataclass class BenchmarkTask`（属性 `id/description/query/...`），但 `src/benchmark.py:32` 用 `task["task"]` 当字典取。`tests/test_evaluate.py::TestLLMIntegration` 的 4 个测试因此失败：`TypeError: 'BenchmarkTask' object is not subscriptable`
+- **当前 workaround**：`run.py --legacy` 路径绕开 `benchmark.run_single`；新路径 `node_evaluate` 调 `benchmark.run_all(tasks)` 时传的是 `benchmarks/tasks.json` 出来的 dict，所以 production 不撞这个 bug。**只影响 evaluate.py 单元测试**
+- **建议修复**：
+  1. 让 `benchmark.run_single(task)` 兼容两种类型：`task["task"]` 走 dict，`task.query` 走 dataclass；或
+  2. 把 `evaluate.BenchmarkTask` 改成 dict 派生（TypedDict）；或
+  3. 删 `BenchmarkTask` dataclass，统一走 `benchmarks/tasks.json`
+- **未修原因**：本次任务只修 `tests/test_e2e.py`，不在 v1.5.1 修复范围
+- **真实验证（2026-07-01）**：`git stash` 掉我的 e2e 改动后，干净 `fcb73ef` 上跑 `tests/test_evaluate.py`，同样 4 个 fail，证明 pre-existing
+
+### ISS-013: mock e2e 测试发现 `node_filter` 不传 `llm_config`，filter 永远走 keyword fallback
+- **级别**：P2（已通过 mock e2e 测试绕过；production 影响待评估）
+- **影响**：`src/pipeline_lg.py:182` 调用 `filter_papers(papers, cfg.filter, use_llm=True)` 时**没传 `llm_config`**。`src/filter.py:205` 检查 `if use_llm and llm_config is not None and llm_config.ready:` —— `llm_config is None` → 直接走 keyword fallback。这意味着生产环境里 filter **永远不会用 LLM 评分**，永远用 keyword。这意味着 ISS-001（filter LLM 评分不稳定）的 deterministic 修复虽然进了 v1.5.0，但根本就没生效
+- **当前 workaround**：`tests/test_e2e.py` fixture 直接 patch `src.filter.score_paper`，绕过这个 wiring 问题
+- **建议修复**：
+  1. `node_filter` 调 `LLMConfig.from_env()` 并传给 `filter_papers(..., llm_config=cfg.llm)`；或
+  2. `filter_papers` 内部 `from src.llm import LLMConfig; LLMConfig.from_env()`，自动拿到 config
+  3. 跑真实 e2e 验证 filter LLM 评分确实在跑
+- **未修原因**：production wiring 改动超出 mock 测试修复范围；建议 ISS-013 进入 v1.6.0 backlog
+
 ---
 
 ## v1.6.0 候选（按优先级）
 
 1. **ISS-001** filter 稳定性（deterministic boost + max_papers=5）
 2. **ISS-002** 真实 end-to-end 评估（让 promote 真正经过 evaluate）
-3. **ISS-004** evaluate.py / node_evaluate 合并
+3. **ISS-013** `node_filter` 传 `llm_config`（让 ISS-001 修复真正生效）
 4. **ISS-003** 多 daemon 文件锁
 5. **ISS-005** cost tracking with real tokens
-
+6. **ISS-012** `BenchmarkTask` 类型不匹配（pre-existing 4 测试失败）
 ## v1.7.0 候选
 
-6. **ISS-006/007** 拆分 llm.py / pipeline_lg.py
-7. **ISS-008/010** 通知 + cost 预算
+7. **ISS-006/007** 拆分 llm.py / pipeline_lg.py
+8. **ISS-008/010** 通知 + cost 预算
 
 ---
 
-## 已修复 (v1.0 → v1.5.0)
+## 已修复 (v1.0 → v1.5.1)
 
 | 版本 | 修复 |
 |------|------|
@@ -116,3 +137,4 @@
 | v1.3.0 | node_research 读 trending 缓存（loop 闭环） |
 | v1.4.0 | global timeout + diagnostic + 401/403 永久 mark dead |
 | v1.5.0 | 8 key 全对上号；real promote 成功；BOM/utf-8-sig；filter/patchgen 对齐 self-upgrade 痛点 |
+| v1.5.1 | ISS-004 evaluate.py / node_evaluate 单 A/B 路径合并；`tests/test_e2e.py` mock 端到端 3/3 通过（修复了 PATCH_JSON 自相矛盾断言 + node_filter 不传 llm_config 的 mock 绕过） |
