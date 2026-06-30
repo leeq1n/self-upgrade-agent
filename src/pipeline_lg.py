@@ -253,6 +253,22 @@ def node_reflect(state: dict) -> dict:
 
 def node_evaluate(state: dict) -> dict:
     """Phase 5: Real A/B benchmark — baseline vs patched agent."""
+    # Dry-run mode: skip real benchmark entirely
+    if state.get("dry_run", False):
+        logger.info("5. Evaluate: DRY-RUN — using simulated data")
+        base_rate = 0.80
+        upgraded_rate = min(1.0, base_rate + random.uniform(0.01, 0.10))
+        state["evaluation"] = {
+            "baseline_rate": base_rate,
+            "upgraded_rate": upgraded_rate,
+            "success_rate_delta": upgraded_rate - base_rate,
+            "cost_increase_ratio": 1.0,
+            "baseline_cost": 1000,
+            "upgraded_cost": 1000,
+            "stats": None,
+        }
+        return state
+
     patch = state.get("patch", {})
     cfg = state.get("config")
     best = state.get("best_paper")
@@ -494,11 +510,13 @@ def build_graph():
 # Entry Point
 # ═══════════════════════════════════════════════════════════
 
-def run(cfg: Config = None) -> dict:
+def run(cfg: Config = None, dry_run: bool = False) -> dict:
     """Run the full self-upgrade pipeline.
 
     Args:
         cfg: Config object. Loaded from config.yaml if None.
+        dry_run: If True, skip real LLM benchmark (use simulated data).
+                 Set to False for --live mode with real evaluation.
 
     Returns:
         State dict with keys: papers, scored_papers, best_paper, patch,
@@ -519,6 +537,7 @@ def run(cfg: Config = None) -> dict:
         "decision": {},
         "errors": [],
         "done": False,
+        "dry_run": dry_run,
     }
 
     return build_graph().invoke(initial_state)

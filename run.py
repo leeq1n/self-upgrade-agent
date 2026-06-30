@@ -158,7 +158,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        print("Self-Upgrade Agent v1.1.0 (2026-06-30)")
+        print("Self-Upgrade Agent v1.2.0 (2026-06-30)")
         print("Autonomous agent improvement via paper discovery and code patching.")
         import importlib
         for mod_name in ["core", "src.pipeline_lg"]:
@@ -209,7 +209,8 @@ def main():
                         run_p(load_config(args.config), verbose=args.verbose)
                     else:
                         from src.pipeline_lg import run as run_plg
-                        run_plg(load_config(args.config))
+                        run_plg(load_config(args.config),
+                                dry_run=not args.live)
                     _save_state("success")
                     consecutive_failures = 0
                 except Exception as e:
@@ -339,11 +340,14 @@ def main():
         # ── Default pipeline (patchgen path via LangGraph) ──
         from src.pipeline_lg import run as run_pipeline_lg
 
+        dry_run = not args.live
         logger.info("Starting self-upgrade pipeline (LangGraph)...")
-        if not args.live:
-            logger.info("Dry-run mode: benchmark will use simulated data on failure")
+        if dry_run:
+            logger.info("Dry-run mode: benchmark will use simulated data")
+        else:
+            logger.info("LIVE mode: running real LLM benchmark evaluation")
 
-        state = run_pipeline_lg(config)
+        state = run_pipeline_lg(config, dry_run=dry_run)
         _print_pipeline_lg_result(state)
 
     history.close()
