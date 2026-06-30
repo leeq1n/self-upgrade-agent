@@ -19,7 +19,10 @@ build/
 .venv/
 venv/
 
-# Upgrades (runtime artifacts)
+# Upgrades (runtime artifacts — not in version control)
+upgrades/history.db
+upgrades/manifest.json
+upgrades/snapshots/
 upgrades/arxiv_cache/
 upgrades/s2_cache/
 upgrades/pwc_cache/
@@ -29,6 +32,7 @@ upgrades/backups/
 upgrades/*.log
 upgrades/daemon_state.json
 upgrades/trending_keywords.json
+upgrades/*.bench_bak
 
 # Testing
 .pytest_cache/
