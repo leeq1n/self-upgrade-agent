@@ -1,0 +1,59 @@
+# Self-Upgrade Agent Configuration
+
+research:
+  keywords:
+    - "agent"
+    - "reinforcement learning"
+    - "LLM reasoning"
+    - "tool use"
+    - "multi-agent"
+    - "chain of thought"
+    - "self-improving"
+    - "prompt engineering"
+    - "planning"
+    - "reasoning"
+  categories:
+    - cs.AI
+    - cs.CL
+    - cs.LG
+  max_papers_per_query: 10
+  sort_by: submittedDate
+  lookback_days: 90
+
+filter:
+  min_abstract_score: 3.0
+  min_applicability_score: 2.0
+  min_novelty_score: 0.0
+  max_papers_to_consider: 3
+
+implement:
+  max_attempts: 3
+  validate_before_install: true
+  backup_existing_skill: true
+
+evaluate:
+  mode: llm           # llm | simulated
+  trials_per_test: 3
+  timeout_seconds: 120
+
+lifecycle:
+  enabled: true
+  max_active_skills: 10
+  eval_interval_days: 7
+  inactivity_days: 30
+  min_context_budget: 4000
+
+decide:
+  min_success_rate_delta: 0.05
+  max_cost_increase_ratio: 1.2
+  min_response_quality_delta: 0.1
+
+pipeline:
+  schedule: manual
+  max_upgrades_per_cycle: 2
+  require_manual_approval: false
+  auto_promote: false     # true=自动部署, false=生成候选手动审批
+  log_level: INFO
+
+database:
+  path: upgrades/history.db

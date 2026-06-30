@@ -1,0 +1,10 @@
+[
+  {"id":"plan-1","task":"Organize a birthday party for 20 people. List the key preparation steps.","category":"planning","expected_steps_min":4},
+  {"id":"plan-2","task":"Plan a 3-day trip to Tokyo with a budget of $2000.","category":"planning","expected_steps_min":4},
+  {"id":"reason-1","task":"All cats are mammals. All mammals are animals. Is a cat an animal? Answer yes/no and explain.","category":"reasoning","expected_pattern":"yes"},
+  {"id":"reason-2","task":"If it rains, the ground is wet. The ground is wet. Did it rain? Choose: definitely / possibly / no.","category":"reasoning","expected_pattern":"possibly"},
+  {"id":"tool-1","task":"What is 15% of 340? Calculate and explain.","category":"calculation","expected_output":"51"},
+  {"id":"tool-2","task":"Write a Python function that checks if a word is a palindrome.","category":"code_gen","expected_pattern":"def.*palindrome"},
+  {"id":"decompose-1","task":"Describe step-by-step how to make a cup of coffee.","category":"decomposition","expected_steps_min":3},
+  {"id":"decompose-2","task":"Explain how to troubleshoot a computer that won't turn on.","category":"decomposition","expected_steps_min":3}
+]
