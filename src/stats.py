@@ -1,5 +1,7 @@
 """Statistical significance testing for benchmark comparisons.
 
+[FROZEN v1.1.0] — stable bootstrap logic, tested, do not modify.
+
 Provides bootstrap confidence intervals and significance tests to distinguish
 real improvements from random variation in LLM benchmark results.
 """

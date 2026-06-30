@@ -1,4 +1,7 @@
-"""Configuration loading and validation for self-upgrade agent."""
+"""Configuration loading and validation for self-upgrade agent.
+
+[FROZEN v1.1.0] — stable dataclass schema, tested, do not modify.
+"""
 import yaml
 from dataclasses import dataclass, field
 from typing import List

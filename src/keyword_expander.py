@@ -1,5 +1,7 @@
 """Dynamic keyword expansion — extract trending terms from discovered papers.
 
+[FROZEN v1.1.0] — stable n-gram extraction, tested, do not modify.
+
 Automatically identifies emerging AI/ML methods and trends from paper
 titles and abstracts, reducing reliance on manually maintained keywords.
 """

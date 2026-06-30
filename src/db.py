@@ -1,4 +1,7 @@
-"""SQLite database for tracking upgrade history across pipeline runs."""
+"""SQLite database for tracking upgrade history across pipeline runs.
+
+[FROZEN v1.1.0] — stable schema (3 tables), tested, do not modify.
+"""
 import sqlite3
 from dataclasses import dataclass
 from typing import List, Optional

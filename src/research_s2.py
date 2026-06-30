@@ -1,5 +1,7 @@
 """Semantic Scholar API client — citation data and paper discovery.
 
+[FROZEN v1.1.0] — stable API wrapper, tested, do not modify.
+
 Free tier: 1 req/s, 100 req / 5 min without API key.
 Docs: https://api.semanticscholar.org/api-docs/graph
 

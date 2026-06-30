@@ -1,5 +1,7 @@
 """arXiv HTML scraper using Selenium — bypasses API rate limits.
 
+[FROZEN v1.1.0] — stable, tested, do not modify.
+
 Falls back to cached API results if Selenium fails.
 """
 import os, re, time, logging, urllib.parse

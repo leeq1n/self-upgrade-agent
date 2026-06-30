@@ -1,5 +1,7 @@
 """Unified LLM call layer.
 
+[FROZEN v1.1.0] — stable API (chat/chat_simple/LLMConfig), tested, do not modify.
+
 All LLM calls in the system go through this module.
 Supports any OpenAI-compatible API (ModelScope, OpenRouter, etc.)
 

@@ -1,5 +1,7 @@
 """Bootloader: 安全管理核心模块的代码版本。
 
+[FROZEN v1.1.0] — stable API, tested, do not modify.
+
 Operations:
   deploy_candidate  → 保存候选代码到 upgrades/candidates/
   promote_patch     → 原子写入 core/{target_module}，备份旧版本

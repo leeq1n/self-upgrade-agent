@@ -1,5 +1,8 @@
-"""Built-in tools for the self-upgrade agent."""
-__version__ = "1.0.0"
+"""Built-in tools for the self-upgrade agent.
+
+[FROZEN v1.1.0] — stable, tested, do not modify.
+"""
+__version__ = "1.1.0"
 import subprocess, os, math as _math
 
 

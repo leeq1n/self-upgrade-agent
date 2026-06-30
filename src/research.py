@@ -1,4 +1,7 @@
-"""Research module: search arXiv for latest papers on agent-related topics."""
+"""Research module: search arXiv for latest papers on agent-related topics.
+
+[FROZEN v1.1.0] — stable API, tested, do not modify.
+"""
 import urllib.request
 import urllib.parse
 import urllib.error

@@ -1,9 +1,11 @@
 """Task planner — decomposes goals into executable steps.
 
+[FROZEN v1.1.0] — stable interface, tested.
+
 This module is the PRIMARY target for self-improvement.
 Papers about new planning algorithms generate patches for this file.
 """
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 from typing import List, Callable
 
 

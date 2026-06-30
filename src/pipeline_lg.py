@@ -9,7 +9,7 @@ Main pipeline:
 This pipeline replaces the legacy pipeline.py skillgen path. It uses patchgen
 to generate actual Python code patches targeting core/ modules.
 """
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 import logging
 import os
 import shutil

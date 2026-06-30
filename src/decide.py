@@ -1,5 +1,7 @@
 """Decision module: evaluate benchmark results and decide keep or revert.
 
+[FROZEN v1.1.0] — stable logic, tested, do not modify.
+
 The decision logic uses configurable thresholds:
 - Keep: success rate improvement >= min_delta AND cost increase <= max_ratio.
 - Revert: otherwise. Auto-revert on regression (worse + more expensive).

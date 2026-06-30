@@ -1,4 +1,5 @@
 # Sandbox: execute generated code in isolated subprocess.
+# [FROZEN v1.1.0] — stable, tested, do not modify.
 import os, subprocess, tempfile, time, json
 
 _T = chr(123) + chr(123) + chr(34) + "passed" + chr(34) + ": True" + chr(125) + chr(125)
