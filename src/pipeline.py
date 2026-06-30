@@ -202,14 +202,17 @@ def run_pipeline(
         
         # B. Generate executable code from paper (harness: JSON mode)
         code = None
-        try:
-            code = generate_code_skill(paper, use_llm=True, llm_config=_llm_config)
-            if code:
-                logger.info(f"  B. Code generated: function={len(code['function'])} chars, test={len(code['test'])} chars")
-            else:
-                logger.info(f"  B. Code generation skipped (no output)")
-        except Exception as e:
-            logger.warning(f"  B. Code generation failed: {e}")
+        if not dry_run:
+            try:
+                code = generate_code_skill(paper, use_llm=True, llm_config=_llm_config)
+                if code:
+                    logger.info(f"  B. Code generated: function={len(code['function'])} chars, test={len(code['test'])} chars")
+                else:
+                    logger.info(f"  B. Code generation skipped (no output)")
+            except Exception as e:
+                logger.warning(f"  B. Code generation failed: {e}")
+        else:
+            logger.info(f"  B. Code gen skipped (dry-run)")
         
         # C. Sandbox test
         sandbox_ok = False
