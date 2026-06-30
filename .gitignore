@@ -1,5 +1,40 @@
-
-.env
+# Python
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.venv/
+venv/
+
+# Upgrades (runtime artifacts)
+upgrades/arxiv_cache/
+upgrades/s2_cache/
+upgrades/pwc_cache/
+upgrades/gh_cache/
+upgrades/candidates/
+upgrades/backups/
+upgrades/*.log
+upgrades/daemon_state.json
+upgrades/trending_keywords.json
+
+# Testing
 .pytest_cache/
-upgrades/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store
+Thumbs.db

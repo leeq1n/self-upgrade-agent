@@ -1,0 +1,548 @@
+{
+  "created": "2026-06-30T12:41:28.814875",
+  "modules": {
+    "planner.py": {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T15:12:49.908092",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_151249.bak",
+      "code_size": 78
+    }
+  },
+  "history": [
+    {
+      "skill_name": "test-skill",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:41:28.840980",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124128.bak",
+      "code_size": 13
+    },
+    {
+      "skill_name": "test-skill",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:42:40.347608",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124240.bak",
+      "code_size": 13
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:43:55.274820",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124355.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T12:43:55.280366",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124355.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:46:44.086300",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124644.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T12:46:44.094074",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124644.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:47:27.195011",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124727.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T12:47:27.197011",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124727.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:48:03.436486",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124803.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T12:48:03.440485",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124803.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:48:22.729834",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124822.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T12:48:22.735840",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_124822.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:55:28.217244",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_125528.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T12:55:28.225331",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_125528.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:56:08.813155",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_125608.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T12:56:08.817086",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_125608.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:56:47.906075",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_125647.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T12:56:47.912087",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_125647.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T12:58:03.165464",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_125803.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T12:58:03.172475",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_125803.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T13:00:49.496148",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_130049.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T13:00:49.503147",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_130049.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T13:09:47.052692",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_130947.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T13:09:47.059607",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_130947.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T13:31:13.013867",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_133113.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T13:31:13.020087",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_133113.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T13:34:23.927275",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_133423.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T13:34:23.931967",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_133423.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T13:38:36.128682",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_133836.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T13:38:36.141730",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_133836.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T13:44:30.634336",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_134430.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T13:44:30.644850",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_134430.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T13:46:07.930749",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_134607.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T13:46:07.941786",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_134607.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T13:52:47.344305",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_135247.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T13:52:47.354347",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_135247.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T13:59:21.170401",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_135921.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T13:59:21.180264",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_135921.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:01:45.006755",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_140144.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:01:45.018165",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_140144.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:07:47.824142",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_140747.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:07:47.834373",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_140747.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:09:51.490518",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_140951.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:09:51.499088",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_140951.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:17:35.412003",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_141735.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:17:35.422521",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_141735.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:19:57.404294",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_141957.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:19:57.414459",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_141957.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:22:32.185809",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_142232.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:22:32.194200",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_142232.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:28:37.691388",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_142837.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:28:37.704958",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_142837.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:29:15.566361",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_142915.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:29:15.572888",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_142915.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:50:34.854289",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145034.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:50:34.863380",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145034.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:50:42.883874",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145042.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:50:42.893856",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145042.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:51:10.796932",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145110.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:51:10.807904",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145110.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:52:04.069143",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145204.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:52:04.082327",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145204.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:52:48.296838",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145248.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:52:48.306826",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145248.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:57:23.587965",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145723.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:57:23.595532",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145723.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:58:21.199348",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145821.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:58:21.209376",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145821.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T14:58:23.999374",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145823.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T14:58:24.009447",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_145823.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T15:00:18.782819",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150018.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T15:00:18.793885",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150018.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T15:02:11.432132",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150211.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T15:02:11.441061",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150211.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T15:03:48.829221",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150348.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T15:03:48.838751",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150348.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T15:05:21.512788",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150521.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T15:05:21.523857",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150521.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T15:07:53.625821",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150753.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T15:07:53.636027",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_150753.bak"
+    },
+    {
+      "skill_name": "test-boot",
+      "target_module": "planner.py",
+      "promoted_at": "2026-06-30T15:12:49.908092",
+      "backup": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_151249.bak",
+      "code_size": 78
+    },
+    {
+      "action": "rollback",
+      "target_module": "planner.py",
+      "rolled_back_at": "2026-06-30T15:12:49.920105",
+      "restored_from": "C:\\Users\\LQ\\Documents\\agent-workspace\\hermes-root\\self-upgrade-agent\\upgrades\\backups\\planner_20260630_151249.bak"
+    }
+  ]
+}

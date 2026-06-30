@@ -116,6 +116,15 @@ def quick_test(task: str) -> Dict:
     from src.llm import chat_simple, LLMConfig
     lc = LLMConfig.from_env()
 
+    if not lc.ready:
+        return {
+            "success": False, "task": task, "steps_planned": 0,
+            "steps_executed": 0, "tools_used": 0, "elapsed": 0,
+            "logs": [],
+            "error": "LLM 未配置。请创建 .env 文件并设置 LLM_API_KEY 和 LLM_MODEL。\n"
+                     "参考 .env.example。"
+        }
+
     def _call(prompt):
         return chat_simple(prompt, config=lc) or ""
 
@@ -140,10 +149,13 @@ if __name__ == "__main__":
     print(f"\nTask: {task}\n{'='*50}")
     result = quick_test(task)
     print(f"\n{'='*50}")
-    print(f"Steps planned: {result['steps_planned']}")
-    print(f"Tools used:    {result['tools_used']}")
-    print(f"Time:          {result['elapsed']}s")
-    print(f"Success:       {result['success']}")
-    print(f"\nPlan:")
-    for i, log in enumerate(result.get('logs', [])):
-        print(f"  {i+1}. {log.get('step', '?')[:80]}")
+    if result.get("error"):
+        print(f"Error: {result['error']}")
+    else:
+        print(f"Steps planned: {result['steps_planned']}")
+        print(f"Tools used:    {result['tools_used']}")
+        print(f"Time:          {result['elapsed']}s")
+        print(f"Success:       {result['success']}")
+        print(f"\nPlan:")
+        for i, log in enumerate(result.get('logs', [])):
+            print(f"  {i+1}. {log.get('step', '?')[:80]}")
