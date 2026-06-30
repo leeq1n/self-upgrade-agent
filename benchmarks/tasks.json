@@ -1,10 +1,28 @@
 [
   {"id":"plan-1","task":"Organize a birthday party for 20 people. List the key preparation steps.","category":"planning","expected_steps_min":4},
   {"id":"plan-2","task":"Plan a 3-day trip to Tokyo with a budget of $2000.","category":"planning","expected_steps_min":4},
+  {"id":"plan-3","task":"Plan a product launch for a SaaS tool. List 5 key milestones with timeline.","category":"planning","expected_steps_min":5},
+  {"id":"plan-4","task":"Organize a 50-person conference. Break into 7 preparation steps covering venue, speakers, budget, marketing, and logistics.","category":"planning","expected_steps_min":6},
+  {"id":"plan-5","task":"Plan moving to a new city: budget, timeline, logistics, finding housing. List 5+ steps.","category":"planning","expected_steps_min":5},
+
   {"id":"reason-1","task":"All cats are mammals. All mammals are animals. Is a cat an animal? Answer yes/no and explain.","category":"reasoning","expected_pattern":"yes"},
   {"id":"reason-2","task":"If it rains, the ground is wet. The ground is wet. Did it rain? Choose: definitely / possibly / no.","category":"reasoning","expected_pattern":"possibly"},
+  {"id":"reason-3","task":"All birds have wings. Penguins are birds. Penguins cannot fly. Do penguins have wings? Explain the logical paradox.","category":"reasoning","expected_pattern":"yes"},
+  {"id":"reason-4","task":"If A>B and B>C and C<D and D=E, can we conclude A>E? Explain.","category":"reasoning","expected_pattern":"(cannot|maybe|possibly|not)"},
+  {"id":"reason-5","task":"A bat and a ball cost $1.10 total. The bat costs $1.00 more than the ball. How much is the ball? Answer with just the number.","category":"reasoning","expected_pattern":"0\\.05"},
+
   {"id":"tool-1","task":"What is 15% of 340? Calculate and explain.","category":"calculation","expected_output":"51"},
   {"id":"tool-2","task":"Write a Python function that checks if a word is a palindrome.","category":"code_gen","expected_pattern":"def.*palindrome"},
+  {"id":"tool-3","task":"What is the area of a circle with radius 5? Show the calculation.","category":"calculation","expected_pattern":"78\\.5"},
+
+  {"id":"code-2","task":"Write a Python function that checks if a string has balanced parentheses using a stack.","category":"code_gen","expected_pattern":"def.*balanced"},
+  {"id":"code-3","task":"Write a Python function to merge two sorted lists without using sort().","category":"code_gen","expected_pattern":"def.*merge"},
+
   {"id":"decompose-1","task":"Describe step-by-step how to make a cup of coffee.","category":"decomposition","expected_steps_min":3},
-  {"id":"decompose-2","task":"Explain how to troubleshoot a computer that won't turn on.","category":"decomposition","expected_steps_min":3}
+  {"id":"decompose-2","task":"Explain how to troubleshoot a computer that won't turn on.","category":"decomposition","expected_steps_min":3},
+  {"id":"decompose-3","task":"Explain step by step how to debug a Python program that crashes on startup with an ImportError.","category":"decomposition","expected_steps_min":4},
+  {"id":"decompose-4","task":"Describe the process of training a machine learning model from data collection to deployment in 5 steps.","category":"decomposition","expected_steps_min":5},
+
+  {"id":"reflect-1","task":"This code has a bug: `def factorial(n): return n * factorial(n-1)`. Find the bug and explain how to fix it.","category":"reflection","expected_pattern":"(base case|0|1|infinite|recursion|stop)"},
+  {"id":"reflect-2","task":"Is this reasoning correct: 'All dogs are animals. All cats are animals. Therefore, all dogs are cats.' Explain why or why not.","category":"reflection","expected_pattern":"(incorrect|wrong|false|invalid|fallacy)"}
 ]

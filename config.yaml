@@ -35,7 +35,7 @@ implement:
 
 evaluate:
   mode: llm           # llm | simulated
-  trials_per_test: 3
+  trials_per_test: 10  # trials per task for statistical significance
   timeout_seconds: 120
 
 lifecycle:
