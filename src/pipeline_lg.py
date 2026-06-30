@@ -129,6 +129,22 @@ def node_research(state: dict) -> dict:
         return state
 
     try:
+        # Prepend any persisted trending keywords to the search query so
+        # yesterday's hot topics continue to be explored.  The base
+        # config keywords stay at the front; trending is appended.
+        try:
+            from src.keyword_expander import load_trending_keywords
+            trending = load_trending_keywords()
+            if trending and hasattr(cfg, "research") and cfg.research.keywords is not None:
+                # Avoid duplicating what's already in the configured list.
+                seen = {k.lower() for k in cfg.research.keywords}
+                additions = [k for k in trending if k.lower() not in seen]
+                if additions:
+                    logger.debug(f"   Appending {len(additions)} trending keywords")
+                    cfg.research.keywords = list(cfg.research.keywords) + additions
+        except Exception:
+            pass
+
         # Use multi-source search if config enables it
         multi_source = getattr(cfg.research, 'multi_source', False) if hasattr(cfg, 'research') else False
         if multi_source:

@@ -74,8 +74,10 @@ pytest (full)                        → 107 passed, 1 skipped in ~68s
 |------|------|
 | 真实端到端 self-upgrade 成功 | 之前 `manifest.json` 显示 promote 都是空 candidate（`has_code: false`），从没真正成功过完整闭环 |
 | 任务类型自动检测 | 现在 `for_task_type` 需要调用方显式指定；可以加自动检测（看 prompt 关键词） |
-| filter 评分多维度 | 当前 abstract/applicability/novelty 三维，可加 hallucination / bias 检测 |
-| pipeline_lg 可读性 | 已从单字母改为语义化，仍有进一步优化空间 |
+| `filter`评分多维度 | 当前 abstract/applicability/novelty 三维，可加 hallucination / bias 检测 |
+| `pipeline_lg` 可读性 | 已从单字母改为语义化，仍有进一步优化空间 |
+| **Trending 缓存接入 pipeline** | ✅ v1.4.0 — `node_research` 现在读 `upgrades/trending_keywords.json`，把昨天发现的高频关键词拼到今天的搜索里。这是 harness+loop 真正闭环的关键 |
+| **死代码清理** | ✅ v1.4.0 — 删除 `research_s2.search_and_enrich`（0 调用方）；`keyword_expander.load_trending_keywords` 不再是死代码（被 node_research 调用） |
 
 ---
 

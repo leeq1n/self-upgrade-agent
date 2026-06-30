@@ -180,40 +180,6 @@ def get_references(paper_id: str, limit: int = 10) -> List[dict]:
         return []
 
 
-def search_and_enrich(keywords: List[str], max_results: int = 10) -> List[Paper]:
-    """Search S2 and convert results to Paper format (citation-rich).
-
-    This is a drop-in alternative to research.search_arxiv()
-    that provides real citation counts.
-    """
-    s2_papers = search_papers(keywords, max_results)
-
-    results = []
-    for sp in s2_papers:
-        external = sp.get("externalIds", {}) or {}
-        arxiv_id = external.get("ArXiv", "")
-
-        if not arxiv_id:
-            # S2 paper without arXiv ID — still include it
-            arxiv_id = sp.get("paperId", "")[:20] if sp.get("paperId") else "N/A"
-
-        authors_list = [a.get("name", "") for a in (sp.get("authors", []) or [])]
-        authors = ", ".join(authors_list[:5])
-
-        paper = Paper(
-            arxiv_id=arxiv_id,
-            title=(sp.get("title") or "Untitled")[:200],
-            authors=authors if authors else "Unknown",
-            published=str(sp.get("year", "")),
-            abstract=(sp.get("abstract") or "")[:1000],
-            categories="",
-            citation_count=sp.get("citationCount", 0) or 0,
-        )
-        results.append(paper)
-
-    return results
-
-
 def citation_score(citation_count: int) -> float:
     """Map citation count to a 0-10 score using log scale.
 
