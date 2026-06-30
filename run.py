@@ -165,6 +165,10 @@ def main():
         help="显示版本信息"
     )
     parser.add_argument(
+        "--status", action="store_true",
+        help="显示 LLM 状态 + quota 状态 + 已 promote 的 manifest"
+    )
+    parser.add_argument(
         "-v", "--verbose", action="store_true",
         help="DEBUG 级别日志"
     )
@@ -184,7 +188,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        print("Self-Upgrade Agent v1.3.0 (2026-06-30)")
+        print("Self-Upgrade Agent v1.5.0 (2026-06-30)")
         print("Autonomous agent improvement via paper discovery and code patching.")
         import importlib
         for mod_name in ["core", "src.pipeline_lg"]:
@@ -194,6 +198,52 @@ def main():
                 print(f"  {mod_name}: v{v}")
             except Exception:
                 pass
+        return
+
+    if args.status:
+        # One-shot status: LLM config + quota state + manifest.
+        # Reuses src.llm.diagnose() so this CLI and the diagnose() API
+        # never drift apart.
+        print("=" * 60)
+        print("SELF-UPGRADE AGENT STATUS")
+        print("=" * 60)
+        try:
+            from src.llm import diagnose, get_config
+            import json as _json
+            cfg = get_config()
+            print(f"LLM ready:        {cfg.ready}")
+            print(f"Primary model:    {cfg.model}")
+            print(f"Base URL:         {cfg.base_url}")
+            print(f"Total keys:       {len(cfg.api_keys)}")
+            print(f"Per-req timeout:  {cfg.timeout}s")
+            print(f"Total timeout:    {cfg.total_timeout}s")
+            print()
+            print("Quota state:")
+            for entry in diagnose().get("quota", {}).items():
+                name, info = entry
+                if info.get("dead_until", 0):
+                    reason = info.get("last_reason", "dead")
+                    print(f"  {name}: DEAD ({reason})")
+                else:
+                    print(f"  {name}: alive")
+        except Exception as e:
+            print(f"  (could not read LLM state: {e})")
+        print()
+
+        # Manifest
+        import json as _json, os
+        mf = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          "upgrades", "manifest.json")
+        if os.path.exists(mf):
+            with open(mf) as f:
+                m = _json.load(f)
+            print("Manifest modules:")
+            for mod, info in m.get("modules", {}).items():
+                ts = info.get("promoted_at", "never")[:19]
+                print(f"  core/{mod}: {info.get('skill_name','?')} at {ts}")
+        else:
+            print("Manifest: (no upgrades yet)")
+        print("=" * 60)
         return
 
     # ═══ Initialize logging first (used by all code paths) ═══

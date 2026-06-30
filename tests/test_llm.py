@@ -140,9 +140,9 @@ class TestLLMConfig:
 
 # ═══════════════════════════════════════════════════════════
 # QuotaState
-# ═══════════════════════════════════════════════════════════
-
 class TestQuotaState:
+    """Test the persistent QuotaState."""
+
     def test_mark_dead_and_is_dead(self, tmp_path):
         path = str(tmp_path / "quota.json")
         qs = QuotaState(path)
@@ -193,6 +193,34 @@ class TestQuotaState:
         assert snap[key]["last_status"] == 429
         assert snap[key]["failures_today"] == 1
 
+    def test_mark_permanently_dead_uses_100_year_cooldown(self, tmp_path, monkeypatch):
+        """A 401/403-broken key should be marked for ~100 years (effectively forever),
+        not 24h.  Otherwise the same broken key gets retried tomorrow and
+        wastes 15s on every call."""
+        import src.llm
+        base = 1_000_000.0
+        monkeypatch.setattr(src.llm.time, "time", lambda: base)
+        path = str(tmp_path / "quota.json")
+        qs = QuotaState(path)
+        key = "ms-broken-key"
+
+        qs.mark_permanently_dead(key, reason="http_401")
+        snap = qs.snapshot()
+        assert key in snap
+        # Cooldown should be ~100 years = 100*365*24*3600 = 3.15e9 seconds.
+        diff = snap[key]["dead_until"] - int(base)
+        assert diff > 3_000_000_000, f"permanently_dead cooldown too short: {diff}"
+        assert snap[key].get("last_reason") == "http_401"
+        assert qs.is_dead(key) is True
+
+    def test_mark_dead_with_reason(self, tmp_path):
+        """The reason field is recorded so diagnose() can show it."""
+        path = str(tmp_path / "quota.json")
+        qs = QuotaState(path)
+        key = "ms-key"
+        qs.mark_dead(key, cooldown_seconds=60, reason="rate_limited")
+        snap = qs.snapshot()
+        assert snap[key]["last_reason"] == "rate_limited"
 
 # ═══════════════════════════════════════════════════════════
 # Daily-quota detection

@@ -1,6 +1,6 @@
 # Self-Upgrade Agent 项目简报
 
-**最后更新**：2026-06-30（v1.5.0 patchgen/filter 真正对齐 self-upgrade 痛点）
+**最后更新**：2026-06-30（v1.5.0 真实端到端 promote 成功 + 401/403 永久 mark dead）
 
 ---
 
@@ -13,7 +13,7 @@
 | 能力 | 说明 | 完成度 |
 |------|------|--------|
 | 🔍 自主搜索 | 多源搜索：arXiv + Semantic Scholar + Papers With Code + GitHub（默认 multi_source=true）| 95% |
-| ✏️ 自我进化 | 论文方法 → 代码补丁 → 沙箱验证 → **surgical merge 写入 core/** | 90% |
+| ✏️ 自我进化 | 论文方法 → 代码补丁 → 沙箱验证 → **surgical merge 写入 core/** | **100%** — 真实 promote `planner.py` 成功 |
 | 📊 自主评估 | Bootstrap 统计显著性 + 21 任务 A/B（默认 trials=1）+ elapsed-time cost ratio | 90% |
 | 🎯 自主决策 | 阈值判断 + CI 置信区间 + auto-promote | 90% |
 | 🔄 生命周期 | 模块版本追踪、使用统计、自动修剪 | 80% |
@@ -84,6 +84,9 @@ pytest (full)                        → 107 passed, 1 skipped in ~68s
 | **patchgen 预过滤无关 paper** | ✅ v1.5.0 — 音乐生成、图像分割、机器人等 paper **自动拒绝**，不浪费 LLM 调用。`node_generate_patch` 现在试**所有** qualified paper（之前只试 1 个） |
 | **node_evaluate 真用 trials** | ✅ v1.5.0 — `cfg.evaluate.trials_per_test` 真循环 N 次 baseline + N 次 upgraded；cost ratio 改用 elapsed-time ratio；删掉旧死代码 |
 | **.env BOM 兼容** | ✅ v1.5.0 — `_load_env_file` 用 `utf-8-sig` 读 .env，剥 BOM + 内联注释 + 默认 model=235B |
+| **401/403 永久 mark dead** | ✅ v1.5.0 — `QuotaState.mark_permanently_dead()` 100 年 cooldown，区别于 429 daily quota (24h)；`diagnose()` 显式报告 `last_reason` |
+| **真实端到端 promote 成功** | ✅ v1.5.0 — 基于 "Self-Evolving World Models for LLM Agent Planning" 论文，patchgen 生成 2645 chars patch（含 `_extract_task_type` / `_get_relevant_insights` 等新函数 + `__version__ = "plan_task_v2"`），surgical merge 保留 `__version__ = "1.3.0"` 旧值 + 旧 `plan_task` 函数；rollback 路径已验证可恢复原状 |
+| **.env 真实 key 校对** | ✅ v1.5.0 — 8 个 key 全部对上号（炜/大师姐/少春/昇/孟祥龙/老王/stig/松泽），5 个 401/403 永久失效，3 个仍可用（炜+孟祥龙+stig） |
 
 ---
 

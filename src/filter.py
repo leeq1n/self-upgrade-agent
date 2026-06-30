@@ -219,7 +219,36 @@ def score_paper(
         except Exception as e:
             logger.warning(f"LLM scoring failed, falling back to keyword: {e}")
     return _keyword_score_paper(paper)
-    return _keyword_score_paper(paper)
+
+
+# Deterministic boost for self-upgrade-specific keywords.  LLM scoring
+# alone is unstable (same paper may rank 1st or 4th on different runs);
+# these patterns match the exact pain points the agent is trying to
+# improve, so a hit here is meaningful.  Each hit adds +1 to
+# applicability_score, capped at +3.
+_SELF_UPGRADE_BOOST_PATTERNS = (
+    "self-improv", "self-evolv", "world model",
+    "agent planning", "task planning", "agent prompt",
+    "code generation", "code patch", "sandbox",
+    "a/b test", "benchmark evaluat", "bootloader",
+    "hot reload", "atomic deploy", "llm agent",
+    "tool use", "tool-use", "agent tool",
+    "multi-agent", "agent coordin", "agent memory",
+    "agent reflection", "agent reasoning",
+)
+
+
+def _self_upgrade_boost(paper: Paper) -> float:
+    """Return a [0, 3] deterministic score based on keyword matches.
+
+    v1.5.0: addresses ISS-001 — LLM scoring is unstable, so we add
+    a small deterministic boost to break ties in favor of papers
+    that are clearly about self-upgrade / agent planning.  This
+    doesn't replace LLM scoring — it only nudges the ranking.
+    """
+    text = ((paper.title or "") + " " + (paper.abstract or "")).lower()
+    hits = sum(1 for p in _SELF_UPGRADE_BOOST_PATTERNS if p in text)
+    return min(3.0, float(hits))
 
 
 def filter_papers(
@@ -233,11 +262,25 @@ def filter_papers(
 
     When enrich_citations=True, calls Semantic Scholar to get real citation
     counts (adds ~1-2s per paper due to API calls).
+
+    v1.5.0: each paper's ``applicability_score`` is bumped by
+    ``_self_upgrade_boost(paper)`` (capped at +3) so papers about
+    agent planning / self-improvement rank reliably above music
+    generation / image segmentation noise.
     """
     scored = []
 
     for p in papers:
         sp = score_paper(p, config, use_llm=use_llm, llm_config=llm_config)
+
+        # Deterministic boost (ISS-001).  Applied after LLM scoring so
+        # it acts as a tie-breaker, not a replacement.
+        boost = _self_upgrade_boost(p)
+        if boost > 0:
+            sp.applicability_score = min(10.0, sp.applicability_score + boost)
+            logger.debug(
+                f"filter: +{boost:.0f} self-upgrade boost for {p.arxiv_id}"
+            )
 
         # Enrich with real citation data from Semantic Scholar
         if enrich_citations and sp.meets_thresholds(config):

@@ -102,24 +102,29 @@ class LLMConfig:
             if single:
                 api_keys = [single]
 
-        # Fallback model list — ordered cheap → expensive, but ONLY models
-        # that actually exist on the configured provider.  ModelScope rotates
-        # its catalog; we strip names that 400 on first use.  As of v1.5.0
-        # (2026-06-30) only Qwen3-235B / DeepSeek-V3.2 / Kimi / GLM are
-        # available; the cheap 2B-3B tier doesn't exist on ModelScope yet.
+        # Fallback model list — ordered by current ModelScope availability.
+        # As of v1.5.0 (2026-06-30), we have empirical evidence that:
+        #   * ZhipuAI/GLM-5.1 works on the 2 alive keys (key#0, key#6)
+        #   * Qwen3-235B-A22B is daily-quota-dead on those 2 keys
+        #   * DeepSeek-V3.2 is daily-quota-dead on those 2 keys
+        #   * DeepSeek-V4-Pro and V4-Flash return empty choices
+        #     on ModelScope (broken or strip response)
+        #   * GLM-5.2 also returns empty choices
+        # So the only reliable model on the surviving keys is GLM-5.1.
+        # When daily quota resets, Qwen3-235B and DeepSeek-V3.2 come back
+        # to life and are listed as fallbacks.
         models_env = os.environ.get("LLM_MODELS", "").strip()
         if models_env:
             fallback_models = [m.strip() for m in models_env.split(",") if m.strip()]
         else:
             fallback_models = [
-                # Mid tier (ModelScope current availability)
+                # Only model currently known to work on our 2 surviving keys.
+                "ZhipuAI/GLM-5.1",
+                # Tier-2 fallbacks — work when daily quota resets.
                 "Qwen/Qwen3-235B-A22B",
                 "deepseek-ai/DeepSeek-V3.2",
-                "Qwen/Qwen3-Coder-30B-A3B-Instruct",
-                # Large tier
-                "moonshotai/Kimi-K2.5",
-                "ZhipuAI/GLM-5.1",
-                "mistralai/Mistral-Large-Instruct-2407",
+                # Last-resort (reasoning-heavy, returns empty sometimes)
+                "deepseek-ai/DeepSeek-V4-Pro",
             ]
 
         return cls(
@@ -127,7 +132,7 @@ class LLMConfig:
             base_url=os.environ.get(
                 "LLM_BASE_URL", "https://api-inference.modelscope.cn/v1"
             ),
-            model=os.environ.get("LLM_MODEL", "Qwen/Qwen3-235B-A22B"),
+            model=os.environ.get("LLM_MODEL", "ZhipuAI/GLM-5.1"),
             fallback_models=fallback_models,
             max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "2048")),
             temperature=float(os.environ.get("LLM_TEMPERATURE", "0.1")),
@@ -299,13 +304,34 @@ class QuotaState:
         info = self._state.get("keys", {}).get(api_key, {})
         return bool(info.get("dead_until", 0))
 
-    def mark_dead(self, api_key: str, cooldown_seconds: int) -> None:
+    def mark_dead(self, api_key: str, cooldown_seconds: int, reason: str = "") -> None:
+        """Mark a key as dead for ``cooldown_seconds``.
+
+        Use a very large value (e.g. 100 years via mark_permanently_dead)
+        for keys that are 401/403-broken — they won't recover without
+        user intervention.  Use LLMConfig.daily_quota_cooldown (24h by
+        default) for 429 daily-quota-exceeded errors.
+        """
         keys = self._state.setdefault("keys", {})
         info = keys.setdefault(api_key, {})
         info["dead_until"] = int(time.time()) + cooldown_seconds
         info["failures_today"] = info.get("failures_today", 0) + 1
         info["last_failure_at"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+        if reason:
+            info["last_reason"] = reason
         self._save()
+
+    def mark_permanently_dead(self, api_key: str, reason: str = "auth_invalid") -> None:
+        """Mark a key as permanently dead (effectively forever).
+
+        Used for 401/403 auth errors.  The key won't be retried for
+        ~100 years, which is effectively "until the user rotates keys".
+        """
+        self.mark_dead(
+            api_key,
+            cooldown_seconds=100 * 365 * 24 * 3600,
+            reason=reason,
+        )
 
     def record_failure(self, api_key: str, status: int) -> None:
         keys = self._state.setdefault("keys", {})
@@ -476,10 +502,13 @@ def _try_with_fallback(
 
                     if resp.status_code == 429:
                         if _is_daily_quota_error(resp):
-                            quota.mark_dead(key, config.daily_quota_cooldown)
+                            quota.mark_dead(
+                                key, config.daily_quota_cooldown,
+                                reason="daily_quota_exceeded",
+                            )
                             logger.warning(
                                 f"Daily quota exhausted on key#{config.api_keys.index(key)} "
-                                f"(model {model}); rotating to next key"
+
                             )
                             tried.append({
                                 "model": model,
@@ -526,12 +555,17 @@ def _try_with_fallback(
                         break  # break key-loop, outer model-loop picks next model
 
                     if resp.status_code in (401, 403):
-                        # Auth issues — this key is broken, mark and rotate.
+                        # Auth issues — this key is BROKEN, not just
+                        # quota-exhausted.  Mark permanently dead (100y
+                        # cooldown) so we don't waste time on every
+                        # subsequent call.  The user must rotate the key.
                         logger.warning(
                             f"Auth error {resp.status_code} on key#{config.api_keys.index(key)}; "
-                            f"rotating"
+                            f"marking permanently dead"
                         )
-                        quota.mark_dead(key, config.daily_quota_cooldown)
+                        quota.mark_permanently_dead(
+                            key, reason=f"http_{resp.status_code}"
+                        )
                         last_error = f"{resp.status_code} auth"
                         tried.append({
                             "model": model,
