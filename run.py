@@ -183,6 +183,20 @@ def main():
         import threading, time as _time
         import json as _json
         import traceback
+        from logging.handlers import RotatingFileHandler
+
+        # Set up rotating file handler for daemon log (10 MB × 3 backups)
+        daemon_log = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  "upgrades", "daemon.log")
+        os.makedirs(os.path.dirname(daemon_log), exist_ok=True)
+        file_handler = RotatingFileHandler(
+            daemon_log, maxBytes=10 * 1024 * 1024, backupCount=3, encoding="utf-8"
+        )
+        file_handler.setFormatter(logging.Formatter(
+            "[%(asctime)s] %(levelname)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+        ))
+        file_handler.setLevel(logging.DEBUG if args.verbose else logging.INFO)
+        logging.getLogger().addHandler(file_handler)
 
         state_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                   "upgrades", "daemon_state.json")

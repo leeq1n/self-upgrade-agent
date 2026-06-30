@@ -80,3 +80,44 @@ def compare(baseline: Dict, upgraded: Dict) -> Dict:
         "upgraded_count": upgraded["total"],
         "improvement": delta > 0,
     }
+
+
+def score_instruction_following(task: str, output: str, llm_config=None) -> float:
+    """Score how well the agent output follows the task instructions.
+
+    Uses a lightweight LLM call to evaluate if all constraints in the task
+    were satisfied by the output. Returns a score from 0.0 (completely failed)
+    to 1.0 (perfectly followed).
+
+    Args:
+        task: The benchmark task description.
+        output: The agent's final response.
+        llm_config: LLM configuration (uses env if None).
+
+    Returns:
+        Float score 0.0-1.0, or 0.5 on evaluation failure (neutral default).
+    """
+    try:
+        from src.llm import chat_simple, LLMConfig
+        if llm_config is None:
+            llm_config = LLMConfig.from_env()
+
+        prompt = (
+            f"Task: {task}\n\n"
+            f"Agent output: {output[:500]}\n\n"
+            "Rate how well the output follows the task instructions. "
+            "Consider: Did it answer the question? Follow all constraints? "
+            "Provide the right format? Reply with ONLY a number from 0.0 to 1.0."
+        )
+        result = chat_simple(prompt, system="You are an evaluator. Reply with a number only.",
+                            config=llm_config)
+        if result:
+            # Extract number from response
+            import re
+            match = re.search(r'([01]?\.?\d+)', result)
+            if match:
+                score = float(match.group(1))
+                return max(0.0, min(1.0, score))
+    except Exception:
+        pass
+    return 0.5  # Neutral default

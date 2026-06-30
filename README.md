@@ -21,7 +21,36 @@
 ## 架构
 
 ```
-self-upgrade-agent/
+                        ┌──────────────────────────────────────┐
+                        │         Self-Upgrade Pipeline         │
+                        │         (src/pipeline_lg.py)         │
+                        └──────────────────────────────────────┘
+                                          │
+         ┌────────────┬──────────┬────────┼────────┬──────────┬───────────┐
+         ▼            ▼          ▼        ▼        ▼          ▼           ▼
+    ┌─────────┐ ┌─────────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌────────┐ ┌────────┐
+    │RESEARCH │→│ FILTER  │→│PATCH  │→│SANDBOX│→│EVALUATE│→│DECIDE  │→│DEPLOY  │
+    │arxiv+s2 │ │score 3D │ │generate│ │test   │ │A/B     │ │keep/   │ │write   │
+    │+pwc+gh  │ │+citation│ │code   │ │isolate│ │bench   │ │revert  │ │core/   │
+    └─────────┘ └─────────┘ └───────┘ └───┬───┘ └───────┘ └────────┘ └────────┘
+                                          │fail
+                                          ▼
+                                     ┌────────┐
+                                     │REFLECT │──→ retry sandbox (max 3x)
+                                     │fix code│
+                                     └────────┘
+
+    Sources:                    Target:                   Decision:
+    ┌──────────────────┐       ┌──────────────┐         ┌────────────────┐
+    │ arXiv API (主)    │       │ core/planner  │         │ keep → promote │
+    │ Semantic Scholar  │──→   │ core/agent    │──→     │      写入 core/ │
+    │ Papers With Code  │       │ core/tools    │         │ revert→discard │
+    │ GitHub Trending   │       └──────────────┘         └────────────────┘
+    │ Selenium (回退)   │
+    └──────────────────┘
+```
+
+### 文件布局
 ├── core/                    # Agent 核心（可被自我改进的目标）
 │   ├── agent.py            # 主推理循环
 │   ├── planner.py          # 任务规划（主要补丁目标）
@@ -117,6 +146,12 @@ python -m pytest tests/ -m "llm" -q
 # 全量
 python -m pytest tests/ -q
 ```
+
+## 文档
+
+- [API Reference](docs/API_REFERENCE.md) — 所有模块和函数的完整签名
+- [Project Brief](PROJECT_BRIEF.md) — 项目状态和能力评估
+- [Plans](.hermes/plans/) — 历史改进计划和验收报告
 
 ## 版本历史
 
