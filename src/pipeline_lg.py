@@ -9,9 +9,10 @@ Main pipeline:
 This pipeline replaces the legacy pipeline.py skillgen path. It uses patchgen
 to generate actual Python code patches targeting core/ modules.
 """
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 import logging
 import os
+import re
 import shutil
 import random
 from typing import TypedDict, List, Optional, Dict, Any
@@ -61,6 +62,59 @@ class PipelineState:
         for k, v in d.items():
             setattr(s, k, v)
         return s
+
+
+# ═══════════════════════════════════════════════════════════
+# Surgical Patch Application
+# ═══════════════════════════════════════════════════════════
+
+def _apply_patch_to_module(module_path: str, patch_code: str) -> str:
+    """Surgically merge patch code into an existing core module.
+
+    Strategy (in order):
+    1. If patch_code is a full module (starts with docstring), use as-is.
+    2. Extract target function name from patch, find it in original, replace.
+    3. If target function not found, append patch to end of module.
+
+    This preserves imports, __version__, and module-level metadata while
+    replacing only the targeted function implementation.
+
+    Args:
+        module_path: Path to the existing module file (e.g., 'core/planner.py').
+        patch_code: Generated code — either a single function or a full module.
+
+    Returns:
+        The merged module source code as a string.
+    """
+    # Case 1: Full module replacement (patch has its own docstring)
+    stripped = patch_code.strip()
+    if stripped.startswith('"""') or stripped.startswith("'''"):
+        return patch_code
+
+    # Read original module
+    with open(module_path, encoding="utf-8") as f:
+        original = f.read()
+
+    # Case 2: Extract function name and surgically replace
+    func_match = re.search(r'def\s+(\w+)\s*\(', patch_code)
+    if not func_match:
+        return original  # Can't identify target, keep original
+
+    func_name = func_match.group(1)
+
+    # Pattern: match the function definition through to the next top-level def
+    # or end of file. Uses a non-greedy approach with lookahead.
+    pattern = (
+        r'(def\s+' + re.escape(func_name) + r'\s*\([^)]*\).*?)'
+        r'(?=\n(?:def\s+\w+\s*\(|\n*#|$)|\Z)'
+    )
+
+    if re.search(pattern, original, re.DOTALL):
+        merged = re.sub(pattern, patch_code.strip(), original, flags=re.DOTALL)
+        return merged
+
+    # Case 3: Function not found, append
+    return original.rstrip() + "\n\n" + patch_code.strip() + "\n"
 
 
 # ═══════════════════════════════════════════════════════════
@@ -220,14 +274,18 @@ def node_evaluate(state: dict) -> dict:
 
         logger.info(f"   Baseline: {baseline_rate:.1%} ({baseline['successes']}/{baseline_total})")
 
-        # Write patch code to core/planner.py temporarily for testing
+        # Surgically apply patch to core/planner.py for testing
+        # (preserves imports, __version__, and module metadata)
         orig_path = "core/planner.py"
         bak_path = orig_path + ".bench_bak"
         if os.path.exists(orig_path):
             shutil.copy2(orig_path, bak_path)
 
+        merged_code = _apply_patch_to_module(
+            orig_path, patch.get("function", "")
+        )
         with open(orig_path, "w", encoding="utf-8") as f:
-            f.write(patch.get("function", ""))
+            f.write(merged_code)
 
         try:
             # Run patched agent
