@@ -188,6 +188,18 @@ def search_trending_weekly(language: str = "python") -> List[Dict]:
     Returns:
         List of repo dicts. Empty list on failure.
     """
+    # Strategy: Selenium first (robust JS rendering), regex as fallback
+    try:
+        from src.scraper import scrape_github_trending, check_selenium_available
+        if check_selenium_available():
+            repos = scrape_github_trending(language)
+            if repos:
+                logger.info(f"GitHub trending (Selenium): {len(repos)} repos")
+                return repos
+    except Exception as e:
+        logger.debug(f"GitHub Selenium fallback: {e}")
+
+    # Fallback: regex HTML parsing
     try:
         url = f"{GH_TRENDING}/{language}?since=weekly"
         data = _cached_fetch(url, cache_seconds=3600)
@@ -196,7 +208,7 @@ def search_trending_weekly(language: str = "python") -> List[Dict]:
 
         html = data.decode("utf-8", errors="replace")
         repos = _parse_trending_html(html)
-        logger.info(f"GitHub trending ({language}): {len(repos)} repos")
+        logger.info(f"GitHub trending (regex): {len(repos)} repos")
         return repos
     except Exception as e:
         logger.debug(f"GitHub trending error: {e}")

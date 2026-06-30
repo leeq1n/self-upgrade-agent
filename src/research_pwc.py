@@ -166,6 +166,19 @@ def fetch_trending_papers(max_results: int = 10) -> List[Dict]:
         List of dicts with keys: title, arxiv_id, stars, url, abstract.
         Returns empty list on any error (graceful degradation).
     """
+    # Strategy: Selenium first (robust JS rendering), regex as fallback
+    try:
+        # Try Selenium
+        from src.scraper import scrape_pwc_trending, check_selenium_available
+        if check_selenium_available():
+            papers = scrape_pwc_trending(max_results)
+            if papers:
+                logger.info(f"PwC (Selenium): {len(papers)} papers")
+                return papers
+    except Exception as e:
+        logger.debug(f"PwC Selenium fallback: {e}")
+
+    # Fallback: regex HTML parsing
     try:
         data = _cached_fetch(PWC_BASE, cache_seconds=3600)
         if not data:
@@ -174,8 +187,7 @@ def fetch_trending_papers(max_results: int = 10) -> List[Dict]:
 
         html = data.decode("utf-8", errors="replace")
         papers = _parse_trending_from_html(html)
-        logger.info(f"PwC trending: {len(papers)} papers found")
-
+        logger.info(f"PwC trending (regex): {len(papers)} papers found")
         return papers[:max_results]
     except Exception as e:
         logger.debug(f"PwC trending error: {e}")

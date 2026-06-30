@@ -158,7 +158,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        print("Self-Upgrade Agent v1.2.0 (2026-06-30)")
+        print("Self-Upgrade Agent v1.3.0 (2026-06-30)")
         print("Autonomous agent improvement via paper discovery and code patching.")
         import importlib
         for mod_name in ["core", "src.pipeline_lg"]:
