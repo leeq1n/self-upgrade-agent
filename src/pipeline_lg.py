@@ -320,21 +320,23 @@ def node_decide(state: dict) -> dict:
             try:
                 from src.db import UpgradeHistory, UpgradeRecord
                 history = UpgradeHistory(cfg.database.path)
-                history.insert(UpgradeRecord(
-                    paper_arxiv_id=best.paper.arxiv_id,
-                    paper_title=best.paper.title,
-                    skill_name=patch_name,
-                    skill_path=os.path.join("upgrades", "candidates", patch_name),
-                    baseline_success_rate=eval_data.get("baseline_rate", 0),
-                    upgraded_success_rate=eval_data.get("upgraded_rate", 0),
-                    baseline_cost_tokens=eval_data.get("baseline_cost", 0),
-                    upgraded_cost_tokens=eval_data.get("upgraded_cost", 0),
-                    decision=decision["decision"],
-                    notes="; ".join(decision["reasons"]),
-                ))
-                history.close()
+                try:
+                    history.insert(UpgradeRecord(
+                        paper_arxiv_id=best.paper.arxiv_id,
+                        paper_title=best.paper.title,
+                        skill_name=patch_name,
+                        skill_path=os.path.join("upgrades", "candidates", patch_name),
+                        baseline_success_rate=eval_data.get("baseline_rate", 0),
+                        upgraded_success_rate=eval_data.get("upgraded_rate", 0),
+                        baseline_cost_tokens=eval_data.get("baseline_cost", 0),
+                        upgraded_cost_tokens=eval_data.get("upgraded_cost", 0),
+                        decision=decision["decision"],
+                        notes="; ".join(decision["reasons"]),
+                    ))
+                finally:
+                    history.close()
             except Exception:
-                pass
+                logger.debug("Failed to record upgrade in history DB", exc_info=True)
 
             if decision["decision"] == "kept":
                 if getattr(cfg.pipeline, "auto_promote", False):

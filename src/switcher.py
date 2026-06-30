@@ -204,10 +204,31 @@ def promote_patch(skill_name: str) -> dict:
     if not backup_path:
         return {"status": "backup_failed", "target_module": target_module}
 
-    # Write to core module
+    # Check available disk space before writing to core/
+    try:
+        import shutil as _shutil
+        dst = CORE_MODULES[target_module]
+        free_space = _shutil.disk_usage(os.path.dirname(dst) or ".").free
+        if free_space < len(function_code) * 2 + 4096:
+            logger.error(f"Insufficient disk space: {free_space} bytes free, "
+                         f"need at least {len(function_code) * 2 + 4096}")
+            return {"status": "out_of_disk_space", "target_module": target_module}
+    except Exception:
+        pass  # disk_usage not available on all platforms
+
+    # Write to core module (atomic: write to temp, then rename)
     dst = CORE_MODULES[target_module]
-    with open(dst, "w", encoding="utf-8") as f:
-        f.write(function_code)
+    tmp_dst = dst + ".tmp"
+    try:
+        with open(tmp_dst, "w", encoding="utf-8") as f:
+            f.write(function_code)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_dst, dst)  # atomic on POSIX + Windows
+    except Exception:
+        if os.path.exists(tmp_dst):
+            os.remove(tmp_dst)
+        raise
 
     # Update manifest
     manifest = _read_manifest()
