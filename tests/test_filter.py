@@ -36,7 +36,8 @@ class TestKeywordFilter:
         ]
         config = FilterConfig(min_abstract_score=0, min_applicability_score=0,
                               min_novelty_score=0, max_papers_to_consider=2)
-        results = filter_papers(papers, config, use_llm=False)
+        # enrich_citations=False avoids hitting Semantic Scholar (network call).
+        results = filter_papers(papers, config, use_llm=False, enrich_citations=False)
         assert len(results) == 2
         assert results[0].total_score >= results[1].total_score
 
@@ -47,7 +48,7 @@ class TestKeywordFilter:
                         categories="cs.AI")]
         config = FilterConfig(min_abstract_score=99, min_applicability_score=99,
                               min_novelty_score=99)
-        results = filter_papers(papers, config, use_llm=False)
+        results = filter_papers(papers, config, use_llm=False, enrich_citations=False)
         assert len(results) == 0
 
 

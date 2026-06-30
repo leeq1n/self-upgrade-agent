@@ -19,9 +19,25 @@ build/
 .venv/
 venv/
 
+# Browser / Selenium
+chromedriver/
+chromedriver*.zip
+chromedriver*.exe
+geckodriver*
+msedgedriver*
+
+# Backup / scratch files
+*.bak
+*.bench_bak
+*.tmp
+*.orig
+*.rej
+
 # Upgrades (runtime artifacts — not in version control)
 upgrades/history.db
 upgrades/manifest.json
+upgrades/daemon_state.json
+upgrades/daemon.log
 upgrades/snapshots/
 upgrades/arxiv_cache/
 upgrades/s2_cache/
@@ -29,8 +45,9 @@ upgrades/pwc_cache/
 upgrades/gh_cache/
 upgrades/candidates/
 upgrades/backups/
+upgrades/active/
+upgrades/skills/
 upgrades/*.log
-upgrades/daemon_state.json
 upgrades/trending_keywords.json
 upgrades/*.bench_bak
 

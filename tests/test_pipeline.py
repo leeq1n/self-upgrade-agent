@@ -1,10 +1,17 @@
-"""Integration tests for src/pipeline.py"""
+"""Integration tests for src/pipeline.py
+
+These tests invoke the full pipeline end-to-end, which in turn calls
+the real arXiv API.  Marked ``@pytest.mark.network`` so conftest.py
+can skip them with HERMES_SKIP_NETWORK=1 (CI default).
+"""
 import pytest
 import sys, os, tempfile, shutil
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from src.pipeline import run_pipeline
 from src.config import Config
+
+pytestmark = pytest.mark.network
 
 
 def _run_with_cleanup(config):

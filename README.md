@@ -147,19 +147,32 @@ python run.py --daemon     # 后台每 24h 自动运行
 ## 测试
 
 ```bash
-# 纯逻辑测试（不依赖网络）
-python -m pytest tests/ -m "not llm" -q
-
-# LLM 集成测试（需要 .env 配置）
-python -m pytest tests/ -m "llm" -q
-
-# 全量
+# 默认：自动跳过 @pytest.mark.llm 和 @pytest.mark.network 测试
+# （除非环境变量里配了 LLM_API_KEY_*，才会真正跑 LLM 测试）
 python -m pytest tests/ -q
+
+# 显式只跑纯逻辑测试
+python -m pytest tests/ -m "not llm and not network" -q
+
+# 强制跑 LLM 测试（即使没配 key）
+HERMES_FORCE_LLM=1 python -m pytest tests/ -m "llm" -q
+
+# 跳过网络相关测试（CI 默认推荐）
+HERMES_SKIP_NETWORK=1 python -m pytest tests/ -q
+
+# 极快模式（也跳 slow 测试）
+HERMES_FAST=1 python -m pytest tests/ -q
 ```
+
+`conftest.py` 会在以下情况自动 skip：
+- `@pytest.mark.llm` 测试 + 环境里没有 `LLM_API_KEY_*`（或 `LLM_API_KEY`）
+- `@pytest.mark.network` 测试 + `HERMES_SKIP_NETWORK=1`
+- `@pytest.mark.slow` 测试 + `HERMES_FAST=1`
 
 ## 文档
 
 - [API Reference](docs/API_REFERENCE.md) — 所有模块和函数的完整签名
+- [LLM Calls & Key Rotation](docs/LLM_CALLS.md) — 多 key 轮换、quota 持久化、模型路由
 - [Project Brief](PROJECT_BRIEF.md) — 项目状态和能力评估
 - [Plans](.hermes/plans/) — 历史改进计划和验收报告
 

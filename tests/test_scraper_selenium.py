@@ -1,10 +1,27 @@
 """Tests for Selenium-based scraper functions (PwC + GitHub + health check).
 
 These tests mock Selenium WebDriver to verify element-finding logic
-without requiring a real browser.
+without requiring a real browser.  They do, however, need the ``selenium``
+and ``websocket-client`` packages importable, so we skip the whole file
+gracefully if those aren't installed.
 """
 import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
+
+# Probe whether selenium's full stack is importable.  If the underlying
+# websocket-client dep is missing, importing src.scraper (which transitively
+# imports selenium.webdriver.remote.websocket_connection) raises at
+# collection time — we want to skip BEFORE that explodes.
+try:
+    import selenium  # noqa: F401
+    from selenium.webdriver.remote.websocket_connection import WebSocketConnection  # noqa: F401
+    _SELENIUM_IMPORT_OK = True
+except Exception:
+    _SELENIUM_IMPORT_OK = False
+
+if not _SELENIUM_IMPORT_OK:
+    pytest.skip("selenium / websocket-client not installed", allow_module_level=True)
+
+from unittest.mock import patch, MagicMock, PropertyMock  # noqa: E402
 
 
 class TestSeleniumPwC:

@@ -21,6 +21,28 @@ import os
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# Auto-load .env so users don't have to `export $(cat .env)` before running.
+# Only sets vars that are not already in the environment, so shell exports win.
+def _load_env_file(path: str) -> None:
+    if not os.path.exists(path):
+        return
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k = k.strip()
+                v = v.strip().strip('"').strip("'")
+                if k and k not in os.environ:
+                    os.environ[k] = v
+    except Exception:
+        # If .env is unreadable, just continue — LLM will fall back to "not configured"
+        pass
+
+_load_env_file(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
+
 from src.db import UpgradeHistory
 from src.config import load_config
 
