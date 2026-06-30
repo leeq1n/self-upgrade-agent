@@ -83,9 +83,19 @@
 └── run.py                   # CLI 入口
 ```
 
-## 快速开始
+## 两个入口
+
+| 入口 | 命令 | 用途 |
+|------|------|------|
+| 🚀 **使用 agent** | `python -m core.agent "任务"` | 让 agent 帮你解决问题 |
+| 🔧 **升级 agent** | `python run.py` | agent 搜索论文自我改进代码 |
 
 ```bash
+# 使用 agent（日常）
+python -m core.agent "帮我规划一个 3 天的东京旅行"
+python -m core.agent "写一个检查回文的 Python 函数"
+
+# 升级 agent（自主进化）
 # 1. 安装依赖
 pip install -r requirements.txt
 

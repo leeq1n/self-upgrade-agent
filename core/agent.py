@@ -8,7 +8,7 @@ Self-Upgrade Agent 核心 —— 可被自主改进的推理引擎。
 
 每个模块都是独立的 .py 文件，patchgen 可以单独修改任意模块。
 """
-__version__ = "1.1.0"
+__version__ = "1.3.0"
 import json, time
 from core.planner import plan_task
 from typing import List, Dict, Optional, Callable
@@ -120,3 +120,30 @@ def quick_test(task: str) -> Dict:
         return chat_simple(prompt, config=lc) or ""
 
     return run(task, _call)
+
+
+if __name__ == "__main__":
+    """使用入口：python -m core.agent "你的任务"
+
+    这是 agent 的日常使用入口，与自我升级入口 (python run.py) 分开。
+    示例：
+        python -m core.agent "帮我规划一个 3 天的东京旅行"
+        python -m core.agent "写一个检查回文的 Python 函数"
+    """
+    import sys
+    if len(sys.argv) < 2:
+        print("Usage: python -m core.agent \"<task>\"")
+        print("Example: python -m core.agent \"Plan a 3-day trip to Tokyo\"")
+        sys.exit(1)
+
+    task = " ".join(sys.argv[1:])
+    print(f"\nTask: {task}\n{'='*50}")
+    result = quick_test(task)
+    print(f"\n{'='*50}")
+    print(f"Steps planned: {result['steps_planned']}")
+    print(f"Tools used:    {result['tools_used']}")
+    print(f"Time:          {result['elapsed']}s")
+    print(f"Success:       {result['success']}")
+    print(f"\nPlan:")
+    for i, log in enumerate(result.get('logs', [])):
+        print(f"  {i+1}. {log.get('step', '?')[:80]}")
