@@ -78,6 +78,7 @@ pytest (full)                        → 107 passed, 1 skipped in ~68s
 | `pipeline_lg` 可读性 | 已从单字母改为语义化，仍有进一步优化空间 |
 | **Trending 缓存接入 pipeline** | ✅ v1.4.0 — `node_research` 现在读 `upgrades/trending_keywords.json`，把昨天发现的高频关键词拼到今天的搜索里。这是 harness+loop 真正闭环的关键 |
 | **死代码清理** | ✅ v1.4.0 — 删除 `research_s2.search_and_enrich`（0 调用方）；`keyword_expander.load_trending_keywords` 不再是死代码（被 node_research 调用） |
+| **便宜模型 + 详细诊断 + 全局熔断** | ✅ v1.4.0 — 默认 `Qwen3.5-2B` 取代 30B；`LLMConfig.total_timeout`（默认 60s）跨 key×model 总预算；`LLMCallTimeout` 异常 + `LLMResponse.diagnostic` 结构化报告；`diagnose()` 一键输出当前 LLM 状态（key 脱敏）。**超时以后知道问题在哪** |
 
 ---
 

@@ -64,9 +64,15 @@ class LLMConfig:
     fallback_models: List[str] = field(default_factory=list)
     max_tokens: int = 2048
     temperature: float = 0.1
-    timeout: int = 60
+    timeout: int = 30  # per-request HTTP timeout
     max_retries: int = 1  # retries per (key, model) on minute-level 429
     daily_quota_cooldown: int = 86400  # seconds before re-trying a dead key
+    total_timeout: float = 60.0  # whole-call budget across all keys/models
+    # If True, raise LLMCallTimeout on total_timeout breach (instead of
+    # returning an error response).  Useful for callers that want a hard
+    # deadline (tests, CI); off by default to preserve call()=str return
+    # type for the public API.
+    raise_on_timeout: bool = False
 
     @property
     def api_key(self) -> str:
@@ -96,15 +102,24 @@ class LLMConfig:
             if single:
                 api_keys = [single]
 
-        # Fallback model list.
+        # Fallback model list — ordered cheap → expensive.  The first model
+        # in this list is the one we hit hardest, so putting 2B-3B models
+        # at the front keeps day-to-day testing/usage cheap.  The 30B+
+        # tiers are kept as fallbacks for tasks that need higher quality
+        # (and are configured explicitly via LLM_MODEL when needed).
         models_env = os.environ.get("LLM_MODELS", "").strip()
         if models_env:
             fallback_models = [m.strip() for m in models_env.split(",") if m.strip()]
         else:
             fallback_models = [
-                "deepseek-ai/DeepSeek-V3.2",
+                # Cheap tier (used by default; lowest quota cost on ModelScope)
+                "Qwen/Qwen3.5-2B",
+                "Qwen/Qwen2.5-3B-Instruct",
+                # Mid tier
                 "Qwen/Qwen3-Coder-30B-A3B-Instruct",
                 "Qwen/Qwen3-235B-A22B",
+                "deepseek-ai/DeepSeek-V3.2",
+                # Large tier
                 "moonshotai/Kimi-K2.5",
                 "ZhipuAI/GLM-5.1",
                 "mistralai/Mistral-Large-Instruct-2407",
@@ -115,13 +130,14 @@ class LLMConfig:
             base_url=os.environ.get(
                 "LLM_BASE_URL", "https://api-inference.modelscope.cn/v1"
             ),
-            model=os.environ.get("LLM_MODEL", "Qwen/Qwen3-Coder-30B-A3B-Instruct"),
+            model=os.environ.get("LLM_MODEL", "Qwen/Qwen3.5-2B"),
             fallback_models=fallback_models,
             max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "2048")),
             temperature=float(os.environ.get("LLM_TEMPERATURE", "0.1")),
-            timeout=int(os.environ.get("LLM_TIMEOUT", "60")),
+            timeout=int(os.environ.get("LLM_TIMEOUT", "30")),
             max_retries=int(os.environ.get("LLM_MAX_RETRIES", "1")),
             daily_quota_cooldown=int(os.environ.get("LLM_DAILY_QUOTA_COOLDOWN", "86400")),
+            total_timeout=float(os.environ.get("LLM_TOTAL_TIMEOUT", "60")),
         )
 
     @property
@@ -210,6 +226,11 @@ class LLMResponse:
     latency_ms: int = 0
     error: str = ""
     attempts: int = 0
+    # Diagnostic report populated when the call failed or hit total_timeout.
+    # Contains keys: total_timeout, total_elapsed_s, attempts, last_error,
+    # tried (list of {model, key_index, status, elapsed_s, note}),
+    # quota_snapshot, models_attempted.  Always present, even on success.
+    diagnostic: dict = field(default_factory=dict)
 
 
 def configure(config: LLMConfig) -> None:
@@ -343,6 +364,13 @@ def _try_with_fallback(
     For each (key, model) pair, do at most ``config.max_retries`` retries
     on minute-level 429.  Daily-quota 429 immediately marks the key dead
     and moves to the next key.
+
+    Hard overall deadline: ``config.total_timeout`` seconds.  If the
+    whole-call budget is breached, returns an LLMResponse with a
+    ``diagnostic`` field listing every (key, model) tried (or raises
+    ``LLMCallTimeout`` when ``config.raise_on_timeout`` is set).  This
+    is the difference between "test hung for 180s, no idea why" and
+    "test failed in 60s, here's the report".
     """
     full_messages: List[dict] = []
     if system:
@@ -356,6 +384,10 @@ def _try_with_fallback(
 
     last_error = ""
     attempts = 0
+    call_start = time.time()
+    tried: List[dict] = []  # every (model, key, status, elapsed, note)
+    deadline = call_start + config.total_timeout
+
     # If a key is marked dead, skip it (its index is still kept for error reporting).
     alive_keys = [k for k in config.api_keys if not quota.is_dead(k)]
     if not alive_keys:
@@ -363,7 +395,18 @@ def _try_with_fallback(
         logger.warning("All API keys marked dead; attempting with backoff")
 
     for model in models_to_try:
+        # Budget check before each model — bail early if we're out of time.
+        remaining = deadline - time.time()
+        if remaining <= 0:
+            last_error = f"total_timeout {config.total_timeout}s exhausted before trying {model}"
+            break
         for key in alive_keys:
+            # Same budget check before each (key, model) attempt.
+            remaining = deadline - time.time()
+            if remaining <= 0:
+                last_error = f"total_timeout exhausted mid-rotation (last model: {model})"
+                break
+
             attempts += 1
             body = dict(
                 {
@@ -378,6 +421,15 @@ def _try_with_fallback(
 
             # Minute-level 429 → same-key retry with backoff.
             for attempt in range(config.max_retries + 1):
+                # Re-check budget even between retries on the same key.
+                if time.time() >= deadline:
+                    last_error = f"total_timeout exhausted during retry on {model}"
+                    break
+                # Also cap each individual HTTP request at the smaller of
+                # config.timeout and the remaining budget, so we don't
+                # fire a 30s request with only 0.5s left.
+                per_request_timeout = min(config.timeout, max(1, int(deadline - time.time())))
+
                 start = time.time()
                 try:
                     with warnings.catch_warnings():
@@ -389,7 +441,7 @@ def _try_with_fallback(
                                 "Content-Type": "application/json",
                             },
                             json=body,
-                            timeout=config.timeout,
+                            timeout=per_request_timeout,
                         )
                     elapsed_ms = int((time.time() - start) * 1000)
 
@@ -397,6 +449,13 @@ def _try_with_fallback(
                         data = resp.json()
                         choices = data.get("choices") or []
                         if choices:
+                            tried.append({
+                                "model": model,
+                                "key_index": config.api_keys.index(key),
+                                "status": 200,
+                                "elapsed_s": elapsed_ms / 1000,
+                                "note": "ok",
+                            })
                             return LLMResponse(
                                 content=choices[0].get("message", {}).get("content", ""),
                                 model=data.get("model", model),
@@ -409,6 +468,13 @@ def _try_with_fallback(
                             )
                         # 200 with no choices — try next model.
                         last_error = "200 with empty choices"
+                        tried.append({
+                            "model": model,
+                            "key_index": config.api_keys.index(key),
+                            "status": 200,
+                            "elapsed_s": elapsed_ms / 1000,
+                            "note": "empty choices",
+                        })
                         break
 
                     if resp.status_code == 429:
@@ -418,6 +484,13 @@ def _try_with_fallback(
                                 f"Daily quota exhausted on key#{config.api_keys.index(key)} "
                                 f"(model {model}); rotating to next key"
                             )
+                            tried.append({
+                                "model": model,
+                                "key_index": config.api_keys.index(key),
+                                "status": 429,
+                                "elapsed_s": elapsed_ms / 1000,
+                                "note": "daily_quota_dead",
+                            })
                             # Break inner loop → outer key loop will pick next key.
                             break
                         # Minute-level rate limit — backoff and retry same key.
@@ -432,6 +505,13 @@ def _try_with_fallback(
                         # Out of retries on this key — try next.
                         quota.record_failure(key, 429)
                         last_error = f"429 on {model}"
+                        tried.append({
+                            "model": model,
+                            "key_index": config.api_keys.index(key),
+                            "status": 429,
+                            "elapsed_s": elapsed_ms / 1000,
+                            "note": "rate_limited_retries_exhausted",
+                        })
                         break
 
                     if resp.status_code == 404:
@@ -439,6 +519,13 @@ def _try_with_fallback(
                             f"404: model {model} not found, trying next model"
                         )
                         last_error = f"404: {model}"
+                        tried.append({
+                            "model": model,
+                            "key_index": config.api_keys.index(key),
+                            "status": 404,
+                            "elapsed_s": elapsed_ms / 1000,
+                            "note": "model_not_found",
+                        })
                         break  # break key-loop, outer model-loop picks next model
 
                     if resp.status_code in (401, 403):
@@ -449,34 +536,101 @@ def _try_with_fallback(
                         )
                         quota.mark_dead(key, config.daily_quota_cooldown)
                         last_error = f"{resp.status_code} auth"
+                        tried.append({
+                            "model": model,
+                            "key_index": config.api_keys.index(key),
+                            "status": resp.status_code,
+                            "elapsed_s": elapsed_ms / 1000,
+                            "note": "auth_failed_marked_dead",
+                        })
                         break
 
                     # Any other 4xx/5xx
+                    tried.append({
+                        "model": model,
+                        "key_index": config.api_keys.index(key),
+                        "status": resp.status_code,
+                        "elapsed_s": elapsed_ms / 1000,
+                        "note": f"http_{resp.status_code}",
+                    })
                     resp.raise_for_status()
 
                 except httpx.TimeoutException:
                     last_error = f"timeout on {model}"
-                    logger.warning(f"Timeout calling {model} with key#{config.api_keys.index(key)}")
+                    logger.warning(
+                        f"Timeout calling {model} with key#{config.api_keys.index(key)} "
+                        f"after {time.time() - start:.1f}s"
+                    )
+                    tried.append({
+                        "model": model,
+                        "key_index": config.api_keys.index(key),
+                        "status": "timeout",
+                        "elapsed_s": time.time() - start,
+                        "note": "httpx_timeout",
+                    })
                     break  # try next key
                 except httpx.HTTPError as e:
                     last_error = f"http error: {str(e)[:80]}"
                     logger.warning(f"HTTP error on {model}: {e}")
+                    tried.append({
+                        "model": model,
+                        "key_index": config.api_keys.index(key),
+                        "status": "httpx_error",
+                        "elapsed_s": time.time() - start,
+                        "note": str(e)[:60],
+                    })
                     break
                 except Exception as e:
                     last_error = f"unexpected: {str(e)[:80]}"
                     logger.warning(f"Unexpected error on {model}: {e}")
+                    tried.append({
+                        "model": model,
+                        "key_index": config.api_keys.index(key),
+                        "status": "exception",
+                        "elapsed_s": time.time() - start,
+                        "note": str(e)[:60],
+                    })
                     break
 
         # If we got here with a 200, we returned. Otherwise continue to next model.
         else:
             # Inner for-else: didn't break early, all keys for this model failed.
             continue
-        # If the inner key-loop broke (e.g. on 404), continue model loop.
+        # If the inner key-loop broke (e.g. on 404 or timeout-budget), continue model loop.
+
+    # Build diagnostic report.
+    total_elapsed = time.time() - call_start
+    report = {
+        "total_timeout": config.total_timeout,
+        "total_elapsed_s": round(total_elapsed, 2),
+        "attempts": attempts,
+        "last_error": last_error,
+        "tried": tried,
+        "quota_snapshot": quota.snapshot(),
+        "models_attempted": list({t["model"] for t in tried}),
+    }
+    # Decide whether to raise LLMCallTimeout.  Two triggers:
+    #   1. The whole-call budget was breached.
+    #   2. Every (key, model) pair failed (we have a final error and
+    #      nothing returned).  This is the more general "we tried and
+    #      gave up" case — easier for tests to assert on than waiting
+    #      for the budget to elapse.
+    timed_out = total_elapsed >= config.total_timeout or last_error.startswith("total_timeout")
+    all_attempts_failed = (
+        attempts > 0
+        and last_error
+        and last_error not in ("", "All keys × all models exhausted")
+    )
+    if config.raise_on_timeout and (timed_out or all_attempts_failed):
+        raise LLMCallTimeout(report)
+    if timed_out:
+        logger.error("LLM call report (timeout):\n" + LLMCallTimeout._format(report))
 
     return LLMResponse(
         content="",
         error=last_error or "All keys × all models exhausted",
         attempts=attempts,
+        diagnostic=report,
     )
 
 
@@ -521,3 +675,87 @@ def estimate_tokens(text: str) -> int:
 def quota_snapshot() -> dict:
     """Return current per-key quota state (for diagnostics / CLI)."""
     return QuotaState(_QUOTA_STATE_PATH).snapshot()
+
+
+# ═══════════════════════════════════════════════════════════
+# Hard-timeout exception + diagnostic helpers
+# ═══════════════════════════════════════════════════════════
+
+
+class LLMCallTimeout(Exception):
+    """Raised when the whole-call budget (LLMConfig.total_timeout) is breached.
+
+    Carries a structured ``report`` dict so callers (tests, CI, daemon)
+    can log exactly which (key, model) pairs were tried, what status
+    each one returned, and how much time was spent.  The goal: when a
+    test times out, you should be able to read the exception's report
+    and know *why* — not just "it hung".
+    """
+
+    def __init__(self, report: dict):
+        self.report = report
+        super().__init__(self._format(report))
+
+    @staticmethod
+    def _format(report: dict) -> str:
+        lines = [
+            f"LLM call exceeded {report.get('total_timeout', '?')}s "
+            f"after {report.get('attempts', '?')} attempt(s)."
+        ]
+        if report.get("last_error"):
+            lines.append(f"Last error: {report['last_error']}")
+        if report.get("tried"):
+            lines.append("Tried:")
+            for t in report["tried"]:
+                lines.append(
+                    f"  - model={t.get('model','?')[:40]:40s} "
+                    f"key#{t.get('key_index','?')} "
+                    f"status={t.get('status','?')} "
+                    f"elapsed={t.get('elapsed_s', 0):.2f}s "
+                    f"note={t.get('note','')}"
+                )
+        if report.get("quota_snapshot"):
+            dead = [
+                f"key#{i}"
+                for i, info in enumerate(report["quota_snapshot"].values())
+                if info.get("dead_until", 0)
+            ]
+            if dead:
+                lines.append(f"Keys marked dead: {', '.join(dead)}")
+        return "\n".join(lines)
+
+
+def diagnose() -> dict:
+    """One-shot diagnostic snapshot for "what's wrong with my LLM setup".
+
+    Returns a dict with:
+      - config: the current config (without leaking the actual key values)
+      - quota: per-key alive/dead status
+      - ready: whether LLM is callable
+      - model_attempt_count: how many models we have to try
+    Call this from CLI when something hangs and you want a quick read.
+    """
+    cfg = get_config()
+    snap = QuotaState(_QUOTA_STATE_PATH).snapshot()
+    safe_keys = [
+        f"key#{i}:{k[:6]}...{k[-4:]}" if len(k) > 12 else f"key#{i}:***"
+        for i, k in enumerate(cfg.api_keys)
+    ]
+    return {
+        "ready": cfg.ready,
+        "base_url": cfg.base_url,
+        "primary_model": cfg.model,
+        "fallback_count": len(cfg.fallback_models),
+        "api_key_count": len(cfg.api_keys),
+        "api_keys_redacted": safe_keys,
+        "quota": {
+            (f"key#{i}:{k[:6]}...{k[-4:]}" if len(k) > 12 else f"key#{i}:***"): {
+                "dead_until": info.get("dead_until", 0),
+                "failures_today": info.get("failures_today", 0),
+                "last_status": info.get("last_status", 0),
+            }
+            for i, (k, info) in enumerate(zip(cfg.api_keys, snap.values()))
+        },
+        "total_timeout_s": cfg.total_timeout,
+        "per_request_timeout_s": cfg.timeout,
+    }

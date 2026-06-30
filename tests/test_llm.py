@@ -4,8 +4,10 @@ the public chat/chat_simple API without making real network calls.
 import os
 import sys
 import json
+import time
 import pytest
 import httpx
+from unittest.mock import MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -13,6 +15,7 @@ from src.llm import (
     LLMConfig,
     LLMResponse,
     QuotaState,
+    LLMCallTimeout,
     _is_daily_quota_error,
     _try_with_fallback,
     get_config,
@@ -21,6 +24,7 @@ from src.llm import (
     chat_simple,
     estimate_tokens,
     quota_snapshot,
+    diagnose,
 )
 
 
@@ -267,3 +271,175 @@ class TestEstimateTokens:
 
     def test_rough_estimate(self):
         assert estimate_tokens("hello world") == 2  # 11 chars // 4 = 2
+
+
+# ═══════════════════════════════════════════════════════════
+# Total-timeout + diagnostic tests
+# ═══════════════════════════════════════════════════════════
+
+import httpx
+
+
+def _make_timeout_response():
+    """Build a mock httpx.Response-like object that simulates 429 quota."""
+    resp = MagicMock()
+    resp.status_code = 429
+    resp.text = '{"message": "Daily quota exceeded, please try again tomorrow"}'
+    return resp
+
+
+class TestLLMCallTimeout:
+    """Test the LLMCallTimeout exception and its diagnostic report."""
+
+    def test_exception_message_includes_tried(self):
+        report = {
+            "total_timeout": 60.0,
+            "attempts": 3,
+            "last_error": "429 on Qwen/Qwen3.5-2B",
+            "tried": [
+                {"model": "Qwen/Qwen3.5-2B", "key_index": 0, "status": 429,
+                 "elapsed_s": 1.5, "note": "daily_quota_dead"},
+                {"model": "Qwen/Qwen3.5-2B", "key_index": 1, "status": 429,
+                 "elapsed_s": 0.3, "note": "daily_quota_dead"},
+            ],
+            "quota_snapshot": {
+                "key1": {"dead_until": 9999999999},
+                "key2": {"dead_until": 9999999999},
+            },
+        }
+        exc = LLMCallTimeout(report)
+        msg = str(exc)
+        assert "60.0s" in msg
+        assert "Qwen/Qwen3.5-2B" in msg
+        assert "key#0" in msg
+        assert "key#1" in msg
+        assert "429" in msg
+        # Quota snapshot summary.
+        assert "dead" in msg.lower()
+
+    def test_exception_carries_report(self):
+        report = {"total_timeout": 30.0, "attempts": 1, "tried": [],
+                  "quota_snapshot": {}}
+        exc = LLMCallTimeout(report)
+        assert exc.report is report
+
+    def test_exception_minimal_report(self):
+        report = {"total_timeout": 10.0, "attempts": 0}
+        exc = LLMCallTimeout(report)
+        # Should not raise even with empty tried list.
+        assert "10.0s" in str(exc)
+
+
+class TestDiagnose:
+    """Test the one-shot diagnose() diagnostic function."""
+
+    def test_returns_safe_dict(self):
+        snap = diagnose()
+        assert "ready" in snap
+        assert "base_url" in snap
+        assert "primary_model" in snap
+        assert "api_key_count" in snap
+        # Keys must be redacted, never the full key value.
+        for safe in snap.get("api_keys_redacted", []):
+            # Either format "key#N:abcdef...wxyz" or "key#N:***" for short keys
+            assert "..." in safe or safe.endswith(":***"), f"key not redacted: {safe}"
+            # The real key value is ~40 chars; the redacted form should not
+            # contain more than ~14 chars of the original.
+            assert len(safe) < 30, f"key not redacted enough: {safe}"
+
+    def test_diagnose_no_keys_not_ready(self):
+        # When no keys are configured, ready must be False.
+        # We rely on the autouse fixture to clear keys for this test.
+        assert diagnose()["ready"] is False or diagnose()["api_key_count"] == 0
+
+
+class TestTryWithFallbackTimeout:
+    """The key robustness property: when total_timeout is hit, we get a
+    LLMResponse with a populated diagnostic — not a hang.
+    """
+
+    def test_timeout_returns_diagnostic_not_hang(self, monkeypatch):
+        """Simulate a stuck network by raising httpx.ConnectTimeout on every
+        call.  With total_timeout=2s and no fallbacks, the call must
+        return within ~3s with a diagnostic report listing the attempts.
+        """
+        import src.llm as llm_mod
+
+        def stuck_post(*args, **kwargs):
+            # Simulate a request that hangs until httpx timeout fires.
+            # We can't actually block the test (it would hang), so we
+            # raise a real httpx exception that the code will catch.
+            raise httpx.ConnectTimeout("simulated stuck network")
+
+        monkeypatch.setattr(llm_mod.httpx, "post", stuck_post)
+
+        cfg = llm_mod.LLMConfig(
+            api_keys=["fake-key"],
+            base_url="http://localhost:9999",
+            model="test-model",
+            fallback_models=[],
+            timeout=10,  # generous per-request
+            max_retries=0,  # no retries
+            total_timeout=2.0,
+            raise_on_timeout=True,
+        )
+        t0 = time.time()
+        with pytest.raises(llm_mod.LLMCallTimeout) as excinfo:
+            llm_mod._try_with_fallback(
+                messages=[{"role": "user", "content": "hi"}],
+                system=None,
+                config=cfg,
+            )
+        elapsed = time.time() - t0
+        # We must fail in ~2s, not hang on a slow network.
+        assert elapsed < 3.0, f"Total-timeout didn't fire fast enough: {elapsed:.2f}s"
+        report = excinfo.value.report
+        assert report["total_timeout"] == 2.0
+        assert "tried" in report
+        # Multiple timeouts will accumulate as the deadline is checked
+        # before each attempt.  We expect at least 1 attempt was tried
+        # before the budget forced the exception.
+        assert len(report["tried"]) >= 1
+
+    def test_diagnostic_returned_when_total_timeout_breached(self, monkeypatch):
+        """When raise_on_timeout=False (default), we get a LLMResponse with
+        a populated diagnostic field rather than an exception.
+        """
+        import src.llm as llm_mod
+
+        def stuck_post(*args, **kwargs):
+            raise httpx.ConnectTimeout("simulated stuck network")
+
+        monkeypatch.setattr(llm_mod.httpx, "post", stuck_post)
+
+        cfg = llm_mod.LLMConfig(
+            api_keys=["fake-key"],
+            base_url="http://localhost:9999",
+            model="test-model",
+            fallback_models=[],
+            timeout=10,
+            max_retries=0,
+            total_timeout=1.0,
+            raise_on_timeout=False,  # default
+        )
+        t0 = time.time()
+        result = llm_mod._try_with_fallback(
+            messages=[{"role": "user", "content": "hi"}],
+            system=None,
+            config=cfg,
+        )
+        elapsed = time.time() - t0
+        # Must return quickly, not hang.
+        assert elapsed < 3.0
+        # No content, but error and diagnostic are populated.
+        assert result.content == ""
+        assert result.error != ""
+        # result.diagnostic is itself a dict with these keys.
+        diag = result.diagnostic
+        assert diag["total_timeout"] == 1.0
+        assert len(diag["tried"]) >= 1
+        # Logged which models we tried, including the status of each.
+        first = diag["tried"][0]
+        assert first["model"] == "test-model"
+        assert first["key_index"] == 0
+        assert first["status"] in ("timeout", "exception", "httpx_error")

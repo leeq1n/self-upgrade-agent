@@ -96,12 +96,70 @@ print(quota_snapshot())
 
 ## 故障排查
 
+### "测试 hang 住 / 跑了 3 分钟没结果"
+
+以前是噩梦，现在不会了。每个 LLM 调用有 **两层超时**：
+
+1. **per-request timeout**（`LLM_TIMEOUT`，默认 30s）—— 单次 HTTP 请求上限
+2. **total_timeout**（`LLM_TOTAL_TIMEOUT`，默认 60s）—— 整个 `chat()` 调用上限（跨所有 key × model）
+
+如果 total_timeout 被触发或所有 key/model 都失败，函数会：
+- **默认**：返回 `LLMResponse(content="", error="...", diagnostic={...})` —— `diagnostic` 字段是结构化报告
+- **`raise_on_timeout=True`**：抛 `LLMCallTimeout` 异常，`.report` 字段同样是结构化报告
+
+`diagnose()` 一行命令输出当前 LLM 配置 + quota 状态（key 会被 redact）。
+
+```python
+from src.llm import diagnose, chat, LLMConfig
+print(diagnose())
+# {
+#   "ready": true,
+#   "base_url": "https://api-inference.modelscope.cn/v1",
+#   "primary_model": "Qwen/Qwen3.5-2B",
+#   "fallback_count": 8,
+#   "api_key_count": 7,
+#   "api_keys_redacted": ["key#0:ms-34d...5825", ...],
+#   "quota": {...},
+#   "total_timeout_s": 60.0,
+#   "per_request_timeout_s": 30,
+# }
+```
+
+### 详细诊断报告（`diagnostic` / `report` 字段）
+
+每次 LLM 调用返回的 `LLMResponse.diagnostic`（或 `LLMCallTimeout.report`）包含：
+
+```python
+{
+  "total_timeout": 60.0,
+  "total_elapsed_s": 23.4,
+  "attempts": 7,
+  "last_error": "daily_quota_dead on Qwen3.5-2B",
+  "tried": [
+    {"model": "Qwen3.5-2B", "key_index": 0, "status": 429,
+     "elapsed_s": 1.2, "note": "daily_quota_dead"},
+    {"model": "Qwen3.5-2B", "key_index": 1, "status": 429,
+     "elapsed_s": 0.3, "note": "daily_quota_dead"},
+    ...
+  ],
+  "quota_snapshot": {"ms-34d...": {"dead_until": 1782897123, ...}, ...},
+  "models_attempted": ["Qwen3.5-2B", "Qwen2.5-3B-Instruct", ...],
+}
+```
+
+`note` 字段解释每次失败的原因：`daily_quota_dead` / `rate_limited_retries_exhausted` /
+`model_not_found` / `auth_failed_marked_dead` / `httpx_timeout` / `http_500` 等。
+
+### 其他问题
+
 - **所有调用都 429**：检查 `upgrades/quota_state.json`——可能所有 key
   都被标记 dead。等 `LLM_DAILY_QUOTA_COOLDOWN` 秒或手动清空该文件。
 - **"LLM not configured"**：`.env` 里没有 `LLM_API_KEY_*` 也没有
   `LLM_API_KEY`。`run.py` 会在启动时自动加载 `.env`。
 - **测试 hang 住**：以前 `pytest tests/ -q` 会因为 LLM 限流跑 200s+。
-  现在 `conftest.py` 默认会在无 key 时自动 skip `@pytest.mark.llm` 测试。
+  现在 conftest.py 默认会 (a) 无 key 时 auto-skip `@pytest.mark.llm` 测试，
+  (b) 用 `Qwen3.5-2B` 这种便宜模型，(c) 设 `LLM_TOTAL_TIMEOUT=20s`。
+  整个测试套件最多 2s（纯逻辑）+ 30-60s（含 LLM）跑完。
 
 ## 为什么不做"每天自动重置"
 

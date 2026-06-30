@@ -9,6 +9,8 @@ Responsibilities:
      and auto-skip @pytest.mark.network tests when network is disabled
      (env var ``HERMES_SKIP_NETWORK=1``).
   5. Auto-skip @pytest.mark.slow tests when ``HERMES_FAST=1``.
+  6. Pin tests to a CHEAP model (Qwen3.5-2B) with a short total_timeout
+     so a stuck LLM call fails fast (< 30s) instead of hanging the suite.
 """
 import os
 import sys
@@ -37,6 +39,14 @@ def _load_env_file(path: str) -> None:
 
 # 2) .env auto-load (mirrors run.py)
 _load_env_file(os.path.join(os.path.dirname(__file__), "..", ".env"))
+
+# 6) Test-mode LLM defaults: cheap model + short total_timeout so a
+# misconfigured test environment fails the suite in <30s with a clear
+# diagnostic, not 180s of mysterious hanging.
+# These only apply if the user hasn't already set them.
+os.environ.setdefault("LLM_MODEL", "Qwen/Qwen3.5-2B")
+os.environ.setdefault("LLM_TIMEOUT", "10")  # per-request
+os.environ.setdefault("LLM_TOTAL_TIMEOUT", "20")  # whole-call budget
 
 
 def _has_llm_keys() -> bool:
