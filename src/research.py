@@ -160,3 +160,83 @@ def search_arxiv(config) -> List[Paper]:
         papers.append(_parse_arxiv_entry(entry))
 
     return papers
+
+
+def search_all_sources(config) -> List[Paper]:
+    """Search all available sources and aggregate results with deduplication.
+
+    Sources: arXiv (primary), Semantic Scholar (citation data), Papers With Code
+    (trending), GitHub (trending repos with related code).
+
+    All sources fail gracefully — if one is unavailable, the rest still contribute.
+
+    Args:
+        config: ResearchConfig with keywords and categories.
+
+    Returns:
+        Deduplicated list of Paper objects from all available sources.
+    """
+    papers = []
+
+    # ── Source 1: arXiv (primary) ──
+    try:
+        arxiv_papers = search_arxiv(config)
+        papers.extend(arxiv_papers)
+        logger.info(f"arXiv: {len(arxiv_papers)} papers")
+    except Exception as e:
+        logger.warning(f"arXiv search failed: {e}")
+
+    # ── Source 2: Semantic Scholar enrichment ──
+    try:
+        from src.research_s2 import enrich_papers
+        enrich_papers(papers)
+    except Exception as e:
+        logger.debug(f"S2 enrichment skipped: {e}")
+
+    # ── Source 3: Papers With Code trending ──
+    try:
+        from src.research_pwc import fetch_trending_papers
+        pwc_papers = fetch_trending_papers(max_results=5)
+        for p in pwc_papers:
+            if p.get("arxiv_id") and p.get("title"):
+                # Avoid duplicates by arXiv ID
+                if not any(pp.arxiv_id == p["arxiv_id"] for pp in papers):
+                    papers.append(Paper(
+                        arxiv_id=p["arxiv_id"],
+                        title=p["title"],
+                        authors="",
+                        published="",
+                        abstract=p.get("abstract", ""),
+                        categories="",
+                    ))
+        logger.info(f"PwC: {len(pwc_papers)} trending papers")
+    except Exception as e:
+        logger.debug(f"PwC trending skipped: {e}")
+
+    # ── Source 4: GitHub trending ──
+    try:
+        from src.research_github import search_trending_weekly
+        gh_repos = search_trending_weekly(language="python")
+        gh_count = 0
+        for repo in gh_repos:
+            desc = repo.get("description", "")
+            name = repo.get("name", "")
+            if desc and len(desc) > 20:
+                # Convert GitHub repos to Paper-like entries with a synthetic ID
+                import hashlib
+                gh_id = "gh-" + hashlib.md5(name.encode()).hexdigest()[:8]
+                if not any(pp.arxiv_id == gh_id for pp in papers):
+                    papers.append(Paper(
+                        arxiv_id=gh_id,
+                        title=f"[GitHub] {name}: {desc[:80]}",
+                        authors="",
+                        published="",
+                        abstract=desc,
+                        categories="",
+                    ))
+                    gh_count += 1
+        logger.info(f"GitHub trending: {gh_count} relevant repos")
+    except Exception as e:
+        logger.debug(f"GitHub trending skipped: {e}")
+
+    return papers

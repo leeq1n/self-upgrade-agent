@@ -14,6 +14,7 @@ class ResearchConfig:
     max_papers_per_query: int = 10
     sort_by: str = "submittedDate"
     lookback_days: int = 90
+    multi_source: bool = False   # Enable arXiv+S2+PwC+GitHub search
 
 
 @dataclass

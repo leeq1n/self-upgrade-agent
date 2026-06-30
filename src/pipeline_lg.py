@@ -20,7 +20,7 @@ from typing import TypedDict, List, Optional, Dict, Any
 from langgraph.graph import StateGraph, START, END
 
 from src.config import Config, load_config
-from src.research import search_arxiv, Paper
+from src.research import search_arxiv, search_all_sources, Paper
 from src.filter import filter_papers, ScoredPaper
 from src.patchgen import generate_patch
 from src.sandbox import run_in_sandbox
@@ -129,9 +129,16 @@ def node_research(state: dict) -> dict:
         return state
 
     try:
-        papers = search_arxiv(cfg.research)
+        # Use multi-source search if config enables it
+        multi_source = getattr(cfg.research, 'multi_source', False) if hasattr(cfg, 'research') else False
+        if multi_source:
+            papers = search_all_sources(cfg.research)
+            logger.info(f"   Found {len(papers)} papers (multi-source)")
+        else:
+            papers = search_arxiv(cfg.research)
+            logger.info(f"   Found {len(papers)} papers")
+
         state["papers"] = papers
-        logger.info(f"   Found {len(papers)} papers")
 
         # Extract trending keywords from found papers
         try:

@@ -20,6 +20,7 @@ research:
   max_papers_per_query: 10
   sort_by: submittedDate
   lookback_days: 90
+  multi_source: false    # true=arXiv+S2+PwC+GitHub, false=arXiv only
 
 filter:
   min_abstract_score: 3.0
