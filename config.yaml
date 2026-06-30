@@ -13,15 +13,22 @@ research:
     - "prompt engineering"
     - "planning"
     - "reasoning"
+    - "memory"
+    - "reflection"
+    - "RAG"
+    - "fine-tuning"
+    - "agent benchmark"
   categories:
     - cs.AI
     - cs.CL
     - cs.LG
-  max_papers_per_query: 10
+    - cs.MA
+    - cs.SE
+  max_papers_per_query: 10  # reduced from 25 to keep filter phase fast
   sort_by: submittedDate
   lookback_days: 90
-  multi_source: false    # true=arXiv+S2+PwC+GitHub, false=arXiv only
-  arxiv_selenium_first: true  # true=Selenium primary, false=API primary
+  multi_source: true     # arXiv + S2 + PwC + GitHub
+  arxiv_selenium_first: true
 
 filter:
   min_abstract_score: 3.0
@@ -36,7 +43,7 @@ implement:
 
 evaluate:
   mode: llm           # llm | simulated
-  trials_per_test: 10  # trials per task for statistical significance
+  trials_per_test: 1   # 1 trial × 21 tasks = 21 LLM calls per arm (was 3 → 63, too slow with key rotation)
   timeout_seconds: 120
 
 lifecycle:

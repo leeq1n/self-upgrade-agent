@@ -191,26 +191,50 @@ def node_filter(state: dict) -> dict:
 
 
 def node_generate_patch(state: dict) -> dict:
-    """Phase 3: Generate code patch from best paper."""
+    """Phase 3: Generate code patch from the best paper.
+
+    v1.5.0: try ALL qualified papers in score order, not just the
+    first.  The first paper may fail patchgen's pre-filter (e.g. it
+    turns out to be about music generation despite a high filter
+    score).  Falling through to the next paper costs another LLM
+    call but at least we don't get stuck with zero patches when
+    one of three candidates is actually usable.
+    """
     scored = state.get("scored_papers", [])
     if not scored:
         return state
 
-    best = scored[0]
-    state["best_paper"] = best
+    tried = 0
+    for best in scored:
+        state["best_paper"] = best
+        tried += 1
+        logger.info(
+            f"3. PatchGen: try {tried}/{len(scored)} — "
+            f"'{best.paper.title[:60]}'"
+        )
+        try:
+            patch = generate_patch(best.paper, "planner.py") or {}
+        except Exception as e:
+            state["errors"].append(f"PatchGen[{tried}]: {e}")
+            logger.warning(f"   PatchGen exception: {e}")
+            continue
 
-    logger.info(f"3. PatchGen: generating from '{best.paper.title[:60]}...'")
-    try:
-        patch = generate_patch(best.paper, "planner.py") or {}
-        state["patch"] = patch
         if patch:
-            logger.info(f"   Patch generated: {len(patch.get('function', ''))} chars")
-        else:
-            logger.warning("   Patch generation returned empty")
-    except Exception as e:
-        state["errors"].append(f"PatchGen: {e}")
-        state["patch"] = {}
+            state["patch"] = patch
+            logger.info(
+                f"   Patch generated from paper #{tried}: "
+                f"{len(patch.get('function', ''))} chars"
+            )
+            return state
+        # else: patchgen returned None — pre-filter or LLM failure.  Try next.
+        logger.info(
+            f"   Paper #{tried} not usable, "
+            f"{len(scored) - tried} remaining"
+        )
 
+    # All candidates exhausted.
+    state["patch"] = {}
+    logger.warning(f"   All {tried} candidate papers failed patchgen")
     return state
 
 
@@ -275,7 +299,18 @@ def node_reflect(state: dict) -> dict:
 
 
 def node_evaluate(state: dict) -> dict:
-    """Phase 5: Real A/B benchmark — baseline vs patched agent."""
+    """Phase 5: Real A/B benchmark — baseline vs patched agent.
+
+    v1.5.0: actually use config.evaluate.trials_per_test.  Each "trial"
+    is a full run of all benchmark tasks; we run multiple trials so
+    that success_rate has a real distribution (not just one noisy
+    sample) and the bootstrap CI in stats.py is meaningful.
+
+    Cost: 21 tasks × N trials × 2 (baseline + upgraded) = 42*N LLM
+    calls.  N=3 → 126 calls; with Qwen3.5-2B this finishes in a
+    few minutes.  N=10 (the old config) → 420 calls, which is why
+    we lowered the default.
+    """
     # Dry-run mode: skip real benchmark entirely
     if state.get("dry_run", False):
         logger.info("5. Evaluate: DRY-RUN — using simulated data")
@@ -299,19 +334,31 @@ def node_evaluate(state: dict) -> dict:
     if not patch or not cfg:
         return state
 
-    logger.info("5. Evaluate: running real A/B benchmark...")
+    trials = max(1, getattr(cfg.evaluate, "trials_per_test", 3) or 1)
+    logger.info(f"5. Evaluate: running real A/B benchmark ({trials} trial(s) per arm)...")
     try:
         from src.benchmark import load_tasks, run_all, compare as bench_compare
 
         tasks = load_tasks()
 
-        # Baseline: run agent with original core/ modules
-        logger.info("   Running baseline benchmark...")
-        baseline = run_all(tasks)
-        baseline_rate = baseline["success_rate"]
-        baseline_total = baseline["total"]
-
-        logger.info(f"   Baseline: {baseline_rate:.1%} ({baseline['successes']}/{baseline_total})")
+        # Run N trials on the original core/, then N trials on the
+        # patched core/.  We aggregate the per-trial success rates
+        # into mean success_rate + a per-task success list for stats.
+        logger.info(f"   Running {trials} baseline trial(s)...")
+        baseline_trials = [run_all(tasks) for _ in range(trials)]
+        baseline_rates = [b["success_rate"] for b in baseline_trials]
+        baseline_rate = sum(baseline_rates) / len(baseline_rates)
+        # Flatten per-trial per-task success into one boolean list for stats.
+        baseline_results = [
+            r.get("success", False)
+            for b in baseline_trials
+            for r in b.get("results", [])
+        ]
+        baseline_total = len(baseline_results)
+        logger.info(
+            f"   Baseline: {baseline_rate:.1%} mean over {trials} trials "
+            f"({int(baseline_rate * baseline_total)}/{baseline_total} successes)"
+        )
 
         # Surgically apply patch to core/planner.py for testing
         # (preserves imports, __version__, and module metadata)
@@ -327,26 +374,36 @@ def node_evaluate(state: dict) -> dict:
             f.write(merged_code)
 
         try:
-            # Run patched agent
-            logger.info("   Running upgraded benchmark...")
-            upgraded = run_all(tasks)
-            upgraded_rate = upgraded["success_rate"]
-            upgraded_total = upgraded["total"]
+            logger.info(f"   Running {trials} upgraded trial(s)...")
+            upgraded_trials = [run_all(tasks) for _ in range(trials)]
+            upgraded_rates = [u["success_rate"] for u in upgraded_trials]
+            upgraded_rate = sum(upgraded_rates) / len(upgraded_rates)
+            upgraded_results = [
+                r.get("success", False)
+                for u in upgraded_trials
+                for r in u.get("results", [])
+            ]
+            upgraded_total = len(upgraded_results)
         finally:
             # Restore original
             if os.path.exists(bak_path):
                 shutil.move(bak_path, orig_path)
 
-        comparison = bench_compare(baseline, upgraded)
+        comparison = bench_compare(
+            {"success_rate": baseline_rate, "total": baseline_total},
+            {"success_rate": upgraded_rate, "total": upgraded_total},
+        )
 
-        logger.info(f"   Upgraded: {upgraded_rate:.1%} ({upgraded['successes']}/{upgraded_total})")
+        logger.info(
+            f"   Upgraded: {upgraded_rate:.1%} mean over {trials} trials "
+            f"({int(upgraded_rate * upgraded_total)}/{upgraded_total} successes)"
+        )
         logger.info(f"   Delta: {comparison['success_rate_delta']:+.1%}")
 
-        # Apply statistical significance check
+        # Apply statistical significance check using the flattened
+        # per-task success lists, which now have trials * tasks entries.
         try:
             from src.stats import is_real_improvement
-            baseline_results = [r.get("success", False) for r in baseline.get("results", [])]
-            upgraded_results = [r.get("success", False) for r in upgraded.get("results", [])]
             stats_result = is_real_improvement(
                 baseline_rate, upgraded_rate,
                 baseline_results, upgraded_results,
@@ -357,13 +414,32 @@ def node_evaluate(state: dict) -> dict:
         except Exception:
             stats_result = None
 
+        # Cost ratio: tokens (rough) — we don't have per-token counts
+        # in benchmark.py yet, so use the *elapsed time* ratio as a
+        # proxy.  This is a placeholder but better than hard-coding 1.0.
+        try:
+            base_elapsed = sum(
+                sum(r.get("elapsed", 0) for r in b.get("results", []))
+                for b in baseline_trials
+            )
+            upg_elapsed = sum(
+                sum(r.get("elapsed", 0) for r in u.get("results", []))
+                for u in upgraded_trials
+            )
+            cost_ratio = (upg_elapsed / base_elapsed) if base_elapsed > 0 else 1.0
+        except Exception:
+            cost_ratio = 1.0
+
         state["evaluation"] = {
             "baseline_rate": baseline_rate,
             "upgraded_rate": upgraded_rate,
             "success_rate_delta": comparison["success_rate_delta"],
-            "cost_increase_ratio": 1.0,  # placeholder until cost tracking
+            "cost_increase_ratio": round(cost_ratio, 3),
             "baseline_cost": baseline_total,
             "upgraded_cost": upgraded_total,
+            "trials": trials,
+            "baseline_rates_per_trial": baseline_rates,
+            "upgraded_rates_per_trial": upgraded_rates,
             "stats": stats_result,
         }
     except Exception as e:

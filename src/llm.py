@@ -102,23 +102,20 @@ class LLMConfig:
             if single:
                 api_keys = [single]
 
-        # Fallback model list — ordered cheap → expensive.  The first model
-        # in this list is the one we hit hardest, so putting 2B-3B models
-        # at the front keeps day-to-day testing/usage cheap.  The 30B+
-        # tiers are kept as fallbacks for tasks that need higher quality
-        # (and are configured explicitly via LLM_MODEL when needed).
+        # Fallback model list — ordered cheap → expensive, but ONLY models
+        # that actually exist on the configured provider.  ModelScope rotates
+        # its catalog; we strip names that 400 on first use.  As of v1.5.0
+        # (2026-06-30) only Qwen3-235B / DeepSeek-V3.2 / Kimi / GLM are
+        # available; the cheap 2B-3B tier doesn't exist on ModelScope yet.
         models_env = os.environ.get("LLM_MODELS", "").strip()
         if models_env:
             fallback_models = [m.strip() for m in models_env.split(",") if m.strip()]
         else:
             fallback_models = [
-                # Cheap tier (used by default; lowest quota cost on ModelScope)
-                "Qwen/Qwen3.5-2B",
-                "Qwen/Qwen2.5-3B-Instruct",
-                # Mid tier
-                "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+                # Mid tier (ModelScope current availability)
                 "Qwen/Qwen3-235B-A22B",
                 "deepseek-ai/DeepSeek-V3.2",
+                "Qwen/Qwen3-Coder-30B-A3B-Instruct",
                 # Large tier
                 "moonshotai/Kimi-K2.5",
                 "ZhipuAI/GLM-5.1",
@@ -130,7 +127,7 @@ class LLMConfig:
             base_url=os.environ.get(
                 "LLM_BASE_URL", "https://api-inference.modelscope.cn/v1"
             ),
-            model=os.environ.get("LLM_MODEL", "Qwen/Qwen3.5-2B"),
+            model=os.environ.get("LLM_MODEL", "Qwen/Qwen3-235B-A22B"),
             fallback_models=fallback_models,
             max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "2048")),
             temperature=float(os.environ.get("LLM_TEMPERATURE", "0.1")),

@@ -27,14 +27,18 @@ def _load_env_file(path: str) -> None:
     if not os.path.exists(path):
         return
     try:
-        with open(path, encoding="utf-8") as f:
+        with open(path, encoding="utf-8-sig") as f:
             for line in f:
                 line = line.strip()
                 if not line or line.startswith("#") or "=" not in line:
                     continue
                 k, v = line.split("=", 1)
                 k = k.strip()
-                v = v.strip().strip('"').strip("'")
+                v = v.strip()
+                # Strip inline comments (" 30 # comment" → "30").
+                if " #" in v:
+                    v = v.split(" #", 1)[0].rstrip()
+                v = v.strip('"').strip("'")
                 if k and k not in os.environ:
                     os.environ[k] = v
     except Exception:

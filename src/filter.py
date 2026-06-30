@@ -129,18 +129,43 @@ def _keyword_score_paper(paper: Paper) -> ScoredPaper:
 
 
 def _llm_score_paper(paper: Paper, llm_config: Optional[LLMConfig] = None) -> ScoredPaper:
-    """LLM-based scoring — more accurate for method/trend detection."""
+    """LLM-based scoring — tailored to this project's actual upgrade targets.
+
+    v1.5.0: rewrote the prompt to be specific to the self-upgrade agent
+    pipeline.  Earlier versions asked "is this paper useful for any
+    agent?" which surfaced too many papers that improve some other kind
+    of agent but don't help *this* system.  The new prompt asks the
+    LLM to evaluate applicability against the 5 concrete pain points
+    of this codebase (paper search, code generation, sandbox,
+    A/B evaluation, bootloader), so high scores correlate with
+    actually useful upgrades.
+    """
     prompt = (
-        f"Rate this AI/ML paper on three dimensions (1-10).\n\n"
-        f"TITLE: {paper.title}\n"
-        f"ABSTRACT: {paper.abstract[:800]}\n\n"
-        'Respond ONLY with valid JSON, no other text:\n'
-        '{"abstract_quality": 1-10, "applicability_to_agents": 1-10, "novelty": 1-10}'
+        "You are selecting which research papers this self-upgrade agent\n"
+        "should try to turn into code patches.  Score the paper on 3 axes (1-10):\n\n"
+        "  applicability_to_agent_pipeline: how well the paper's method\n"
+        "    could improve one of these 5 specific pain points in this\n"
+        "    project: (a) multi-source paper search & filtering, (b) LLM\n"
+        "    code-patch generation, (c) sandbox validation of generated\n"
+        "    code, (d) A/B benchmark evaluation of a candidate patch\n"
+        "    against the current code, (e) bootloader / atomic rollout\n"
+        "    of the new module.  A paper that improves *any* of those is\n"
+        "    high applicability; a paper about, say, RL for game-playing\n"
+        "    is low.\n\n"
+        "  novelty: how novel / state-of-the-art is the method?  1 is a\n"
+        "    textbook re-statement, 10 is a fresh paradigm.\n\n"
+        "  abstract_quality: how well-written and reproducible is the\n"
+        "    paper?  1 is unclear, 10 has code + numbers.\n\n"
+        f"Paper title: {paper.title}\n"
+        f"Paper abstract: {paper.abstract[:800]}\n\n"
+        "Reply with ONLY raw JSON, no markdown fences:\n"
+        '{"applicability_to_agent_pipeline": 1-10, "novelty": 1-10, "abstract_quality": 1-10}'
     )
     system = (
-        "You are an AI research evaluator. A paper with high 'applicability_to_agents' "
-        "presents methods directly useful for improving LLM-based agent systems "
-        "(prompting, tool use, planning, memory, reasoning, etc.). Be strict in scoring."
+        "You are a strict research evaluator.  High applicability scores "
+        "should be reserved for papers whose method can be turned into a "
+        "concrete code improvement for this self-upgrade agent pipeline. "
+        "Do not give high scores just because the paper is famous."
     )
 
     content = chat_simple(prompt, system=system, config=llm_config)
@@ -153,8 +178,12 @@ def _llm_score_paper(paper: Paper, llm_config: Optional[LLMConfig] = None) -> Sc
         except: return default
     return ScoredPaper(
         paper=paper,
+        # The old field names (abstract_score, applicability_score,
+        # novelty_score) are kept for backward compatibility with
+        # ScoredPaper and decide.py.  We re-map the new dimensions
+        # onto the existing slots.
         abstract_score=_safe(data.get("abstract_quality", 5)),
-        applicability_score=_safe(data.get("applicability_to_agents", 3)),
+        applicability_score=_safe(data.get("applicability_to_agent_pipeline", 3)),
         novelty_score=_safe(data.get("novelty", 3)),
     )
 
@@ -165,12 +194,31 @@ def score_paper(
     use_llm: bool = False,
     llm_config: Optional[LLMConfig] = None,
 ) -> ScoredPaper:
-    """Score a single paper. Falls back to keyword scoring if LLM fails."""
-    if use_llm:
+    """Score a single paper.
+
+    If ``use_llm`` is True and the LLM is configured AND has at least
+    one alive (not quota-dead) key, use LLM scoring.  Otherwise fall
+    back to keyword scoring.  The "alive key" check matters because
+    LLM scoring against all-dead keys burns timeouts (5-15s per
+    paper) without any chance of success.
+    """
+    if use_llm and llm_config is not None and llm_config.ready:
+        # Quick check: are there alive keys?  Avoid burning 15s per paper
+        # if all keys are quota-dead.
+        try:
+            from src.llm import QuotaState
+            quota = QuotaState()
+            alive_keys = [k for k in llm_config.api_keys if not quota.is_dead(k)]
+            if not alive_keys:
+                logger.debug(f"All keys quota-dead, falling back to keyword for {paper.arxiv_id}")
+                return _keyword_score_paper(paper)
+        except Exception:
+            pass
         try:
             return _llm_score_paper(paper, llm_config)
         except Exception as e:
             logger.warning(f"LLM scoring failed, falling back to keyword: {e}")
+    return _keyword_score_paper(paper)
     return _keyword_score_paper(paper)
 
 

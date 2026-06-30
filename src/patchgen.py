@@ -1,56 +1,264 @@
 """
 Code patch generation from research papers.
 
-Replaces skillgen.py for the agent self-modification use case.
-Outputs executable Python code that replaces/enhances core agent modules.
+v1.5.0 — aligned with _apply_patch_to_module (surgical merge):
+
+  * Reads the *current* target module and includes it in the prompt, so
+    the LLM knows what already exists and can extend rather than rewrite
+    from scratch.
+  * Requires the patch to (a) keep the existing public functions
+    (so callers like core/agent.run keep working) and (b) keep imports
+    and __version__ intact.
+  * Drops response_format={"type": "json_object"} because ModelScope and
+    several other OpenAI-compatible gateways ignore or mangle it.  The
+    downstream _parse_llm_json in src/filter.py is more tolerant than
+    json.loads; we use that here too.
+
+Outputs a dict shaped like ``{"function": str, "test": str, "module": str}``
+suitable for direct use by ``_apply_patch_to_module``.
 """
-import json, logging
+import json
+import logging
+import os
+import re
+from typing import Optional
+
 from src.llm import chat, LLMConfig
 from src.research import Paper
 
 logger = logging.getLogger(__name__)
 
 
-def generate_patch(paper: Paper, target_module: str = "planner.py", llm_config=None) -> dict:
+# Target modules in core/ that the agent is allowed to patch.  Mirrors
+# src/switcher.py:CORE_MODULES.  We import lazily to avoid a circular dep.
+def _core_module_targets() -> dict:
+    from src.switcher import CORE_MODULES
+    return CORE_MODULES
+
+
+# Hard-reject papers that are obviously not about AI agents / ML systems.
+# This is a coarse safety net on top of filter.py's LLM scoring, because
+# LLM scoring can give a high applicability score to a paper that merely
+# *mentions* "agent" or "hierarchical" without being about LLM agents.
+_REJECT_TITLE_PATTERNS = [
+    "song generation", "music generation", "audio synthesis",
+    "speech recognition", "speech synthesis", "tts", "asr",
+    "image segmentation", "object detection", "image classification",
+    "video generation", "video synthesis", "3d reconstruction",
+    "protein folding", "drug discovery", "genomic",
+    "weather", "climate", "ocean",
+    "robot", "robotic grasping", "manipulation", "locomotion",
+    "translation", "machine translation",
+    "recommender", "advertising", "click prediction",
+]
+_REJECT_CATEGORY_PATTERNS = [
+    "q-bio", "stat.AP", "eess.AS", "cs.SD", "cs.CV", "physics.",
+]
+
+
+def _paper_is_obviously_unrelated(paper: Paper) -> bool:
+    """Quick reject: paper is clearly not about AI / ML agents.
+
+    Returns True if the paper should be skipped entirely.  This is
+    deliberately conservative — better to skip a borderline case than
+    to waste an LLM call on a paper about music generation.
     """
-    Generate a code patch for a core agent module from a paper.
-    
-    Args:
-        paper: Paper with method/algorithm to implement
-        target_module: Which core/*.py file to patch (agent.py, planner.py, etc.)
-    
-    Returns:
-        {"function": "...", "test": "...", "module": "planner.py"} or None
+    title_lower = (paper.title or "").lower()
+    abstract_lower = (paper.abstract or "").lower()
+    for pat in _REJECT_TITLE_PATTERNS:
+        if pat in title_lower:
+            return True
+    cats = (paper.categories or "").lower()
+    for pat in _REJECT_CATEGORY_PATTERNS:
+        if pat in cats:
+            return True
+    # Negative signal: paper is clearly not in CS (e.g. heavily
+    # biology / physics jargon).  This is best-effort, not a guarantee.
+    if "agent" not in title_lower and "agent" not in abstract_lower and \
+       "llm" not in title_lower and "llm" not in abstract_lower and \
+       "language model" not in abstract_lower and \
+       "reinforcement" not in abstract_lower and \
+       "prompt" not in abstract_lower and \
+       "tool" not in abstract_lower and \
+       "planner" not in abstract_lower and \
+       "plan" not in abstract_lower:
+        # No agent/LLM/RL/prompt content at all — probably not relevant.
+        return True
+    return False
+
+
+def _read_target_module(target_module: str) -> str:
+    """Return the *current* source of core/<target_module>, or '' if missing.
+
+    We feed this to the LLM so it can write a patch that builds on
+    existing code instead of starting from scratch (which would lose
+    imports, __version__, and existing public functions).
     """
-    prompt = (
-        f"You are an expert AI engineer. Based on this paper, write improved code "
-        f"for the agent's {target_module} module.\n\n"
-        f"Paper: {paper.title}\n"
-        f"Abstract: {paper.abstract}\n\n"
-        f"Write a COMPLETE replacement Python file for {target_module}.\n"
-        f"Include at least 3 test cases that verify the improvements.\n\n"
-        f"Output ONLY valid JSON:"
-        f'{{"function": "def improved_plan(...)\n    ...", '
-        f'"test": "def test_plan()\n    assert ...", '
-        f'"module": "{target_module}"}}'
+    try:
+        targets = _core_module_targets()
+        path = targets.get(target_module)
+        if path and os.path.exists(path):
+            with open(path, encoding="utf-8") as f:
+                return f.read()
+    except Exception as e:
+        logger.debug(f"could not read {target_module}: {e}")
+    return ""
+
+
+def _extract_public_functions(source: str) -> list:
+    """Return a list of top-level def names declared in ``source``."""
+    return re.findall(r"^def\s+(\w+)\s*\(", source, flags=re.MULTILINE)
+
+
+# Generic markdown-fence strip — we use this because response_format
+# is unreliable on OpenAI-compatible gateways.  The same logic lives in
+# src/filter.py:_parse_llm_json, but we re-implement lightly to keep
+# this module self-contained.
+_FENCE = re.compile(r"^\s*```(?:json)?\s*|\s*```\s*$", re.IGNORECASE | re.MULTILINE)
+
+
+def _parse_json_lenient(content: str) -> Optional[dict]:
+    if not content:
+        return None
+    s = content.strip()
+    # Try direct parse first.
+    try:
+        return json.loads(s)
+    except json.JSONDecodeError:
+        pass
+    # Strip fences.
+    s2 = _FENCE.sub("", s).strip()
+    if s2 and s2 != s:
+        try:
+            return json.loads(s2)
+        except json.JSONDecodeError:
+            pass
+    # First balanced {...} block.
+    m = re.search(r"\{[^{}]*\}", s, flags=re.DOTALL)
+    if m:
+        try:
+            return json.loads(m.group(0))
+        except json.JSONDecodeError:
+            pass
+    return None
+
+
+PROMPT_TEMPLATE = """\
+You are modifying a small Python module in a self-improving agent system.
+
+The CURRENT source of core/{target_module} is:
+
+```python
+{current_source}
+```
+
+Public functions currently defined here: {public_funcs}
+`__version__` is currently: {current_version}
+
+A research paper with the following method/idea was discovered:
+
+  Title: {title}
+  Abstract: {abstract}
+
+Your task: write a surgical PATCH that adapts an EXISTING function
+(typically `{primary_func}`) to incorporate insights from the paper.
+
+HARD CONSTRAINTS — your patch will be rejected if you violate these:
+
+  1. Keep the existing public function signature(s).  In particular
+     `def {primary_func}(...)` must still exist and accept the same
+     arguments.  You may change the body, add helpers, or add new
+     functions, but DO NOT rename or remove existing public functions.
+  2. Keep all existing imports intact.  You may add new imports if
+     the paper's method requires them.
+  3. Keep `__version__` declared at module level (you may bump it to
+     "{primary_func}_v2" or similar if you want, but don't delete it).
+  4. The patch must be a single function (or a small set of helper
+     defs) — NOT a full-file rewrite.  Our surgical-merge code
+     will splice your patch into the existing module.
+  5. Include a small `test_xxx` function in the same patch that
+     demonstrates the improvement.
+
+Reply with ONLY a JSON object of this exact shape (no prose, no
+markdown fences — raw JSON):
+
+{{"function": "<python source>", "test": "<python source>", "module": "{target_module}"}}
+"""
+
+
+def generate_patch(
+    paper: Paper,
+    target_module: str = "planner.py",
+    llm_config: Optional[LLMConfig] = None,
+) -> Optional[dict]:
+    """Generate a surgical patch for a core agent module from a paper.
+
+    Returns ``{"function": ..., "test": ..., "module": ...}`` on success
+    or ``None`` if generation / parsing failed.
+    """
+    # Hard pre-filter: skip papers that are clearly not about AI/ML
+    # agents (e.g. music generation, image segmentation).  This is a
+    # defense against filter.py's LLM scoring occasionally promoting
+    # a paper that merely *mentions* "agent" or "hierarchical" but
+    # isn't actually about LLM-based agents.
+    if _paper_is_obviously_unrelated(paper):
+        logger.info(
+            f"patchgen: skipping {paper.arxiv_id!r} ({paper.title[:60]!r}) — "
+            f"obviously unrelated to AI/ML agents"
+        )
+        return None
+
+    current_source = _read_target_module(target_module)
+    public_funcs = _extract_public_functions(current_source) or ["plan_task"]
+    primary_func = "plan_task" if "plan_task" in public_funcs else public_funcs[0]
+    version_m = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', current_source)
+    current_version = version_m.group(1) if version_m else "1.0.0"
+
+    prompt = PROMPT_TEMPLATE.format(
+        target_module=target_module,
+        current_source=current_source or "(file is empty — generate a sensible first version)",
+        public_funcs=", ".join(public_funcs) or "(none)",
+        current_version=current_version,
+        title=paper.title,
+        abstract=(paper.abstract or "")[:1500],
+        primary_func=primary_func,
     )
 
     resp = chat(
         messages=[{"role": "user", "content": prompt}],
         config=llm_config,
-        response_format={"type": "json_object"},
+        # NOTE: no response_format here — ModelScope etc. ignore it and
+        # sometimes mangle the response.  _parse_json_lenient handles
+        # both raw JSON and ```json ... ```-fenced output.
     )
 
     if not resp.content:
+        logger.warning("patchgen: LLM returned empty content")
         return None
 
-    try:
-        data = json.loads(resp.content)
-        fn = data.get("function", "")
-        t = data.get("test", "")
-        if fn and len(fn) > 50 and t and len(t) > 30:
-            return {"function": fn, "test": t, "module": data.get("module", target_module)}
-    except (json.JSONDecodeError, KeyError, TypeError) as e:
-        logger.warning(f"Patch generation JSON parse failed: {e}")
+    data = _parse_json_lenient(resp.content)
+    if not data:
+        logger.warning(f"patchgen: could not parse JSON from LLM output: {resp.content[:200]!r}")
+        return None
 
-    return None
+    fn = data.get("function", "")
+    test = data.get("test", "")
+    module = data.get("module", target_module)
+    if not fn or len(fn) < 30:
+        logger.warning(f"patchgen: 'function' missing or too short ({len(fn)} chars)")
+        return None
+    if not test or len(test) < 20:
+        logger.warning(f"patchgen: 'test' missing or too short ({len(test)} chars)")
+        return None
+
+    # Sanity check: does the patch define the primary function?  If not,
+    # surgical merge would either replace some other function or append
+    # at the end — neither is what we want.
+    if not re.search(rf"def\s+{re.escape(primary_func)}\s*\(", fn):
+        logger.warning(
+            f"patchgen: patch does not define {primary_func}(); "
+            f"surgical merge may misroute.  Returning None to be safe."
+        )
+        return None
+
+    return {"function": fn, "test": test, "module": module}

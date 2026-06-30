@@ -20,17 +20,29 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 def _load_env_file(path: str) -> None:
+    """Load KEY=VALUE pairs from a .env file.  Strips inline comments.
+
+    We do a single pass on each line:
+      - skip blank lines and lines starting with '#'
+      - split on the first '='
+      - strip whitespace and surrounding quotes from value
+      - drop any inline comment after the value (anything after '#')
+    """
     if not os.path.exists(path):
         return
     try:
-        with open(path, encoding="utf-8") as f:
+        with open(path, encoding="utf-8-sig") as f:
             for line in f:
                 line = line.strip()
                 if not line or line.startswith("#") or "=" not in line:
                     continue
                 k, v = line.split("=", 1)
                 k = k.strip()
-                v = v.strip().strip('"').strip("'")
+                v = v.strip()
+                # Strip inline comments (" 30 # comment" → "30").
+                if " #" in v:
+                    v = v.split(" #", 1)[0].rstrip()
+                v = v.strip('"').strip("'")
                 if k and k not in os.environ:
                     os.environ[k] = v
     except Exception:
@@ -40,11 +52,13 @@ def _load_env_file(path: str) -> None:
 # 2) .env auto-load (mirrors run.py)
 _load_env_file(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-# 6) Test-mode LLM defaults: cheap model + short total_timeout so a
+# 6) Test-mode LLM defaults: model + short total_timeout so a
 # misconfigured test environment fails the suite in <30s with a clear
 # diagnostic, not 180s of mysterious hanging.
-# These only apply if the user hasn't already set them.
-os.environ.setdefault("LLM_MODEL", "Qwen/Qwen3.5-2B")
+# These only apply if the user hasn't already set them.  Pinned to a
+# model that actually exists on ModelScope (Qwen3-235B); the "cheap
+# 2B" tier that was here earlier is not actually served.
+os.environ.setdefault("LLM_MODEL", "Qwen/Qwen3-235B-A22B")
 os.environ.setdefault("LLM_TIMEOUT", "10")  # per-request
 os.environ.setdefault("LLM_TOTAL_TIMEOUT", "20")  # whole-call budget
 

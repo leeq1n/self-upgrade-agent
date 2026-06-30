@@ -1,6 +1,6 @@
 # Self-Upgrade Agent 项目简报
 
-**最后更新**：2026-06-30（v1.4.0 multi-key 轮换 + surgical bootloader）
+**最后更新**：2026-06-30（v1.5.0 patchgen/filter 真正对齐 self-upgrade 痛点）
 
 ---
 
@@ -8,15 +8,15 @@
 
 构建一个 **能通过搜索论文自主改进自身源代码的 AI Agent**。
 
-### 五大能力（v1.4.0 评估）
+### 五大能力（v1.5.0 评估）
 
 | 能力 | 说明 | 完成度 |
 |------|------|--------|
-| 🔍 自主搜索 | 多源搜索：arXiv + Semantic Scholar + Papers With Code + GitHub | 95% — 四源已接入，PwC/GitHub 依赖 HTML 解析 |
-| ✏️ 自我进化 | 论文方法 → 代码补丁 → 沙箱验证 → surgical merge 写入 core/ | 90% — surgical merge 已统一到 switcher 和 pipeline |
-| 📊 自主评估 | Bootstrap 统计显著性 + 21 个 benchmark 任务 + multi-key LLM 轮换 | 85% — 真实评估已启用，多 key 轮换解决 429 限流 |
-| 🎯 自主决策 | 阈值判断 + CI 置信区间 + auto-promote | 85% — 决策逻辑完整 |
-| 🔄 生命周期 | 模块版本追踪、使用统计、自动修剪 | 75% — 三条 cull 规则，evaluate_all_skills() |
+| 🔍 自主搜索 | 多源搜索：arXiv + Semantic Scholar + Papers With Code + GitHub（默认 multi_source=true）| 95% |
+| ✏️ 自我进化 | 论文方法 → 代码补丁 → 沙箱验证 → **surgical merge 写入 core/** | 90% |
+| 📊 自主评估 | Bootstrap 统计显著性 + 21 任务 A/B（默认 trials=1）+ elapsed-time cost ratio | 90% |
+| 🎯 自主决策 | 阈值判断 + CI 置信区间 + auto-promote | 90% |
+| 🔄 生命周期 | 模块版本追踪、使用统计、自动修剪 | 80% |
 
 ---
 
@@ -78,7 +78,12 @@ pytest (full)                        → 107 passed, 1 skipped in ~68s
 | `pipeline_lg` 可读性 | 已从单字母改为语义化，仍有进一步优化空间 |
 | **Trending 缓存接入 pipeline** | ✅ v1.4.0 — `node_research` 现在读 `upgrades/trending_keywords.json`，把昨天发现的高频关键词拼到今天的搜索里。这是 harness+loop 真正闭环的关键 |
 | **死代码清理** | ✅ v1.4.0 — 删除 `research_s2.search_and_enrich`（0 调用方）；`keyword_expander.load_trending_keywords` 不再是死代码（被 node_research 调用） |
-| **便宜模型 + 详细诊断 + 全局熔断** | ✅ v1.4.0 — 默认 `Qwen3.5-2B` 取代 30B；`LLMConfig.total_timeout`（默认 60s）跨 key×model 总预算；`LLMCallTimeout` 异常 + `LLMResponse.diagnostic` 结构化报告；`diagnose()` 一键输出当前 LLM 状态（key 脱敏）。**超时以后知道问题在哪** |
+| **便宜模型 + 详细诊断 + 全局熔断** | ✅ v1.4.0 — 默认 `Qwen3.5-2B` 取代 30B；`LLMConfig.total_timeout`（默认 60s）跨 key×model 总预算；`LLMCallTimeout` 异常 + `LLMResponse.diagnostic` 结构化报告；`diagnose()` 一键输出当前 LLM 状态（key 脱敏）。**超时以后知道问题在哪**。v1.5.0 改默认 model 为 `Qwen3-235B-A22B`（2B-3B 不在 ModelScope 上） |
+| **patchgen 真的对得上 surgical merge** | ✅ v1.5.0 — prompt 读 `core/planner.py` 现状；强制保留 `plan_task` 接口、imports、`__version__`；删除 `response_format`（不可靠）；带 `def plan_task` 校验，缺则拒收。5 个新单元测试 |
+| **filter prompt 针对 self-upgrade 痛点** | ✅ v1.5.0 — 评分维度改成"是否能改进本项目 5 个核心痛点"（多源搜索 / 代码生成 / 沙箱 / A/B / bootloader） |
+| **patchgen 预过滤无关 paper** | ✅ v1.5.0 — 音乐生成、图像分割、机器人等 paper **自动拒绝**，不浪费 LLM 调用。`node_generate_patch` 现在试**所有** qualified paper（之前只试 1 个） |
+| **node_evaluate 真用 trials** | ✅ v1.5.0 — `cfg.evaluate.trials_per_test` 真循环 N 次 baseline + N 次 upgraded；cost ratio 改用 elapsed-time ratio；删掉旧死代码 |
+| **.env BOM 兼容** | ✅ v1.5.0 — `_load_env_file` 用 `utf-8-sig` 读 .env，剥 BOM + 内联注释 + 默认 model=235B |
 
 ---
 

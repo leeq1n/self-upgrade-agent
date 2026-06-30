@@ -9,7 +9,7 @@ Self-Upgrade Agent 核心 —— 可被自主改进的推理引擎。
 每个模块都是独立的 .py 文件，patchgen 可以单独修改任意模块。
 """
 __version__ = "1.3.0"
-import json, time
+import os, json, time
 from core.planner import plan_task
 from typing import List, Dict, Optional, Callable
 
@@ -139,6 +139,32 @@ if __name__ == "__main__":
         python -m core.agent "帮我规划一个 3 天的东京旅行"
         python -m core.agent "写一个检查回文的 Python 函数"
     """
+    # Load .env so users don't need to `export $(cat .env)` first.
+    # Mirrors the loader in run.py / tests/conftest.py.
+    _ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
+
+    def _load_env_file(path: str) -> None:
+        if not os.path.exists(path):
+            return
+        try:
+            with open(path, encoding="utf-8-sig") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+                    k, v = line.split("=", 1)
+                    k = k.strip()
+                    v = v.strip()
+                    if " #" in v:
+                        v = v.split(" #", 1)[0].rstrip()
+                    v = v.strip('"').strip("'")
+                    if k and k not in os.environ:
+                        os.environ[k] = v
+        except Exception:
+            pass
+
+    _load_env_file(_ENV_PATH)
+
     import sys
     if len(sys.argv) < 2:
         print("Usage: python -m core.agent \"<task>\"")
