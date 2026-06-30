@@ -21,9 +21,12 @@ venv/
 
 # Browser / Selenium
 chromedriver/
+chromedriver*/
 chromedriver*.zip
 chromedriver*.exe
+geckodriver*/
 geckodriver*
+msedgedriver*/
 msedgedriver*
 
 # Backup / scratch files
