@@ -11,6 +11,7 @@ Usage:
     python run.py --legacy     # 使用旧版 pipeline
     python run.py --stats      # 查看升级历史
     python run.py --cull       # 修剪低效 skill
+    python run.py --unlock-keys # 重置 quota_state (恢复被 mark dead 的 keys)
     python run.py --config PATH
     python run.py -v
 """
@@ -183,6 +184,11 @@ def main():
     parser.add_argument(
         "--promote", type=str, default=None, metavar="PATCH_NAME",
         help="手动将候选补丁提升为活跃版本"
+    )
+    parser.add_argument(
+        "--unlock-keys", action="store_true",
+        help="重置 quota_state.json:清除所有 dead marks,恢复被永久 mark 的 keys。"
+             " 适用于 ModelScope 网关状态恢复后手动恢复 key pool。"
     )
 
     args = parser.parse_args()
@@ -389,6 +395,33 @@ def main():
         for name, delta in sorted(results.items(), key=lambda x: x[1], reverse=True):
             print(f"  {delta:+.2%}  {name}")
         history.close()
+        return
+
+    if args.unlock_keys:
+        # Reset quota_state.json — clear all dead marks so the LLM
+        # pool can try all configured keys again.  Useful when
+        # ModelScope gateway recovers from temporary auth/quota
+        # errors that left keys permanently marked.
+        import json as _json
+        # Use __import__ to avoid 'os' becoming local due to the
+        # `import json as _json, os` later in main().
+        _os = __import__("os")
+        quota_file = _os.path.join(
+            _os.path.dirname(_os.path.abspath(__file__)),
+            "upgrades", "quota_state.json",
+        )
+        if _os.path.exists(quota_file):
+            state = _json.load(open(quota_file))
+            cleared = 0
+            for info in state.get("keys", {}).values():
+                if info.get("dead_until", 0) > 0:
+                    info["dead_until"] = 0
+                    info["failures_today"] = 0
+                    cleared += 1
+            _json.dump(state, open(quota_file, "w"), indent=2)
+            print(f"Unlocked {cleared} keys in {quota_file}")
+        else:
+            print("No quota_state.json found — nothing to unlock")
         return
 
     # ═══ Run pipeline ═══

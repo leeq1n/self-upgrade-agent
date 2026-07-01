@@ -59,8 +59,8 @@ _load_env_file(os.path.join(os.path.dirname(__file__), "..", ".env"))
 # model that actually exists on ModelScope (Qwen3-235B); the "cheap
 # 2B" tier that was here earlier is not actually served.
 os.environ.setdefault("LLM_MODEL", "deepseek-ai/DeepSeek-V4-Pro")
-os.environ.setdefault("LLM_TIMEOUT", "10")  # per-request
-os.environ.setdefault("LLM_TOTAL_TIMEOUT", "20")  # whole-call budget
+os.environ.setdefault("LLM_TIMEOUT", "30")  # per-request (v1.6.0: large prompts need >15s)
+os.environ.setdefault("LLM_TOTAL_TIMEOUT", "180")  # whole-call budget
 
 
 def _has_llm_keys() -> bool:

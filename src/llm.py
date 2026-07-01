@@ -64,10 +64,10 @@ class LLMConfig:
     fallback_models: List[str] = field(default_factory=list)
     max_tokens: int = 2048
     temperature: float = 0.1
-    timeout: int = 15  # per-request HTTP timeout
-    max_retries: int = 0  # retries per (key, model) on minute-level 429
+    timeout: int = 30  # per-request HTTP timeout (large prompts need >15s)
+    max_retries: int = 2  # retries per (key, model) on minute-level 429
     daily_quota_cooldown: int = 86400  # seconds before re-trying a dead key
-    total_timeout: float = 120.0  # whole-call budget across all keys/models
+    total_timeout: float = 180.0  # whole-call budget across all keys/models
     # If True, raise LLMCallTimeout on total_timeout breach (instead of
     # returning an error response).  Useful for callers that want a hard
     # deadline (tests, CI); off by default to preserve call()=str return
@@ -135,10 +135,10 @@ class LLMConfig:
             fallback_models=fallback_models,
             max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "2048")),
             temperature=float(os.environ.get("LLM_TEMPERATURE", "0.1")),
-            timeout=int(os.environ.get("LLM_TIMEOUT", "15")),
-            max_retries=int(os.environ.get("LLM_MAX_RETRIES", "0")),
+            timeout=int(os.environ.get("LLM_TIMEOUT", "30")),
+            max_retries=int(os.environ.get("LLM_MAX_RETRIES", "2")),
             daily_quota_cooldown=int(os.environ.get("LLM_DAILY_QUOTA_COOLDOWN", "86400")),
-            total_timeout=float(os.environ.get("LLM_TOTAL_TIMEOUT", "120")),
+            total_timeout=float(os.environ.get("LLM_TOTAL_TIMEOUT", "180")),
         )
 
     @property
