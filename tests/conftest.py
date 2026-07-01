@@ -58,7 +58,7 @@ _load_env_file(os.path.join(os.path.dirname(__file__), "..", ".env"))
 # These only apply if the user hasn't already set them.  Pinned to a
 # model that actually exists on ModelScope (Qwen3-235B); the "cheap
 # 2B" tier that was here earlier is not actually served.
-os.environ.setdefault("LLM_MODEL", "Qwen/Qwen3-235B-A22B")
+os.environ.setdefault("LLM_MODEL", "deepseek-ai/DeepSeek-V4-Pro")
 os.environ.setdefault("LLM_TIMEOUT", "10")  # per-request
 os.environ.setdefault("LLM_TOTAL_TIMEOUT", "20")  # whole-call budget
 

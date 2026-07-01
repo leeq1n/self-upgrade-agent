@@ -64,10 +64,10 @@ class LLMConfig:
     fallback_models: List[str] = field(default_factory=list)
     max_tokens: int = 2048
     temperature: float = 0.1
-    timeout: int = 30  # per-request HTTP timeout
-    max_retries: int = 1  # retries per (key, model) on minute-level 429
+    timeout: int = 15  # per-request HTTP timeout
+    max_retries: int = 0  # retries per (key, model) on minute-level 429
     daily_quota_cooldown: int = 86400  # seconds before re-trying a dead key
-    total_timeout: float = 60.0  # whole-call budget across all keys/models
+    total_timeout: float = 120.0  # whole-call budget across all keys/models
     # If True, raise LLMCallTimeout on total_timeout breach (instead of
     # returning an error response).  Useful for callers that want a hard
     # deadline (tests, CI); off by default to preserve call()=str return
@@ -103,28 +103,27 @@ class LLMConfig:
                 api_keys = [single]
 
         # Fallback model list — ordered by current ModelScope availability.
-        # As of v1.5.0 (2026-06-30), we have empirical evidence that:
-        #   * ZhipuAI/GLM-5.1 works on the 2 alive keys (key#0, key#6)
-        #   * Qwen3-235B-A22B is daily-quota-dead on those 2 keys
-        #   * DeepSeek-V3.2 is daily-quota-dead on those 2 keys
-        #   * DeepSeek-V4-Pro and V4-Flash return empty choices
-        #     on ModelScope (broken or strip response)
-        #   * GLM-5.2 also returns empty choices
-        # So the only reliable model on the surviving keys is GLM-5.1.
-        # When daily quota resets, Qwen3-235B and DeepSeek-V3.2 come back
-        # to life and are listed as fallbacks.
+        # As of v1.5.1 (2026-06-30), we have empirical evidence that:
+        #   * DeepSeek-V4-Flash returns choices=null on ModelScope (broken)
+        #   * DeepSeek-V4-Pro works on 3 alive keys (key#0, #4, #6)
+        #   * ZhipuAI/GLM-5.1 works on 2 alive keys (key#4, #6) but
+        #     daily-quota-burned on key#0
+        #   * Qwen3-235B daily-quota-burned on key#0, alive on #4
+        # So: V4-Pro is the most reliable model across the surviving
+        # keys.  When daily quota resets, Qwen3-235B and GLM-5.1
+        # come back to life and serve as fallbacks.
         models_env = os.environ.get("LLM_MODELS", "").strip()
         if models_env:
             fallback_models = [m.strip() for m in models_env.split(",") if m.strip()]
         else:
             fallback_models = [
-                # Only model currently known to work on our 2 surviving keys.
-                "ZhipuAI/GLM-5.1",
+                # Most reliable on 3 alive keys.
+                "deepseek-ai/DeepSeek-V4-Pro",
                 # Tier-2 fallbacks — work when daily quota resets.
+                "ZhipuAI/GLM-5.1",
                 "Qwen/Qwen3-235B-A22B",
                 "deepseek-ai/DeepSeek-V3.2",
-                # Last-resort (reasoning-heavy, returns empty sometimes)
-                "deepseek-ai/DeepSeek-V4-Pro",
+                "Qwen/Qwen3-Coder-30B-A3B-Instruct",
             ]
 
         return cls(
@@ -132,14 +131,14 @@ class LLMConfig:
             base_url=os.environ.get(
                 "LLM_BASE_URL", "https://api-inference.modelscope.cn/v1"
             ),
-            model=os.environ.get("LLM_MODEL", "ZhipuAI/GLM-5.1"),
+            model=os.environ.get("LLM_MODEL", "deepseek-ai/DeepSeek-V4-Pro"),
             fallback_models=fallback_models,
             max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "2048")),
             temperature=float(os.environ.get("LLM_TEMPERATURE", "0.1")),
-            timeout=int(os.environ.get("LLM_TIMEOUT", "30")),
-            max_retries=int(os.environ.get("LLM_MAX_RETRIES", "1")),
+            timeout=int(os.environ.get("LLM_TIMEOUT", "15")),
+            max_retries=int(os.environ.get("LLM_MAX_RETRIES", "0")),
             daily_quota_cooldown=int(os.environ.get("LLM_DAILY_QUOTA_COOLDOWN", "86400")),
-            total_timeout=float(os.environ.get("LLM_TOTAL_TIMEOUT", "60")),
+            total_timeout=float(os.environ.get("LLM_TOTAL_TIMEOUT", "120")),
         )
 
     @property
