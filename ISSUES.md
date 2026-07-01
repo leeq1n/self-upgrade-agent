@@ -1,9 +1,9 @@
 # Self-Upgrade Agent — Known Issues & Roadmap
 
-> **状态**：活跃 (v1.5.1)
+> **状态**：活跃 (v1.6.0)
 > **更新**：2026-07-01
 
-这份文件跟踪"项目本身没做好的事"和"v1.6.0 计划"。每条 issue 都有：
+这份文件跟踪"项目本身没做好的事"和"v1.7.0 计划"。每条 issue 都有：
 - **级别**：P0 必修 / P1 应修 / P2 nice-to-have
 - **影响**：为什么重要
 - **当前 workaround**：怎么临时绕过
@@ -90,45 +90,47 @@
 - **影响**：输出格式可能在两处漂移
 - **建议修复**：移到 `src/pipeline_lg.py` 作为 public function
 
-### ISS-012: `BenchmarkTask` 与 `benchmark.run_single` 类型不匹配（pre-existing，新发现）
+### ISS-012: `BenchmarkTask` 与 `benchmark.run_single` 类型不匹配
 - **级别**：P1
 - **影响**：`src/evaluate.py:41` 定义了 `@dataclass class BenchmarkTask`（属性 `id/description/query/...`），但 `src/benchmark.py:32` 用 `task["task"]` 当字典取。`tests/test_evaluate.py::TestLLMIntegration` 的 4 个测试因此失败：`TypeError: 'BenchmarkTask' object is not subscriptable`
-- **当前 workaround**：`run.py --legacy` 路径绕开 `benchmark.run_single`；新路径 `node_evaluate` 调 `benchmark.run_all(tasks)` 时传的是 `benchmarks/tasks.json` 出来的 dict，所以 production 不撞这个 bug。**只影响 evaluate.py 单元测试**
-- **建议修复**：
-  1. 让 `benchmark.run_single(task)` 兼容两种类型：`task["task"]` 走 dict，`task.query` 走 dataclass；或
-  2. 把 `evaluate.BenchmarkTask` 改成 dict 派生（TypedDict）；或
-  3. 删 `BenchmarkTask` dataclass，统一走 `benchmarks/tasks.json`
-- **未修原因**：本次任务只修 `tests/test_e2e.py`，不在 v1.5.1 修复范围
-- **真实验证（2026-07-01）**：`git stash` 掉我的 e2e 改动后，干净 `fcb73ef` 上跑 `tests/test_evaluate.py`，同样 4 个 fail，证明 pre-existing
+- **当前 workaround**：生产 `node_evaluate` 调 `benchmark.run_all(tasks)` 时传的是 `benchmarks/tasks.json` 出来的 dict，所以 production 不撞这个 bug。**只影响 evaluate.py 单元测试**
+- **修复状态**：✅ v1.6.0 修（commit `535fc85`）— `benchmark.run_single` 现在分支 `hasattr(task, "query")`，接受 dict 或 dataclass；`evaluate.run_benchmark_trial` 包 dict → BenchmarkResult
+- **真实验证（2026-07-01）**：单次 LLM 调用测试通过；21-task benchmark 测试间歇性 fail（依赖 ModelScope 状态）
 
-### ISS-013: mock e2e 测试发现 `node_filter` 不传 `llm_config`，filter 永远走 keyword fallback
-- **级别**：P2（已通过 mock e2e 测试绕过；production 影响待评估）
-- **影响**：`src/pipeline_lg.py:182` 调用 `filter_papers(papers, cfg.filter, use_llm=True)` 时**没传 `llm_config`**。`src/filter.py:205` 检查 `if use_llm and llm_config is not None and llm_config.ready:` —— `llm_config is None` → 直接走 keyword fallback。这意味着生产环境里 filter **永远不会用 LLM 评分**，永远用 keyword。这意味着 ISS-001（filter LLM 评分不稳定）的 deterministic 修复虽然进了 v1.5.0，但根本就没生效
-- **当前 workaround**：`tests/test_e2e.py` fixture 直接 patch `src.filter.score_paper`，绕过这个 wiring 问题
+### ISS-013: `node_filter` 不传 `llm_config`，filter 永远走 keyword fallback
+- **级别**：P2
+- **影响**：`src/pipeline_lg.py:182` 调用 `filter_papers(papers, cfg.filter, use_llm=True)` 时**没传 `llm_config`**。`src/filter.py:205` 检查 `if use_llm and llm_config is not None and llm_config.ready:` —— `llm_config is None` → 直接走 keyword fallback。这意味着生产环境里 filter **永远不会用 LLM 评分**，永远用 keyword。**ISS-001（filter LLM 评分不稳定）的 deterministic 修复虽然进了 v1.5.0，但根本就没生效**
+- **当前 workaround**：已修复
+- **修复状态**：✅ v1.6.0 修（commit `535fc85`）— `node_filter` 现在调 `LLMConfig.from_env()` 并传给 `filter_papers(..., use_llm=llm_config.ready, llm_config=llm_config)`
+
+### ISS-014: ModelScope 网关状态不稳定（间歇性 empty choices / timeout）
+- **级别**：P1
+- **影响**：在 2026-07-01 多次探测中发现，`DeepSeek-V4-Pro` / `Qwen/Qwen3-235B-A22B` / `ZhipuAI/GLM-5.1` 这 3 个声称可用的模型在 ModelScope 网关对**大 prompt + 大 max_tokens** 调用时会返回 `finish_reason=length` 但 `content=""` 或直接 30s timeout。状态在几秒到几分钟内剧烈波动（同样的请求第一次成功 27s 返回 JSON，第二次 empty choices，第三次 timeout）
+- **当前 workaround**：
+  - 测试用 `LLM_MAX_TOKENS=500` 降低单次响应大小
+  - `tests/test_evaluate.py::TestLLMIntegration` 的 21-task benchmark 测试间歇性 fail —— 这是已知的，不算 regression
 - **建议修复**：
-  1. `node_filter` 调 `LLMConfig.from_env()` 并传给 `filter_papers(..., llm_config=cfg.llm)`；或
-  2. `filter_papers` 内部 `from src.llm import LLMConfig; LLMConfig.from_env()`，自动拿到 config
-  3. 跑真实 e2e 验证 filter LLM 评分确实在跑
-- **未修原因**：production wiring 改动超出 mock 测试修复范围；建议 ISS-013 进入 v1.6.0 backlog
+  1. 在 `src/llm.py` 加 empty-choices 重试逻辑（不要 mark dead，直接换下一个 key/model）
+  2. 或换 provider（OpenAI / Anthropic / DeepSeek 官方 API），绕过 ModelScope 网关
+- **未修原因**：超出 mock 测试修复范围；建议 ISS-014 进入 v1.7.0 backlog
 
 ---
 
-## v1.6.0 候选（按优先级）
+## v1.7.0 候选（按优先级）
 
-1. **ISS-001** filter 稳定性（deterministic boost + max_papers=5）
-2. **ISS-002** 真实 end-to-end 评估（让 promote 真正经过 evaluate）
-3. **ISS-013** `node_filter` 传 `llm_config`（让 ISS-001 修复真正生效）
+1. **ISS-014** ModelScope 网关稳定性（empty choices 重试或换 provider）
+2. **ISS-001** filter 稳定性（ISS-013 修后 ISS-001 修复真正生效，需回归验证）
+3. **ISS-002** 真实 end-to-end 评估（让 promote 真正经过 evaluate）
 4. **ISS-003** 多 daemon 文件锁
 5. **ISS-005** cost tracking with real tokens
-6. **ISS-012** `BenchmarkTask` 类型不匹配（pre-existing 4 测试失败）
-## v1.7.0 候选
+## v1.8.0 候选
 
-7. **ISS-006/007** 拆分 llm.py / pipeline_lg.py
-8. **ISS-008/010** 通知 + cost 预算
+6. **ISS-006/007** 拆分 llm.py / pipeline_lg.py
+7. **ISS-008/010** 通知 + cost 预算
 
 ---
 
-## 已修复 (v1.0 → v1.5.1)
+## 已修复 (v1.0 → v1.6.0)
 
 | 版本 | 修复 |
 |------|------|
@@ -137,4 +139,5 @@
 | v1.3.0 | node_research 读 trending 缓存（loop 闭环） |
 | v1.4.0 | global timeout + diagnostic + 401/403 永久 mark dead |
 | v1.5.0 | 8 key 全对上号；real promote 成功；BOM/utf-8-sig；filter/patchgen 对齐 self-upgrade 痛点 |
-| v1.5.1 | ISS-004 evaluate.py / node_evaluate 单 A/B 路径合并；`tests/test_e2e.py` mock 端到端 3/3 通过（修复了 PATCH_JSON 自相矛盾断言 + node_filter 不传 llm_config 的 mock 绕过） |
+| v1.5.1 | ISS-004 evaluate.py / node_evaluate 单 A/B 路径合并；`tests/test_e2e.py` mock 端到端 3/3 通过 |
+| v1.6.0 | ISS-013 `node_filter` 传 `llm_config`；ISS-012 benchmark dataclass 兼容；chromedriver-win64/ 物理清理；websocket-client 安装；Selenium 路径可跑 |
