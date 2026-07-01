@@ -141,3 +141,4 @@
 | v1.5.0 | 8 key 全对上号；real promote 成功；BOM/utf-8-sig；filter/patchgen 对齐 self-upgrade 痛点 |
 | v1.5.1 | ISS-004 evaluate.py / node_evaluate 单 A/B 路径合并；`tests/test_e2e.py` mock 端到端 3/3 通过 |
 | v1.6.0 | ISS-013 `node_filter` 传 `llm_config`；ISS-012 benchmark dataclass 兼容；chromedriver-win64/ 物理清理；websocket-client 安装；Selenium 路径可跑 |
+| v1.6.0+ (2026-07-01) | `.env` 改用 Qwen3-235B-A22B + GLM-5.1 (V4-Pro quota dead)。Filter 真调 LLM 11.7s (vs 之前 33s 因试 V4-Pro dead models)。PatchGen 仍受 ModelScope minute-level 限流影响——3 个活 key 在 60s 内被 rate-limit 一次后全 timeout。**真实端到端 promote 今日不可达**。ISS-014 实质修复(智能 cooldown + key 健康检查)留待 v1.7.0 |
