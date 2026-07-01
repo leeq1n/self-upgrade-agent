@@ -142,9 +142,25 @@ def run_benchmark_trial(task, skill_context="", llm_config=None):
     v1.5.1: now delegates to ``src.benchmark.run_single`` so the
     two A/B paths (this and ``pipeline_lg.node_evaluate``) share
     the same LLM-call shape.
+
+    v1.6.0 (ISS-012): wraps the dict from run_single into a
+    BenchmarkResult so callers (tests/test_evaluate.py,
+    src/skill_lifecycle.py) get the typed object they expect.
     """
     from src.benchmark import run_single
-    return run_single(task, llm_config=llm_config, skill_context=skill_context)
+    raw = run_single(task, llm_config=llm_config, skill_context=skill_context)
+    # Normalize dict → BenchmarkResult.  If raw is already a
+    # BenchmarkResult (defensive), pass through.
+    if isinstance(raw, BenchmarkResult):
+        return raw
+    return BenchmarkResult(
+        task_id=raw.get("task_id", ""),
+        success=bool(raw.get("success", False)),
+        latency_seconds=float(raw.get("elapsed", 0.0)),
+        token_count=int(raw.get("steps_executed", 0)),
+        llm_output=str(raw.get("task", "")),
+        error=str(raw.get("error", "")),
+    )
 
 
 def evaluate_skill(

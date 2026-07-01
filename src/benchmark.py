@@ -13,9 +13,26 @@ def load_tasks(path: str = "benchmarks/tasks.json") -> List[Dict]:
         return json.load(f)
 
 
-def run_single(task: Dict, llm_config=None, verbose: bool = False,
+def run_single(task, llm_config=None, verbose: bool = False,
                skill_context: str = "") -> Dict:
-    """Run agent on a single benchmark task."""
+    """Run agent on a single benchmark task.
+
+    v1.6.0 (ISS-012 fix): accept either dict (legacy benchmarks/tasks.json)
+    or BenchmarkTask dataclass (legacy src/evaluate.py).  The dataclass
+    has ``query`` (the prompt text); dicts use key ``task``.
+    """
+    # Normalize dict vs dataclass into the prompt + id + category
+    if hasattr(task, "query"):
+        # BenchmarkTask dataclass
+        prompt_text = task.query
+        task_id = task.id
+        category = ""
+    else:
+        # plain dict (benchmarks/tasks.json)
+        prompt_text = task["task"]
+        task_id = task["id"]
+        category = task.get("category", "")
+
     if llm_config is None:
         llm_config = LLMConfig.from_env()
 
@@ -29,9 +46,9 @@ def run_single(task: Dict, llm_config=None, verbose: bool = False,
             return chat_simple(prompt, config=llm_config) or ""
 
     t0 = time.time()
-    result = agent_run(task["task"], llm_call, verbose=verbose)
-    result["task_id"] = task["id"]
-    result["category"] = task.get("category", "")
+    result = agent_run(prompt_text, llm_call, verbose=verbose)
+    result["task_id"] = task_id
+    result["category"] = category
     result["elapsed"] = round(time.time() - t0, 3)
     return result
 

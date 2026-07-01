@@ -171,17 +171,31 @@ def node_research(state: dict) -> dict:
 
 
 def node_filter(state: dict) -> dict:
-    """Phase 2: Score and filter papers."""
+    """Phase 2: Score and filter papers.
+
+    v1.6.0 (ISS-013 fix): build LLMConfig from env so filter actually
+    uses LLM scoring. Previously llm_config was dropped, forcing the
+    keyword-only fallback path. See ISSUES.md.
+    """
     papers = state.get("papers", [])
     if not papers:
         return state
 
     logger.info(f"2. Filter: scoring {len(papers)} papers...")
     cfg = state.get("config")
+    # v1.6.0: build llm_config so filter can actually call the LLM.
+    llm_config = None
     try:
-        scored = filter_papers(papers, cfg.filter, use_llm=True)
+        from src.llm import LLMConfig
+        llm_config = LLMConfig.from_env()
+    except Exception as e:
+        logger.debug(f"node_filter: LLMConfig.from_env failed ({e}); using keyword only")
+    use_llm = llm_config is not None and llm_config.ready
+
+    try:
+        scored = filter_papers(papers, cfg.filter, use_llm=use_llm, llm_config=llm_config)
         state["scored_papers"] = scored
-        logger.info(f"   Qualified {len(scored)} papers")
+        logger.info(f"   Qualified {len(scored)} papers (LLM scoring: {use_llm})")
     except Exception as e:
         state["errors"].append(f"Filter: {e}")
         logger.error(f"   Filter failed: {e}")
