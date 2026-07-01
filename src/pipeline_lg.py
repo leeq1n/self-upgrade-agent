@@ -312,6 +312,39 @@ def node_reflect(state: dict) -> dict:
     return state
 
 
+def _safety_restore_planner() -> bool:
+    """v1.7.1 safety net: ensure core/planner.py is at the committed
+    version before any node modifies it.  If a previous run was killed
+    mid-evaluate and left a patched version, restore from git HEAD.
+
+    Returns True if the file matched HEAD or was successfully restored.
+    Returns False only on catastrophic git failure (still warns).
+    """
+    import subprocess
+    planner = "core/planner.py"
+    try:
+        # Compare working tree to HEAD
+        r = subprocess.run(
+            ["git", "diff", "--quiet", "HEAD", "--", planner],
+            cwd=".", capture_output=True, timeout=5,
+        )
+        if r.returncode == 0:
+            return True  # matches HEAD
+        # Different from HEAD — restore
+        subprocess.run(
+            ["git", "checkout", "HEAD", "--", planner],
+            cwd=".", capture_output=True, timeout=5,
+        )
+        logger.warning(
+            "_safety_restore_planner: core/planner.py was dirty "
+            "(likely killed mid-evaluate), restored from git HEAD"
+        )
+        return True
+    except Exception as e:
+        logger.error(f"_safety_restore_planner: failed: {e}")
+        return False
+
+
 def node_evaluate(state: dict) -> dict:
     """Phase 5: Real A/B benchmark — baseline vs patched agent.
 
@@ -320,11 +353,18 @@ def node_evaluate(state: dict) -> dict:
     that success_rate has a real distribution (not just one noisy
     sample) and the bootstrap CI in stats.py is meaningful.
 
+    v1.7.1: invoke _safety_restore_planner at entry so a previous
+    process killed mid-A/B benchmark can\'t leave core/planner.py
+    in a patched state.
+
     Cost: 21 tasks × N trials × 2 (baseline + upgraded) = 42*N LLM
     calls.  N=3 → 126 calls; with Qwen3.5-2B this finishes in a
     few minutes.  N=10 (the old config) → 420 calls, which is why
     we lowered the default.
     """
+    # v1.7.1: ensure core/planner.py is at HEAD before we potentially
+    # rewrite it.  If a prior run was killed mid-A/B, this restores.
+    _safety_restore_planner()
     # Dry-run mode: skip real benchmark entirely
     if state.get("dry_run", False):
         logger.info("5. Evaluate: DRY-RUN — using simulated data")
