@@ -375,6 +375,45 @@ def _is_daily_quota_error(resp: httpx.Response) -> bool:
     return any(m in body for m in daily_markers)
 
 
+# v1.7.0: Provider detection.  Anthropic-compatible providers
+# (MiniMax, Anthropic direct, AWS Bedrock with anthropic adapter) live
+# at base URLs containing '/anthropic' and use x-api-key auth.
+# OpenAI-compatible providers (ModelScope, OpenAI, etc.) use
+# /chat/completions + Bearer auth.  We detect at call time and
+# dispatch.
+
+
+def _is_anthropic_provider(config: "LLMConfig") -> bool:
+    """Detect Anthropic-compatible provider from base_url.
+
+    MiniMax's Anthropic endpoint lives at .../anthropic/v1/messages
+    and uses x-api-key + anthropic-version headers, not Bearer auth.
+    """
+    return "/anthropic" in (config.base_url or "")
+
+
+def _anthropic_post(
+    config: "LLMConfig",
+    key: str,
+    body: dict,
+    timeout: int,
+) -> "httpx.Response":
+    """POST to Anthropic /v1/messages.  Body must have ``messages``; we
+    split ``system`` out of messages and into the top-level ``system``
+    field if present (handled by caller).
+    """
+    return httpx.post(
+        f"{config.base_url.rstrip('/')}/v1/messages",
+        headers={
+            "x-api-key": key,
+            "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+        },
+        json=body,
+        timeout=timeout,
+    )
+
+
 def _try_with_fallback(
     messages: List[dict],
     system: Optional[str],
@@ -456,19 +495,64 @@ def _try_with_fallback(
                 try:
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore")
-                        resp = httpx.post(
-                            f"{config.base_url}/chat/completions",
-                            headers={
-                                "Authorization": f"Bearer {key}",
-                                "Content-Type": "application/json",
-                            },
-                            json=body,
-                            timeout=per_request_timeout,
-                        )
+                        if _is_anthropic_provider(config):
+                            # Anthropic /v1/messages: split ``system`` out
+                            # of messages into the top-level ``system`` field.
+                            ant_messages = [m for m in body.get("messages", []) if m.get("role") != "system"]
+                            ant_body = {**body, "messages": ant_messages}
+                            ant_body.pop("response_format", None)
+                            if system:
+                                ant_body["system"] = system
+                            resp = _anthropic_post(config, key, ant_body, per_request_timeout)
+                        else:
+                            resp = httpx.post(
+                                f"{config.base_url}/chat/completions",
+                                headers={
+                                    "Authorization": f"Bearer {key}",
+                                    "Content-Type": "application/json",
+                                },
+                                json=body,
+                                timeout=per_request_timeout,
+                            )
                     elapsed_ms = int((time.time() - start) * 1000)
 
                     if resp.status_code == 200:
                         data = resp.json()
+                        if _is_anthropic_provider(config):
+                            # Anthropic shape: {content: [{type:text,text:...}], usage: {input_tokens, output_tokens}}
+                            content_blocks = data.get("content") or []
+                            text = "".join(
+                                b.get("text", "") for b in content_blocks
+                                if isinstance(b, dict) and b.get("type") == "text"
+                            )
+                            if text:
+                                tried.append({
+                                    "model": model,
+                                    "key_index": config.api_keys.index(key),
+                                    "status": 200,
+                                    "elapsed_s": elapsed_ms / 1000,
+                                    "note": "ok",
+                                })
+                                usage = data.get("usage", {})
+                                return LLMResponse(
+                                    content=text,
+                                    model=data.get("model", model),
+                                    key_index=config.api_keys.index(key),
+                                    latency_ms=elapsed_ms,
+                                    attempts=attempts,
+                                    prompt_tokens=usage.get("input_tokens", 0),
+                                    completion_tokens=usage.get("output_tokens", 0),
+                                    total_tokens=usage.get("input_tokens", 0) + usage.get("output_tokens", 0),
+                                )
+                            # empty content
+                            tried.append({
+                                "model": model,
+                                "key_index": config.api_keys.index(key),
+                                "status": 200,
+                                "elapsed_s": elapsed_ms / 1000,
+                                "note": "empty choices",
+                            })
+                            break
                         choices = data.get("choices") or []
                         if choices:
                             tried.append({
