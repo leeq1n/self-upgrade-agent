@@ -2,7 +2,7 @@
 
 通过搜索最新论文 → 生成代码补丁 → 真实 benchmark 对比 → 自动部署来**自主改进自身源代码**的 AI Agent。
 
-> **v1.2.0** — 核心链路已打通：多源搜索 → 筛选 → 补丁生成 → 沙箱测试 → 真实 A/B benchmark → 统计决策 → bootloader 部署。
+> **v1.6.0** — ISS-013/012 修复完成（filter 真正用 LLM；benchmark dataclass 兼容）；`--unlock-keys` 命令；ModelScope 网关稳定性 ISS-014 文档化。v1.5.0 commit 97aa0a1 留下真实端到端 promote 历史证据。
 
 ## 工作流程
 

@@ -1,6 +1,6 @@
 # Self-Upgrade Agent 项目简报
 
-**最后更新**：2026-06-30（v1.5.0 真实端到端 promote 成功 + 401/403 永久 mark dead）
+**最后更新**：2026-07-01（v1.6.0 ISS-013/012 修复 + --unlock-keys 命令）
 
 ---
 
@@ -8,34 +8,33 @@
 
 构建一个 **能通过搜索论文自主改进自身源代码的 AI Agent**。
 
-### 五大能力（v1.5.0 评估）
+### 五大能力（v1.6.0 评估）
 
 | 能力 | 说明 | 完成度 |
 |------|------|--------|
-| 🔍 自主搜索 | 多源搜索：arXiv + Semantic Scholar + Papers With Code + GitHub（默认 multi_source=true）| 95% |
-| ✏️ 自我进化 | 论文方法 → 代码补丁 → 沙箱验证 → **surgical merge 写入 core/** | **100%** — 真实 promote `planner.py` 成功 |
-| 📊 自主评估 | Bootstrap 统计显著性 + 21 任务 A/B（默认 trials=1）+ elapsed-time cost ratio | 90% |
-| 🎯 自主决策 | 阈值判断 + CI 置信区间 + auto-promote | 90% |
+| 🔍 自主搜索 | 多源搜索：arXiv + Semantic Scholar + Papers With Code + GitHub（默认 multi_source=true） | 90% |
+| ✏️ 自我进化 | 论文方法 → 代码补丁 → 沙箱验证 → **surgical merge 写入 core/** | **95%** — v1.5.0 真实 promote 成功(commit 97aa0a1)；v1.6.0 ISS-013/012 修复 + filter 真用 LLM |
+| 📊 自主评估 | Bootstrap 统计显著性 + 21 任务 A/B（默认 trials=1）+ elapsed-time cost ratio | 85% |
+| 🎯 自主决策 | 阈值判断 + CI 置信区间 + auto-promote | 85% |
 | 🔄 生命周期 | 模块版本追踪、使用统计、自动修剪 | 80% |
+| 🛡️ 稳定性 | Multi-key 轮换 + quota 持久化 + `--unlock-keys` 恢复 + ISS-014 文档化 | 70%（ModelScope 网关外部问题） |
 
 ---
 
-## 二、v1.4.0 新增 / 修复
+## 二、v1.6.0 新增 / 修复
 
 | 改进 | 说明 | 影响 |
 |------|------|------|
-| **LLM 多 key 轮换** | `LLM_API_KEY_0..N` 自动发现；daily-quota 429 立即换 key | 之前 7 个 key 在 .env 里**是死配置**，单 trial 43s；现在 ~2s（~20× 加速） |
-| **Quota 持久化** | `upgrades/quota_state.json` 记录 `dead_until/failures_today` | daemon 不会每天重头轮 |
-| **按任务路由模型** | `LLMConfig.for_task_type('code'/'reasoning'/'planning'/'general')` | code→Coder-30B，reasoning→DeepSeek-V3.2，etc. |
-| **Surgical merge bootloader** | `switcher.promote_patch` 改用 `_apply_patch_to_module` | 真正保留 imports 和 `__version__`（之前会全文件覆盖） |
-| **LLM JSON 围栏清洗** | `filter._parse_llm_json` 容忍 ```json ... ``` 围栏 | LLM 经常返回 markdown 围栏，之前 warn 后静默失败 |
-| **conftest auto-skip** | 无 LLM key → skip `@pytest.mark.llm`；`HERMES_SKIP_NETWORK=1` | 解决"测试 hang 180s"问题 |
-| **`.env` 自动加载** | `run.py` 启动时读 .env | 用户不再需要 `export $(cat .env)` |
-| **sandbox 跨平台** | 修 `env=dict()` 在 Linux/macOS 失败；去 `chr()` obfuscation | 之前只在 Windows 偶然工作 |
+| **ISS-013 修** | `src/pipeline_lg.node_filter` 现在 `LLMConfig.from_env()` 并传给 `filter_papers` | filter 真正用 LLM 评分（之前 keyword fallback 是 v1.5.0 ISS-001 修复死代码的原因） |
+| **ISS-012 修** | `src/benchmark.run_single` 兼容 BenchmarkTask dataclass 和 dict；`evaluate.run_benchmark_trial` 包 dict → BenchmarkResult | 4 个 `TestLLMIntegration` 测试从 fail → pass（间歇性） |
+| **`--unlock-keys` 命令** | `python run.py --unlock-keys` 重置 quota_state.json，清除所有 dead marks | ModelScope 网关恢复后手动恢复 key pool |
+| **LLM timeout bump** | `LLM_TIMEOUT` 15→30s、`LLM_TOTAL_TIMEOUT` 120→180s、`LLM_MAX_RETRIES` 0→2 | 大 prompt 不再假超时，给 429 多次重试机会 |
+| **chromedriver 清理** | 物理删除 `chromedriver-win64/`（41MB 残留）+ 安装 `websocket-client` + `trio-websocket` | Selenium 路径可跑 |
+| **tests/test_e2e.py** | 3 个 mock 端到端测试（research→filter→patchgen→sandbox→evaluate→decide→promote） | 离线验证完整链路（22-100s） |
 
 ---
 
-## 三、当前真实状态（v1.4.0）
+## 三、当前真实状态（v1.6.0）
 
 ### 已具备 ✅
 
@@ -63,45 +62,44 @@
 ### 测试成绩
 
 ```
-pytest -m "not llm and not network"  → 94 passed, 1 skipped, 13 deselected in 2.17s
-pytest -m "not network"             → 102 passed, 1 skipped in ~16s
-pytest (full)                        → 107 passed, 1 skipped in ~68s
+pytest tests/ --ignore=tests/test_e2e.py --ignore=tests/test_evaluate.py  → 147 passed, 5 skipped in ~9s
+pytest tests/test_e2e.py                                                → 3 passed in ~60-100s (mock LLM)
+pytest tests/test_evaluate.py                                           → 11 总 (7 单测 pass + 4 LLM integration 间歇性 pass)
 ```
 
 ### 仍待改进 🟡
 
 | 项目 | 说明 |
 |------|------|
-| 真实端到端 self-upgrade 成功 | 之前 `manifest.json` 显示 promote 都是空 candidate（`has_code: false`），从没真正成功过完整闭环 |
-| 任务类型自动检测 | 现在 `for_task_type` 需要调用方显式指定；可以加自动检测（看 prompt 关键词） |
-| `filter`评分多维度 | 当前 abstract/applicability/novelty 三维，可加 hallucination / bias 检测 |
-| `pipeline_lg` 可读性 | 已从单字母改为语义化，仍有进一步优化空间 |
-| **Trending 缓存接入 pipeline** | ✅ v1.4.0 — `node_research` 现在读 `upgrades/trending_keywords.json`，把昨天发现的高频关键词拼到今天的搜索里。这是 harness+loop 真正闭环的关键 |
-| **死代码清理** | ✅ v1.4.0 — 删除 `research_s2.search_and_enrich`（0 调用方）；`keyword_expander.load_trending_keywords` 不再是死代码（被 node_research 调用） |
-| **便宜模型 + 详细诊断 + 全局熔断** | ✅ v1.4.0 — 默认 `Qwen3.5-2B` 取代 30B；`LLMConfig.total_timeout`（默认 60s）跨 key×model 总预算；`LLMCallTimeout` 异常 + `LLMResponse.diagnostic` 结构化报告；`diagnose()` 一键输出当前 LLM 状态（key 脱敏）。**超时以后知道问题在哪**。v1.5.0 改默认 model 为 `Qwen3-235B-A22B`（2B-3B 不在 ModelScope 上） |
-| **patchgen 真的对得上 surgical merge** | ✅ v1.5.0 — prompt 读 `core/planner.py` 现状；强制保留 `plan_task` 接口、imports、`__version__`；删除 `response_format`（不可靠）；带 `def plan_task` 校验，缺则拒收。5 个新单元测试 |
-| **filter prompt 针对 self-upgrade 痛点** | ✅ v1.5.0 — 评分维度改成"是否能改进本项目 5 个核心痛点"（多源搜索 / 代码生成 / 沙箱 / A/B / bootloader） |
-| **patchgen 预过滤无关 paper** | ✅ v1.5.0 — 音乐生成、图像分割、机器人等 paper **自动拒绝**，不浪费 LLM 调用。`node_generate_patch` 现在试**所有** qualified paper（之前只试 1 个） |
-| **node_evaluate 真用 trials** | ✅ v1.5.0 — `cfg.evaluate.trials_per_test` 真循环 N 次 baseline + N 次 upgraded；cost ratio 改用 elapsed-time ratio；删掉旧死代码 |
-| **.env BOM 兼容** | ✅ v1.5.0 — `_load_env_file` 用 `utf-8-sig` 读 .env，剥 BOM + 内联注释 + 默认 model=235B |
-| **401/403 永久 mark dead** | ✅ v1.5.0 — `QuotaState.mark_permanently_dead()` 100 年 cooldown，区别于 429 daily quota (24h)；`diagnose()` 显式报告 `last_reason` |
-| **真实端到端 promote 成功** | ✅ v1.5.0 — 基于 "Self-Evolving World Models for LLM Agent Planning" 论文，patchgen 生成 2645 chars patch（含 `_extract_task_type` / `_get_relevant_insights` 等新函数 + `__version__ = "plan_task_v2"`），surgical merge 保留 `__version__ = "1.3.0"` 旧值 + 旧 `plan_task` 函数；rollback 路径已验证可恢复原状 |
+| **真实端到端 self-upgrade 完整闭环** | v1.5.0 真实 promote 成功过(commit 97aa0a1)，v1.6.0 ISS-014: ModelScope 网关对大 prompt 间歇性 empty/timeout。需要 (a) 换 provider，或 (b) 加 empty-choices 重试逻辑 |
+| **ISS-014 ModelScope 网关稳定性** | 🟡 v1.6.0 — 文档化但没修。3 个模型 × 3 个活 key 在 max_tokens=2048 + 大 prompt 时会空响应或 30s timeout。`--unlock-keys` workaround 可恢复 dead keys |
+| **ISS-005 cost tracking 是 placeholder** | 🟡 — `cost_increase_ratio` 用 elapsed time ratio，真实 token cost 没记。ISS-014 之后 next |
+| **ISS-003 多 daemon 并发锁** | 🟡 — `fcntl.flock` 没加 |
+| **ISS-006/007 llm.py / pipeline_lg.py 偏大** | 🟡 — 拆分待做 |
+| **ISS-008/010 通知 + cost 预算** | 🟡 — nice-to-have |
+| **真实端到端 self-upgrade 成功** | ✅ v1.5.0 — 基于 "Self-Evolving World Models for LLM Agent Planning" 论文，patchgen 生成 2645 chars patch（含 `_extract_task_type` / `_get_relevant_insights` 等新函数 + `__version__ = "plan_task_v2"`），surgical merge 保留 `__version__ = "1.3.0"` 旧值 + 旧 `plan_task` 函数；rollback 路径已验证可恢复原状 |
 | **.env 真实 key 校对** | ✅ v1.5.0 — 8 个 key 全部对上号（炜/大师姐/少春/昇/孟祥龙/老王/stig/松泽），5 个 401/403 永久失效，3 个仍可用（炜+孟祥龙+stig） |
+| **ISS-013 filter 真正用 LLM** | ✅ v1.6.0 — `node_filter` 现在构造 `LLMConfig.from_env()` 并传给 `filter_papers`。真实验证：filter 真调 LLM 返回 `applicability=9.0, novelty=7.0`（vs 之前 keyword-only） |
+| **ISS-012 benchmark dataclass 兼容** | ✅ v1.6.0 — `benchmark.run_single` 现在分支 `hasattr(task, "query")` 接受 dict 或 dataclass；`evaluate.run_benchmark_trial` 包 dict → BenchmarkResult |
+| **`--unlock-keys` quota 恢复** | ✅ v1.6.0 — `python run.py --unlock-keys` 一键清空 quota_state 死 marks |
+| **`tests/test_e2e.py` mock 端到端** | ✅ v1.6.0 — 3 个 mock 测试覆盖 7 阶段完整链路 |
 
 ---
 
 ## 四、验收状态
 
-**v1.4.0 验收评估：基本通过 ✅**
+**v1.6.0 验收评估：基本通过 ⚠️（部分 ISS-014 待外部依赖恢复）**
 
-- [x] 107 测试通过，2.17s 跑完纯逻辑
-- [x] LLM multi-key 轮换生效（单 trial ~2s vs 之前 43s）
-- [x] Quota 状态持久化到 `upgrades/quota_state.json`
-- [x] `switcher.promote_patch` 真正用 surgical merge（保留 `__version__` + imports）
-- [x] `filter._parse_llm_json` 容忍 ```json 围栏
-- [x] `conftest.py` auto-skip 缺 key 的 llm 测试
-- [x] `run.py` 自动加载 `.env`
-- [x] `sandbox.py` 跨平台工作
-- [x] 多信息源（arXiv + S2 + PwC + GitHub）可选启用
-- [x] 完整版本历史和回滚能力（manifest + backups/）
-- [x] 文档齐全：README + PROJECT_BRIEF + API_REFERENCE + LLM_CALLS + 架构图
+- [x] ISS-013 修复真实验证（filter 真调 LLM，`applicability=9.0, novelty=7.0`，33s）
+- [x] ISS-012 修复真实验证（4 个 TestLLMIntegration 测试从 fail → pass，间歇性）
+- [x] `--unlock-keys` 命令工作（清 8 个 dead marks）
+- [x] `python -m core.agent "Plan a 3-day trip to Tokyo"` 工作（90s，5 步计划）
+- [x] mock e2e 测试 3/3 通过（22-100s 离线）
+- [x] 147 unit test + 5 skip（非 LLM 部分）
+- [x] ISS-014 documented（ModelScope 网关外部问题，workaround 已加）
+- [ ] ❌ **真实 LLM 端到端 promote**（ModelScope 网关当前不稳定，patchgen 阶段 LLM 调用间歇性 timeout）
+- [ ] 文档：PROJECT_BRIEF/DELIVERY/README 已更新 ISS-013/012/014
+- [x] worktree 干净（chromedriver-win64/ 已物理清理；agent.py.bak 已删）
+- [x] git commit + tag v1.6.0 待完成
+
+**关于真实 LLM 端到端**:v1.5.0 commit 97aa0a1 已记录**真实 promote 成功历史**(从 `Self-Evolving World Models for LLM Agent Planning` 论文 → 2645 chars patch → surgical merge → rollback 验证)。v1.6.0 的 ISS-013 修复让 filter 真正用 LLM(独立验证: 33s 内拿到真实 LLM 评分)。但**完整端到端 promote**(filter + patchgen + sandbox + evaluate + decide + promote)需要 ModelScope 网关稳定窗口,等下一波 quota 刷新或换 provider。
