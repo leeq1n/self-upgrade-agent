@@ -62,6 +62,30 @@ CREATE TABLE IF NOT EXISTS convergence_state (
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL
 );
+
+-- v1.8.0 A4: persistent record of papers we've already seen.
+-- This is the foundation for "don't waste quota on re-fetched papers".
+-- A paper is added to seen_papers the first time it appears in
+-- search_arxiv results.  Filter logic should exclude them from
+-- subsequent search invocations.
+CREATE TABLE IF NOT EXISTS seen_papers (
+    paper_id TEXT PRIMARY KEY,
+    first_seen_at TEXT NOT NULL,
+    times_seen INTEGER DEFAULT 1,
+    last_outcome TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_seen_first_seen ON seen_papers(first_seen_at);
+
+-- v1.8.0 A4: auto-blacklist after N failures.
+-- A paper that fails N+ times gets auto-blacklisted so the system
+-- stops wasting quota on it.  This is a soft blacklist separate
+-- from the hard blacklist_paper() manual call.
+CREATE TABLE IF NOT EXISTS auto_blacklist (
+    paper_id TEXT PRIMARY KEY,
+    reason TEXT NOT NULL,
+    failure_count INTEGER NOT NULL,
+    blacklisted_at TEXT NOT NULL
+);
 """
 
 
@@ -191,3 +215,100 @@ def set_convergence_state(conn: sqlite3.Connection, key: str, value: str) -> Non
         (key, value, datetime.datetime.utcnow().isoformat()),
     )
     conn.commit()
+
+
+# === v1.8.0 A4: seen_papers tracking ===
+
+def mark_paper_seen(
+    conn: sqlite3.Connection,
+    paper_id: str,
+    outcome: str = None,
+) -> None:
+    """Record that we have seen a paper (called from node_research).
+
+    Idempotent: increments times_seen if already present.
+    This is the foundation for "don't waste quota re-fetching".
+    """
+    import datetime
+    c = conn.cursor()
+    c.execute("SELECT times_seen FROM seen_papers WHERE paper_id = ?", (paper_id,))
+    row = c.fetchone()
+    if row is None:
+        c.execute(
+            """
+            INSERT INTO seen_papers (paper_id, first_seen_at, times_seen, last_outcome)
+            VALUES (?, ?, 1, ?)
+            """,
+            (paper_id, datetime.datetime.utcnow().isoformat(), outcome),
+        )
+    else:
+        c.execute(
+            """
+            UPDATE seen_papers
+            SET times_seen = times_seen + 1, last_outcome = ?
+            WHERE paper_id = ?
+            """,
+            (outcome, paper_id),
+        )
+    conn.commit()
+
+
+def get_unseen_paper_ids(conn: sqlite3.Connection) -> set:
+    """Return the set of paper_ids we have already seen.
+
+    Used by node_research to filter search_arxiv results:
+    only papers NOT in this set should be returned.
+
+    Empty set on a fresh install (nothing seen yet, all are new).
+    """
+    c = conn.cursor()
+    c.execute("SELECT paper_id FROM seen_papers")
+    return {row[0] for row in c.fetchall()}
+
+
+def get_seen_count(conn: sqlite3.Connection) -> int:
+    """How many unique papers have we seen so far?"""
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM seen_papers")
+    return c.fetchone()[0]
+
+
+def auto_blacklist_paper(
+    conn: sqlite3.Connection,
+    paper_id: str,
+    reason: str,
+    failure_count: int,
+) -> None:
+    """Auto-blacklist a paper that has failed N+ times.
+
+    Distinct from manual blacklist_paper() — this is system-driven
+    based on the failure count observed in attempts.
+    """
+    import datetime
+    c = conn.cursor()
+    c.execute(
+        """
+        INSERT OR REPLACE INTO auto_blacklist
+        (paper_id, reason, failure_count, blacklisted_at)
+        VALUES (?, ?, ?, ?)
+        """,
+        (paper_id, reason, failure_count, datetime.datetime.utcnow().isoformat()),
+    )
+    conn.commit()
+
+
+def is_auto_blacklisted(conn: sqlite3.Connection, paper_id: str) -> bool:
+    """Check if a paper has been auto-blacklisted due to repeated failures."""
+    c = conn.cursor()
+    c.execute("SELECT 1 FROM auto_blacklist WHERE paper_id = ?", (paper_id,))
+    return c.fetchone() is not None
+
+
+def get_failure_count(conn: sqlite3.Connection, paper_id: str) -> int:
+    """How many times has this paper failed in attempts table?"""
+    c = conn.cursor()
+    c.execute(
+        "SELECT COUNT(*) FROM attempts WHERE paper_id = ? AND outcome != 'kept'",
+        (paper_id,),
+    )
+    return c.fetchone()[0]
