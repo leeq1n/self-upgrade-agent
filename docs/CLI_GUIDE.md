@@ -115,6 +115,39 @@ python -m self_upgrade cull
 ```
 Removes low-effectiveness skills from the registry.  Idempotent.
 
+### `gc` — garbage-collect cache + temp files
+```bash
+python -m self_upgrade gc --dry-run       # preview what would be deleted
+python -m self_upgrade gc                  # actually delete (default: 30-day cache TTL)
+python -m self_upgrade gc --arxiv-cache-max-age-days 0   # delete ALL cache files
+python -m self_upgrade gc --archive-history-older-than-rows 100  # archive oldest 100 rows of history.db
+```
+
+**What it cleans** (default 30-day TTL):
+- `upgrades/arxiv_cache/*.pkl` older than 30 days
+- `upgrades/s2_cache/*`, `gh_cache/*`, `pwc_cache/*` (same rule)
+- All `__pycache__/` directories in the project (Python rebuilds on import)
+- Sandbox residue: `*.bench_bak`, `*.bench_tmp`, `*.v17_test_bak`, `*.stress_bak`, `*.e2e_test_bak`
+- (optional) Oldest N rows of `history.db` archived to `upgrades/history_archive_<ts>.json`
+
+**What it does NOT clean** (intentionally):
+- `core/planner.py` (the upgrade target)
+- `src/llm.py`, `src/pipeline_lg.py` (production code)
+- `tests/` test files
+- `upgrades/manifest.json` (audit log of promoted changes)
+- `upgrades/quota_state.json` (key health tracking)
+
+**When to run**:
+- After running `run_3rounds_manual.py` (which itself auto-cleans `__pycache__`)
+- Monthly as part of routine maintenance
+- When `du -sh upgrades/` shows > 100MB (unusual growth)
+
+**Notes**:
+- The `run_3rounds_manual.py` script ALSO auto-cleans `__pycache__` at the end
+  (so you don't need to run `gc` immediately after)
+- `gc` is idempotent: running it twice in a row does nothing on the second run
+- `gc` does NOT touch the committed `3round_run_results.json` (historical snapshot)
+
 ---
 
 ## 5. Running the 3-round stress test (manual)

@@ -48,6 +48,21 @@ def main():
     # cull: prune skills
     sub.add_parser("cull", help="Cull low-effectiveness skills")
 
+    # gc: garbage-collect cache + temp files
+    p_gc = sub.add_parser("gc", help="Garbage-collect cache files (arxiv_cache, s2_cache, __pycache__, sandbox residue)")
+    p_gc.add_argument(
+        "--arxiv-cache-max-age-days", type=int, default=30,
+        help="Delete arxiv_cache files older than N days (default: 30, 0=delete all)",
+    )
+    p_gc.add_argument(
+        "--archive-history-older-than-rows", type=int, default=0,
+        help="Archive history.db rows older than N rows (default: 0=keep all)",
+    )
+    p_gc.add_argument(
+        "--dry-run", action="store_true",
+        help="Show what would be deleted without actually deleting",
+    )
+
     args = parser.parse_args()
 
     if args.cmd == "run":
@@ -60,6 +75,12 @@ def main():
         return cmd_unlock()
     if args.cmd == "cull":
         return cmd_cull()
+    if args.cmd == "gc":
+        return cmd_gc(
+            arxiv_max_age=args.arxiv_cache_max_age_days,
+            history_archive_rows=args.archive_history_older_than_rows,
+            dry_run=args.dry_run,
+        )
     parser.print_help()
     return 1
 
@@ -196,6 +217,148 @@ def cmd_cull() -> int:
     from src.skill_lifecycle import cull_obsolete
     n = cull_obsolete()
     print(f"Culled {n} skills")
+    return 0
+
+
+# === v1.8.0: garbage-collect ===
+
+def _file_age_days(path: str) -> float:
+    """Return age of file in days (mtime)."""
+    import time
+    return (time.time() - os.path.getmtime(path)) / 86400.0
+
+
+def cmd_gc(arxiv_max_age: int, history_archive_rows: int, dry_run: bool) -> int:
+    """Garbage-collect runtime data.
+
+    - arxiv_cache/ : delete pkl files older than --arxiv-cache-max-age-days
+                     (default 30; 0 = delete all)
+    - s2_cache/     : same rule
+    - gh_cache/     : same rule
+    - pwc_cache/    : same rule
+    - __pycache__/  : always delete (Python rebuilds on import)
+    - *.bench_bak / *.bench_tmp : always delete (transient)
+    - history.db    : if --archive-history-older-than-rows > 0, archive
+                     the oldest N rows to upgrades/history_archive_<ts>.json
+
+    Default behavior (no flags) is conservative: 30-day cache TTL +
+    no history archive.  Use --dry-run to see what would be deleted.
+    """
+    upgraded = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "upgrades",
+    )
+    if not os.path.exists(upgraded):
+        print(f"upgrades/ does not exist ({upgraded})")
+        return 0
+
+    verb = "would delete" if dry_run else "deleted"
+    n_files = 0
+    n_bytes = 0
+
+    # 1. Cache directories: arxiv_cache, s2_cache, gh_cache, pwc_cache
+    cache_dirs = ["arxiv_cache", "s2_cache", "gh_cache", "pwc_cache"]
+    for sub in cache_dirs:
+        sub_path = os.path.join(upgraded, sub)
+        if not os.path.exists(sub_path):
+            continue
+        for f in os.listdir(sub_path):
+            full = os.path.join(sub_path, f)
+            if not os.path.isfile(full):
+                continue
+            age = _file_age_days(full)
+            keep = (arxiv_max_age > 0 and age < arxiv_max_age)
+            if not keep:
+                size = os.path.getsize(full)
+                if not dry_run:
+                    os.remove(full)
+                n_files += 1
+                n_bytes += size
+                print(f"  {verb}: {sub}/{f} ({age:.1f}d, {size}B)")
+
+    # 2. __pycache__ directories everywhere in repo
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    for root, dirs, files in os.walk(project_root):
+        # Skip .git, upgrades
+        if ".git" in root or root.startswith(upgraded):
+            continue
+        for d in list(dirs):
+            if d == "__pycache__":
+                pycache = os.path.join(root, d)
+                size = sum(
+                    os.path.getsize(os.path.join(pycache, f))
+                    for f in os.listdir(pycache)
+                    if os.path.isfile(os.path.join(pycache, f))
+                )
+                if not dry_run:
+                    import shutil
+                    shutil.rmtree(pycache)
+                n_files += 1
+                n_bytes += size
+                print(f"  {verb}: {pycache[len(project_root)+1:]} ({size}B)")
+                dirs.remove(d)
+
+    # 3. Sandbox residue
+    for pattern in (".bench_bak", ".bench_tmp", ".v17_test_bak",
+                    ".stress_bak", ".e2e_test_bak", ".test_bak"):
+        for root, dirs, files in os.walk(project_root):
+            if ".git" in root or root.startswith(upgraded):
+                continue
+            for f in files:
+                if f.endswith(pattern):
+                    full = os.path.join(root, f)
+                    size = os.path.getsize(full)
+                    if not dry_run:
+                        os.remove(full)
+                    n_files += 1
+                    n_bytes += size
+                    print(f"  {verb}: {full[len(project_root)+1:]} ({size}B)")
+
+    # 4. history.db archive (if requested)
+    if history_archive_rows > 0:
+        import sqlite3
+        hist_db = os.path.join(upgraded, "history.db")
+        if os.path.exists(hist_db):
+            conn = sqlite3.connect(hist_db)
+            c = conn.cursor()
+            c.execute("SELECT COUNT(*) FROM upgrades")
+            n_total = c.fetchone()[0]
+            if n_total > history_archive_rows:
+                c.execute(
+                    "SELECT id, decision, notes FROM upgrades ORDER BY id ASC LIMIT ?",
+                    (n_total - history_archive_rows,),
+                )
+                old_rows = c.fetchall()
+                conn.close()
+                import datetime
+                ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                arch_path = os.path.join(
+                    upgraded, f"history_archive_{ts}.json")
+                with open(arch_path, "w") as f:
+                    json.dump(
+                        {"archived_at": ts, "rows": [
+                            {"id": r[0], "decision": r[1], "notes": r[2]}
+                            for r in old_rows
+                        ]},
+                        f, indent=2,
+                    )
+                print(f"  archived {len(old_rows)} old rows to {arch_path}")
+                if not dry_run:
+                    # Delete the archived rows from main db
+                    conn = sqlite3.connect(hist_db)
+                    c = conn.cursor()
+                    c.execute(
+                        "DELETE FROM upgrades WHERE id <= ?",
+                        (old_rows[-1][0],),
+                    )
+                    conn.commit()
+                    conn.close()
+                    n_files += 1
+            else:
+                conn.close()
+
+    prefix = "would be " if dry_run else ""
+    print(f"Total: {n_files} files {prefix}deleted, {n_bytes} bytes")
     return 0
 
 

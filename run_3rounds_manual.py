@@ -230,4 +230,18 @@ out_path = f"upgrades/3round_manual_{ts}.json"
 with open(out_path, "w") as f:
     json.dump(out, f, indent=2, default=str)
 print(f"\nResults saved to {out_path}")
+
+# Auto-cleanup: remove __pycache__ dirs to keep repo clean
+import shutil
+project_root = os.path.dirname(os.path.abspath(__file__))
+n_cleaned = 0
+for root, dirs, files in os.walk(project_root):
+    if ".git" in root or root.startswith(os.path.join(project_root, "upgrades")):
+        continue
+    for d in list(dirs):
+        if d == "__pycache__":
+            shutil.rmtree(os.path.join(root, d), ignore_errors=True)
+            n_cleaned += 1
+            dirs.remove(d)
+print(f"Auto-cleaned {n_cleaned} __pycache__ dirs")
 print("\nDONE")
