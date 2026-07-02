@@ -83,35 +83,37 @@
 └── run.py                   # CLI 入口
 ```
 
-## 两个入口
+## 统一入口 (v1.8.0)
 
-| 入口 | 命令 | 用途 |
-|------|------|------|
-| 🚀 **使用 agent** | `python -m core.agent "任务"` | 让 agent 帮你解决问题 |
-| 🔧 **升级 agent** | `python run.py` | agent 搜索论文自我改进代码 |
+> 之前 `python -m core.agent` 跟 `python run.py` 是两套独立入口,
+> 看起来像两个产品。v1.8.0 统一为 `python -m self_upgrade <subcommand>`。
+> 旧入口仍可工作(向后兼容)。
+
+| Subcommand | 等价于旧 | 用途 |
+|------------|---------|------|
+| `run "task"` | `python -m core.agent "task"` | 使用 agent 解决任务 |
+| `evolve [--live]` | `python run.py [--live]` | 自我进化(7 阶段) |
+| `status` | `python run.py --stats` | 查看历史/版本 |
+| `unlock` | `python run.py --unlock-keys` | 恢复 quota_state |
+| `cull` | `python run.py --cull` | 修剪低效 skill |
 
 ```bash
-# 使用 agent（日常）
-python -m core.agent "帮我规划一个 3 天的东京旅行"
-python -m core.agent "写一个检查回文的 Python 函数"
-
-# 升级 agent（自主进化）
-# 1. 安装依赖
+# 1. 安装 + 配置
 pip install -r requirements.txt
+cp .env.example .env  # 编辑填入 LLM_API_KEY 和 LLM_MODEL
 
-# 2. 配置 LLM
-cp .env.example .env
-# 编辑 .env 填入 LLM_API_KEY 和 LLM_MODEL
+# 2. 使用 agent（日常）
+python -m self_upgrade run "Plan a 3-day trip to Tokyo"
+python -m self_upgrade run "Write a palindrome check in Python"
 
-# 3. 运行
-python run.py              # dry-run（模拟评估，秒级完成）
-python run.py --live       # 真实评估（LLM benchmark，需要 API key）
-python run.py -v           # 详细日志
-python run.py --stats      # 查看升级历史
-python run.py --promote PATCH_NAME  # 手动部署候选补丁
-python run.py --cull       # 修剪低效 skill
-python run.py --schedule   # 输出 crontab 调度配置
-python run.py --daemon     # 后台每 24h 自动运行
+# 3. 自我进化（自主）
+python -m self_upgrade evolve          # dry-run, 秒级
+python -m self_upgrade evolve --live   # 真实 LLM benchmark
+
+# 4. 维护
+python -m self_upgrade status          # 看 history.db + manifest + planner 版本
+python -m self_upgrade unlock          # 重置 quota_state (key 被 mark dead 时用)
+python -m self_upgrade cull            # 修剪低效 skill
 ```
 
 ## 命令行参数
