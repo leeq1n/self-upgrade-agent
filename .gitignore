@@ -39,6 +39,7 @@ msedgedriver*
 # Upgrades (runtime artifacts — not in version control)
 upgrades/history.db
 upgrades/manifest.json
+upgrades/quota_state.json
 upgrades/daemon_state.json
 upgrades/daemon.log
 upgrades/snapshots/
