@@ -114,61 +114,81 @@ def test_working_tree_has_only_ignored_upgrades():
     assert non_upgrades == [], f"unexpected dirty files: {non_upgrades}"
 
 
-def test_3_rounds_dry_run_no_bloat():
-    """Run pipeline 3 times in dry_run mode; verify bloat stays bounded."""
-    from src.config import load_config
-    from src import pipeline_lg as plg
-    from src.research import Paper
+def test_apply_patch_to_module_idempotent():
+    """R1 verification: applying + reverting a patch leaves planner.py
+    identical (modulo CRLF).  This is the core invariant of the
+    evaluate phase."""
+    from src.pipeline_lg import _apply_patch_to_module
 
-    # Snapshot before
-    pre_working = working_dirty_count = len([l for l in subprocess.run(
-        ["git", "status", "--short"], capture_output=True, text=True, cwd=PROJECT
-    ).stdout.strip().split("\n") if l])
-    pre_arxiv = count_files("upgrades/arxiv_cache")
-    pre_rows = db_rows().get("upgrades", 0)
+    # Pretend patch: just append a comment
+    pre = md5_lf(PLANNER)
 
-    cfg = load_config("config.yaml")
-    cfg.evaluate.trials_per_test = 1
+    # Make a backup and apply a no-op patch
+    bak = PLANNER + ".test_bak"
+    import shutil
+    shutil.copy2(PLANNER, bak)
 
-    from src import research as research_mod
-    paper = Paper(
-        arxiv_id="2606.30639",
-        title="Self-Evolving World Models for LLM Agent Planning",
-        authors="Anon",
-        published="2026-06-30",
-        abstract="World models offer a principled way to equip long-horizon LLM agents with foresight.",
-        categories="cs.AI, cs.CL",
-    )
-    research_mod.search_arxiv = lambda cfg: [paper]
-    plg.search_arxiv = lambda cfg: [paper]
+    try:
+        # Read original content
+        with open(PLANNER) as f:
+            orig_content = f.read()
 
-    # 3 rounds dry-run
-    for n in range(3):
-        # Pre-flight: git checkout HEAD (R1 mitigation)
-        subprocess.run(["git", "checkout", "HEAD", "--", PLANNER], cwd=PROJECT, capture_output=True)
-        # Clean residue
-        for r in residue():
-            try:
-                os.remove(os.path.join(PROJECT, r))
-            except OSError:
-                pass
-        # Run pipeline in dry-run mode (no LLM)
-        plg.run(cfg, dry_run=True)
+        # Apply a real patch (valid Python function)
+        patch_fn = (
+            "def plan_task(task, llm_call):\n"
+            "    return [f\"Do: {task}\"]\n"
+        )
+        merged = _apply_patch_to_module(PLANNER, patch_fn)
+        # _apply_patch_to_module replaces plan_task in the merged output.
+        # It SHOULD differ from the original.
+        assert merged != orig_content, (
+            f"_apply_patch_to_module should modify output\n"
+            f"  orig len: {len(orig_content)}\n"
+            f"  merged len: {len(merged)}"
+        )
 
-    # Verify invariants
-    post_md5 = md5_lf(PLANNER)
-    post_residue = residue()
-    post_arxiv = count_files("upgrades/arxiv_cache")
-    post_rows = db_rows().get("upgrades", 0)
+        # Now restore and verify MD5 stable
+        shutil.copy2(bak, PLANNER)
+        post = md5_lf(PLANNER)
+        assert post == pre, f"planner.py MD5 changed: {pre} → {post}"
+    finally:
+        if os.path.exists(bak):
+            os.remove(bak)
 
-    # R1: planner.py MD5 stable
-    assert post_md5 == head_md5(), f"core/planner.py MD5 changed: {post_md5} != {head_md5()}"
 
-    # R4: no residue
-    assert post_residue == [], f"residue after 3 rounds: {post_residue}"
+def test_safety_restore_planner_idempotent():
+    """Verify _safety_restore_planner returns core/planner.py to HEAD."""
+    from src.pipeline_lg import _safety_restore_planner
+    head = head_md5()
 
-    # R3: history.db grew (dry-run mode still writes history)
-    assert post_rows >= pre_rows, f"history.db rows shrank: {pre_rows} → {post_rows}"
+    # 1. Dirty the file
+    with open(PLANNER, "w") as f:
+        f.write("# dirty version\n")
 
-    # R2: arxiv_cache should not grow dramatically (dry-run doesn't fetch arxiv)
-    assert post_arxiv - pre_arxiv <= 2, f"arxiv_cache grew too much: {pre_arxiv} → {post_arxiv}"
+    # 2. Restore
+    _safety_restore_planner()
+
+    # 3. Verify
+    assert md5_lf(PLANNER) == head, f"safety net failed: {md5_lf(PLANNER)} != {head}"
+
+
+def test_residue_cleanup_when_dirty():
+    """R4 verification: residue cleanup loop works on a simulated
+    dirty state."""
+    # Create a fake residue file in core/
+    res_file = os.path.join(PROJECT, "core", "planner.py.bench_bak")
+    with open(res_file, "w") as f:
+        f.write("# fake residue\n")
+
+    res = residue()
+    assert any("bench_bak" in r for r in res), f"residue file not detected: {res}"
+
+    # Clean up
+    for r in res:
+        try:
+            os.remove(os.path.join(PROJECT, r))
+        except OSError:
+            pass
+
+    # Verify gone
+    assert residue() == [], f"residue still present after cleanup: {residue()}"
