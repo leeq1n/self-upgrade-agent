@@ -173,6 +173,7 @@ HERMES_FAST=1 python -m pytest tests/ -q
 
 - [API Reference](docs/API_REFERENCE.md) — 所有模块和函数的完整签名
 - [LLM Calls & Key Rotation](docs/LLM_CALLS.md) — 多 key 轮换、quota 持久化、模型路由
+- [System Constraints](docs/CONSTRAINTS.md) — 7 个不变性（代码不崩 / 可恢复 / 不臃肿 / quota 受控 / 不静默 promote / 失败可观测 / 干净克隆可重现）+ 验证方法
 - [Project Brief](PROJECT_BRIEF.md) — 项目状态和能力评估
 - [Delivery](docs/DELIVERY.md) — v1.5.0 端到端 promote 案例 + 交付水平评估
 - [Design Philosophy](docs/DESIGN_PHILOSOPHY.md) — 10 条设计原则（来自项目迭代）

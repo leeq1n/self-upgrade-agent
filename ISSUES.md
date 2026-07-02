@@ -1,7 +1,7 @@
 # Self-Upgrade Agent — Known Issues & Roadmap
 
-> **状态**：活跃 (v1.6.0)
-> **更新**：2026-07-01
+> **状态**：活跃 (v1.7.2)
+> **更新**：2026-07-02
 
 这份文件跟踪"项目本身没做好的事"和"v1.7.0 计划"。每条 issue 都有：
 - **级别**：P0 必修 / P1 应修 / P2 nice-to-have
@@ -107,12 +107,15 @@
 - **级别**：P1
 - **影响**：在 2026-07-01 多次探测中发现，`DeepSeek-V4-Pro` / `Qwen/Qwen3-235B-A22B` / `ZhipuAI/GLM-5.1` 这 3 个声称可用的模型在 ModelScope 网关对**大 prompt + 大 max_tokens** 调用时会返回 `finish_reason=length` 但 `content=""` 或直接 30s timeout。状态在几秒到几分钟内剧烈波动（同样的请求第一次成功 27s 返回 JSON，第二次 empty choices，第三次 timeout）
 - **当前 workaround**：
-  - 测试用 `LLM_MAX_TOKENS=500` 降低单次响应大小
+  - 测试用 `LLM_MAX_TOKENS=2048` 降低单次响应大小
   - `tests/test_evaluate.py::TestLLMIntegration` 的 21-task benchmark 测试间歇性 fail —— 这是已知的，不算 regression
+  - **`src/llm.py` 已区分 401/403(永久 dead)和 429(quota,24h dead)**,empty-choices 已经 `break` 换 key 不 mark dead
+- **2026-07-02 探索**:试了 Anthropic-compatible MiniMax endpoint (`https://api.minimaxi.com/anthropic` + `claude-sonnet-4-5`),速度更快 (~5s/filter, ~15s/patchgen),**真实 LLM 端到端跑通一次**(v1.7.0 commit 66ef31c, history.db id=30)。**但**该端点有 1002 RPM 限流,单 key 跑 21-task benchmark 撞墙,所以 v1.7.1 已默认回到 ModelScope。
 - **建议修复**：
-  1. 在 `src/llm.py` 加 empty-choices 重试逻辑（不要 mark dead，直接换下一个 key/model）
-  2. 或换 provider（OpenAI / Anthropic / DeepSeek 官方 API），绕过 ModelScope 网关
-- **未修原因**：超出 mock 测试修复范围；建议 ISS-014 进入 v1.7.0 backlog
+  1. 在 `src/llm.py` 加 empty-choices 重试逻辑（不要 mark dead，直接换下一个 key/model）  ← **已部分实现** (v1.6.0: `break` 换 key)
+  2. 或换 provider（OpenAI / Anthropic / DeepSeek 官方 API），绕过 ModelScope 网关  ← **已部分实现** (v1.7.0: `_is_anthropic_provider` + `_anthropic_post`)
+  3. 真实"智能 cooldown" + key 健康检查 + Anthropic 端点 RPM 1002 应对方案 — 留待 v1.8.0
+- **未修原因**：外部问题,只能部分绕开;v1.7.2 决定接受 ModelScope 网关 + 1 Anthropic key 作 fallback,真实每天跑 1 round 真 LLM 端到端
 
 ---
 
@@ -142,3 +145,6 @@
 | v1.5.1 | ISS-004 evaluate.py / node_evaluate 单 A/B 路径合并；`tests/test_e2e.py` mock 端到端 3/3 通过 |
 | v1.6.0 | ISS-013 `node_filter` 传 `llm_config`；ISS-012 benchmark dataclass 兼容；chromedriver-win64/ 物理清理；websocket-client 安装；Selenium 路径可跑 |
 | v1.6.0+ (2026-07-01) | `.env` 改用 Qwen3-235B-A22B + GLM-5.1 (V4-Pro quota dead)。Filter 真调 LLM 11.7s (vs 之前 33s 因试 V4-Pro dead models)。PatchGen 仍受 ModelScope minute-level 限流影响——3 个活 key 在 60s 内被 rate-limit 一次后全 timeout。**真实端到端 promote 今日不可达**。ISS-014 实质修复(智能 cooldown + key 健康检查)留待 v1.7.0 |
+| v1.7.0 (2026-07-01) | `src/llm.py` 加 Anthropic-compatible provider 路径(`_is_anthropic_provider` + `_anthropic_post`);`.env` 切到 `https://api.minimaxi.com/anthropic` + `claude-sonnet-4-5`。**真实 LLM 端到端跑通**:filter 12s, patchgen 15.6s, evaluate 21 tasks × 2 arms, decide=reverted, history.db id=30 记录。`core/planner.py` 807 bytes 未变。ISS-014 通过换 provider 实质绕开(minute-level 限流不解决,只是用不同端点) |
+| v1.7.1 (2026-07-02) | `src/pipeline_lg._safety_restore_planner()`:`node_evaluate` 入口自动 `git checkout HEAD -- core/planner.py` 修复了 stress test 期间发现的真 bug(进程被 kill 后 patched planner 没回滚)。Stress test 2 round × ~14min = 28min,都 `done=True` + `md5_match=True` + history+2。**真正"代码不崩"验证** |
+| v1.7.2 (2026-07-02) | `tests/test_bloat_invariants.py` 新增 7 个 invariant test,覆盖 C1/C3/C4/C5/C6 等不变性(0 quota 消耗,1.4s 跑完)。154 unit test + 5 skip = 0 fail。**新文档** `docs/CONSTRAINTS.md` 记录 7 个系统不变性。`.env` 切回 ModelScope(Qwen3-235B + GLM-5.1,key#4 #6 活)。MiniMax/MiniMax Anthropic 端点 1002 RPM 限流让 v1.7.1 不可持续,v1.7.2 决定保留 Anthropic 支持但回退默认 provider |
