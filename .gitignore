@@ -54,6 +54,7 @@ upgrades/skills/
 upgrades/*.log
 upgrades/trending_keywords.json
 upgrades/*.bench_bak
+upgrades/3round*.json   # 3-round test results (regeneratable, not source of truth)
 
 # Testing
 .pytest_cache/
