@@ -19,6 +19,32 @@ ModelScope 之类的免费推理服务**对每个 API key 有日级调用配额*
 3. **持久化 quota 状态**到 `upgrades/quota_state.json`，避免 daemon
    每天重头开始轮换。
 
+## 关键陷阱:fallback chain 误用 (2026-07-02 教训)
+
+v1.7.2 之前的 `.env` 配置:
+```
+LLM_MODEL=Qwen/Qwen3-235B-A22B
+LLM_MODELS=Qwen/Qwen3-235B-A22B,ZhipuAI/GLM-5.1
+```
+
+**问题**:fallback chain 里**只有 2 个 model**,当 Qwen3-235B 在 6 个 key 上都 daily-quota 用尽时,fallback 到 GLM-5.1。但**前面 6 个 key 在 Qwen3-235B 上被 mark dead 后,GLM-5.1 fallback 又在这 6 个 key 上重新探一遍**(因为 401/403 永久 dead 的 key 不会重试,但 quota-dead 的会)。
+
+**结果**:一轮 pipeline 烧 12 次 LLM 调用(6 keys × 2 models),只用掉 2 个 model 的 quota。
+
+**修正**:
+```
+LLM_MODELS=Qwen3-235B,GLM-5.1,DeepSeek-V4-Pro
+```
+
+3 个 model 互相独立 quota。一轮跑 6 keys × 3 models = 18 调用,**3 个 model 的 quota 各分担 6 次**,而不是 2 个。
+
+**更深层原则**:
+1. **每个 model 独立 daily quota** —— 不要假设"用尽一个 model 后下一个还有"
+2. **fallback chain 应该包含 ≥3 个 model**,不要只有 1-2 个
+3. **每次 pipeline.run() 烧 50+ LLM calls** —— 必须预算 ≥3 model 的总 quota
+4. **`LLM_MODELS` 比 `LLM_MODEL` 更重要** —— `LLM_MODEL` 是 primary,`LLM_MODELS` 是 fallback 列表
+
+
 ## 轮换策略
 
 ```
