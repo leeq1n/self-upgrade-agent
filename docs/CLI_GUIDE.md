@@ -119,100 +119,47 @@ Removes low-effectiveness skills from the registry.  Idempotent.
 
 ## 5. Running the 3-round stress test (manual)
 
-The user has a script that runs 3 rounds of the live pipeline
-and saves results to `upgrades/3round_run_results.json`.  It is
-**not yet committed** because the version that was used (2026-07-02)
-is no longer in the repo (it was cleaned up after the test ran).
+**The script is already in the repo**: `run_3rounds_manual.py`
+(commit `0b89fb0`, 233 lines).  It runs 3 rounds with the same 3
+papers, reports real-time state of `core/planner.py` and
+`history.db`, and saves results to
+`upgrades/3round_manual_<timestamp>.json`.
 
-**To recreate it**:
-```python
-# /tmp/run_3rounds.py
-import os, sys, time, json
-sys.path.insert(0, r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent")
-os.chdir(r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent")
-
-# Load .env
-with open(".env", encoding="utf-8-sig") as f:
-    for line in f:
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        k, v = line.split("=", 1)
-        if " #" in v: v = v.split(" #", 1)[0].rstrip()
-        if k and k not in os.environ: os.environ[k] = v
-
-PAPERS = [
-    {"arxiv_id": "2606.30639", "title": "Self-Evolving World Models for LLM Agent Planning",
-     "abstract": "WorldEvolver introduces self-evolving world model...",
-     "authors": "Anon", "published": "2026-06-30", "categories": "cs.AI, cs.CL"},
-    {"arxiv_id": "2406.01574", "title": "Multi-Agent Collaboration Mechanisms",
-     "abstract": "Survey of multi-agent LLM collaboration...",
-     "authors": "Han et al.", "published": "2024-06-03", "categories": "cs.CL, cs.MA"},
-    {"arxiv_id": "2310.02170", "title": "AutoGen: Multi-Agent Conversation",
-     "abstract": "AutoGen framework for multi-agent LLM systems...",
-     "authors": "Wu et al.", "published": "2023-10-03", "categories": "cs.CL, cs.MA"},
-]
-
-import src.pipeline_lg as plg
-from src.research import Paper
-from src.config import load_config
-import src.research as research_mod
-import subprocess
-
-def head_md5():
-    r = subprocess.run(["git", "ls-tree", "HEAD", "core/planner.py"], capture_output=True, text=True)
-    sha = r.stdout.strip().split()[2]
-    r2 = subprocess.run(["git", "cat-file", "blob", sha], capture_output=True)
-    import hashlib
-    return hashlib.md5(r2.stdout).hexdigest()
-
-results = []
-for n, paper in enumerate(PAPERS, 1):
-    print(f"\nROUND {n}: {paper['arxiv_id']}")
-    # restore planner.py
-    subprocess.run(["git", "checkout", "HEAD", "--", "core/planner.py"], capture_output=True)
-    # unlock quota
-    qf = "upgrades/quota_state.json"
-    if os.path.exists(qf):
-        state = json.load(open(qf))
-        for info in state.get("keys", {}).values():
-            info["dead_until"] = 0; info["failures_today"] = 0
-        json.dump(state, open(qf, "w"), indent=2)
-    P = Paper(**paper)
-    research_mod.search_arxiv = lambda cfg: [P]
-    plg.search_arxiv = lambda cfg: [P]
-    cfg = load_config("config.yaml")
-    cfg.evaluate.trials_per_test = 1
-    t0 = time.time()
-    try:
-        state = plg.run(cfg, dry_run=False)
-    except Exception as e:
-        state = {"done": False, "errors": [str(e)]}
-    elapsed = time.time() - t0
-    results.append({
-        "round": n, "paper": paper["arxiv_id"], "elapsed_s": round(elapsed, 1),
-        "done": state.get("done"),
-        "decision": (state.get("decision") or {}).get("decision"),
-    })
-    print(f"  Elapsed: {elapsed:.1f}s, done={state.get('done')}, decision={results[-1]['decision']}")
-    if n < 3: time.sleep(70)
-
-with open("upgrades/3round_run_results.json", "w") as f:
-    json.dump({"rounds": results, "head_md5": head_md5()}, f, indent=2)
-print("Done. Results in upgrades/3round_run_results.json")
+**To run**:
+```bash
+python -m self_upgrade unlock    # clear dead marks
+python run_3rounds_manual.py     # 3 rounds × ~150s each = ~7-15 min
 ```
+
+**What it does** (per round):
+1. `git checkout HEAD -- core/planner.py` (preflight safety)
+2. `quota_state.json` reset (clear dead marks)
+3. Inject one of 3 papers (multi-agent / WorldEvolver / AutoGen)
+4. Run `pipeline.run(cfg, dry_run=False)` (full 7 stages)
+5. Snapshot pre/post `core/planner.py` MD5 + history.db delta
+6. Wait 70s before next round (avoid RPM rate limit)
+7. Stop early if any round successfully promotes
+
+**To customize papers**, edit the `PAPERS` list at the top of
+`run_3rounds_manual.py`.  The default 3 papers test 3 directions:
+- WorldEvolver (memory-augmented agent)
+- Multi-Agent Collaboration (multi-agent)
+- AutoGen (multi-agent conversation framework)
+
+**If you want a different script (e.g. dry-run, fewer rounds,
+different papers)**, the source is short and easy to modify.
 
 **To run**:
 ```bash
 # 1. Make sure your .env has at least 1 working ModelScope key
-python -m self_upgrade unlock    # clear dead marks
+python -m self_upgrade unlock         # clear dead marks
 
 # 2. Run 3 round (~7-15 min)
-python /tmp/run_3rounds.py
+python run_3rounds_manual.py
 
 # 3. Inspect
 python -m self_upgrade status
-cat upgrades/3round_run_results.json
+cat upgrades/3round_manual_*.json     # timestamped results
 ```
 
 **Expected outcomes** (under current ModelScope network):
