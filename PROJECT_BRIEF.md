@@ -1,6 +1,8 @@
 # Self-Upgrade Agent 项目简报
 
-**最后更新**：2026-07-01（v1.6.0 ISS-013/012 修复 + --unlock-keys 命令）
+**最后更新**：2026-07-02（v1.8.0 alpha — 统一 CLI + learning.db + seen_papers）
+**当前版本**：v1.7.1 (git tag), v1.8.0 alpha (master 分支)
+**稳定 tag**：v1.7.1 — 2 轮 stress test 验证
 
 ---
 
@@ -103,3 +105,71 @@ pytest tests/test_evaluate.py                                           → 11 �
 - [x] git commit + tag v1.6.0 待完成
 
 **关于真实 LLM 端到端**:v1.5.0 commit 97aa0a1 已记录**真实 promote 成功历史**(从 `Self-Evolving World Models for LLM Agent Planning` 论文 → 2645 chars patch → surgical merge → rollback 验证)。v1.6.0 的 ISS-013 修复让 filter 真正用 LLM(独立验证: 33s 内拿到真实 LLM 评分)。但**完整端到端 promote**(filter + patchgen + sandbox + evaluate + decide + promote)需要 ModelScope 网关稳定窗口,等下一波 quota 刷新或换 provider。
+
+
+---
+
+## v1.8.0 进展 (2026-07-02, alpha)
+
+**目标**: 让自进化在多 agent / multi-file patch 方向上收敛,同时建立可观测的失败学习。
+
+### Phase A — Harness 框架(部分完成)
+
+| 任务 | 状态 | Commit |
+|------|------|--------|
+| A1. learning.db schema (`attempts`, `blacklist`, `convergence_state`, `seen_papers`, `auto_blacklist`) | ✅ 完成 | 201c0d0, 55ffde3 |
+| A2. 闭环反馈(失败 WHY 进 patchgen prompt) | ❌ 未做 | — |
+| A3. 终止条件(`--max-rounds`, `--convergence-window`) | ❌ 未做 | — |
+| A4. paper 排除(seen_papers + auto_blacklist) | ✅ 完成(commit 55ffde3) | 55ffde3 |
+| A5. 文档 + 完整 unit test | ⚠️ 部分(test 7/7 PASS, docs 已有 CONSTRAINTS.md) | — |
+
+### Phase B/C(未开始)
+
+- Phase B: 架构灵活性(CORE_MODULES 白名单放宽, multi-file patch, dynamic import)
+- Phase C: 真实 multi-agent harness 跑通
+
+### 当前 tag 策略
+
+| Tag | 状态 | 推荐使用 |
+|-----|------|----------|
+| v1.6.0 | ISS-013/012 修 | ✅ 旧, 已 superseded |
+| v1.7.0 | Anthropic provider, 真 LLM 跑通一次 | ✅ 旧 |
+| **v1.7.1** | **safety net + stress test 验证** | **✅ 当前推荐稳定版** |
+| v1.8.0 | (未 tag) Phase A 部分完成 | ⚠️ alpha, 不建议生产 |
+
+### v1.7.1 + v1.8.0 alpha 对比
+
+| 维度 | v1.7.1 | v1.8.0 alpha (master) |
+|------|--------|----------------------|
+| 真 LLM 端到端 | ✅ 2 轮 stress test 验证 | 3 round live 跑(0 进展,ModelScope 网关 dead) |
+| 单元测试 | 154 + 5 skip | 171 + 5 skip (新增 learning + CLI test) |
+| CLI 入口 | `python -m core.agent` + `python run.py`(两套) | `python -m self_upgrade <sub>`(统一) |
+| 失败学习 | 无 | learning.db schema 已写,未接入 pipeline |
+| 文档 | 7 篇 | 9 篇 (+ USER_INSIGHTS + PLAN_v180) |
+| 向后兼容 | n/a | ✅ `python -m core.agent` 跟 `python run.py` 仍工作 |
+
+### 不建议现在就 tag v1.8.0 的原因
+
+- Phase A 只完成 A1 + A4,A2/A3/A5 未做
+- 真 LLM 端到端未跑通(3 round live 数据是 0 进展)
+- 离"自进化收敛"目标还远
+- 应该等 Phase A 完整 + Phase B 至少 B1 + 1 次真 LLM 跑通再 tag
+
+### 怎么测 v1.8.0 alpha (用户手动)
+
+```bash
+# 1. 拉 master 分支
+git checkout master
+
+# 2. 跑 3 round live(等 ModelScope 网关恢复)
+python -m self_upgrade unlock
+python /path/to/run_3rounds.py  # 详见 docs/CLI_GUIDE.md
+
+# 3. 看结果
+python -m self_upgrade status
+cat upgrades/3round_run_results.json
+
+# 4. 验证不变性
+pytest tests/ --ignore=tests/test_e2e.py --ignore=tests/test_evaluate.py
+# 期望: 171 passed + 5 skip + 0 fail
+```
