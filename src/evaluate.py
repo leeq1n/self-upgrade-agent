@@ -104,6 +104,67 @@ def compute_statistics(values):
     }
 
 
+def run_harness(planner_module_path: str = "core/planner.py") -> dict:
+    """v1.8.0: run independent Python unit tests (the harness).
+
+    Returns a dict with:
+      - pass_rate: float (0.0-1.0), fraction of tests passed
+      - passed: int
+      - failed: int
+      - total: int
+      - failures: list of test names that failed
+
+    The harness is INDEPENDENT of any LLM.  It's the primary signal
+    in should_promote — if a patch breaks even 1 harness test,
+    it should NEVER be promoted (no matter what the 21-task LLM
+    benchmark says).
+
+    Parses standard pytest output (no pytest-json-report needed).
+    """
+    import subprocess
+    import re
+    try:
+        r = subprocess.run(
+            ["python", "-m", "pytest",
+             "tests/auto/test_planner_harness.py",
+             "--tb=no", "-q", "--no-header"],
+            capture_output=True, text=True, timeout=120,
+            cwd=".",
+        )
+        out = r.stdout
+        # Parse "8 passed in 0.10s" or "1 failed, 7 passed in 0.10s"
+        passed = 0
+        failed = 0
+        m = re.search(r"(\d+)\s+passed", out)
+        if m:
+            passed = int(m.group(1))
+        m = re.search(r"(\d+)\s+failed", out)
+        if m:
+            failed = int(m.group(1))
+        total = passed + failed
+        # Parse failure names: lines starting with "FAILED "
+        failure_names = []
+        for line in out.split("\n"):
+            if line.startswith("FAILED "):
+                # Format: "FAILED tests/auto/test_x.py::test_y - reason"
+                name = line[7:].split(" - ")[0].strip()
+                failure_names.append(name)
+        pass_rate = (passed / total) if total else 0.0
+        return {
+            "pass_rate": pass_rate,
+            "passed": passed,
+            "failed": failed,
+            "total": total,
+            "failures": failure_names,
+        }
+    except subprocess.TimeoutExpired:
+        return {"pass_rate": 0.0, "passed": 0, "failed": 0,
+                "total": 0, "failures": ["harness timeout"]}
+    except Exception as e:
+        return {"pass_rate": 0.0, "passed": 0, "failed": 0,
+                "total": 0, "failures": [f"harness error: {e}"]}
+
+
 def compare_results(
     baseline_rate,
     upgraded_rate,
@@ -236,6 +297,76 @@ def evaluate_skill(
 # ═══════════════════════════════════════════════════════════
 # Instruction-following scorer (still used by benchmark.py path)
 # ═══════════════════════════════════════════════════════════
+
+def should_promote_with_harness(
+    harness: dict,
+    llm_evaluation: dict,
+    min_delta: float = 0.05,
+    max_cost_ratio: float = 1.2,
+    require_harness: bool = True,
+) -> tuple:
+    """v1.8.0: promotion decision with HARNESS as primary signal.
+
+    Returns (decision: str, reasons: list[str]).
+
+    Decision logic (priority order):
+      1. If harness pass_rate < 1.0: REVERTED, even if LLM benchmark
+         shows improvement.  Rationale: a patch that breaks a real
+         Python test is broken, regardless of LLM opinion.
+      2. If LLM delta < min_delta (5%): REVERTED
+      3. If LLM cost_ratio > max_cost_ratio: REVERTED
+      4. Otherwise: KEPT
+
+    Args:
+      harness: dict from run_harness()
+      llm_evaluation: dict from run_benchmark_trial() or compare_results()
+      min_delta: minimum LLM success_rate_delta to consider promotion
+      max_cost_ratio: maximum LLM cost_increase_ratio to allow
+      require_harness: if False, skip harness check (legacy mode)
+    """
+    reasons = []
+
+    # Step 1: harness (the independent signal)
+    if require_harness:
+        h_pass = harness.get("pass_rate", 0.0)
+        h_failed = harness.get("failed", 0)
+        if h_pass < 1.0:
+            reasons.append(
+                f"Harness REGRESSION: {h_failed}/{harness.get('total', 0)} "
+                f"tests failed ({h_pass:.1%}); cannot promote"
+            )
+            for fname in harness.get("failures", [])[:3]:
+                reasons.append(f"  - {fname}")
+            return "reverted", reasons
+        else:
+            reasons.append(
+                f"Harness OK: {harness.get('passed', 0)}/{harness.get('total', 0)} "
+                f"tests passed"
+            )
+
+    # Step 2: LLM benchmark (secondary signal)
+    delta = llm_evaluation.get("success_rate_delta")
+    if delta is None:
+        reasons.append("LLM delta missing")
+        return "reverted", reasons
+    if delta < min_delta:
+        reasons.append(
+            f"Success rate delta {delta:+.2%} below minimum threshold {min_delta:.2%}"
+        )
+        return "reverted", reasons
+    reasons.append(f"Success rate delta {delta:+.2%} meets threshold {min_delta:.2%}")
+
+    # Step 3: cost
+    cost_ratio = llm_evaluation.get("cost_increase_ratio", 1.0)
+    if cost_ratio > max_cost_ratio:
+        reasons.append(
+            f"Cost increase {cost_ratio:.2f}x above limit {max_cost_ratio:.2f}x"
+        )
+        return "reverted", reasons
+    reasons.append(f"Cost increase {cost_ratio:.2f}x within limit {max_cost_ratio:.2f}x")
+
+    return "kept", reasons
+
 
 def score_instruction_following(task: str, output: str, llm_config=None) -> float:
     """Use a lightweight LLM call to score 0.0-1.0 how well output
