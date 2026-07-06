@@ -64,3 +64,6 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# ad-hoc verification scripts
+verify_p0_fixes.sh
