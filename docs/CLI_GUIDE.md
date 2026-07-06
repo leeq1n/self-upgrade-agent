@@ -207,6 +207,59 @@ cat upgrades/3round_manual_*.json     # timestamped results
 
 ---
 
+## 5b. Running 1-round self-evolution (v1.8.0, harness-aware)
+
+**The script is in the repo**: `run_1round.py` (Day 6+).
+Runs the v1.8.0 pipeline (8 nodes including `run_harness()` and
+`node_skill_audit`).
+
+**To run**:
+```bash
+python -m self_upgrade unlock    # clear dead marks
+python run_1round.py             # default paper: 2406.01574
+python run_1round.py 2606.30639 "Self-Evolving World Models"   # custom
+```
+
+**What it does** (per round):
+1. `git checkout HEAD -- core/planner.py` (preflight safety)
+2. `quota_state.json` reset (clear dead marks)
+3. Inject a paper (CLI arg, or default)
+4. Run `pipeline.run(cfg, dry_run=False)` (8 nodes, 0 LLM in audit)
+5. Snapshot pre/post `core/planner.py` MD5 + history.db delta + audit_history delta
+6. Report `decision` + `harness pass_rate` + `audit` + `errors`
+7. Save to `upgrades/run_1round_<ts>.json`
+8. Auto-unlock quota
+
+**Why 1 round instead of 3**:
+- `MiniMax-M3` 200 RPM + 10M TPM means ~3-4 min per round
+- 1 round is enough to verify harness + audit + 21-task benchmark
+- 3 round = ~10-15 min total TPM usage; 1 round = ~3-4 min
+- After 1 round works reliably, scale up to 3 or 5
+
+**Provider configuration (CRITICAL)**: This project uses the
+[MiniMax](https://api.minimaxi.com) Anthropic-compatible API at
+`https://api.minimaxi.com/anthropic`.  The `claude-sonnet-4-5` /
+`claude-haiku-4-5` model names are **NOT** on this endpoint — they
+are real Anthropic API model names.  Setting them in `LLM_MODELS`
+wastes 2-3 LLM calls per round on 401/404 responses.
+
+**Correct** `LLM_MODELS` for MiniMax (set in `.env`):
+```
+LLM_MODELS=MiniMax-M3,MiniMax-M2.7,MiniMax-M2.5
+```
+
+- `MiniMax-M3` is the primary (fastest, ~2-3s/call)
+- `MiniMax-M2.7` and `MiniMax-M2.5` are fallbacks (different daily quota, similar speed)
+
+Available models on `api.minimaxi.com/anthropic`:
+- `MiniMax-M3` (200 RPM, 10M TPM)
+- `MiniMax-M2.7`, `MiniMax-M2.7-highspeed` (500 RPM, 20M TPM)
+- `MiniMax-M2.5`, `MiniMax-M2.5-highspeed` (500 RPM, 20M TPM)
+- `MiniMax-M2.1`, `MiniMax-M2.1-highspeed` (500 RPM, 20M TPM)
+- `MiniMax-M2` (500 RPM, 20M TPM)
+
+---
+
 ## 6. Version management
 
 **Tags in the repo**:
