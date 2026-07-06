@@ -16,15 +16,46 @@ def make_decision(eval_data: Dict, config: DecideConfig) -> Dict:
     """Decide whether to keep or revert an upgrade based on evaluation data.
 
     Args:
-        eval_data: Output from evaluate.compare_results().
+        eval_data: Output from evaluate.compare_results(), optionally with
+                   a "harness" key (v1.8.0+) containing the result of
+                   run_harness() — independent Python unit tests.
         config: DecideConfig with thresholds.
 
     Returns:
         Dict with 'decision' (keep/revert), 'reasons' (list of strings),
         and 'metrics' (summary dict).
+
+    v1.8.0: if harness is present in eval_data, use
+    should_promote_with_harness() — harness is the primary signal,
+    LLM benchmark is secondary.  A patch that breaks any harness
+    test is NEVER kept.
     """
     reasons = []
 
+    # v1.8.0: harness is the primary signal when present
+    harness = eval_data.get("harness")
+    if harness is not None:
+        from src.evaluate import should_promote_with_harness
+        decision_str, harness_reasons = should_promote_with_harness(
+            harness, eval_data,
+            min_delta=getattr(config, "min_success_rate_delta", 0.05),
+            max_cost_ratio=getattr(config, "max_cost_increase_ratio", 1.2),
+            require_harness=True,
+        )
+        reasons.extend(harness_reasons)
+        return {
+            "decision": decision_str,
+            "reasons": reasons,
+            "metrics": {
+                "success_rate_delta": eval_data.get("success_rate_delta", 0),
+                "cost_increase_ratio": eval_data.get("cost_increase_ratio", 1.0),
+                "baseline_rate": eval_data.get("baseline_rate", 0),
+                "upgraded_rate": eval_data.get("upgraded_rate", 0),
+                "harness": harness,
+            },
+        }
+
+    # Legacy path (no harness data): pure LLM-judged decision
     delta = eval_data.get("success_rate_delta", 0.0)
     improved = eval_data.get("success_rate_improved", False)
     cost_ratio = eval_data.get("cost_increase_ratio", 1.0)

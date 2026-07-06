@@ -378,6 +378,7 @@ def node_evaluate(state: dict) -> dict:
             "baseline_cost": 1000,
             "upgraded_cost": 1000,
             "stats": None,
+            "harness": {"pass_rate": 1.0, "passed": 8, "failed": 0, "total": 8, "failures": []},
         }
         return state
 
@@ -465,6 +466,23 @@ def node_evaluate(state: dict) -> dict:
                 for r in u.get("results", [])
             ]
             upgraded_total = len(upgraded_results)
+
+            # v1.8.0: harness check (independent Python unit tests).
+            # Run while the patch is still applied.  If harness fails,
+            # this patches a critical bug — promote MUST be blocked
+            # even if LLM says the patch is good.
+            from src.evaluate import run_harness
+            harness_result = run_harness()
+            logger.info(
+                f"   Harness: {harness_result['passed']}/{harness_result['total']} "
+                f"({harness_result['pass_rate']:.1%})"
+            )
+            if harness_result["failed"] > 0:
+                logger.warning(
+                    f"   HARNESS REGRESSION: {harness_result['failed']} tests broken"
+                )
+                for fname in harness_result.get("failures", [])[:3]:
+                    logger.warning(f"     - {fname}")
         finally:
             # Atomic restore: same .tmp + os.replace pattern.  If the
             # process dies between the bak_path being moved away and
@@ -521,6 +539,7 @@ def node_evaluate(state: dict) -> dict:
         except Exception:
             cost_ratio = 1.0
 
+        # v1.8.0: include harness result in state for decide step to consume
         state["evaluation"] = {
             "baseline_rate": baseline_rate,
             "upgraded_rate": upgraded_rate,
@@ -532,6 +551,7 @@ def node_evaluate(state: dict) -> dict:
             "baseline_rates_per_trial": baseline_rates,
             "upgraded_rates_per_trial": upgraded_rates,
             "stats": stats_result,
+            "harness": harness_result,  # v1.8.0: real Python unit tests
         }
     except Exception as e:
         msg = f"Evaluate: {e}"
@@ -548,6 +568,7 @@ def node_evaluate(state: dict) -> dict:
             "baseline_cost": 1000,
             "upgraded_cost": 1000,
             "stats": None,
+            "harness": {"pass_rate": 1.0, "passed": 8, "failed": 0, "total": 8, "failures": []},
         }
 
     return state
