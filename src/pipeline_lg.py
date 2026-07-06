@@ -68,53 +68,176 @@ class PipelineState:
 # Surgical Patch Application
 # ═══════════════════════════════════════════════════════════
 
-def _apply_patch_to_module(module_path: str, patch_code: str) -> str:
-    """Surgically merge patch code into an existing core module.
+def _extract_target_function(patch_code: str, expected_func: Optional[str] = None) -> Optional[str]:
+    """Pull exactly ONE function definition out of a patch.
 
-    Strategy (in order):
-    1. If patch_code is a full module (starts with docstring), use as-is.
-    2. Extract target function name from patch, find it in original, replace.
-    3. If target function not found, append patch to end of module.
+    v1.8.1 (P0-2 fix): the old strategy greedily replaced the target
+    function body and *also* appended every auxiliary ``def helper()``
+    to the end of the module, so each promote grew planner.py by ~250
+    bytes of never-called helpers.  Across N rounds the module
+    ballooned 2-3× and accumulated dead code until it stopped being
+    readable.
 
-    This preserves imports, __version__, and module-level metadata while
-    replacing only the targeted function implementation.
+    The fix: surgical merge takes a SINGLE function definition and
+    drops all other top-level defs (and any module-level statements)
+    in the patch.  If the patch doesn't contain the expected target
+    function, we return None and the caller can decide whether to
+    reject the patch entirely.
+
+    We *do* keep ``# comment`` lines that sit immediately above the
+    target def — those carry useful context like "# v2 patch: add
+    foresight step" and are part of the patch's intent.  Any def,
+    import, or module-level statement elsewhere in the patch is
+    silently dropped (this is the surgical contract).
 
     Args:
-        module_path: Path to the existing module file (e.g., 'core/planner.py').
-        patch_code: Generated code — either a single function or a full module.
+        patch_code: The raw patch string (may contain imports,
+            helpers, comments, blank lines).
+        expected_func: If set, only return the def with this exact
+            name.  Otherwise, return the first top-level def found.
 
     Returns:
-        The merged module source code as a string.
+        The extracted function source (signature + body, no leading/
+        trailing blank lines) or None if nothing usable was found.
     """
-    # Case 1: Full module replacement (patch has its own docstring)
+    if not patch_code or not patch_code.strip():
+        return None
+    lines = patch_code.splitlines()
+
+    # Step 1: collect all top-level ``def`` start lines.
+    starts = [
+        i for i, ln in enumerate(lines)
+        if ln.startswith("def ") and "(" in ln
+    ]
+    if not starts:
+        return None
+
+    # Step 2: pick the chosen def — prefer ``expected_func``.
+    chosen = None
+    if expected_func:
+        for i in starts:
+            name = lines[i].split("(", 1)[0].split()[1]
+            if name == expected_func:
+                chosen = i
+                break
+        if chosen is None:
+            return None
+    else:
+        chosen = starts[0]
+
+    # Step 3: extend ``chosen`` BACKWARD over leading ``#`` comments.
+    # We deliberately *don't* walk across blank lines — a "header"
+    # block separated from the def is module documentation and
+    # doesn't belong with this function.
+    leading_start = chosen
+    j = chosen - 1
+    while j >= 0:
+        ln = lines[j]
+        if not ln.strip():
+            break  # blank line breaks the leading-comment cluster
+        if ln.lstrip().startswith("#"):
+            leading_start = j
+            j -= 1
+            continue
+        break
+
+    # Step 4: find the end of the function.  Stop at a *less-indented*
+    # non-blank, non-comment line (catches imports, assignments,
+    # another def, etc.).
+    end = len(lines)
+    base_indent = 0
+    for j in range(chosen + 1, len(lines)):
+        ln = lines[j]
+        if not ln.strip():
+            continue
+        stripped = ln.lstrip()
+        if stripped.startswith("#"):
+            continue
+        indent = len(ln) - len(stripped)
+        if indent <= base_indent:
+            end = j
+            break
+
+    body = "\n".join(lines[leading_start:end]).rstrip()
+    return body if body else None
+
+
+def _apply_patch_to_module(
+    module_path: str,
+    patch_code: str,
+    expected_func: Optional[str] = None,
+) -> str:
+    """Surgically merge patch code into an existing core module.
+
+    v1.8.1 (P0-2 fix): see :func:`_extract_target_function`.  We now
+    take *one* function from the patch (the target, or the first def
+    if ``expected_func`` is None) and replace only that function's
+    body in the original module.  Auxiliary helpers / imports in
+    the patch are intentionally discarded — surgical merge's
+    contract is "replace the target function, keep everything else".
+
+    Strategy (in order):
+    1. If patch_code is a full module (starts with docstring), accept
+       it as-is for first-time module creation.
+    2. Extract ONE function from the patch.
+    3. Replace the same-named function in the original if present.
+    4. If the target function is not in the original, append it.
+
+    Returns:
+        The merged module source.  If the patch contained no usable
+        ``def``, the original module is returned unchanged — never
+        silently half-apply.
+    """
+    # Case 1: Full module replacement (patch has its own docstring).
     stripped = patch_code.strip()
     if stripped.startswith('"""') or stripped.startswith("'''"):
         return patch_code
 
-    # Read original module
+    # Read original module.
     with open(module_path, encoding="utf-8") as f:
         original = f.read()
 
-    # Case 2: Extract function name and surgically replace
-    func_match = re.search(r'def\s+(\w+)\s*\(', patch_code)
-    if not func_match:
-        return original  # Can't identify target, keep original
+    # Case 2: Extract a single function definition from the patch.
+    function_body = _extract_target_function(patch_code, expected_func)
+    if function_body is None:
+        logger.warning(
+            f"_apply_patch_to_module: patch has no usable ``def``; "
+            f"keeping original {os.path.basename(module_path)} unchanged"
+        )
+        return original
 
+    func_match = re.search(r"def\s+(\w+)\s*\(", function_body)
+    if not func_match:
+        return original
     func_name = func_match.group(1)
 
-    # Pattern: match the function definition through to the next top-level def
-    # or end of file. Uses a non-greedy approach with lookahead.
+    # Pattern: match the original ``def func_name(...)`` block through
+    # to the next top-level statement or end of file.  The lookahead
+    # accepts any of:
+    #   * another ``def`` at column 0         (next function)
+    #   * a *top-level* non-comment line       (any module statement)
+    #   * end-of-file                          (last function in module)
+    # We do NOT use [^)]* in the signature (the original implementation
+    # did, which broke on default-arg types like ``Callable``); ``\(.*?\n``
+    # consumes the signature up to the first newline, which is good
+    # enough since real-world signatures rarely span multiple lines.
     pattern = (
-        r'(def\s+' + re.escape(func_name) + r'\s*\([^)]*\).*?)'
-        r'(?=\n(?:def\s+\w+\s*\(|\n*#|$)|\Z)'
+        r'(def\s+' + re.escape(func_name) + r'\s*\(.*?\n)'
+        r'(?=\n*(?:def\s+\w+|from\s+\w+\s+import|import\s+\w+|[A-Z_][A-Z0-9_]*\s*=|\Z))'
     )
-
-    if re.search(pattern, original, re.DOTALL):
-        merged = re.sub(pattern, patch_code.strip(), original, flags=re.DOTALL)
+    pat = re.compile(pattern, re.DOTALL)
+    if pat.search(original):
+        # Indent the replacement to match the surrounding module
+        # (always column 0 here since we're splicing into the module
+        # body, but be defensive about future refactors).
+        replacement = function_body
+        merged = pat.sub(replacement, original, count=1)
         return merged
 
-    # Case 3: Function not found, append
-    return original.rstrip() + "\n\n" + patch_code.strip() + "\n"
+    # Case 4: Target function not in original — append at the end.
+    # This happens for first-ever patches where the module has no
+    # previous definition of this function name.
+    return original.rstrip() + "\n\n" + function_body + "\n"
 
 
 # ═══════════════════════════════════════════════════════════

@@ -70,10 +70,36 @@ def _read_manifest() -> dict:
 
 
 def _write_manifest(data: dict):
+    """Atomically write manifest.json.
+
+    v1.8.1 (P0-1 fix): concurrent daemons used to corrupt this file because
+    ``open(mf, "w")`` is non-atomic at the OS level — two threads doing
+    read-modify-write would interleave their writes and produce invalid
+    JSON.  Fixed by writing to ``manifest.json.tmp`` (which is owned by a
+    single writer thanks to ``os.replace`` being atomic), fsyncing the data
+    to disk before the rename, and finally ``os.replace``-ing into place.
+    If the process dies between write and rename, the original manifest
+    is untouched and the .tmp is a leftover we can garbage-collect on the
+    next read.
+    """
     mf = os.path.join(_ROOT, _MANIFEST)
     os.makedirs(os.path.dirname(mf), exist_ok=True)
-    with open(mf, "w") as f:
-        json.dump(data, f, indent=2)
+    tmp = mf + ".tmp"
+    try:
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, mf)
+    except Exception:
+        # Best-effort cleanup of the orphan .tmp file; never block the
+        # caller if cleanup itself fails.
+        try:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        except OSError:
+            pass
+        raise
 
 
 def _backup_module(target_module: str) -> Optional[str]:
