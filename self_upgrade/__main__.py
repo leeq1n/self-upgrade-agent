@@ -48,6 +48,17 @@ def main():
     # cull: prune skills
     sub.add_parser("cull", help="Cull low-effectiveness skills")
 
+    # audit: show audit history
+    p_audit = sub.add_parser("audit", help="Show skill audit history (v1.8.0)")
+    p_audit.add_argument(
+        "--limit", type=int, default=10,
+        help="Show last N audit runs (default 10)",
+    )
+    p_audit.add_argument(
+        "--run", action="store_true",
+        help="Run a skill audit right now (instead of showing history)",
+    )
+
     # gc: garbage-collect cache + temp files
     p_gc = sub.add_parser("gc", help="Garbage-collect cache files (arxiv_cache, s2_cache, __pycache__, sandbox residue)")
     p_gc.add_argument(
@@ -75,6 +86,8 @@ def main():
         return cmd_unlock()
     if args.cmd == "cull":
         return cmd_cull()
+    if args.cmd == "audit":
+        return cmd_audit(limit=args.limit, run_now=args.run)
     if args.cmd == "gc":
         return cmd_gc(
             arxiv_max_age=args.arxiv_cache_max_age_days,
@@ -359,6 +372,72 @@ def cmd_gc(arxiv_max_age: int, history_archive_rows: int, dry_run: bool) -> int:
 
     prefix = "would be " if dry_run else ""
     print(f"Total: {n_files} files {prefix}deleted, {n_bytes} bytes")
+    return 0
+
+
+def cmd_audit(limit: int, run_now: bool) -> int:
+    """Show audit history, or run audit now.
+
+    --run    : run a one-off audit (uses node_skill_audit logic)
+    --limit N: show last N audit runs (default 10)
+    """
+    import os as _os
+    db_path = _os.path.join(
+        _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+        "upgrades", "history.db",
+    )
+    if run_now:
+        # Run a one-off audit using the same logic as the pipeline node
+        from src.db import UpgradeHistory
+        from src.skill_lifecycle import evaluate_all_skills_static
+        if not _os.path.exists(db_path):
+            print(f"No history.db at {db_path} — nothing to audit")
+            return 0
+        h = UpgradeHistory(db_path)
+        try:
+            result = evaluate_all_skills_static(h, cull_threshold=0.0)
+            culled = []
+            for skill_name, info in result.items():
+                if info["action"] == "culled":
+                    h.archive_skill(skill_name)
+                    culled.append(skill_name)
+            # Persist to audit_history
+            h.record_audit(
+                n_skills=len(result),
+                n_culled=len(culled),
+                n_kept=len(result) - len(culled),
+                details=result,
+            )
+        finally:
+            h.close()
+        print(f"Audit: {len(result)} skills evaluated, {len(culled)} culled")
+        for n in culled:
+            print(f"  culled: {n}")
+        return 0
+
+    # Show history
+    if not _os.path.exists(db_path):
+        print(f"No history.db at {db_path}")
+        print("Run a round first: python -m self_upgrade evolve --live")
+        return 0
+    from src.db import UpgradeHistory
+    h = UpgradeHistory(db_path)
+    try:
+        rows = h.get_audit_history(limit=limit)
+    finally:
+        h.close()
+    if not rows:
+        print("No audit history yet.")
+        print("Audits happen automatically each round (or run one now:")
+        print("  python -m self_upgrade audit --run")
+        return 0
+    print(f"Last {len(rows)} audit runs:")
+    print()
+    for r in rows:
+        print(
+            f"  id={r['id']} at={r['audited_at'][:19]} "
+            f"skills={r['n_skills']} culled={r['n_culled']} kept={r['n_kept']}"
+        )
     return 0
 
 
