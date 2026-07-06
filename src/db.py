@@ -53,6 +53,16 @@ class UpgradeHistory:
             )
         """)
         self.conn.execute("""
+            CREATE TABLE IF NOT EXISTS audit_history (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                audited_at TEXT,
+                n_skills INTEGER,
+                n_culled INTEGER,
+                n_kept INTEGER,
+                details_json TEXT
+            )
+        """)
+        self.conn.execute("""
             CREATE TABLE IF NOT EXISTS skill_usage_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 skill_name TEXT NOT NULL,
@@ -170,6 +180,26 @@ class UpgradeHistory:
         """).fetchall()
         return [dict(r) for r in rows]
     
+    def record_audit(self, n_skills, n_culled, n_kept, details):
+        """Record a skill audit run in audit_history (v1.8.0)."""
+        import datetime, json
+        self.conn.execute("""
+            INSERT INTO audit_history
+                (audited_at, n_skills, n_culled, n_kept, details_json)
+            VALUES (?, ?, ?, ?, ?)
+        """, (datetime.datetime.now().isoformat(), n_skills, n_culled,
+              n_kept, json.dumps(details, default=str)))
+        self.conn.commit()
+        return self.conn.execute("SELECT last_insert_rowid()").fetchone()[0]
+
+    def get_audit_history(self, limit=10):
+        """Get recent audit runs (v1.8.0)."""
+        rows = self.conn.execute("""
+            SELECT id, audited_at, n_skills, n_culled, n_kept, details_json
+            FROM audit_history ORDER BY id DESC LIMIT ?
+        """, (limit,)).fetchall()
+        return [dict(r) for r in rows]
+
     def archive_skill(self, skill_name):
         self.conn.execute(
             "UPDATE skill_registry SET status = 'archived' WHERE skill_name = ?",

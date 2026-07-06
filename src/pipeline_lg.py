@@ -702,6 +702,21 @@ def node_skill_audit(state: dict) -> dict:
             finally:
                 history.close()
 
+        # Record audit in audit_history (v1.8.0)
+        try:
+            h_audit = UpgradeHistory(db_path)
+            try:
+                h_audit.record_audit(
+                    n_skills=len(audit_result),
+                    n_culled=len(culled),
+                    n_kept=len(audit_result) - len(culled),
+                    details=audit_result,
+                )
+            finally:
+                h_audit.close()
+        except Exception as e:
+            logger.debug(f"   record_audit failed (non-fatal): {e}")
+
         state["skill_audit"] = {
             "evaluated": len(audit_result),
             "culled": culled,
