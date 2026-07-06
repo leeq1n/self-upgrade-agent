@@ -37,10 +37,15 @@
 ## P1 应修（影响中长期使用，不阻塞当前）
 
 ### ISS-003: 多 daemon 并发锁
-- **级别**：P1
-- **影响**：如果用户不小心跑 2 个 daemon（`run.py --daemon` × 2），它们会同时写 `manifest.json` / `quota_state.json`，可能产生竞态
-- **当前 workaround**：None（靠用户自觉）
-- **建议修复**：`fcntl.flock` 文件锁包 `manifest.json` 写入
+- **级别**：P0 (从 v1.8.0 P1 升级)
+- **影响**：如果用户不小心跑 2 个 daemon（`run.py --daemon` × 2），它们会同时写 `manifest.json` / `quota_state.json`。
+  - **审计发现（v1.8.1）**：在 Linux 上旧代码会因非原子 `open(mf, "w")` 产生 JSON 截断/损坏（实测过）；v1.8.1 的 `_write_manifest`（`.tmp + fsync + os.replace`）已修复这点。
+  - **Windows 上仍有问题**：v1.8.1 的同一份测试在 Windows 上抛 `WinError 32: 另一个程序正在使用此文件`（2 个 daemon 真同时跑 → 第二个打不开文件）。修复后 JSON **格式上**原子，但**进程互斥**还要文件锁。
+- **当前 workaround**：靠用户自觉不跑 2 个 daemon；或用 `--unlock-keys` 后串行启动
+- **建议修复**：
+  1. 加跨平台文件锁：`fcntl.flock`（Linux）+ `msvcrt.locking` 或 `portalocker`（Windows）
+  2. 或把 `manifest.json` 拆为 per-process 文件，再 merge
+  3. 锁的范围：同时盖 `_read_manifest` → `_write_manifest` 的 read-modify-write 区间
 
 ### ISS-004: evaluate.py 和 pipeline_lg.node_evaluate 两套并行
 - **级别**：P1
@@ -144,6 +149,8 @@
 | v1.5.0 | 8 key 全对上号；real promote 成功；BOM/utf-8-sig；filter/patchgen 对齐 self-upgrade 痛点 |
 | v1.5.1 | ISS-004 evaluate.py / node_evaluate 单 A/B 路径合并；`tests/test_e2e.py` mock 端到端 3/3 通过 |
 | v1.6.0 | ISS-013 `node_filter` 传 `llm_config`；ISS-012 benchmark dataclass 兼容；chromedriver-win64/ 物理清理；websocket-client 安装；Selenium 路径可跑 |
+| v1.6.0+ (2026-07-01) |
+| v1.8.1 (2026-07-02) | P0-1 `_write_manifest` 原子写(`.tmp + fsync + os.replace`);P0-2 `_apply_patch_to_module` 单函数 enforcement(丢弃辅助 def/import,保留 leading `# comment`)。5 轮 apply+revert 模块净增 ≤340B(旧实现 +1250B)。Windows 并发仍需文件锁(ISS-003 升级 P0) |
 | v1.6.0+ (2026-07-01) | `.env` 改用 Qwen3-235B-A22B + GLM-5.1 (V4-Pro quota dead)。Filter 真调 LLM 11.7s (vs 之前 33s 因试 V4-Pro dead models)。PatchGen 仍受 ModelScope minute-level 限流影响——3 个活 key 在 60s 内被 rate-limit 一次后全 timeout。**真实端到端 promote 今日不可达**。ISS-014 实质修复(智能 cooldown + key 健康检查)留待 v1.7.0 |
 | v1.7.0 (2026-07-01) | `src/llm.py` 加 Anthropic-compatible provider 路径(`_is_anthropic_provider` + `_anthropic_post`);`.env` 切到 `https://api.minimaxi.com/anthropic` + `claude-sonnet-4-5`。**真实 LLM 端到端跑通**:filter 12s, patchgen 15.6s, evaluate 21 tasks × 2 arms, decide=reverted, history.db id=30 记录。`core/planner.py` 807 bytes 未变。ISS-014 通过换 provider 实质绕开(minute-level 限流不解决,只是用不同端点) |
 | v1.7.1 (2026-07-02) | `src/pipeline_lg._safety_restore_planner()`:`node_evaluate` 入口自动 `git checkout HEAD -- core/planner.py` 修复了 stress test 期间发现的真 bug(进程被 kill 后 patched planner 没回滚)。Stress test 2 round × ~14min = 28min,都 `done=True` + `md5_match=True` + history+2。**真正"代码不崩"验证** |
