@@ -54,6 +54,8 @@ class PipelineConfig:
     require_manual_approval: bool = False
     auto_promote: bool = False
     log_level: str = "INFO"
+    # v1.8.0: how often to run skill_audit (0=disabled, 1=every round, 5=every 5 rounds)
+    skill_audit_every: int = 1
 
 
 @dataclass

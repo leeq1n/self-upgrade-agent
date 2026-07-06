@@ -641,6 +641,85 @@ def node_decide(state: dict) -> dict:
 
 
 # ═══════════════════════════════════════════════════════════
+# Skill Audit (Phase 7 — lifecycle, 0 LLM)
+# ═══════════════════════════════════════════════════════════
+
+def node_skill_audit(state: dict) -> dict:
+    """Phase 7: audit active skills — usage stats, quality score, auto-cull.
+
+    v1.8.0: zero-LLM skill lifecycle management.
+
+    This node runs AFTER decide (so it doesn't block promote decisions)
+    but BEFORE end-of-round.  It:
+      1. Calls evaluate_all_skills_static() (reads from skill_registry)
+      2. Auto-culls skills with quality_score < 0 (i.e. they hurt more
+         than they help, by enough use_count to be statistically real)
+      3. Stores the audit result in state["skill_audit"]
+
+    Returns: updated state.
+    """
+    logger.info("7. Skill Audit: evaluating active skills (0 LLM)...")
+
+    cfg = state.get("config")
+    if not cfg:
+        return state
+
+    # Per-round count: how many rounds since last audit
+    audit_count = state.get("_audit_rounds_since_audit", 0) + 1
+    audit_every = getattr(cfg.pipeline, "skill_audit_every", 1) if hasattr(cfg, "pipeline") else 1
+
+    if audit_count < audit_every:
+        # Skip this round; will audit on the next eligible one
+        state["_audit_rounds_since_audit"] = audit_count
+        logger.info(f"   Skip (round {audit_count}/{audit_every})")
+        return state
+
+    # Reset counter
+    state["_audit_rounds_since_audit"] = 0
+
+    # Run audit
+    try:
+        from src.db import UpgradeHistory
+        from src.skill_lifecycle import evaluate_all_skills_static
+
+        db_path = getattr(cfg.database, "path", "upgrades/history.db") if hasattr(cfg, "database") else "upgrades/history.db"
+        history = UpgradeHistory(db_path)
+        try:
+            audit_result = evaluate_all_skills_static(history, cull_threshold=0.0)
+        finally:
+            history.close()
+
+        # Auto-cull
+        culled = []
+        if audit_result:
+            from src.db import UpgradeHistory as UH
+            history = UpgradeHistory(db_path)
+            try:
+                for skill_name, info in audit_result.items():
+                    if info["action"] == "culled":
+                        history.archive_skill(skill_name)
+                        culled.append(skill_name)
+            finally:
+                history.close()
+
+        state["skill_audit"] = {
+            "evaluated": len(audit_result),
+            "culled": culled,
+            "details": audit_result,
+        }
+        logger.info(
+            f"   Audit: {len(audit_result)} skills evaluated, "
+            f"{len(culled)} culled: {culled}"
+        )
+    except Exception as e:
+        state.setdefault("errors", []).append(f"SkillAudit: {e}")
+        logger.warning(f"   Skill audit failed: {e}")
+        state["skill_audit"] = {"evaluated": 0, "culled": [], "error": str(e)}
+
+    return state
+
+
+# ═══════════════════════════════════════════════════════════
 # Edge Routing
 # ═══════════════════════════════════════════════════════════
 
@@ -682,6 +761,7 @@ def build_graph():
         ("reflect", node_reflect),
         ("evaluate", node_evaluate),
         ("decide", node_decide),
+        ("skill_audit", node_skill_audit),
     ]
     for name, func in nodes:
         graph.add_node(name, func)
@@ -712,7 +792,8 @@ def build_graph():
         "evaluate": "evaluate",
     })
     graph.add_edge("evaluate", "decide")
-    graph.add_edge("decide", END)
+    graph.add_edge("decide", "skill_audit")
+    graph.add_edge("skill_audit", END)
 
     return graph.compile()
 
