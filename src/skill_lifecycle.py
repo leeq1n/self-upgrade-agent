@@ -56,6 +56,55 @@ def get_skills_for_context(max_context_tokens, db):
     return selected
 
 
+def evaluate_all_skills_static(db, cull_threshold: float = 0.0):
+    """v1.8.0: static skill evaluation — 0 LLM calls.
+
+    Reads from skill_registry (use_count, avg_improvement, last_used,
+    status) and computes a quality score for each active skill.
+
+    Quality score = avg_improvement * use_count
+      (high improvement + high usage = high score)
+      (low improvement + low usage = low score → cull candidate)
+
+    Args:
+      db: UpgradeHistory instance.
+      cull_threshold: skills with quality_score < this get culled.
+                      Default 0.0 = only cull clearly bad skills.
+
+    Returns:
+      dict mapping skill_name → {quality_score, use_count,
+      avg_improvement, last_used, action}
+      where action is "kept" or "culled".
+    """
+    from datetime import datetime
+    skills = db.get_active_skills()
+    if not skills:
+        return {}
+
+    results = {}
+    for s in skills:
+        name = s.get("skill_name", "?")
+        use_count = s.get("use_count", 0) or 0
+        avg_imp = s.get("avg_improvement", 0.0) or 0.0
+        last_used = s.get("last_used")
+
+        quality_score = round(use_count * avg_imp, 4)
+
+        if quality_score < cull_threshold:
+            action = "culled"
+        else:
+            action = "kept"
+
+        results[name] = {
+            "quality_score": quality_score,
+            "use_count": use_count,
+            "avg_improvement": avg_imp,
+            "last_used": last_used,
+            "action": action,
+        }
+    return results
+
+
 def cull_obsolete(db, max_active=10, inactivity_days=30):
     """Archive skills that are underperforming or inactive.
     

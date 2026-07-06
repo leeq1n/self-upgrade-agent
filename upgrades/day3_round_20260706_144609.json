@@ -1,0 +1,43 @@
+{
+  "run_at": "2026-07-06T14:46:09",
+  "head_md5": "dde6c7fd2e33d72141a6a4b865233274",
+  "final_planner_md5": "dde6c7fd2e33d72141a6a4b865233274",
+  "rounds": [
+    {
+      "round": 1,
+      "paper_id": "2406.01574",
+      "elapsed_s": 556.6,
+      "done": true,
+      "decision": "reverted",
+      "delta": -0.0476,
+      "baseline_rate": 0.047619047619047616,
+      "upgraded_rate": 0.0,
+      "sandbox_passed": false,
+      "reflect_attempts": 3,
+      "errors": [],
+      "planner_size_before": 807,
+      "planner_size_after": 807,
+      "planner_changed": false,
+      "planner_at_head_end": true,
+      "history_before": 41,
+      "history_after": 42,
+      "history_delta": 1,
+      "harness": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 8,
+        "total": 8,
+        "failures": [
+          "tests/auto/test_planner_harness.py::test_plan_task_returns_list_of_strings",
+          "tests/auto/test_planner_harness.py::test_plan_task_handles_empty_task",
+          "tests/auto/test_planner_harness.py::test_plan_task_handles_very_long_input",
+          "tests/auto/test_planner_harness.py::test_plan_task_handles_unicode",
+          "tests/auto/test_planner_harness.py::test_plan_task_handles_llm_returning_nonsense",
+          "tests/auto/test_planner_harness.py::test_plan_task_handles_llm_returning_unstructured_text",
+          "tests/auto/test_planner_harness.py::test_plan_task_extracts_numbered_steps",
+          "tests/auto/test_planner_harness.py::test_plan_task_handles_special_characters"
+        ]
+      }
+    }
+  ]
+}
