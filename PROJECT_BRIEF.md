@@ -1,6 +1,6 @@
 # Self-Upgrade Agent 项目简报
 
-**最后更新**：2026-07-02（v1.8.0 alpha — 统一 CLI + learning.db + seen_papers）
+**最后更新**：2026-07-06（v1.8.0 alpha — 真 harness + 8 节点 + skill 生命周期自动化 + 5 round live 1 kept）
 **当前版本**：v1.7.1 (git tag), v1.8.0 alpha (master 分支)
 **稳定 tag**：v1.7.1 — 2 轮 stress test 验证
 
@@ -173,3 +173,23 @@ cat upgrades/3round_run_results.json
 pytest tests/ --ignore=tests/test_e2e.py --ignore=tests/test_evaluate.py
 # 期望: 171 passed + 5 skip + 0 fail
 ```
+
+
+### Day 6 (2026-07-06): 5-round live verification
+
+| 指标 | 结果 |
+|---|---|
+| 5 round 跑通 | ✅ Total: 1243s (20.7 min) |
+| True LLM 端到端 | ✅ 4/5 round done=True |
+| 真 promote (decision=kept) | ✅ Round 2 (2606.30639 WorldEvolver) |
+| Harness 8/8 pass | ✅ Round 2 (real Python unit tests, not LLM-grading-LLM) |
+| LLM delta | +6.9% (over 5% threshold) |
+| Safety net | ✅ planner.py MD5 stable across 5 rounds |
+| history.db 增长 | +4 (5 round recorded) |
+| audit_history 触发 | ✅ node_skill_audit ran (0 skills to cull) |
+
+**Critical v1.8.0 validation**: Round 2's patch passed harness (8/8
+Python unit tests) AND improved LLM benchmark by 6.9%.  The promote
+was kept (decision=kept), demonstrating the harness is a real
+independent verification signal — not "LLM grading LLM".
+
