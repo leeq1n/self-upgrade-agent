@@ -81,7 +81,8 @@ def test_env_bumped_to_v181_timeouts():
     # Either 300 or whatever the v1.8.1 value is
     assert "LLM_TIMEOUT=300" in content
     assert "LLM_TOTAL_TIMEOUT=1800" in content
-    assert "LLM_MAX_TOKENS=4096" in content
+    # max_tokens can be 2048 (v1.8.1 local) or 4096 (v1.8.1 cloud)
+    assert ("LLM_MAX_TOKENS=2048" in content or "LLM_MAX_TOKENS=4096" in content)
 
 
 def test_seen_papers_in_db_actually_records():
@@ -865,3 +866,40 @@ def test_start_llama_servers_script_exists():
     assert "38001" in content
     assert "mmproj" in content
     assert "enable_thinking" in content
+
+
+
+def test_llm_ready_without_api_key():
+    """v1.8.1: LLMConfig.ready is True when model + base_url set, no API key needed.
+
+    Local llama-server setups (e.g. Qwen3-VL on AGX Thor) don't require
+    an API key.  Previously, config.ready required api_keys non-empty,
+    which made all local setups silently fall back to keyword scoring.
+    """
+    sys.path.insert(0, PROJECT)
+    from src.llm import LLMConfig
+    cfg = LLMConfig(api_keys=[], model="qwen3-vl-30b-a3b",
+                    base_url="http://localhost:38000/v1")
+    assert cfg.ready is True, "ready should be True for local server (no key)"
+
+    cfg_no_url = LLMConfig(api_keys=[], model="qwen3-vl-30b-a3b", base_url="")
+    assert cfg_no_url.ready is False, "ready should be False without base_url"
+
+    cfg_no_model = LLMConfig(api_keys=[], model="", base_url="http://localhost:38000/v1")
+    assert cfg_no_model.ready is False, "ready should be False without model"
+
+
+def test_filter_skips_quota_check_when_no_api_keys():
+    """v1.8.1: score_paper() skips QuotaState check when api_keys empty.
+
+    For local llama-server (no API keys), the previous QuotaState check
+    incorrectly concluded 'all keys dead' and bypassed LLM scoring,
+    causing filter to fall back to keyword-only (which almost never
+    met thresholds).  Now it skips that check entirely.
+    """
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, "src", "filter.py")) as f:
+        content = f.read()
+    # Must have: if llm_config.api_keys: (not always check QuotaState)
+    assert "if llm_config.api_keys:" in content, \
+        "filter must skip QuotaState check when no API keys (local server)"

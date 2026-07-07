@@ -149,7 +149,12 @@ class LLMConfig:
 
     @property
     def ready(self) -> bool:
-        return bool(self.api_keys) and bool(self.model) and bool(self.base_url)
+        # v1.8.1: local llama-server setups (e.g. Qwen3-VL on AGX Thor)
+        # don't need an API key.  Allow ready=True when model + base_url
+        # are set, even with no API key (server doesn't check auth).
+        if not self.model or not self.base_url:
+            return False
+        return True
 
     # ── Task-type routing ──────────────────────────────────────
     # Maps a logical task type to a (primary_model, fallback_models) pair.

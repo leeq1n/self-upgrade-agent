@@ -207,16 +207,18 @@ def score_paper(
     """
     if use_llm and llm_config is not None and llm_config.ready:
         # Quick check: are there alive keys?  Avoid burning 15s per paper
-        # if all keys are quota-dead.
-        try:
-            from src.llm import QuotaState
-            quota = QuotaState()
-            alive_keys = [k for k in llm_config.api_keys if not quota.is_dead(k)]
-            if not alive_keys:
-                logger.debug(f"All keys quota-dead, falling back to keyword for {paper.arxiv_id}")
-                return _keyword_score_paper(paper)
-        except Exception:
-            pass
+        # if all keys are quota-dead.  v1.8.1: if no API keys (local
+        # llama-server), skip the quota check and use LLM directly.
+        if llm_config.api_keys:
+            try:
+                from src.llm import QuotaState
+                quota = QuotaState()
+                alive_keys = [k for k in llm_config.api_keys if not quota.is_dead(k)]
+                if not alive_keys:
+                    logger.debug(f"All keys quota-dead, falling back to keyword for {paper.arxiv_id}")
+                    return _keyword_score_paper(paper)
+            except Exception:
+                pass
         try:
             return _llm_score_paper(paper, llm_config)
         except Exception as e:
