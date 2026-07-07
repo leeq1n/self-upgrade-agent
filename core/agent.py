@@ -111,9 +111,13 @@ def run(
 
 # ── 快捷入口 ────────────────────────────────────────
 
-def quick_test(task: str) -> Dict:
-    """使用默认 LLM 快速测试 agent。"""
-    from src.llm import chat_simple, LLMConfig
+def quick_test(task: str, stream: bool = True) -> Dict:
+    """使用默认 LLM 快速测试 agent。
+
+    v1.8.1: 默认 stream=True (本地模型慢,streaming 让用户看到进度)。
+    流式输出直接 print 到 stdout,每行一步。
+    """
+    from src.llm import LLMConfig
     lc = LLMConfig.from_env()
 
     if not lc.ready:
@@ -125,10 +129,37 @@ def quick_test(task: str) -> Dict:
                      "参考 .env.example。"
         }
 
-    def _call(prompt):
-        return chat_simple(prompt, config=lc) or ""
+    if stream:
+        # v1.8.1: streaming path — prints tokens as they arrive
+        from src.llm_stream import chat_stream
 
-    return run(task, _call)
+        def _stream_call(prompt: str) -> str:
+            """Stream a chat completion; return the assembled text."""
+            try:
+                chunks = []
+                print(f"    [llm] ", end="", flush=True)
+                for chunk in chat_stream(
+                    messages=[{"role": "user", "content": prompt}],
+                    config=lc,
+                    timeout=lc.timeout,
+                ):
+                    chunks.append(chunk)
+                    print(chunk, end="", flush=True)
+                print()  # newline after streaming
+                return "".join(chunks)
+            except Exception as e:
+                print(f"\n    [llm error: {e}]")
+                return ""
+
+        return run(task, _stream_call, verbose=True)
+    else:
+        # Non-streaming path (faster for benchmarks)
+        from src.llm import chat_simple
+
+        def _call(prompt):
+            return chat_simple(prompt, config=lc) or ""
+
+        return run(task, _call)
 
 
 if __name__ == "__main__":

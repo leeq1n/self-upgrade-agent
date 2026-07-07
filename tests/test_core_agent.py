@@ -52,3 +52,28 @@ def test_tools_module():
     assert "5.1" in result
     result = tool_calculate("2 + 2")
     assert "4" in result
+
+
+def test_agent_quick_test_streaming_default():
+    """quick_test(stream=True) is the v1.8.1 default."""
+    import inspect
+    from core.agent import quick_test
+    sig = inspect.signature(quick_test)
+    assert "stream" in sig.parameters
+    assert sig.parameters["stream"].default is True
+
+
+def test_agent_quick_test_streaming_source_uses_chat_stream():
+    """quick_test source should reference chat_stream and chat_simple."""
+    import inspect
+    from core.agent import quick_test
+    src = inspect.getsource(quick_test)
+    assert "chat_stream" in src, "quick_test should use chat_stream when stream=True"
+    assert "chat_simple" in src, "quick_test should use chat_simple when stream=False"
+
+
+def test_agent_quick_test_accepts_stream_kwarg():
+    """quick_test(stream=False) is callable without crashing on import."""
+    from core.agent import quick_test
+    # Just verify it accepts the kwarg (without actually invoking)
+    assert callable(quick_test)

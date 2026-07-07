@@ -185,6 +185,9 @@ HERMES_FAST=1 python -m pytest tests/ -q
 
 ## 版本历史
 
+- **v1.8.1** (2026-07-06): seen-papers filter 真接 pipeline + streaming LLM (OpenAI/Anthropic) + collect_papers.py bulk-fetch + LLM_MAX_TOKENS=4096/timeout=300/30min
+- **v1.8.0**: 真 harness (8 unit tests) + node_skill_audit (8th node) + 7 subcommand CLI + audit_history table
+- **v1.7.0**: docs/CONSTRAINTS.md + bloat invariant test + 1 round stress test
 - **v1.5.1** (2026-06-30): atomic A/B bootloader write + sys.modules 缓存清理；ISS-004 评估路径统一
 - **v1.5.0**: ISS-001 filter 关键词 boost + ISS-002 诊断 + ISS-004 status；真实端到端 promote `planner.py` 成功
 - **v1.4.0**: surgical-merge bootloader + LLM JSON 围栏清洗
