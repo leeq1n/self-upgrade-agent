@@ -778,3 +778,90 @@ def test_run_stable_papers_are_real_arxiv():
         "fake 'AutoGen' was wrong for 2310.02170"
     assert "Generative Agents: Interactive Simulacra" not in content, \
         "fake 'Generative Agents' was wrong for 2304.14733"
+
+
+
+def test_llm_config_has_thinking_fields():
+    """v1.8.1: LLMConfig exposes enable_thinking_default + thinking_budget_default."""
+    sys.path.insert(0, PROJECT)
+    from src.llm import LLMConfig
+    cfg = LLMConfig()
+    # Defaults: thinking ON with 2K budget
+    assert hasattr(cfg, "enable_thinking_default")
+    assert hasattr(cfg, "thinking_budget_default")
+    assert cfg.enable_thinking_default is True
+    assert cfg.thinking_budget_default == 2048
+
+
+def test_chat_simple_accepts_thinking_kwargs():
+    """v1.8.1: chat_simple forwards enable_thinking + thinking_budget to chat()."""
+    sys.path.insert(0, PROJECT)
+    from src.llm import chat_simple
+    import inspect
+    sig = inspect.signature(chat_simple)
+    assert "enable_thinking" in sig.parameters
+    assert "thinking_budget" in sig.parameters
+
+
+def test_chat_injects_chat_template_kwargs():
+    """v1.8.1: chat() injects chat_template_kwargs into the request body.
+
+    We can't actually call the LLM (no network), but we can verify the
+    function signature accepts the new args.
+    """
+    sys.path.insert(0, PROJECT)
+    from src.llm import chat
+    import inspect
+    sig = inspect.signature(chat)
+    assert "enable_thinking" in sig.parameters
+    assert "thinking_budget" in sig.parameters
+
+
+def test_patchgen_uses_thinking_for_patch_design():
+    """v1.8.1: src/patchgen.py chat() call enables thinking with budget."""
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, "src", "patchgen.py")) as f:
+        content = f.read()
+    # The chat() call in patchgen should specify thinking params
+    assert "enable_thinking=True" in content
+    assert "thinking_budget=4096" in content
+
+
+def test_filter_disables_thinking_for_speed():
+    """v1.8.1: src/filter.py chat_simple() disables thinking (keyword-based)."""
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, "src", "filter.py")) as f:
+        content = f.read()
+    assert "enable_thinking=False" in content
+
+
+def test_env_example_has_thinking_defaults():
+    """v1.8.1: .env.example documents the new thinking defaults."""
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, ".env.example")) as f:
+        content = f.read()
+    assert "LLM_ENABLE_THINKING_DEFAULT" in content
+    assert "LLM_THINKING_BUDGET_DEFAULT" in content
+    assert "LLM_AGENT_WORLD_URL" in content
+    assert "LLM_AGENT_WORLD_MODEL" in content
+
+
+def test_model_strategy_doc_exists():
+    """v1.8.1: docs/MODEL_STRATEGY.md explains the dual llama-server setup."""
+    sys.path.insert(0, PROJECT)
+    assert os.path.exists(os.path.join(PROJECT, "docs", "MODEL_STRATEGY.md"))
+
+
+def test_start_llama_servers_script_exists():
+    """v1.8.1: scripts/start_llama_servers.sh provides one-shot server start."""
+    sys.path.insert(0, PROJECT)
+    path = os.path.join(PROJECT, "scripts", "start_llama_servers.sh")
+    assert os.path.exists(path)
+    with open(path) as f:
+        content = f.read()
+    assert "qwen3-vl-30b-a3b" in content
+    assert "qwen-agentworld-35b-a3b" in content
+    assert "38000" in content
+    assert "38001" in content
+    assert "mmproj" in content
+    assert "enable_thinking" in content

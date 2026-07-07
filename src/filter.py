@@ -168,7 +168,10 @@ def _llm_score_paper(paper: Paper, llm_config: Optional[LLMConfig] = None) -> Sc
         "Do not give high scores just because the paper is famous."
     )
 
-    content = chat_simple(prompt, system=system, config=llm_config)
+    # v1.8.1: filter is keyword-based scoring; no deep reasoning needed.
+    # Disable thinking for speed.
+    content = chat_simple(prompt, system=system, config=llm_config,
+                          enable_thinking=False)
     data = _parse_llm_json(content)
     if not data:
         logger.warning(f"LLM returned invalid JSON: {str(content)[:100]}")

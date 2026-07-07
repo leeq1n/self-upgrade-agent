@@ -74,6 +74,12 @@ class LLMConfig:
     # type for the public API.
     raise_on_timeout: bool = False
 
+    # v1.8.1: per-call thinking mode control.  llama-server's
+    # chat_template_kwargs={"enable_thinking": bool, "thinking_budget": int}
+    # is honored per-request.
+    enable_thinking_default: bool = True
+    thinking_budget_default: Optional[int] = 2048  # tokens; None = no limit
+
     @property
     def api_key(self) -> str:
         """Backward-compat: return the first (primary) key."""
@@ -480,6 +486,20 @@ def _try_with_fallback(
             if response_format:
                 body["response_format"] = response_format
 
+            # v1.8.1: per-call thinking control.  Per-request override
+            # beats config default.  llama-server respects chat_template_kwargs
+            # for Qwen3 enable_thinking + thinking_budget.
+            enable_thinking = getattr(config, "_enable_thinking_override", None)
+            if enable_thinking is None:
+                enable_thinking = getattr(config, "enable_thinking_default", True)
+            thinking_budget = getattr(config, "_thinking_budget_override", None)
+            if thinking_budget is None:
+                thinking_budget = getattr(config, "thinking_budget_default", None)
+            chat_template_kwargs = {"enable_thinking": bool(enable_thinking)}
+            if thinking_budget is not None:
+                chat_template_kwargs["thinking_budget"] = int(thinking_budget)
+            body["chat_template_kwargs"] = chat_template_kwargs
+
             # Minute-level 429 → same-key retry with backoff.
             for attempt in range(config.max_retries + 1):
                 # Re-check budget even between retries on the same key.
@@ -757,23 +777,45 @@ def chat(
     system: Optional[str] = None,
     config: Optional[LLMConfig] = None,
     response_format: Optional[Dict] = None,
+    enable_thinking: Optional[bool] = None,
+    thinking_budget: Optional[int] = None,
 ) -> LLMResponse:
+    """Send chat completion.  v1.8.1: per-call thinking control.
+
+    Args:
+        enable_thinking: if True, force thinking ON; if False, force OFF;
+            if None, use LLMConfig.enable_thinking_default.
+        thinking_budget: max tokens for thinking (Qwen3 supports budget).
+            None = no limit.  Recommended: 1024-4096 for agent tasks.
+    """
     if config is None:
         config = get_config()
     if not config.ready:
         return LLMResponse(content="", error="LLM not configured")
+    # Per-call thinking override: stash on config (will be picked up in payload)
+    if enable_thinking is not None:
+        config._enable_thinking_override = enable_thinking
+    if thinking_budget is not None:
+        config._thinking_budget_override = thinking_budget
     return _try_with_fallback(messages, system, config, response_format)
 
 
 def chat_simple(
     prompt: str,
     system: Optional[str] = None,
+    enable_thinking: Optional[bool] = None,
+    thinking_budget: Optional[int] = None,
     **kwargs,
 ) -> str:
-    """Convenience: send a simple prompt, get content string back."""
+    """Convenience: send a simple prompt, get content string back.
+
+    v1.8.1: supports per-call thinking control.
+    """
     result = chat(
         messages=[{"role": "user", "content": prompt}],
         system=system,
+        enable_thinking=enable_thinking,
+        thinking_budget=thinking_budget,
         **kwargs,
     )
     if result.error:
