@@ -244,6 +244,57 @@ def _apply_patch_to_module(
 # Pipeline Nodes
 # ═══════════════════════════════════════════════════════════
 
+def _build_research_context(state: dict) -> dict:
+    """Build a context dict that downstream nodes can use to make smarter
+    decisions.  This is the v1.8.1 'loop feedback' feature: instead of
+    every round starting from zero, the agent sees what was tried.
+
+    Returns:
+        dict with:
+          - "seen_papers_count": int (how many papers we've already tried)
+          - "seen_topics": list[str] (unique topics in seen_papers titles)
+          - "last_outcome": dict | None (what happened last round)
+          - "long_term_goal": str (what we're trying to achieve overall)
+
+    Cheap to compute (one DB query).  Called once at end of node_research.
+    """
+    ctx = {
+        "seen_papers_count": 0,
+        "seen_topics": [],
+        "last_outcome": state.get("last_outcome"),
+        "long_term_goal": state.get("long_term_goal"),
+    }
+    try:
+        from src.learning import init_db
+        conn = init_db()
+        try:
+            cur = conn.execute("SELECT COUNT(*) FROM seen_papers")
+            ctx["seen_papers_count"] = cur.fetchone()[0]
+
+            # Sample titles to extract topics (cheap, no LLM)
+            cur = conn.execute(
+                "SELECT title FROM seen_papers ORDER BY last_seen_at DESC LIMIT 20"
+            )
+            titles = [r[0] for r in cur.fetchall() if r[0]]
+            # Heuristic: take first significant word from each title
+            seen_words = set()
+            for t in titles:
+                for w in t.lower().split():
+                    w = w.strip(".,:;()[]{}")  # strip punctuation
+                    if len(w) > 5 and w not in {
+                        "agent", "using", "language", "model", "models",
+                        "learning", "paper", "approach", "method", "task",
+                        "tasks", "based", "novel", "improving", "improved",
+                    }:
+                        seen_words.add(w)
+            ctx["seen_topics"] = sorted(seen_words)[:20]
+        finally:
+            conn.close()
+    except Exception:
+        pass
+    return ctx
+
+
 def node_research(state: dict) -> dict:
     """Phase 1: Search arXiv for latest papers."""
     logger.info("1. Research: searching arXiv...")
@@ -306,6 +357,10 @@ def node_research(state: dict) -> dict:
         except Exception as e:
             logger.debug(f"seen-papers filter failed (non-fatal): {e}")
 
+        # v1.8.1: build context block for downstream nodes.  Without this,
+        # node_filter and node_implement have no idea what was tried before.
+        state["research_context"] = _build_research_context(state)
+
         state["papers"] = papers
 
         # Extract trending keywords from found papers
@@ -318,6 +373,9 @@ def node_research(state: dict) -> dict:
         state["errors"].append(f"Research: {e}")
         logger.error(f"   Research failed: {e}")
         state["papers"] = []
+        # Even on failure, build an empty context so downstream nodes get
+        # consistent shape (avoids KeyError in node_filter / node_implement).
+        state["research_context"] = _build_research_context(state)
 
     return state
 
@@ -378,8 +436,21 @@ def node_generate_patch(state: dict) -> dict:
             f"3. PatchGen: try {tried}/{len(scored)} — "
             f"'{best.paper.title[:60]}'"
         )
+        # v1.8.1: pass loop feedback (last_outcome + seen_papers + sandbox)
+        # so LLM can avoid repeating failed approaches.
+        loop_state = state.get("research_context") or {}
+        # Also add sandbox runtime info
         try:
-            patch = generate_patch(best.paper, "planner.py") or {}
+            import sys as _sys
+            loop_state["sandbox_info"] = {
+                "python_version": f"{_sys.version_info.major}.{_sys.version_info.minor}.{_sys.version_info.micro}",
+                "sys_path_sample": ", ".join(_sys.path[:3]),
+            }
+        except Exception:
+            pass
+
+        try:
+            patch = generate_patch(best.paper, "planner.py", loop_state=loop_state) or {}
         except Exception as e:
             state["errors"].append(f"PatchGen[{tried}]: {e}")
             logger.warning(f"   PatchGen exception: {e}")

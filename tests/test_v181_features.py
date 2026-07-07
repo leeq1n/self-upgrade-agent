@@ -382,3 +382,97 @@ def test_goals_describe_handles_all_cases():
     assert "unknown" in describe("xyz_unknown").lower()
 
     unregister("k")
+
+
+
+def test_build_research_context_returns_dict():
+    """_build_research_context always returns a dict with consistent shape."""
+    sys.path.insert(0, PROJECT)
+    from src.pipeline_lg import _build_research_context
+    ctx = _build_research_context({})
+    assert isinstance(ctx, dict)
+    assert "seen_papers_count" in ctx
+    assert "seen_topics" in ctx
+    assert "last_outcome" in ctx
+    assert "long_term_goal" in ctx
+    # All values should be safe defaults when DB is empty
+    assert ctx["seen_papers_count"] == 0
+    assert isinstance(ctx["seen_topics"], list)
+
+
+def test_build_research_context_with_last_outcome():
+    """_build_research_context propagates last_outcome."""
+    sys.path.insert(0, PROJECT)
+    from src.pipeline_lg import _build_research_context
+    state = {
+        "last_outcome": {"decision": "reverted", "delta": -0.05},
+        "long_term_goal": "test goal",
+    }
+    ctx = _build_research_context(state)
+    assert ctx["last_outcome"]["decision"] == "reverted"
+    assert ctx["long_term_goal"] == "test goal"
+
+
+def test_format_loop_feedback_empty():
+    """Empty loop_state returns empty string."""
+    sys.path.insert(0, PROJECT)
+    from src.patchgen import _format_loop_feedback
+    assert _format_loop_feedback(None) == ""
+    assert _format_loop_feedback({}) == ""
+
+
+def test_format_loop_feedback_full():
+    """All fields are formatted into a readable string."""
+    sys.path.insert(0, PROJECT)
+    from src.patchgen import _format_loop_feedback
+    state = {
+        "last_outcome": {"decision": "reverted", "delta": -0.05, "harness_pass_rate": 0.0},
+        "seen_papers_count": 42,
+        "seen_topics": ["multi-agent", "reasoning", "tool-use"],
+        "long_term_goal": "improve planner",
+        "sandbox_info": {"python_version": "3.11.15", "sys_path_sample": "/path1, /path2"},
+    }
+    out = _format_loop_feedback(state)
+    assert "Loop feedback" in out
+    assert "reverted" in out
+    assert "-5.0%" in out or "−5.0%" in out or "-5" in out  # delta formatted
+    assert "42 papers" in out
+    assert "multi-agent" in out or "tool-use" in out
+    assert "Python 3.11.15" in out
+    assert "improve planner" in out
+
+
+def test_patchgen_signature_has_loop_state():
+    """generate_patch must accept loop_state kwarg (v1.8.1)."""
+    import inspect
+    sys.path.insert(0, PROJECT)
+    from src.patchgen import generate_patch
+    sig = inspect.signature(generate_patch)
+    assert "loop_state" in sig.parameters
+    # loop_state should default to None (backward compatible)
+    assert sig.parameters["loop_state"].default is None
+
+
+def test_patchgen_prompt_has_loop_feedback_placeholder():
+    """PROMPT_TEMPLATE has {loop_feedback} placeholder."""
+    sys.path.insert(0, PROJECT)
+    from src.patchgen import PROMPT_TEMPLATE
+    assert "{loop_feedback}" in PROMPT_TEMPLATE
+
+
+def test_pipeline_lg_has_research_context():
+    """node_research must set state['research_context']."""
+    p = os.path.join(PROJECT, "src", "pipeline_lg.py")
+    with open(p) as f:
+        content = f.read()
+    assert "research_context" in content
+    assert "_build_research_context" in content
+
+
+def test_pipeline_lg_passes_loop_state_to_patchgen():
+    """node_generate_patch must pass loop_state to generate_patch."""
+    p = os.path.join(PROJECT, "src", "pipeline_lg.py")
+    with open(p) as f:
+        content = f.read()
+    assert "loop_state=" in content or "loop_state =" in content
+    assert "loop_state=loop_state" in content or "loop_state=state.get" in content

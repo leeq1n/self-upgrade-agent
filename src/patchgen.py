@@ -143,6 +143,62 @@ def _parse_json_lenient(content: str) -> Optional[dict]:
     return None
 
 
+def _format_loop_feedback(loop_state: Optional[dict]) -> str:
+    """Format the loop feedback section for the patchgen prompt.
+
+    Returns a multi-line string describing:
+      - what the last round did
+      - what was tried before
+      - current sandbox compatibility info
+
+    Returns "" if loop_state is None or empty (LLM gets no extra context).
+    """
+    if not loop_state:
+        return ""
+
+    lines = []
+
+    last = loop_state.get("last_outcome")
+    if last:
+        decision = last.get("decision", "?")
+        delta = last.get("delta")
+        harness = last.get("harness_pass_rate")
+        if delta is not None:
+            lines.append(f"- Last round: decision={decision}, delta={delta:+.1%}")
+        else:
+            lines.append(f"- Last round: decision={decision}")
+        if harness is not None:
+            lines.append(f"- Last round harness: {harness:.0%}")
+        errs = last.get("errors") or []
+        if errs:
+            err_summary = "; ".join(str(e)[:80] for e in errs[:2])
+            lines.append(f"- Last round errors: {err_summary}")
+
+    seen_count = loop_state.get("seen_papers_count")
+    if seen_count:
+        lines.append(f"- We have previously attempted {seen_count} papers.")
+
+    seen_topics = loop_state.get("seen_topics") or []
+    if seen_topics:
+        topic_list = ", ".join(seen_topics[:8])
+        lines.append(f"- Topics already explored (avoid repeating): {topic_list}")
+
+    sandbox = loop_state.get("sandbox_info") or {}
+    if sandbox:
+        py_v = sandbox.get("python_version", "?")
+        path = sandbox.get("sys_path_sample", "")[:80]
+        lines.append(f"- Runtime: Python {py_v}; sys.path includes {path}")
+
+    long_goal = loop_state.get("long_term_goal")
+    if long_goal:
+        lines.append(f"- Long-term goal: {long_goal}")
+
+    if not lines:
+        return ""
+
+    return "Loop feedback (v1.8.1):\n" + "\n".join(lines)
+
+
 PROMPT_TEMPLATE = """\
 You are modifying a small Python module in a self-improving agent system.
 
@@ -159,6 +215,8 @@ A research paper with the following method/idea was discovered:
 
   Title: {title}
   Abstract: {abstract}
+
+{loop_feedback}
 
 Your task: write a surgical PATCH that adapts an EXISTING function
 (typically `{primary_func}`) to incorporate insights from the paper.
@@ -190,7 +248,13 @@ def generate_patch(
     paper: Paper,
     target_module: str = "planner.py",
     llm_config: Optional[LLMConfig] = None,
+    loop_state: Optional[dict] = None,
 ) -> Optional[dict]:
+    """Generate a surgical patch.
+
+    v1.8.1: optional `loop_state` carries last_outcome + sandbox context
+    so the LLM sees what was tried before.  See _format_loop_feedback.
+    """
     """Generate a surgical patch for a core agent module from a paper.
 
     Returns ``{"function": ..., "test": ..., "module": ...}`` on success
@@ -214,6 +278,10 @@ def generate_patch(
     version_m = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', current_source)
     current_version = version_m.group(1) if version_m else "1.0.0"
 
+    # v1.8.1: inject loop feedback so LLM knows what was tried before.
+    # If state not passed, this is empty (LLM gets minimal context).
+    loop_feedback = _format_loop_feedback(loop_state)
+
     prompt = PROMPT_TEMPLATE.format(
         target_module=target_module,
         current_source=current_source or "(file is empty — generate a sensible first version)",
@@ -222,6 +290,7 @@ def generate_patch(
         title=paper.title,
         abstract=(paper.abstract or "")[:1500],
         primary_func=primary_func,
+        loop_feedback=loop_feedback,
     )
 
     resp = chat(
