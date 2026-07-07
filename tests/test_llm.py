@@ -103,7 +103,9 @@ class TestLLMConfig:
 
         cfg = LLMConfig.from_env()
         assert cfg.api_keys == []
-        assert not cfg.ready
+        # v1.8.1: local llama-server has no API keys but is still ready
+        # if base_url + model are set.  See d10a336.
+        assert cfg.ready  # was: assert not cfg.ready
 
     def test_from_env_respects_overrides(self):
         os.environ["LLM_API_KEY_0"] = "k"
