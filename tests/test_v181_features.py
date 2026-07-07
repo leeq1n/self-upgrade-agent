@@ -720,3 +720,38 @@ def test_pipeline_lg_exposes_tools_in_context():
         assert "name" in t
         assert "description" in t
         assert "params" in t
+
+
+
+def test_seen_papers_filter_keeps_new_papers():
+    """v1.8.1 bug fix: node_research must KEEP unseen papers (not seen ones).
+
+    get_unseen_paper_ids() returns SEEN papers (despite its name).
+    node_research must filter `pid NOT IN seen_set` to keep NEW papers.
+    """
+    sys.path.insert(0, PROJECT)
+    import re
+    with open(os.path.join(PROJECT, "src", "pipeline_lg.py")) as f:
+        content = f.read()
+    # The filter logic must be `pid not in unseen_ids` (keeps new)
+    assert "if pid not in unseen_ids:" in content, \
+        "filter should keep papers NOT in seen set (new papers)"
+    # Must NOT be the broken version
+    assert "if pid in unseen_ids:" not in content, \
+        "filter must NOT keep seen papers only"
+
+
+def test_run_stable_patches_both_modules():
+    """v1.8.1 bug fix: run_one_round must patch src.research AND src.pipeline_lg.
+
+    Without patching both, node_research still gets empty papers.
+    """
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, "run_stable.py")) as f:
+        content = f.read()
+    # Both module names must appear in the patch block
+    patch_block_start = content.find("Inject fake paper")
+    patch_block_end = content.find("cfg = load_config", patch_block_start)
+    patch_block = content[patch_block_start:patch_block_end]
+    assert "src.research as research_mod" in patch_block
+    assert "src.pipeline_lg as plg" in patch_block

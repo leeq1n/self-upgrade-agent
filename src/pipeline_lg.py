@@ -382,7 +382,8 @@ def node_research(state: dict) -> dict:
                     pid = getattr(p, "arxiv_id", None) or p.get("arxiv_id", "?")
                     if is_blacklisted(conn, pid):
                         continue
-                    if pid in unseen_ids:
+                    # seen_ids (despite name) = already-tried papers; keep new ones
+                    if pid not in unseen_ids:
                         filtered.append(p)
                 papers = filtered
                 if n_seen > 0:
