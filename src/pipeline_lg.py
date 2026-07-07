@@ -277,6 +277,35 @@ def node_research(state: dict) -> dict:
             papers = search_arxiv(cfg.research)
             logger.info(f"   Found {len(papers)} papers")
 
+        # v1.8.1: filter out seen + blacklisted papers (avoid repeats)
+        try:
+            from src.learning import (
+                init_db, is_blacklisted, get_unseen_paper_ids, get_seen_count
+            )
+            conn = init_db()
+            try:
+                n_seen = get_seen_count(conn)
+                unseen_ids = get_unseen_paper_ids(conn)
+                original_count = len(papers)
+                # Filter out blacklisted + seen papers
+                filtered = []
+                for p in papers:
+                    pid = getattr(p, "arxiv_id", None) or p.get("arxiv_id", "?")
+                    if is_blacklisted(conn, pid):
+                        continue
+                    if pid in unseen_ids:
+                        filtered.append(p)
+                papers = filtered
+                if n_seen > 0:
+                    logger.info(
+                        f"   Seen-papers filter: {original_count} -> {len(papers)} "
+                        f"({n_seen} previously seen, {original_count - len(papers)} skipped)"
+                    )
+            finally:
+                conn.close()
+        except Exception as e:
+            logger.debug(f"seen-papers filter failed (non-fatal): {e}")
+
         state["papers"] = papers
 
         # Extract trending keywords from found papers
@@ -755,6 +784,24 @@ def node_decide(state: dict) -> dict:
             else:
                 discard_candidate(patch_name)
                 logger.info(f"   REVERTED. Candidate discarded: {patch_name}")
+
+            # v1.8.1: mark this paper as seen (regardless of decision)
+            # so we don\'t try the same paper again in future rounds
+            if best and best.paper:
+                try:
+                    from src.learning import init_db, mark_paper_seen
+                    conn = init_db()
+                    try:
+                        outcome_str = f"{decision['decision']}: {'; '.join(decision.get('reasons', []) or ['no reasons'])[:300]}"
+                        mark_paper_seen(
+                            conn,
+                            paper_id=best.paper.arxiv_id,
+                            outcome=outcome_str,
+                        )
+                    finally:
+                        conn.close()
+                except Exception as e:
+                    logger.debug(f"mark_paper_seen failed (non-fatal): {e}")
     except Exception as e:
         state["errors"].append(f"Deploy: {e}")
         logger.warning(f"   Deploy error: {e}")
