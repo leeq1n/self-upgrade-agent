@@ -755,3 +755,26 @@ def test_run_stable_patches_both_modules():
     patch_block = content[patch_block_start:patch_block_end]
     assert "src.research as research_mod" in patch_block
     assert "src.pipeline_lg as plg" in patch_block
+
+
+
+def test_run_stable_papers_are_real_arxiv():
+    """v1.8.1 bug fix: PAPERS in run_stable.py must match real arxiv data.
+
+    Earlier fake data cited "AutoGen" for arxiv 2310.02170 (wrong;
+    2310.02170 is DyLAN).  This test catches any future regression.
+    """
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, "run_stable.py")) as f:
+        content = f.read()
+    # Spot-check that 3 fixed titles appear (the ones that were wrong)
+    assert "DyLAN" in content, "DyLAN should be in real 2310.02170 abstract"
+    assert "MMLU-Pro" in content, "MMLU-Pro should be in real 2406.01574 title"
+    assert "WorldEvolver" in content, "WorldEvolver should be in real 2606.30639 abstract"
+    # And 3 wrong strings should NOT be present
+    assert "Multi-Agent Collaboration Mechanisms: A Survey" not in content, \
+        "fake 'Multi-Agent Collaboration' was wrong for 2406.01574"
+    assert "AutoGen: Multi-Agent Conversation" not in content, \
+        "fake 'AutoGen' was wrong for 2310.02170"
+    assert "Generative Agents: Interactive Simulacra" not in content, \
+        "fake 'Generative Agents' was wrong for 2304.14733"

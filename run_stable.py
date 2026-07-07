@@ -147,23 +147,37 @@ def run_one_round(n, paper, consecutive_kept_so_far):
     }
 
 
-# Default papers (5 candidates, rotates)
+# Default papers (verified-true via Chrome, 2026-07-07).
+# v1.8.1 bug: previous fake data was 60% WRONG (cited wrong titles
+# for 3/5 papers).  LLM scoring against wrong abstracts = always 0.
+# All data below was fetched live from https://arxiv.org/abs/<id>
+# via chrome-devtools-mcp.
 PAPERS = [
-    {"arxiv_id": "2406.01574", "title": "Multi-Agent Collaboration Mechanisms: A Survey of LLMs",
-     "abstract": "Survey of multi-agent LLM collaboration mechanisms.",
-     "authors": "Han et al.", "published": "2024-06-03", "categories": "cs.CL, cs.MA"},
-    {"arxiv_id": "2606.30639", "title": "Self-Evolving World Models for LLM Agent Planning",
-     "abstract": "WorldEvolver with Episodic Memory.",
-     "authors": "Anon", "published": "2026-06-30", "categories": "cs.AI"},
-    {"arxiv_id": "2310.02170", "title": "AutoGen: Multi-Agent Conversation",
-     "abstract": "AutoGen framework for multi-agent LLM systems.",
-     "authors": "Wu et al.", "published": "2023-10-03", "categories": "cs.CL"},
-    {"arxiv_id": "2304.14733", "title": "Generative Agents: Interactive Simulacra of Human Behavior",
-     "abstract": "Generative agents with memory, reflection, planning.",
-     "authors": "Park et al.", "published": "2023-04", "categories": "cs.CL"},
-    {"arxiv_id": "2210.03629", "title": "ReAct: Reasoning and Acting",
-     "abstract": "ReAct framework for LLM reasoning + acting.",
-     "authors": "Yao et al.", "published": "2022-10", "categories": "cs.CL"},
+    {"arxiv_id": "2406.01574",
+     "title": "MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark",
+     "abstract": "Introduces MMLU-Pro benchmark for evaluating LLMs. Extends MMLU with more challenging reasoning-focused questions.",
+     "authors": "Yubo Wang, Xueguang Ma, Ge Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo, Weiming Ren, Aaran Arulraj, Xuan He, Ziyan Jiang, Tianle Li, Max Ku, Kai Wang, Alex Zhuang, Rongqi Fan, Xiang Yue, Wenhu Chen",
+     "published": "2024-06-03", "categories": "cs.CL"},
+    {"arxiv_id": "2606.30639",
+     "title": "Self-Evolving World Models for LLM Agent Planning",
+     "abstract": "WorldEvolver, a self-evolving world model framework that revises its deployment-time context while keeping the downstream agent and all modules intact.",
+     "authors": "Xuan Zhang, Wenxuan Zhang, See-Kiong Ng, Yang Deng",
+     "published": "2026-06-30", "categories": "cs.AI, cs.CL"},
+    {"arxiv_id": "2310.02170",
+     "title": "A Dynamic LLM-Powered Agent Network for Task-Oriented Agent Collaboration",
+     "abstract": "DyLAN framework: 2-stage (Team Optimization + Task Solving). Agent Importance Score for unsupervised team selection. Outperforms strong baselines in code generation, decision-making, reasoning. Up to 25% improvement on MMLU.",
+     "authors": "Zijun Liu, Yanzhe Zhang, Peng Li, Yang Liu, Diyi Yang",
+     "published": "2023-10-03", "categories": "cs.CL, cs.AI, cs.MA"},
+    {"arxiv_id": "2304.14733",
+     "title": "Consecutive Pattern Containment and c-Wilf Equivalence",
+     "abstract": "Elementary proofs for results in consecutive pattern containment; new bounds on growth rates of consecutive pattern avoidance in permutations.",
+     "authors": "Reza Rastegar",
+     "published": "2023-04-28", "categories": "math.CO"},
+    {"arxiv_id": "2210.03629",
+     "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+     "abstract": "Synergizes reasoning (chain-of-thought) and acting (action plan generation) in LLMs. Generates both reasoning traces and task-specific actions interleaved.",
+     "authors": "Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao",
+     "published": "2022-10-07", "categories": "cs.CL"},
 ]
 
 
