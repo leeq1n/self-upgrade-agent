@@ -461,6 +461,11 @@ def _try_with_fallback(
     deadline = call_start + config.total_timeout
 
     # If a key is marked dead, skip it (its index is still kept for error reporting).
+    # v1.8.1: local llama-server has no API keys — inject a sentinel so the
+    # for-loop and api_keys.index() calls work.  The sentinel is never sent
+    # in the HTTP request (no Authorization header is added for it).
+    if not config.api_keys:
+        config.api_keys = ["local-sentinel"]
     alive_keys = [k for k in config.api_keys if not quota.is_dead(k)]
     if not alive_keys:
         alive_keys = config.api_keys  # all dead — try anyway, with backoff

@@ -903,3 +903,23 @@ def test_filter_skips_quota_check_when_no_api_keys():
     # Must have: if llm_config.api_keys: (not always check QuotaState)
     assert "if llm_config.api_keys:" in content, \
         "filter must skip QuotaState check when no API keys (local server)"
+
+
+
+def test_try_with_fallback_handles_no_api_keys():
+    """v1.8.1: _try_with_fallback handles api_keys empty (local llama-server).
+
+    With local llama-server, api_keys is empty.  The previous code logged
+    'All API keys marked dead' and tried with empty list, causing the
+    for-loop to skip entirely.  Now it injects a 'local-sentinel' into
+    config.api_keys so the loop and .index() calls work.
+    """
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, "src", "llm.py")) as f:
+        src = f.read()
+    # Must inject sentinel when no keys
+    assert 'config.api_keys = ["local-sentinel"]' in src, \
+        "must inject local-sentinel into config.api_keys when empty"
+    # Must NOT have the buggy if/else branch with if config.api_keys:
+    assert 'if config.api_keys:\n        alive_keys' not in src, \
+        "must not have the if/else gate (that broke api_keys.index())"
