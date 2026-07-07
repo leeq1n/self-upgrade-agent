@@ -119,63 +119,107 @@ def test_seen_papers_in_db_actually_records():
 
 
 
-def test_gc_seen_papers_function_exists():
-    """src/learning.py must export gc_seen_papers + get_seen_db_stats."""
-    sys.path.insert(0, PROJECT)
-    from src.learning import gc_seen_papers, get_seen_db_stats
-    assert callable(gc_seen_papers)
-    assert callable(get_seen_db_stats)
-
-
-def test_gc_seen_papers_trims_old_rows():
-    """gc_seen_papers deletes oldest rows when over max_rows."""
-    import tempfile, sqlite3, time
-    sys.path.insert(0, PROJECT)
-    from src.learning import init_db, mark_paper_seen, gc_seen_papers, get_seen_db_stats
-
-    fd, path = tempfile.mkstemp(suffix=".db")
-    os.close(fd)
-    try:
-        conn = init_db(path)
-        try:
-            # Add 10 papers
-            for i in range(10):
-                mark_paper_seen(conn, f"9999.{i:05d}", outcome="kept")
-                time.sleep(0.01)  # ensure different first_seen_at
-
-            stats_before = get_seen_db_stats(conn)
-            assert stats_before["total"] == 10
-
-            # Trim to max 5
-            deleted = gc_seen_papers(conn, max_rows=5)
-            assert deleted == 5, f"expected 5 deleted, got {deleted}"
-
-            stats_after = get_seen_db_stats(conn)
-            assert stats_after["total"] == 5
-        finally:
-            conn.close()
-    finally:
-        os.unlink(path)
-
-
-def test_gc_seen_papers_no_op_when_under():
-    """gc_seen_papers is a no-op when under max_rows."""
+def test_apply_memory_policy_default_is_noop():
+    """v1.8.1 (涌现): default policy is noop.  LLM installs better one."""
     import tempfile
     sys.path.insert(0, PROJECT)
-    from src.learning import init_db, mark_paper_seen, gc_seen_papers
+    from src.learning import init_db, mark_paper_seen, apply_memory_policy
 
     fd, path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
     try:
         conn = init_db(path)
         try:
-            mark_paper_seen(conn, "9999.99999", outcome="kept")
-            deleted = gc_seen_papers(conn, max_rows=100)
-            assert deleted == 0, "should not delete when under max_rows"
+            for i in range(5):
+                mark_paper_seen(conn, f"9999.{i:05d}")
+            result = apply_memory_policy(conn)  # default = noop
+            assert result["policy"] == "noop"
+            assert result["deleted"] == 0
+            # All 5 rows still there (noop didn\'t touch anything)
+            after = conn.execute("SELECT COUNT(*) FROM seen_papers").fetchone()[0]
+            assert after == 5
         finally:
             conn.close()
     finally:
         os.unlink(path)
+
+
+def test_apply_memory_policy_accepts_user_fn():
+    """apply_memory_policy runs a user-provided policy function."""
+    import tempfile
+    sys.path.insert(0, PROJECT)
+    from src.learning import init_db, mark_paper_seen, apply_memory_policy
+
+    fd, path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        conn = init_db(path)
+        try:
+            for i in range(10):
+                mark_paper_seen(conn, f"9999.{i:05d}")
+
+            # User policy: trim to 3 rows
+            def my_policy(c):
+                cur = c.execute("SELECT COUNT(*) FROM seen_papers").fetchone()[0]
+                if cur > 3:
+                    n = cur - 3
+                    c.execute(
+                        "DELETE FROM seen_papers WHERE rowid IN ("
+                        "  SELECT rowid FROM seen_papers "
+                        "  ORDER BY first_seen_at ASC LIMIT ?)",
+                        (n,))
+                    c.commit()
+                return {"policy": "my_policy", "deleted": max(0, cur - 3)}
+
+            result = apply_memory_policy(conn, my_policy)
+            assert result["policy"] == "my_policy"
+            after = conn.execute("SELECT COUNT(*) FROM seen_papers").fetchone()[0]
+            assert after == 3
+        finally:
+            conn.close()
+    finally:
+        os.unlink(path)
+
+
+def test_apply_memory_policy_hard_ceiling_fuse():
+    """Hard ceiling MAX_LEARNING_ROWS fires if user policy is too lax."""
+    import tempfile
+    sys.path.insert(0, PROJECT)
+    from src.learning import (
+        init_db, mark_paper_seen, apply_memory_policy, MAX_LEARNING_ROWS
+    )
+
+    fd, path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        conn = init_db(path)
+        try:
+            # Add MAX+5 rows
+            n_to_add = MAX_LEARNING_ROWS + 5
+            # Use a batch insert to speed up
+            import time
+            for i in range(n_to_add):
+                mark_paper_seen(conn, f"9999.{i:06d}")
+
+            # Apply noop policy (default) — but the hard ceiling must fire
+            result = apply_memory_policy(conn)  # noop
+            assert result.get("hard_ceiling_fired") is True
+            assert result["after"] == MAX_LEARNING_ROWS
+        finally:
+            conn.close()
+    finally:
+        os.unlink(path)
+
+
+def test_gc_command_supports_memory_policy_flag():
+    """self_upgrade gc --memory-policy module:fn wires through."""
+    p = os.path.join(PROJECT, "self_upgrade", "__main__.py")
+    with open(p) as f:
+        content = f.read()
+    assert "--memory-policy" in content
+    assert "apply_memory_policy" in content
+    # The flag should default to None (noop default)
+    assert "default=None" in content or "memory_policy=None" in content
 
 
 def test_run_stable_patches_research_module():

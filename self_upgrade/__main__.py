@@ -73,6 +73,13 @@ def main():
         "--dry-run", action="store_true",
         help="Show what would be deleted without actually deleting",
     )
+    p_gc.add_argument(
+        "--memory-policy", type=str, default=None,
+        help="Emergent memory policy as 'module:function' (v1.8.1). "
+             "Default: noop. LLM can install a smarter policy by editing "
+             "src/learning.py:apply_memory_policy via patchgen, "
+             "or by passing --memory-policy my_policies:trim_old.",
+    )
 
     args = parser.parse_args()
 
@@ -93,6 +100,7 @@ def main():
             arxiv_max_age=args.arxiv_cache_max_age_days,
             history_archive_rows=args.archive_history_older_than_rows,
             dry_run=args.dry_run,
+            memory_policy=args.memory_policy,
         )
     parser.print_help()
     return 1
@@ -241,7 +249,8 @@ def _file_age_days(path: str) -> float:
     return (time.time() - os.path.getmtime(path)) / 86400.0
 
 
-def cmd_gc(arxiv_max_age: int, history_archive_rows: int, dry_run: bool) -> int:
+def cmd_gc(arxiv_max_age: int, history_archive_rows: int, dry_run: bool,
+           memory_policy=None) -> int:
     """Garbage-collect runtime data.
 
     - arxiv_cache/ : delete pkl files older than --arxiv-cache-max-age-days
@@ -370,27 +379,48 @@ def cmd_gc(arxiv_max_age: int, history_archive_rows: int, dry_run: bool) -> int:
             else:
                 conn.close()
 
-    # 5. learning.db seen_papers (v1.8.1: 奥卡姆 — prevent unbounded growth)
+    # 5. learning.db seen_papers (v1.8.1: 奥卡姆-涌现 — no hand-coded policy)
+    # Default policy is noop.  LLM can install a smarter one via patchgen
+    # editing apply_memory_policy() in src/learning.py.
     try:
-        from src.learning import init_db, gc_seen_papers, get_seen_db_stats
+        from src.learning import init_db, apply_memory_policy, MAX_LEARNING_ROWS
         learn_db = os.path.join(upgraded, "learning.db")
         if os.path.exists(learn_db):
             conn = init_db(learn_db)
             try:
-                stats = get_seen_db_stats(conn)
-                # Compress if > 500 rows (configurable; default 500)
-                deleted = gc_seen_papers(conn, max_rows=500)
-                total_before = stats["total"]
-                if deleted > 0:
-                    print("  seen_papers: trimmed %d oldest rows (%d -> %d rows)"
-                          % (deleted, total_before, total_before - deleted))
+                # If user passed --memory-policy, load it
+                policy_fn = None
+                if memory_policy:
+                    try:
+                        mod_name, fn_name = memory_policy.split(":", 1)
+                        import importlib
+                        mod = importlib.import_module(mod_name)
+                        policy_fn = getattr(mod, fn_name)
+                    except Exception as e:
+                        print("  warning: --memory-policy load failed: %s" % e)
+                        policy_fn = None
+
+                if dry_run and memory_policy:
+                    print("  dry-run: would apply policy %s" % memory_policy)
+                    result = {"policy": "noop", "before": 0, "after": 0, "deleted": 0}
                 else:
-                    print("  seen_papers: %d rows (no trim needed)"
-                          % total_before)
+                    result = apply_memory_policy(conn, policy_fn)  # default = noop
+                if result.get("hard_ceiling_fired"):
+                    print("  seen_papers: hard ceiling fired — "
+                          "deleted %d rows (now at %d, ceiling %d). "
+                          "Install a smarter policy via patchgen."
+                          % (result["deleted"], result["after"], MAX_LEARNING_ROWS))
+                elif result["deleted"] > 0:
+                    print("  seen_papers: policy %s deleted %d rows (%d -> %d)"
+                          % (result["policy"], result["deleted"],
+                             result["before"], result["after"]))
+                else:
+                    print("  seen_papers: %d rows (no policy active yet — "
+                          "patchgen can install one)" % result["before"])
             finally:
                 conn.close()
     except Exception as e:
-        print(f"  seen_papers GC failed (non-fatal): {e}")
+        print(f"  seen_papers check failed (non-fatal): {e}")
 
     prefix = "would be " if dry_run else ""
     print(f"Total: {n_files} files {prefix}deleted, {n_bytes} bytes")

@@ -315,47 +315,66 @@ def get_failure_count(conn: sqlite3.Connection, paper_id: str) -> int:
 
 
 
-def gc_seen_papers(conn: sqlite3.Connection, max_rows: int = 500) -> int:
-    """Compress seen_papers table.
+# ═══════════════════════════════════════════════════════════
+# v1.8.1 (奥卡姆-涌现): Memory compression policy
+# ═══════════════════════════════════════════════════════════
+#
+# v1.8.1 DESIGN PRINCIPLE:
+#   We do NOT hard-code "trim to 500 rows" or "keep last 30 days".
+#   Instead we expose:
+#     1. Raw table data (so the policy can be observed)
+#     2. ONE hard ceiling (MAX_LEARNING_ROWS) — last-resort safety
+#     3. `apply_memory_policy(conn, policy_fn)` — policy_fn is a callable
+#        that gets the conn and decides what to delete.
+#
+# The DEFAULT `apply_memory_policy` is "do nothing" — let LLM evolve it.
+# `self_upgrade gc` accepts a `--policy` flag for the LLM to install
+# its own policy (via a one-shot script or via patchgen).
+#
+# The hard ceiling only fires when total rows exceed MAX_LEARNING_ROWS,
+# and even then it uses a simple "delete oldest" — this is just a fuse,
+# not a real policy.  Real policy must come from evolution.
 
-    v1.8.1 (奥卡姆): prevent unbounded growth of learning.db.
-    Strategy:
-      1. Keep the most-recent `max_rows` rows by `first_seen_at`.
-      2. Older rows are DELETEd (we don't need history of "what we
-         tried 6 months ago" — only "what should I skip now").
-      3. Return the number of rows deleted.
+MAX_LEARNING_ROWS = 10000  # hard ceiling.  LLM policy should keep us below this.
 
-    This is safe to call repeatedly.  Called automatically by
-    `self_upgrade gc` so the user doesn't have to think about it.
+
+def apply_memory_policy(conn: sqlite3.Connection, policy_fn=None) -> dict:
+    """Apply a memory-compression policy.  Returns a report dict.
+
+    Args:
+        conn: sqlite3 connection to learning.db
+        policy_fn: optional callable(conn) -> dict.  If None, uses the
+            DEFAULT no-op policy (which is what runs today).  The LLM
+            can install a smarter policy by passing a function here,
+            or by editing this function via patchgen.
+
+    Returns:
+        dict with at least: {"policy": "<name>", "before": int,
+                             "after": int, "deleted": int}
     """
-    c = conn.cursor()
-    c.execute("SELECT COUNT(*) FROM seen_papers")
-    total = c.fetchone()[0]
-    if total <= max_rows:
-        return 0
-    # Delete oldest (total - max_rows) rows
-    n_to_delete = total - max_rows
-    c.execute(
-        "DELETE FROM seen_papers WHERE rowid IN ("
-        "  SELECT rowid FROM seen_papers ORDER BY first_seen_at ASC LIMIT ?"
-        ")",
-        (n_to_delete,),
-    )
-    deleted = c.rowcount
-    conn.commit()
-    return deleted
+    before = conn.execute("SELECT COUNT(*) FROM seen_papers").fetchone()[0]
 
+    if policy_fn is None:
+        # Default policy: nothing.  Trust LLM to install one later.
+        result = {"policy": "noop", "before": before, "after": before, "deleted": 0}
+    else:
+        # Run the LLM-installed (or test-installed) policy
+        result = policy_fn(conn)
+        if not isinstance(result, dict):
+            result = {"policy": "user_fn", "before": before, "after": before, "deleted": 0}
 
-def get_seen_db_stats(conn: sqlite3.Connection) -> dict:
-    """Return summary stats for seen_papers (used by gc command)."""
-    c = conn.cursor()
-    total = c.execute("SELECT COUNT(*) FROM seen_papers").fetchone()[0]
-    avg_times = c.execute("SELECT AVG(times_seen) FROM seen_papers").fetchone()[0]
-    oldest = c.execute(
-        "SELECT MIN(first_seen_at) FROM seen_papers"
-    ).fetchone()[0]
-    return {
-        "total": total,
-        "avg_times_seen": round(avg_times or 0, 2),
-        "oldest_entry": oldest,
-    }
+    # Hard safety ceiling — fuse only, no policy.  Runs AFTER both paths.
+    after = conn.execute("SELECT COUNT(*) FROM seen_papers").fetchone()[0]
+    if after > MAX_LEARNING_ROWS:
+        n_to_delete = after - MAX_LEARNING_ROWS
+        conn.execute(
+            "DELETE FROM seen_papers WHERE rowid IN ("
+            "  SELECT rowid FROM seen_papers ORDER BY first_seen_at ASC LIMIT ?"
+            ")",
+            (n_to_delete,),
+        )
+        conn.commit()
+        result["hard_ceiling_fired"] = True
+        result["deleted"] = result.get("deleted", 0) + n_to_delete
+        result["after"] = MAX_LEARNING_ROWS
+    return result
