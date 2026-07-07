@@ -231,3 +231,154 @@ def test_run_stable_patches_research_module():
     assert "plg.search_arxiv" in content
     # The actual fix: also patch src.research.search_arxiv
     assert "research_mod.search_arxiv" in content or "research.search_arxiv" in content
+
+
+
+def test_goals_registry_starts_empty():
+    """v1.8.1 (涌现): the goal registry is empty by default.
+
+    The whole point: do NOT hard-code strategies.  LLM must register them.
+    """
+    sys.path.insert(0, PROJECT)
+    from src.goals import list_strategies
+    assert list_strategies() == [], "registry must start empty (emergent)"
+
+
+def test_goals_pick_returns_fallback_when_empty():
+    """With no strategies registered, pick_strategy returns fallback_explore."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import pick_strategy, clear_registry, list_strategies
+    clear_registry()  # ensure empty
+    s = pick_strategy({"round_number": 1})
+    assert s == "fallback_explore", f"expected fallback_explore, got {s}"
+
+
+def test_goals_register_and_pick():
+    """LLM can register a strategy and pick_strategy uses it."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import register, unregister, pick_strategy, list_strategies, clear_registry
+    clear_registry()
+
+    def my_decide(state):
+        return "fallback_explore"
+
+    register("test_strategy", "test description", my_decide)
+    assert "test_strategy" in list_strategies()
+    s = pick_strategy({})
+    assert s == "fallback_explore"  # because my_decide returns this
+
+    unregister("test_strategy")
+    assert "test_strategy" not in list_strategies()
+
+
+def test_goals_crashing_strategy_does_not_break_loop():
+    """A strategy whose decide_fn raises should NOT crash the loop."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import register, unregister, pick_strategy, clear_registry
+    clear_registry()
+
+    def crash(state):
+        raise RuntimeError("boom")
+
+    register("crash_strategy", "always crashes", crash)
+    s = pick_strategy({})
+    # First registered strategy is crash_strategy, but it raises.
+    # Loop should fall through to fallback_explore.
+    assert s == "fallback_explore", f"expected fallback after crash, got {s}"
+    unregister("crash_strategy")
+
+
+def test_goals_register_validates():
+    """register() must reject empty names or non-callable decide_fn."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import register
+
+    try:
+        register("", "no name", lambda s: "x")
+        assert False, "should have raised ValueError"
+    except ValueError:
+        pass
+
+    try:
+        register("ok_name", "no fn", "not callable")
+        assert False, "should have raised ValueError"
+    except ValueError:
+        pass
+
+
+def test_goals_test_fn_harness():
+    """Each strategy has a test_fn that the harness can invoke."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import register, unregister, run_health_check, clear_registry
+    clear_registry()
+
+    def my_decide(state):
+        return "fallback_explore"
+
+    def my_test():
+        return True
+
+    register("healthy_strategy", "always healthy", my_decide, test_fn=my_test)
+
+    def bad_test():
+        return False
+
+    register("broken_strategy", "broken", my_decide, test_fn=bad_test)
+
+    health = run_health_check()
+    assert health["fallback_explore"] is True
+    assert health["healthy_strategy"] is True
+    assert health["broken_strategy"] is False
+
+    unregister("healthy_strategy")
+    unregister("broken_strategy")
+
+
+def test_goals_fallback_never_breaks():
+    """The hardcoded fallback must NEVER be removed (奥卡姆 guarantee)."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import clear_registry, pick_strategy, describe
+    clear_registry()  # wipe everything
+    s = pick_strategy({})
+    assert s == "fallback_explore"
+    d = describe("fallback_explore")
+    assert "haven" in d.lower() or "safe" in d.lower()
+
+
+def test_goals_unregister_returns_bool():
+    """unregister returns True if existed, False if not (for atomic semantics)."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import register, unregister, clear_registry
+    clear_registry()
+
+    def d(state):
+        return "fallback_explore"
+    register("x", "test", d)
+
+    assert unregister("x") is True
+    assert unregister("x") is False  # already removed
+
+
+def test_goals_long_term_default_is_string():
+    """DEFAULT_LONG_TERM_GOAL exists and is a non-empty string."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import DEFAULT_LONG_TERM_GOAL
+    assert isinstance(DEFAULT_LONG_TERM_GOAL, str)
+    assert len(DEFAULT_LONG_TERM_GOAL) > 0
+
+
+def test_goals_describe_handles_all_cases():
+    """describe(name) handles: known, fallback, unknown, empty."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import describe, register, clear_registry, unregister
+    clear_registry()
+
+    def d(state):
+        return "fallback_explore"
+    register("k", "known strategy", d)
+
+    assert "safe" in describe("fallback_explore").lower()
+    assert "test" in describe("k").lower() or "known" in describe("k").lower()
+    assert "unknown" in describe("xyz_unknown").lower()
+
+    unregister("k")
