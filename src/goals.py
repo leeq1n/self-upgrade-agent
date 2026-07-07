@@ -219,24 +219,39 @@ def registry_size() -> int:
 #   - chain them via decide_fn returning another strategy name
 
 def _explore_new_topic_decide(state: dict) -> str:
-    """Pick 'explore_new_topic' for first 2 rounds, then ask LLM to override.
+    """Decide if this round should explore a new topic.
 
-    Decision logic: round <= 2, OR no last_outcome.
+    Returns "explore_new_topic" if appropriate (early rounds, or
+    fresh exploration is wanted).  Otherwise returns "fallback_explore"
+    to let the next strategy decide.
+
+    Decision logic:
+      - First 2 rounds: yes (broaden search)
+      - After a KEPT: yes (the new topic might keep yielding)
+      - Otherwise: fallback (let other strategies decide)
     """
     if state.get("round_number", 1) <= 2:
         return "explore_new_topic"
-    return "fallback_explore"  # let the LLM/loop decide next
+    last = state.get("last_outcome") or {}
+    if last.get("decision") == "kept":
+        return "explore_new_topic"
+    return "fallback_explore"
 
 
 def _drill_after_failure_decide(state: dict) -> str:
-    """If last round failed (REVERTED), dig into similar papers.
+    """Decide if this round should drill into a failed topic.
 
-    Decision logic: if last_outcome.decision == 'reverted', look at
-    the failure_mode and suggest a different angle.
+    Returns "drill_after_failure" if the previous round was REVERTED
+    (don't repeat same approach — dig into WHY it failed and try a
+    different angle).  Otherwise returns "fallback_explore".
+
+    Decision logic:
+      - If last_outcome.decision == "reverted" → drill
+      - Otherwise → fallback
     """
     last = state.get("last_outcome") or {}
     if last.get("decision") == "reverted":
-        return "explore_new_topic"  # try a fresh angle
+        return "drill_after_failure"
     return "fallback_explore"
 
 
