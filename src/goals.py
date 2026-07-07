@@ -209,6 +209,82 @@ def registry_size() -> int:
 # at runtime.  v1.8.1 doesn't ship a "register long-term goal" mechanism;
 # that's for future evolution.
 
+# ═══════════════════════════════════════════════════════════
+# v1.8.1 seed strategies (奥卡姆: simple, can be removed)
+# ═══════════════════════════════════════════════════════════
+# User feedback (2026-07-07): '目前还没启动, 可能需要一些帮助'.
+# These give the loop a starting point.  LLM can:
+#   - unregister("explore_new_topic")        to remove
+#   - register(...) with same name           to override
+#   - chain them via decide_fn returning another strategy name
+
+def _explore_new_topic_decide(state: dict) -> str:
+    """Pick 'explore_new_topic' for first 2 rounds, then ask LLM to override.
+
+    Decision logic: round <= 2, OR no last_outcome.
+    """
+    if state.get("round_number", 1) <= 2:
+        return "explore_new_topic"
+    return "fallback_explore"  # let the LLM/loop decide next
+
+
+def _drill_after_failure_decide(state: dict) -> str:
+    """If last round failed (REVERTED), dig into similar papers.
+
+    Decision logic: if last_outcome.decision == 'reverted', look at
+    the failure_mode and suggest a different angle.
+    """
+    last = state.get("last_outcome") or {}
+    if last.get("decision") == "reverted":
+        return "explore_new_topic"  # try a fresh angle
+    return "fallback_explore"
+
+
+def _explore_new_topic_test() -> bool:
+    return True
+
+
+def _drill_after_failure_test() -> bool:
+    return True
+
+
+# Auto-register 2 seed strategies.  These are the minimum useful
+# defaults — the registry is mutable so LLM can remove or replace.
+register(
+    "explore_new_topic",
+    "Try a paper from a topic we haven't explored yet (broadens search).",
+    _explore_new_topic_decide,
+    test_fn=_explore_new_topic_test,
+)
+register(
+    "drill_after_failure",
+    "If the last round was REVERTED, try a different angle (don't repeat same approach).",
+    _drill_after_failure_decide,
+    test_fn=_drill_after_failure_test,
+)
+
+
+def _reseed_built_in_strategies() -> None:
+    """Re-register the 2 built-in seed strategies.
+
+    Useful for tests that call clear_registry() then need to
+    re-establish the default state.  LLM is expected to call this
+    if they accidentally clear_registry() and want defaults back.
+    """
+    register(
+        "explore_new_topic",
+        "Try a paper from a topic we haven't explored yet (broadens search).",
+        _explore_new_topic_decide,
+        test_fn=_explore_new_topic_test,
+    )
+    register(
+        "drill_after_failure",
+        "If the last round was REVERTED, try a different angle (don't repeat same approach).",
+        _drill_after_failure_decide,
+        test_fn=_drill_after_failure_test,
+    )
+
+
 DEFAULT_LONG_TERM_GOAL = (
     "Improve core/planner.py task decomposition success rate "
     "while keeping harness tests green"

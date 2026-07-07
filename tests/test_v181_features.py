@@ -1,5 +1,6 @@
 """v1.8.1: tests for seen-papers filter + streaming wrapper + collect_papers."""
 import os, sys, ast
+from src.goals import _reseed_built_in_strategies
 import pytest
 
 PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
@@ -234,21 +235,31 @@ def test_run_stable_patches_research_module():
 
 
 
-def test_goals_registry_starts_empty():
-    """v1.8.1 (涌现): the goal registry is empty by default.
+def test_goals_seeds_2_built_in_strategies():
+    """v1.8.1: registry starts with 2 built-in seed strategies (NOT empty).
 
-    The whole point: do NOT hard-code strategies.  LLM must register them.
+    The 'emergent' property is preserved: LLM can still add/remove/
+    modify.  We just give the loop a starting point.
+
+    This test supersedes the earlier 'registry is empty' assertion
+    because the user asked for some help getting started.
+
+    Note: earlier tests may have called clear_registry() which wipes
+    the seeds, so we re-seed before checking.
     """
     sys.path.insert(0, PROJECT)
-    from src.goals import list_strategies
-    assert list_strategies() == [], "registry must start empty (emergent)"
+    from src.goals import list_strategies, _reseed_built_in_strategies
+    _reseed_built_in_strategies()  # ensure seeds are present
+    names = list_strategies()
+    assert "explore_new_topic" in names
+    assert "drill_after_failure" in names
 
 
 def test_goals_pick_returns_fallback_when_empty():
     """With no strategies registered, pick_strategy returns fallback_explore."""
     sys.path.insert(0, PROJECT)
     from src.goals import pick_strategy, clear_registry, list_strategies
-    clear_registry()  # ensure empty
+    clear_registry()
     s = pick_strategy({"round_number": 1})
     assert s == "fallback_explore", f"expected fallback_explore, got {s}"
 
@@ -338,7 +349,7 @@ def test_goals_fallback_never_breaks():
     """The hardcoded fallback must NEVER be removed (奥卡姆 guarantee)."""
     sys.path.insert(0, PROJECT)
     from src.goals import clear_registry, pick_strategy, describe
-    clear_registry()  # wipe everything
+    clear_registry()
     s = pick_strategy({})
     assert s == "fallback_explore"
     d = describe("fallback_explore")
@@ -591,3 +602,121 @@ def test_node_decide_calls_log_decision():
     assert "from src.learning import" in content
     # And called after discard_candidate
     assert content.find("discard_candidate") < content.find("log_decision(")
+
+
+
+def test_tools_module_exists():
+    """src/tools.py has register/unregister/list_tools/call_tool/registry_size."""
+    sys.path.insert(0, PROJECT)
+    from src.tools import register, unregister, list_tools, call_tool, registry_size
+    assert callable(register)
+    assert callable(unregister)
+    assert callable(list_tools)
+    assert callable(call_tool)
+    assert callable(registry_size)
+
+
+def test_tools_seeds_4_builtin():
+    """src/tools.py auto-registers 4 built-in seed tools."""
+    sys.path.insert(0, PROJECT)
+    from src.tools import list_tools
+    tools = list_tools()
+    names = {t["name"] for t in tools}
+    assert "web_search" in names, f"missing web_search: {names}"
+    assert "evaluate_innovation" in names, f"missing evaluate_innovation: {names}"
+    assert "run_harness" in names, f"missing run_harness: {names}"
+    assert "read_decision_log" in names, f"missing read_decision_log: {names}"
+
+
+def test_tools_register_and_unregister():
+    """Tools can be registered and unregistered at runtime."""
+    sys.path.insert(0, PROJECT)
+    from src.tools import register, unregister, get_tool
+
+    def my_fn(**kwargs):
+        return "hi"
+
+    register("test_x", "test tool", my_fn, params={"x": "int"})
+    tool = get_tool("test_x")
+    assert tool is not None
+    assert tool["description"] == "test tool"
+    assert unregister("test_x") is True
+    assert get_tool("test_x") is None
+
+
+def test_tools_call_tool_runs_fn():
+    """call_tool invokes the registered fn."""
+    sys.path.insert(0, PROJECT)
+    from src.tools import register, unregister, call_tool
+
+    def my_fn(x, y=0):
+        return x + y
+
+    register("adder", "adds 2 nums", my_fn, params={"x": "int", "y": "int"})
+    result = call_tool("adder", x=3, y=4)
+    assert result == 7
+    unregister("adder")
+
+
+def test_tools_health_check():
+    """run_health_check runs test_fn for each tool."""
+    sys.path.insert(0, PROJECT)
+    from src.tools import run_health_check
+    h = run_health_check()
+    assert isinstance(h, dict)
+    for name in h:
+        assert h[name] is True, f"{name} failed health: {h}"
+
+
+def test_goals_seeds_2_built_in_strategies():
+    """v1.8.1: goals registry has 2 built-in seed strategies (not empty).
+
+    This is the 'give some help' the user asked for.  LLM can remove
+    or override them.  The emergent property is preserved: LLM is
+    still expected to add/remove/modify.
+    """
+    sys.path.insert(0, PROJECT)
+    from src.goals import list_strategies
+    names = list_strategies()
+    assert "explore_new_topic" in names, f"missing seed: {names}"
+    assert "drill_after_failure" in names, f"missing seed: {names}"
+
+
+def test_goals_seed_pick_strategy_works():
+    """pick_strategy uses the seed strategies (no clear_registry here)."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import pick_strategy
+    # First 2 rounds should pick explore_new_topic
+    s = pick_strategy({"round_number": 1})
+    assert s in {"explore_new_topic", "fallback_explore"}
+    # After a revert, should pick drill_after_failure or fallback
+    s = pick_strategy({"round_number": 5, "last_outcome": {"decision": "reverted"}})
+    assert s in {"drill_after_failure", "explore_new_topic", "fallback_explore"}
+
+
+def test_reseed_function_works():
+    """_reseed_built_in_strategies() re-registers the 2 seeds."""
+    sys.path.insert(0, PROJECT)
+    from src.goals import clear_registry, list_strategies, _reseed_built_in_strategies
+    clear_registry()
+    names = list_strategies()
+    assert len(names) == 0, f"after clear, should be empty, got {names}"
+    _reseed_built_in_strategies()
+    names = list_strategies()
+    assert "explore_new_topic" in names
+    assert "drill_after_failure" in names
+
+
+def test_pipeline_lg_exposes_tools_in_context():
+    """_build_research_context includes available_tools + tool_count."""
+    sys.path.insert(0, PROJECT)
+    from src.pipeline_lg import _build_research_context
+    ctx = _build_research_context({})
+    assert "available_tools" in ctx
+    assert "tool_count" in ctx
+    assert ctx["tool_count"] >= 4
+    if ctx["available_tools"]:
+        t = ctx["available_tools"][0]
+        assert "name" in t
+        assert "description" in t
+        assert "params" in t

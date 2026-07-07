@@ -320,6 +320,16 @@ def _build_research_context(state: dict) -> dict:
     except Exception:
         pass
 
+    # v1.8.1: MCP-style tool registry — expose available tools to LLM.
+    # node_research can then call web_search via the registry if needed.
+    try:
+        from src.tools import list_tools, registry_size
+        ctx["available_tools"] = list_tools()
+        ctx["tool_count"] = registry_size()
+    except Exception:
+        ctx["available_tools"] = []
+        ctx["tool_count"] = 0
+
     return ctx
 
 
