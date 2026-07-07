@@ -370,6 +370,28 @@ def cmd_gc(arxiv_max_age: int, history_archive_rows: int, dry_run: bool) -> int:
             else:
                 conn.close()
 
+    # 5. learning.db seen_papers (v1.8.1: 奥卡姆 — prevent unbounded growth)
+    try:
+        from src.learning import init_db, gc_seen_papers, get_seen_db_stats
+        learn_db = os.path.join(upgraded, "learning.db")
+        if os.path.exists(learn_db):
+            conn = init_db(learn_db)
+            try:
+                stats = get_seen_db_stats(conn)
+                # Compress if > 500 rows (configurable; default 500)
+                deleted = gc_seen_papers(conn, max_rows=500)
+                total_before = stats["total"]
+                if deleted > 0:
+                    print("  seen_papers: trimmed %d oldest rows (%d -> %d rows)"
+                          % (deleted, total_before, total_before - deleted))
+                else:
+                    print("  seen_papers: %d rows (no trim needed)"
+                          % total_before)
+            finally:
+                conn.close()
+    except Exception as e:
+        print(f"  seen_papers GC failed (non-fatal): {e}")
+
     prefix = "would be " if dry_run else ""
     print(f"Total: {n_files} files {prefix}deleted, {n_bytes} bytes")
     return 0

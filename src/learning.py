@@ -312,3 +312,50 @@ def get_failure_count(conn: sqlite3.Connection, paper_id: str) -> int:
         (paper_id,),
     )
     return c.fetchone()[0]
+
+
+
+def gc_seen_papers(conn: sqlite3.Connection, max_rows: int = 500) -> int:
+    """Compress seen_papers table.
+
+    v1.8.1 (奥卡姆): prevent unbounded growth of learning.db.
+    Strategy:
+      1. Keep the most-recent `max_rows` rows by `first_seen_at`.
+      2. Older rows are DELETEd (we don't need history of "what we
+         tried 6 months ago" — only "what should I skip now").
+      3. Return the number of rows deleted.
+
+    This is safe to call repeatedly.  Called automatically by
+    `self_upgrade gc` so the user doesn't have to think about it.
+    """
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM seen_papers")
+    total = c.fetchone()[0]
+    if total <= max_rows:
+        return 0
+    # Delete oldest (total - max_rows) rows
+    n_to_delete = total - max_rows
+    c.execute(
+        "DELETE FROM seen_papers WHERE rowid IN ("
+        "  SELECT rowid FROM seen_papers ORDER BY first_seen_at ASC LIMIT ?"
+        ")",
+        (n_to_delete,),
+    )
+    deleted = c.rowcount
+    conn.commit()
+    return deleted
+
+
+def get_seen_db_stats(conn: sqlite3.Connection) -> dict:
+    """Return summary stats for seen_papers (used by gc command)."""
+    c = conn.cursor()
+    total = c.execute("SELECT COUNT(*) FROM seen_papers").fetchone()[0]
+    avg_times = c.execute("SELECT AVG(times_seen) FROM seen_papers").fetchone()[0]
+    oldest = c.execute(
+        "SELECT MIN(first_seen_at) FROM seen_papers"
+    ).fetchone()[0]
+    return {
+        "total": total,
+        "avg_times_seen": round(avg_times or 0, 2),
+        "oldest_entry": oldest,
+    }

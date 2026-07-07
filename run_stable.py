@@ -87,7 +87,13 @@ def run_one_round(n, paper, consecutive_kept_so_far):
         abstract=paper.get("abstract", paper["title"]),
         categories=paper.get("categories", "cs.CL"),
     )
+    # Inject fake paper by patching the symbol in node_research\'s closure.
+    # The function imported the name at module load, so we need to patch
+    # the name in pipeline_lg\'s namespace too.
     plg.search_arxiv = lambda cfg: [P]
+    # Also patch the symbol in src.research (source of truth)
+    import src.research as research_mod
+    research_mod.search_arxiv = lambda cfg: [P]
 
     cfg = load_config("config.yaml")
     cfg.evaluate.trials_per_test = 1

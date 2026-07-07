@@ -116,3 +116,74 @@ def test_seen_papers_in_db_actually_records():
             conn.close()
     finally:
         os.unlink(path)
+
+
+
+def test_gc_seen_papers_function_exists():
+    """src/learning.py must export gc_seen_papers + get_seen_db_stats."""
+    sys.path.insert(0, PROJECT)
+    from src.learning import gc_seen_papers, get_seen_db_stats
+    assert callable(gc_seen_papers)
+    assert callable(get_seen_db_stats)
+
+
+def test_gc_seen_papers_trims_old_rows():
+    """gc_seen_papers deletes oldest rows when over max_rows."""
+    import tempfile, sqlite3, time
+    sys.path.insert(0, PROJECT)
+    from src.learning import init_db, mark_paper_seen, gc_seen_papers, get_seen_db_stats
+
+    fd, path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        conn = init_db(path)
+        try:
+            # Add 10 papers
+            for i in range(10):
+                mark_paper_seen(conn, f"9999.{i:05d}", outcome="kept")
+                time.sleep(0.01)  # ensure different first_seen_at
+
+            stats_before = get_seen_db_stats(conn)
+            assert stats_before["total"] == 10
+
+            # Trim to max 5
+            deleted = gc_seen_papers(conn, max_rows=5)
+            assert deleted == 5, f"expected 5 deleted, got {deleted}"
+
+            stats_after = get_seen_db_stats(conn)
+            assert stats_after["total"] == 5
+        finally:
+            conn.close()
+    finally:
+        os.unlink(path)
+
+
+def test_gc_seen_papers_no_op_when_under():
+    """gc_seen_papers is a no-op when under max_rows."""
+    import tempfile
+    sys.path.insert(0, PROJECT)
+    from src.learning import init_db, mark_paper_seen, gc_seen_papers
+
+    fd, path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        conn = init_db(path)
+        try:
+            mark_paper_seen(conn, "9999.99999", outcome="kept")
+            deleted = gc_seen_papers(conn, max_rows=100)
+            assert deleted == 0, "should not delete when under max_rows"
+        finally:
+            conn.close()
+    finally:
+        os.unlink(path)
+
+
+def test_run_stable_patches_research_module():
+    """run_stable.py must patch BOTH plg.search_arxiv AND src.research.search_arxiv
+    (since pipeline_lg imports search_arxiv as a local name)."""
+    p = os.path.join(PROJECT, "run_stable.py")
+    with open(p) as f:
+        content = f.read()
+    assert "plg.search_arxiv" in content
+    # The actual fix: also patch src.research.search_arxiv
+    assert "research_mod.search_arxiv" in content or "research.search_arxiv" in content
