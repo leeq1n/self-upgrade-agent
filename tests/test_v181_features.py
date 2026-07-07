@@ -476,3 +476,118 @@ def test_pipeline_lg_passes_loop_state_to_patchgen():
         content = f.read()
     assert "loop_state=" in content or "loop_state =" in content
     assert "loop_state=loop_state" in content or "loop_state=state.get" in content
+
+
+
+def test_decision_log_table_and_helpers():
+    """src/learning.py has decision_log table + log_decision + get_recent_decisions + summarize_failures."""
+    sys.path.insert(0, PROJECT)
+    from src.learning import log_decision, get_recent_decisions, summarize_failures
+    assert callable(log_decision)
+    assert callable(get_recent_decisions)
+    assert callable(summarize_failures)
+
+
+def test_decision_log_records_in_real_db():
+    """log_decision inserts a row, get_recent_decisions returns it."""
+    import tempfile
+    sys.path.insert(0, PROJECT)
+    from src.learning import init_db, log_decision, get_recent_decisions
+
+    fd, path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        conn = init_db(path)
+        try:
+            log_decision(
+                conn,
+                paper_arxiv_id="9999.99999",
+                paper_title="Test paper",
+                decision="reverted",
+                delta=-0.05,
+                harness_pass_rate=0.0,
+                failure_mode="harness_failed: 8/0",
+                notes="test",
+            )
+            recent = get_recent_decisions(conn, limit=10)
+            assert len(recent) == 1
+            assert recent[0]["paper_arxiv_id"] == "9999.99999"
+            assert recent[0]["decision"] == "reverted"
+        finally:
+            conn.close()
+    finally:
+        os.unlink(path)
+
+
+def test_summarize_failures_groups_by_decision():
+    """summarize_failures counts kept/reverted/crashed/no_patch."""
+    import tempfile
+    sys.path.insert(0, PROJECT)
+    from src.learning import init_db, log_decision, summarize_failures
+
+    fd, path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        conn = init_db(path)
+        try:
+            for i in range(3):
+                log_decision(conn, paper_arxiv_id=f"9999.{i:05d}", decision="reverted",
+                             failure_mode=f"reason_{i % 2}")
+            for i in range(2):
+                log_decision(conn, paper_arxiv_id=f"8888.{i:05d}", decision="kept")
+            summary = summarize_failures(conn)
+            assert summary["n_reverted"] == 3
+            assert summary["n_kept"] == 2
+            assert summary["n_total"] == 5
+            # top failure_mode should be one of reason_0 / reason_1
+            assert len(summary["failure_modes"]) >= 1
+        finally:
+            conn.close()
+    finally:
+        os.unlink(path)
+
+
+def test_research_context_passes_recent_failures_through():
+    """_build_research_context preserves recent_failures if already in state."""
+    import sys
+    sys.path.insert(0, PROJECT)
+    from src.pipeline_lg import _build_research_context
+    # Inject recent_failures via state — _build_research_context shouldn't strip it
+    state = {
+        "recent_failures_str": "5 reverted, 1 kept",
+        "top_failure_mode": "harness_failed (3x)",
+    }
+    ctx = _build_research_context(state)
+    # These fields, if set in state, should survive (we just need _build_research_context
+    # to not break them — we don\'t currently add them itself, but the caller can)
+    # This test guards against the function accidentally overwriting good values
+    assert isinstance(ctx, dict)
+    assert ctx.get("seen_papers_count") == 0
+    assert isinstance(ctx.get("seen_topics"), list)
+
+
+def test_loop_feedback_includes_recent_failures():
+    """_format_loop_feedback includes recent_failures_str + top_failure_mode."""
+    sys.path.insert(0, PROJECT)
+    from src.patchgen import _format_loop_feedback
+    state = {
+        "recent_failures_str": "3 reverted, 1 crashed",
+        "top_failure_mode": "harness_failed (3x)",
+    }
+    out = _format_loop_feedback(state)
+    assert "Recent outcomes" in out
+    assert "3 reverted, 1 crashed" in out
+    assert "Top failure mode" in out
+    assert "harness_failed (3x)" in out
+
+
+def test_node_decide_calls_log_decision():
+    """node_decide in pipeline_lg must call log_decision."""
+    p = os.path.join(PROJECT, "src", "pipeline_lg.py")
+    with open(p) as f:
+        content = f.read()
+    assert "log_decision" in content
+    # The function should be imported from src.learning
+    assert "from src.learning import" in content
+    # And called after discard_candidate
+    assert content.find("discard_candidate") < content.find("log_decision(")

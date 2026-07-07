@@ -86,7 +86,95 @@ CREATE TABLE IF NOT EXISTS auto_blacklist (
     failure_count INTEGER NOT NULL,
     blacklisted_at TEXT NOT NULL
 );
+
+-- v1.8.1: decision log for knowledge persistence.
+CREATE TABLE IF NOT EXISTS decision_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    paper_arxiv_id TEXT,
+    paper_title TEXT,
+    decision TEXT,
+    delta REAL,
+    harness_pass_rate REAL,
+    failure_mode TEXT,
+    notes TEXT,
+    logged_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_decision_log_paper ON decision_log(paper_arxiv_id);
+CREATE INDEX IF NOT EXISTS idx_decision_log_decision ON decision_log(decision);
+CREATE INDEX IF NOT EXISTS idx_decision_log_at ON decision_log(logged_at);
 """
+
+
+def log_decision(
+    conn: sqlite3.Connection,
+    paper_arxiv_id=None,
+    paper_title=None,
+    decision: str = "reverted",
+    delta=None,
+    harness_pass_rate=None,
+    failure_mode=None,
+    notes=None,
+) -> int:
+    """Record one decision in the decision_log.  LLM can patch this."""
+    import datetime
+    c = conn.cursor()
+    c.execute(
+        "INSERT INTO decision_log "
+        "(paper_arxiv_id, paper_title, decision, delta, harness_pass_rate, failure_mode, notes, logged_at) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        (paper_arxiv_id, paper_title, decision, delta, harness_pass_rate,
+         failure_mode, notes, datetime.datetime.utcnow().isoformat()),
+    )
+    conn.commit()
+    return c.lastrowid
+
+
+def get_recent_decisions(conn, limit=20, paper_arxiv_id=None, decision=None):
+    """Return recent decisions, most recent first."""
+    q = ("SELECT id, paper_arxiv_id, paper_title, decision, delta, "
+         "harness_pass_rate, failure_mode, notes, logged_at FROM decision_log")
+    conds, params = [], []
+    if paper_arxiv_id:
+        conds.append("paper_arxiv_id = ?")
+        params.append(paper_arxiv_id)
+    if decision:
+        conds.append("decision = ?")
+        params.append(decision)
+    if conds:
+        q += " WHERE " + " AND ".join(conds)
+    q += " ORDER BY id DESC LIMIT ?"
+    params.append(limit)
+    c = conn.cursor()
+    rows = c.execute(q, params).fetchall()
+    cols = ["id", "paper_arxiv_id", "paper_title", "decision", "delta",
+            "harness_pass_rate", "failure_mode", "notes", "logged_at"]
+    return [dict(zip(cols, r)) for r in rows]
+
+
+def summarize_failures(conn, limit=50):
+    """Summarize recent failures for loop feedback."""
+    c = conn.cursor()
+    rows = c.execute(
+        "SELECT decision, failure_mode FROM decision_log "
+        "WHERE logged_at > datetime('now', '-30 days') "
+        "ORDER BY id DESC LIMIT ?",
+        (limit,),
+    ).fetchall()
+    counts = {"kept": 0, "reverted": 0, "crashed": 0, "no_patch": 0}
+    fms = {}
+    for d, fm in rows:
+        if d in counts:
+            counts[d] += 1
+        if fm and d != "kept":
+            fms[fm] = fms.get(fm, 0) + 1
+    return {
+        "n_total": len(rows),
+        "n_kept": counts["kept"],
+        "n_reverted": counts["reverted"],
+        "n_crashed": counts["crashed"],
+        "n_no_patch": counts["no_patch"],
+        "failure_modes": sorted(fms.items(), key=lambda x: -x[1])[:5],
+    }
 
 
 def init_db(path: str = DB_PATH) -> sqlite3.Connection:

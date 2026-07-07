@@ -174,6 +174,14 @@ def _format_loop_feedback(loop_state: Optional[dict]) -> str:
             err_summary = "; ".join(str(e)[:80] for e in errs[:2])
             lines.append(f"- Last round errors: {err_summary}")
 
+    # v1.8.1: knowledge persistence from decision_log
+    recent = loop_state.get("recent_failures_str")
+    if recent:
+        lines.append(f"- Recent outcomes (last 20): {recent}")
+    top_fm = loop_state.get("top_failure_mode")
+    if top_fm:
+        lines.append(f"- Top failure mode: {top_fm}")
+
     seen_count = loop_state.get("seen_papers_count")
     if seen_count:
         lines.append(f"- We have previously attempted {seen_count} papers.")

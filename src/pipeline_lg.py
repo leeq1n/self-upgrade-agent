@@ -292,6 +292,34 @@ def _build_research_context(state: dict) -> dict:
             conn.close()
     except Exception:
         pass
+    # v1.8.1: knowledge persistence — show what failed recently.
+    # LLM should see "we tried X and got Y" so it doesn't repeat.
+    try:
+        from src.learning import init_db, summarize_failures
+        conn = init_db()
+        try:
+            summary = summarize_failures(conn, limit=20)
+            if summary["n_total"] > 0:
+                ctx["recent_failures"] = summary
+                # Add a short string version for the prompt
+                parts = []
+                if summary["n_reverted"] > 0:
+                    parts.append(f"{summary['n_reverted']} reverted")
+                if summary["n_crashed"] > 0:
+                    parts.append(f"{summary['n_crashed']} crashed")
+                if summary["n_no_patch"] > 0:
+                    parts.append(f"{summary['n_no_patch']} no_patch")
+                if summary["n_kept"] > 0:
+                    parts.append(f"{summary['n_kept']} kept")
+                ctx["recent_failures_str"] = ", ".join(parts) if parts else "no decisions yet"
+                if summary.get("failure_modes"):
+                    top_fm = summary["failure_modes"][0]  # most common
+                    ctx["top_failure_mode"] = f"{top_fm[0]} ({top_fm[1]}x)"
+        finally:
+            conn.close()
+    except Exception:
+        pass
+
     return ctx
 
 
@@ -855,6 +883,33 @@ def node_decide(state: dict) -> dict:
             else:
                 discard_candidate(patch_name)
                 logger.info(f"   REVERTED. Candidate discarded: {patch_name}")
+
+            # v1.8.1: log decision to decision_log (knowledge persistence).
+            # Free-text failure_mode lets LLM categorize without enum.
+            if best and best.paper:
+                try:
+                    from src.learning import init_db, log_decision
+                    conn = init_db()
+                    try:
+                        # Classify failure mode heuristically from reasons
+                        reasons = decision.get("reasons") or []
+                        failure_mode = reasons[0][:200] if reasons else None
+                        # Extract numeric delta and harness
+                        ev = state.get("evaluation") or {}
+                        log_decision(
+                            conn,
+                            paper_arxiv_id=best.paper.arxiv_id,
+                            paper_title=best.paper.title,
+                            decision=decision["decision"],
+                            delta=ev.get("success_rate_delta"),
+                            harness_pass_rate=(ev.get("harness") or {}).get("pass_rate"),
+                            failure_mode=failure_mode,
+                            notes=("; ".join(reasons))[:500] if reasons else None,
+                        )
+                    finally:
+                        conn.close()
+                except Exception as e:
+                    logger.debug(f"log_decision failed (non-fatal): {e}")
 
             # v1.8.1: mark this paper as seen (regardless of decision)
             # so we don\'t try the same paper again in future rounds
