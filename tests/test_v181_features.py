@@ -825,7 +825,9 @@ def test_patchgen_uses_thinking_for_patch_design():
         content = f.read()
     # The chat() call in patchgen should specify thinking params
     assert "enable_thinking=True" in content
-    assert "thinking_budget=4096" in content
+    # thinking_budget=1024 (reduced from 4096 — 4096 ate all the
+    # content budget when LLM_MAX_TOKENS=2048, leaving empty content)
+    assert "thinking_budget=1024" in content
 
 
 def test_filter_disables_thinking_for_speed():

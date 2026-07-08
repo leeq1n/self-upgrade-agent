@@ -304,10 +304,13 @@ def generate_patch(
     resp = chat(
         messages=[{"role": "user", "content": prompt}],
         config=llm_config,
-        # v1.8.1: patchgen needs deep reasoning to design the patch.
-        # Enable thinking with budget so the LLM thinks before coding.
+        # v1.8.1: patchgen needs reasoning to design the patch, but
+        # thinking_budget must fit within max_tokens budget.  With
+        # LLM_MAX_TOKENS=2048, thinking=4096 leaves ~0 tokens for the
+        # actual code response (causes empty content + truncated JSON).
+        # Use thinking_budget=1024 to leave room for ~1K tokens of code.
         enable_thinking=True,
-        thinking_budget=4096,
+        thinking_budget=1024,
         # NOTE: no response_format here — ModelScope etc. ignore it and
         # sometimes mangle the response.  _parse_json_lenient handles
         # both raw JSON and ```json ... ```-fenced output.
