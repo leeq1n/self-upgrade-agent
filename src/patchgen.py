@@ -290,6 +290,28 @@ def generate_patch(
     # If state not passed, this is empty (LLM gets minimal context).
     loop_feedback = _format_loop_feedback(loop_state)
 
+    # v1.8.2: query memory for similar past patches / papers and inject
+    # as context.  This is the "memory affects code change" requirement.
+    memory_context = ""
+    try:
+        from src.mcp_client import call_tool as _call_tool
+        query_text = (
+            (paper.title or "") + " " +
+            (paper.abstract or "")[:500] + " " +
+            primary_func
+        )
+        relevant = _call_tool("memory_search", query=query_text, top_k=3)
+        if relevant:
+            lines = ["Relevant prior context (from memory MCP):"]
+            for unit in relevant:
+                lines.append(
+                    f"  [{unit.get('kind','?')}] {unit.get('text','')[:200]}"
+                )
+            memory_context = "\n".join(lines)
+    except Exception:
+        # Memory unavailable — proceed without context (pipeline never breaks here)
+        memory_context = ""
+
     prompt = PROMPT_TEMPLATE.format(
         target_module=target_module,
         current_source=current_source or "(file is empty — generate a sensible first version)",
@@ -298,6 +320,7 @@ def generate_patch(
         title=paper.title,
         abstract=(paper.abstract or "")[:1500],
         primary_func=primary_func,
+        memory_context=memory_context or "(no prior memory)",
         loop_feedback=loop_feedback,
     )
 
