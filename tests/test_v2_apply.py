@@ -373,3 +373,31 @@ class TestApplyAndRunHarness:
         cleanup_snapshot(result.snapshot_path)
         with open(planner_target, encoding="utf-8") as f:
             assert f.read() == original_content
+
+
+
+class TestApplyPatchDefensive:
+    """Defensive input validation — apply_patch must never raise
+    on caller mistakes (None patch, missing fields, empty fields).
+    This is what v2_agent returns None patch calls into."""
+    
+    def test_patch_none_returns_failed(self):
+        from src.v2_apply import apply_patch
+        result = apply_patch(None, target_module="anywhere")
+        assert result.status == "FAILED"
+        assert "None" in result.error
+    
+    def test_empty_function_returns_failed(self):
+        from src.v2_apply import apply_patch
+        from src.v2_agent import Patch
+        p = Patch(function="", test="# x", module="anywhere")
+        result = apply_patch(p, target_module="anywhere")
+        assert result.status == "FAILED"
+        assert "empty" in result.error.lower()
+    
+    def test_whitespace_function_returns_failed(self):
+        from src.v2_apply import apply_patch
+        from src.v2_agent import Patch
+        p = Patch(function="   \n   ", test="# x", module="anywhere")
+        result = apply_patch(p, target_module="anywhere")
+        assert result.status == "FAILED"

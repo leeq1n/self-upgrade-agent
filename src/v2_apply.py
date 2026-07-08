@@ -169,7 +169,33 @@ def apply_patch(
     `keep_snapshot` controls whether to delete the snapshot on success.
     If True (default), snapshot is preserved so caller can manually
     revert later.  Caller should clean up snapshots they don't keep.
+
+    Defensive: returns FAILED (not raises) for malformed inputs so
+    the caller never has to wrap in try/except.
     """
+    # Defensive input validation: never crash on caller mistakes
+    if patch is None:
+        return ApplyResult(
+            status="FAILED",
+            target=target_module or "core/planner.py",
+            snapshot_path="",
+            error="patch is None (improve() returned no Patch)",
+        )
+    if not hasattr(patch, "function") or not hasattr(patch, "module"):
+        return ApplyResult(
+            status="FAILED",
+            target=target_module or "core/planner.py",
+            snapshot_path="",
+            error=f"patch is missing required fields: {type(patch).__name__}",
+        )
+    if not patch.function or not patch.function.strip():
+        return ApplyResult(
+            status="FAILED",
+            target=target_module or "core/planner.py",
+            snapshot_path="",
+            error="patch.function is empty",
+        )
+
     target = target_module or patch.module or "core/planner.py"
     target_abs = os.path.abspath(target)
 
