@@ -62,7 +62,10 @@ class LLMConfig:
     base_url: str = ""
     model: str = ""
     fallback_models: List[str] = field(default_factory=list)
-    max_tokens: int = 2048
+    max_tokens: int = 8192  # default 8K; LLM_MAX_TOKENS env override.
+    # 2048 was the v1.8.1 default (ModelScope hard-limit, see ISS-014).
+    # minimax M2 = 204.8K context, M3 = 1M.  Patchgen writes full
+    # function bodies + tests; 2048 was truncating the JSON.
     temperature: float = 0.1
     timeout: int = 30  # per-request HTTP timeout (large prompts need >15s)
     max_retries: int = 2  # retries per (key, model) on minute-level 429
@@ -139,7 +142,7 @@ class LLMConfig:
             ),
             model=os.environ.get("LLM_MODEL", "deepseek-ai/DeepSeek-V4-Pro"),
             fallback_models=fallback_models,
-            max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "2048")),
+            max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "8192")),
             temperature=float(os.environ.get("LLM_TEMPERATURE", "0.1")),
             timeout=int(os.environ.get("LLM_TIMEOUT", "30")),
             max_retries=int(os.environ.get("LLM_MAX_RETRIES", "2")),
