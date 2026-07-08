@@ -818,16 +818,20 @@ def test_chat_injects_chat_template_kwargs():
     assert "thinking_budget" in sig.parameters
 
 
-def test_patchgen_uses_thinking_for_patch_design():
-    """v1.8.1: src/patchgen.py chat() call enables thinking with budget."""
+def test_patchgen_disables_thinking_for_max_content():
+    """v1.8.3: src/patchgen.py disables thinking.
+
+    Why: with LLM_MAX_TOKENS=2048, even thinking_budget=1024 left <500
+    tokens for actual code.  Real production run (2026-07-08, 20 rounds)
+    showed audit_delta=0 + elapsed~10s + decision=None = LLM returned
+    empty content.  Disabling thinking lets max_tokens go entirely to the
+    code response.  Prompt itself carries the reasoning (ReAct-style).
+    """
     sys.path.insert(0, PROJECT)
     with open(os.path.join(PROJECT, "src", "patchgen.py")) as f:
         content = f.read()
-    # The chat() call in patchgen should specify thinking params
-    assert "enable_thinking=True" in content
-    # thinking_budget=1024 (reduced from 4096 — 4096 ate all the
-    # content budget when LLM_MAX_TOKENS=2048, leaving empty content)
-    assert "thinking_budget=1024" in content
+    assert "enable_thinking=False" in content
+    assert "thinking_budget=0" in content
 
 
 def test_filter_disables_thinking_for_speed():
