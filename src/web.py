@@ -20,12 +20,15 @@ direct urllib calls with proper SSL handling.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 import time
 import urllib.request
 import urllib.error
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 # Cache to avoid hitting the same page multiple times in one run.
 # (Web fetch is slower than API; we cache aggressively.)
@@ -258,3 +261,126 @@ def fetch_paper_full(arxiv_id: str) -> Dict[str, Any]:
     s2_data = semanticscholar_paper(arxiv_id)
     merged = {**arxiv_data, "citation_count": s2_data.get("citation_count", 0)}
     return merged
+
+
+# ── PDF → Markdown (PyMuPDF4LLM) ────────────────────────────────
+
+def arxiv_pdf_url(arxiv_id: str) -> str:
+    """Standard arxiv PDF URL.  No API needed."""
+    return f"https://arxiv.org/pdf/{arxiv_id}"
+
+
+def _cache_dir() -> str:
+    """upgrades/cache/papers/ — auto-created."""
+    upgraded = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "upgrades", "cache", "papers",
+    )
+    os.makedirs(upgraded, exist_ok=True)
+    return upgraded
+
+
+def arxiv_pdf_markdown(arxiv_id: str, timeout: int = 60) -> Dict[str, Any]:
+    """Download arxiv PDF and convert to markdown via PyMuPDF4LLM.
+
+    Returns dict with:
+      - arxiv_id: input
+      - url: pdf url
+      - markdown: extracted text (or "" if extraction failed)
+      - cache_path: where the .md was cached
+      - used_fallback: True if we fell back to abstract-only
+
+    Strategy:
+      1. Cache hit (upgrades/cache/papers/{id}.md) → return immediately
+      2. Download PDF to upgrades/cache/papers/{id}.pdf
+      3. Try PyMuPDF4LLM (best); on ImportError or other failure,
+         fall back to arxiv_paper() abstract only.
+      4. Cache the markdown and return.
+
+    Why this design:
+      - PyMuPDF4LLM preserves tables/figures better than pdfminer/six
+      - We cache the .md to avoid re-extracting on each round
+      - Fallback ensures pipeline continues even if dep missing
+    """
+    cache_dir = _cache_dir()
+    md_path = os.path.join(cache_dir, f"{arxiv_id}.md")
+    pdf_path = os.path.join(cache_dir, f"{arxiv_id}.pdf")
+
+    # 1. Cache hit
+    if os.path.exists(md_path):
+        with open(md_path, "r", encoding="utf-8", errors="replace") as f:
+            return {
+                "arxiv_id": arxiv_id,
+                "url": arxiv_pdf_url(arxiv_id),
+                "markdown": f.read(),
+                "cache_path": md_path,
+                "used_fallback": False,
+            }
+
+    # 2. Download PDF
+    url = arxiv_pdf_url(arxiv_id)
+    try:
+        import urllib.request
+        req = urllib.request.Request(
+            url, headers={"User-Agent": "SelfUpgradeAgent/1.0"}
+        )
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            pdf_bytes = resp.read()
+        with open(pdf_path, "wb") as f:
+            f.write(pdf_bytes)
+    except Exception as e:
+        # Download failed → fall back to abstract
+        return _pdf_fallback(arxiv_id, f"download failed: {e}")
+
+    # 3. Extract markdown
+    try:
+        import pymupdf4llm
+        markdown_text = pymupdf4llm.to_markdown(pdf_path)
+    except ImportError:
+        return _pdf_fallback(
+            arxiv_id,
+            "pymupdf4llm not installed (pip install pymupdf4llm)",
+        )
+    except Exception as e:
+        return _pdf_fallback(arxiv_id, f"extraction failed: {e}")
+
+    # 4. Cache and return
+    with open(md_path, "w", encoding="utf-8") as f:
+        f.write(markdown_text)
+
+    return {
+        "arxiv_id": arxiv_id,
+        "url": url,
+        "markdown": markdown_text,
+        "cache_path": md_path,
+        "used_fallback": False,
+    }
+
+
+def _pdf_fallback(arxiv_id: str, reason: str) -> Dict[str, Any]:
+    """Last-resort: use abstract only and return empty markdown."""
+    logger = logging.getLogger(__name__)
+    logger.warning(f"arxiv_pdf_markdown({arxiv_id}): fallback to abstract. {reason}")
+    try:
+        meta = arxiv_paper(arxiv_id)
+        return {
+            "arxiv_id": arxiv_id,
+            "url": arxiv_pdf_url(arxiv_id),
+            "markdown": "",  # signal to caller: no body
+            "abstract": meta.get("abstract", ""),
+            "title": meta.get("title", ""),
+            "cache_path": "",
+            "used_fallback": True,
+            "fallback_reason": reason,
+        }
+    except Exception as e:
+        return {
+            "arxiv_id": arxiv_id,
+            "url": arxiv_pdf_url(arxiv_id),
+            "markdown": "",
+            "abstract": "",
+            "title": "",
+            "cache_path": "",
+            "used_fallback": True,
+            "fallback_reason": f"{reason}; abstract fetch also failed: {e}",
+        }
