@@ -193,15 +193,10 @@ def main():
     print(f"Gap: {gap}s between rounds")
     print("=" * 60)
 
-    # Pre-run cleanup: remove cache + tmp files older than 7 days
-    try:
-        from self_upgrade.__main__ import cmd_gc
-        print("\n--- pre-run gc (auto) ---")
-        cmd_gc(arxiv_max_age=7, history_archive_rows=0, dry_run=False, memory_policy=None)
-    except Exception as e:
-        print(f"  (gc skipped: {e})")
-    print()
-
+    # NOTE: do NOT pre-run gc.  User said: "I want logs preserved
+    # so I can see what happened in past runs.  Pre-run cleanup
+    # would erase the trail we use to debug."  gc runs only after
+    # a successful run completes (see "post-run gc" below).
     consecutive_kept = 0
     consecutive_kept_with_harness = 0  # KEPT AND harness=100%
     consecutive_kept_runs = []  # list of round dicts (the consecutive kept ones)
@@ -240,13 +235,44 @@ def main():
             print(f"\n(waiting {gap}s)")
             time.sleep(gap)
 
-    # Post-run cleanup
-    print("\n--- post-run gc (auto) ---")
+    # Post-run cleanup: archive old run_stable_*.json (preserve trail).
+    # User: "I want logs preserved so I can debug.  Auto-cleanup should
+    # move old logs to archive/, not delete them."
+    print("\n--- post-run archive (auto) ---")
     try:
-        from self_upgrade.__main__ import cmd_gc
-        cmd_gc(arxiv_max_age=7, history_archive_rows=0, dry_run=False, memory_policy=None)
+        archive_dir = os.path.join("upgrades", "archive")
+        os.makedirs(archive_dir, exist_ok=True)
+        # Move run_stable_*.json older than 7 days to archive/
+        cutoff = time.time() - 7 * 86400
+        archived = 0
+        for fname in os.listdir("upgrades"):
+            if not fname.startswith("run_stable_") or not fname.endswith(".json"):
+                continue
+            fpath = os.path.join("upgrades", fname)
+            if not os.path.isfile(fpath):
+                continue
+            if os.path.getmtime(fpath) < cutoff:
+                target = os.path.join(archive_dir, fname)
+                if not os.path.exists(target):
+                    os.rename(fpath, target)
+                    archived += 1
+        print(f"  archived {archived} old run logs to upgrades/archive/")
+        # Also clean __pycache__ + sandbox tmp files (always safe to delete)
+        for sub in ["__pycache__"]:
+            for root, dirs, files in os.walk("."):
+                if sub in dirs:
+                    import shutil
+                    shutil.rmtree(os.path.join(root, sub), ignore_errors=True)
+        for tmp_glob in [".bench_bak", ".bench_tmp"]:
+            for root, dirs, files in os.walk("."):
+                for f in files:
+                    if f.endswith(tmp_glob):
+                        try:
+                            os.remove(os.path.join(root, f))
+                        except OSError:
+                            pass
     except Exception as e:
-        print(f"  (gc skipped: {e})")
+        print(f"  (archive skipped: {e})")
 
     # Final summary
     preflight()

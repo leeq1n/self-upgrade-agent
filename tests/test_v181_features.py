@@ -925,3 +925,50 @@ def test_try_with_fallback_handles_no_api_keys():
     # Must NOT have the buggy if/else branch with if config.api_keys:
     assert 'if config.api_keys:\n        alive_keys' not in src, \
         "must not have the if/else gate (that broke api_keys.index())"
+
+
+
+def test_run_stable_preserves_logs():
+    """v1.8.1: run_stable does NOT pre-run gc (logs must be preserved for debug)."""
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, "run_stable.py")) as f:
+        content = f.read()
+    # Find the main() function and check pre-run section
+    import re
+    main_match = re.search(r"def main\(\).*?(?=\ndef |if __name__)", content, re.DOTALL)
+    assert main_match, "main() not found"
+    main_body = main_match.group()
+    # Pre-run gc call should be removed from main() (only comment about why is OK)
+    # Look for actual cmd_gc() call BEFORE the for loop
+    pre_for_part = main_body.split("for n in range")[0] if "for n in range" in main_body else main_body
+    # It should not call cmd_gc pre-run (only archive post-run)
+    assert "pre-run gc (auto)" not in pre_for_part, "pre-run cmd_gc must be removed"
+    # Should mention "post-run archive" (not delete)
+    assert "post-run" in main_body, "should have post-run cleanup"
+    assert "archive" in main_body, "post-run should archive (not delete)"
+
+
+def test_run_stable_archives_old_logs():
+    """v1.8.1: post-run gc moves old logs to archive/ (not delete)."""
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, "run_stable.py")) as f:
+        content = f.read()
+    # Post-run should reference archive/
+    assert "archive" in content
+    # Should NOT just call cmd_gc with default settings
+    assert "cmd_gc(" not in content or "post-run archive" in content
+    # Should mention time-based logic (cutoff)
+    assert "cutoff" in content or "getmtime" in content
+
+
+def test_env_example_documents_long_timeouts():
+    """v1.8.1: .env.example documents LLM_TIMEOUT=300 not default 30s."""
+    sys.path.insert(0, PROJECT)
+    with open(os.path.join(PROJECT, ".env.example")) as f:
+        content = f.read()
+    # Must have LLM_TIMEOUT=300
+    assert "LLM_TIMEOUT=300" in content
+    # Must mention that 30s is too short
+    assert "30s" in content or "30 seconds" in content
+    # Must mention the 2026-07-08 incident (minimax 30s timeout)
+    assert "2026-07-08" in content or "minimax" in content.lower()
