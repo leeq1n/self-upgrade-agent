@@ -338,11 +338,23 @@ def generate_patch(
     # Sanity check: does the patch define the primary function?  If not,
     # surgical merge would either replace some other function or append
     # at the end — neither is what we want.
-    if not re.search(rf"def\s+{re.escape(primary_func)}\s*\(", fn):
-        logger.warning(
-            f"patchgen: patch does not define {primary_func}(); "
-            f"surgical merge may misroute.  Returning None to be safe."
-        )
-        return None
+    #
+    # v1.8.1: accept relaxed patterns.  M2 occasionally renames to
+    # `plan_task_v2`, `plan_task_inner`, `_plan_task`, etc.  Try the
+    # exact match first; fall back to a fuzzy match on the bare name.
+    primary_name = re.escape(primary_func)
+    if not re.search(rf"def\s+{primary_name}\s*\(", fn):
+        fuzzy = re.search(rf"def\s+[\w]*?{primary_name}[\w]*?\s*\(", fn)
+        if fuzzy:
+            logger.info(
+                f"patchgen: relaxed match — found {fuzzy.group(0).strip()} "
+                f"instead of strict def {primary_func}().  Accepting."
+            )
+        else:
+            logger.warning(
+                f"patchgen: patch does not define {primary_func}() "
+                f"(even fuzzy).  Surgical merge may misroute.  Returning None."
+            )
+            return None
 
     return {"function": fn, "test": test, "module": module}
