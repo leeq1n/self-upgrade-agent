@@ -8,7 +8,7 @@ import urllib.error
 import logging
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
-from typing import List
+from typing import List, Dict
 
 logger = __import__("logging").getLogger(__name__)
 
@@ -128,51 +128,80 @@ def _cached_fetch(url, cache_seconds=3600):
 def search_arxiv(config) -> List[Paper]:
     """Search arXiv for papers matching configured keywords and categories.
 
-    Strategy: Selenium first (user requirement), API as fallback.
-    Uses local cache (1 hour) and exponential backoff for rate limiting.
+    Strategy (v1.8.1): src/web.py (HTML scrape, no API, no rate limits).
+    Old strategy was Selenium -> arxiv API, but API was unreliable
+    (0-byte responses) and Selenium needed Chrome setup.
+
+    Uses src/web.py.arxiv_listing for the recent-paper index and
+    src/web.py.arxiv_paper for full abstract + authors.
     """
-    query = build_query_string(config)
-    if not query:
+    from src.web import arxiv_listing, arxiv_paper, _cache_get
+
+    # Support both: full Config (config.research.X) and flat ResearchConfig (config.X)
+    cfg_obj = getattr(config, "research", config)
+    keywords = [k.lower() for k in (cfg_obj.keywords or [])]
+    # Empty keywords means "no search intent" — preserve old behavior (return []).
+    if not keywords:
+        return []
+    categories = cfg_obj.categories or ["cs.AI", "cs.CL"]
+    max_papers = cfg_obj.max_papers_per_query
+
+    # Pull recent papers from each configured category (default cs.AI).
+    listings: List[Dict] = []
+    for cat in categories:
+        try:
+            cat_listings = arxiv_listing(cat, limit=max_papers)
+            listings.extend(cat_listings)
+        except Exception as e:
+            logger.debug(f"arxiv_listing({cat}) failed: {e}")
+
+    if not listings:
         return []
 
-    # ── Primary: Selenium scraping (user's explicit requirement) ──
-    use_selenium = getattr(config, 'arxiv_selenium_first', True)
-    if use_selenium:
-        try:
-            from src.scraper import search_arxiv_scrape, check_selenium_available
-            if check_selenium_available():
-                papers = search_arxiv_scrape(
-                    config.keywords, config.categories, config.max_papers_per_query
-                )
-                if papers:
-                    logger.info(f"arXiv (Selenium): {len(papers)} papers")
-                    return papers
-        except Exception as e:
-            logger.debug(f"Selenium arXiv failed ({e}), falling back to API")
-
-    # ── Fallback: arXiv API (faster, no browser needed) ──
-    params = f"search_query={query}&max_results={config.max_papers_per_query}&sortBy={config.sort_by}&sortOrder=descending"
-    url = "https://export.arxiv.org/api/query?" + params
-
-    try:
-        data = _cached_fetch(url)
-    except Exception as e:
-        logger.warning(f'arXiv API failed ({e}), trying Selenium scraper...')
-        try:
-            from src.scraper import search_arxiv_scrape
-            return search_arxiv_scrape(config.keywords, config.categories, config.max_papers_per_query)
-        except Exception as e2:
-            logger.error(f'Both API and scraper failed: {e2}')
-            return []
-
-    root = ET.fromstring(data)
-    entries = root.findall('a:entry', NS)
-
-    papers = []
-    for entry in entries:
-        if _is_withdrawn(entry):
+    # Dedupe arxiv_ids (different categories may overlap).
+    seen_ids: set = set()
+    unique: List[Dict] = []
+    for entry in listings:
+        if entry["arxiv_id"] in seen_ids:
             continue
-        papers.append(_parse_arxiv_entry(entry))
+        seen_ids.add(entry["arxiv_id"])
+        unique.append(entry)
+    listings = unique[:max_papers]
+
+    # Filter by keywords if specified.
+    if keywords:
+        def matches(paper_meta: Dict) -> bool:
+            aid = paper_meta["arxiv_id"]
+            try:
+                full = arxiv_paper(aid)
+            except Exception as e:
+                logger.debug(f"arxiv_paper({aid}) failed: {e}")
+                return False
+            text = (full.get("title", "") + " " + full.get("abstract", "")).lower()
+            return any(kw in text for kw in keywords)
+
+        listings = [p for p in listings if matches(p)]
+
+    # Fetch full details and convert to Paper dataclass.
+    papers: List[Paper] = []
+    for entry in listings:
+        try:
+            full = arxiv_paper(entry["arxiv_id"])
+        except Exception as e:
+            logger.debug(f"arxiv_paper({entry['arxiv_id']}) failed: {e}")
+            continue
+        cats = full.get("categories") or []
+        primary = full.get("primary_category", "cs.AI")
+        # Strip the human-readable part "Computation and Language (cs.CL)" -> "cs.CL"
+        primary_code = primary.split("(")[-1].rstrip(")").strip() if "(" in primary else primary
+        papers.append(Paper(
+            arxiv_id=full.get("arxiv_id", entry["arxiv_id"]),
+            title=full.get("title", ""),
+            authors=", ".join(full.get("authors", [])),
+            published=full.get("submitted", ""),
+            abstract=full.get("abstract", ""),
+            categories=primary_code or "cs.AI",
+        ))
 
     return papers
 
