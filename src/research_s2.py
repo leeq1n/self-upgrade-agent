@@ -122,21 +122,20 @@ def enrich_paper(arxiv_id: str) -> dict:
     citation_count, influential_citation_count, s2_paper_id, year.
 
     Never fails — returns zeros on error.
-    """
-    info = enrich_by_arxiv_id(arxiv_id)
-    if not info:
-        return {
-            "citation_count": 0,
-            "influential_citation_count": 0,
-            "s2_paper_id": "",
-            "year": 0,
-        }
 
+    v1.8.1: simplified to return zeros.  S2 has two paths:
+      - API: 1 req/s free, 100 req/5 min.  Rate limits hurt pipeline.
+      - HTML page: server-side JS rendered, urllib can't parse.
+
+    Filtering used citation_count to rank, but LLM scoring in
+    src/filter.py is the primary signal.  Skipping S2 saves an
+    external dependency and an extra ~1s per paper.
+    """
     return {
-        "citation_count": info.get("citationCount", 0) or 0,
-        "influential_citation_count": info.get("influentialCitationCount", 0) or 0,
-        "s2_paper_id": info.get("paperId", ""),
-        "year": info.get("year", 0) or 0,
+        "citation_count": 0,
+        "influential_citation_count": 0,
+        "s2_paper_id": "",
+        "year": 0,
     }
 
 
