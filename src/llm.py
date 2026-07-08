@@ -92,11 +92,26 @@ class LLMConfig:
     def from_env(cls) -> "LLMConfig":
         """Build config from environment variables.
 
+        On entry, auto-load .env (if python-dotenv is installed) so
+        users running `python` interactively or in jupyter get correct
+        config without manual `load_dotenv()`.  Already-set env vars
+        are preserved (override=False).
+
         Multi-key discovery order:
           1. ``LLM_API_KEY_0``, ``LLM_API_KEY_1``, ..., ``LLM_API_KEY_N``
              (highest contiguous index wins; gaps are tolerated but odd)
           2. If none of the above, fall back to single ``LLM_API_KEY``
         """
+        # Auto-load .env (the .env file is the user's source of truth,
+        # but Python REPL/jupyter doesn't auto-load it).  This is
+        # idempotent; if env vars are already set (e.g. via export),
+        # we don't override them — explicit env wins.
+        try:
+            import dotenv
+            dotenv.load_dotenv(override=False)
+        except ImportError:
+            pass
+
         api_keys: List[str] = []
         # Look for indexed keys first.
         for i in range(64):  # hard cap to avoid pathological envs
