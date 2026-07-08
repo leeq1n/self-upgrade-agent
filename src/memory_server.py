@@ -355,10 +355,11 @@ def _add_outcome(paper_id: Optional[int], decision: str,
 @register_tool(
     name="memory_search",
     description="Search memory by keyword.  Returns top-k units.",
-    schema={"query": "str", "top_k": "int?"},
+    schema={"query": "str", "top_k": "int?", "kind_filter": "list[str]?"},
 )
-def _search(query: str, top_k: int = 3) -> List[Dict[str, Any]]:
-    return _mem().search(query, top_k=top_k)
+def _search(query: str, top_k: int = 3,
+            kind_filter: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+    return _mem().search(query, top_k=top_k, kind_filter=kind_filter)
 
 
 @register_tool(
