@@ -193,6 +193,15 @@ def main():
     print(f"Gap: {gap}s between rounds")
     print("=" * 60)
 
+    # Pre-run cleanup: remove cache + tmp files older than 7 days
+    try:
+        from self_upgrade.__main__ import cmd_gc
+        print("\n--- pre-run gc (auto) ---")
+        cmd_gc(arxiv_max_age=7, history_archive_rows=0, dry_run=False, memory_policy=None)
+    except Exception as e:
+        print(f"  (gc skipped: {e})")
+    print()
+
     consecutive_kept = 0
     consecutive_kept_with_harness = 0  # KEPT AND harness=100%
     consecutive_kept_runs = []  # list of round dicts (the consecutive kept ones)
@@ -230,6 +239,14 @@ def main():
         if n < max_rounds:
             print(f"\n(waiting {gap}s)")
             time.sleep(gap)
+
+    # Post-run cleanup
+    print("\n--- post-run gc (auto) ---")
+    try:
+        from self_upgrade.__main__ import cmd_gc
+        cmd_gc(arxiv_max_age=7, history_archive_rows=0, dry_run=False, memory_policy=None)
+    except Exception as e:
+        print(f"  (gc skipped: {e})")
 
     # Final summary
     preflight()
