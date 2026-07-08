@@ -379,3 +379,71 @@ def _get_related(memory_id: int, max_hops: int = 2) -> List[Dict[str, Any]]:
 def _compact(max_age_days: int = 30) -> Dict[str, Any]:
     n_before, n_after_active = _mem().compact(max_age_days)
     return {"n_before": n_before, "n_after_active": n_after_active}
+
+
+# --------------------------------------------------------------------- #
+# FastMCP server entry point (for langchain-mcp-adapters stdio transport)
+# --------------------------------------------------------------------- #
+#
+# Run with:  python -m src.memory_server
+# Connect from langchain-mcp-adapters.MultiServerMCPClient.
+#
+# The MCP tools are wired from the in-process tool registry (populated
+# by the @register_tool decorators above).  This keeps a single source
+# of truth: change a tool's signature once and both in-process callers
+# and external MCP clients see the update.
+#
+# v1.8.3 addition: we now support BOTH in-process call_tool (zero
+# subprocess overhead) and stdio MCP transport (real protocol, works
+# with Claude Desktop and other MCP-compatible IDEs).  Pick one per
+# call site:
+#
+#   - In-process:  from src.mcp_client import call_tool
+#                  call_tool("memory_search", query="agent", top_k=3)
+#   - MCP stdio:   MultiServerMCPClient({...}).get_tools() → agent
+#                  (preferred for new code; agent doesn't import MCP)
+#
+
+def _build_fastmcp_server():
+    """Build a FastMCP server exposing the registered tools.
+
+    Returns: an mcp.server.fastmcp.FastMCP instance (not yet running).
+    """
+    try:
+        from mcp.server.fastmcp import FastMCP
+    except ImportError as e:
+        raise ImportError(
+            "FastMCP not installed.  pip install mcp to enable the "
+            "MCP server entry point."
+        ) from e
+
+    server = FastMCP("self-upgrade-agent-memory")
+
+    # Reflect each registered tool as a FastMCP tool.
+    # FastMCP builds the schema from the function signature + docstring;
+    # we pass the original function so its type hints and docstring carry
+    # over directly (the source-of-truth fix that kept us from drifting).
+    from src.mcp_client import _TOOLS as registry
+    for name, (fn, description, _schema) in registry.items():
+        # FastMCP reads the docstring for the description; the explicit
+        # description arg overrides it if non-empty.
+        server.add_tool(
+            fn,
+            name=name,
+            description=description or (fn.__doc__ or "").split("\n")[0],
+        )
+
+    return server
+
+
+def main():
+    """Run the memory MCP server over stdio (default FastMCP transport)."""
+    import sys
+    server = _build_fastmcp_server()
+    # Default transport: stdio.  Matches langchain-mcp-adapters
+    # MultiServerMCPClient config without specifying transport.
+    server.run()
+
+
+if __name__ == "__main__":
+    main()
