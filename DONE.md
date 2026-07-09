@@ -95,3 +95,34 @@ Verified:
 Per P18 (PRINCIPLES.md "Failure → regression test"): the loop is
 now half-closed.  The other half — automatic replay of the log
 to detect if a known failure recurs — is a future v2.3.x.
+
+
+## v2.3.1 — Automatic replay loop (commit `216f7e0`)
+
+- [x] **`replay_all()` in src/failures.py** — iterates unique failure
+  modes, calls `replay_one()` for each, aggregates verdicts into
+  `ReplayReport`.  Total ~70 LOC.
+- [x] **`replay_all_failures()` driver in src/v2_round.py** — wires
+  play_fn to run_one_round (real LLM call), reads from
+  `upgrades/failures.jsonl`, returns `ReplayReport`.
+- [x] **5 new tests** in `tests/test_v2_failures.py::TestReplayAll`:
+  empty log, 3 unique modes, dedup, mixed verdicts, to_dict.
+
+Verified:
+  - Unit: 19 PASS (was 14, +5)
+  - Full suite: 458 PASS + 6 skip + 0 fail (was 453; +5)
+  - 11/11 hermes-verify PASS
+
+P18 (Failure → regression test) loop is now closed:
+  - v2.3 (commit `0dc68cb`): log on failure
+  - v2.3.1 (commit `216f7e0`): replay the log
+
+What this means:
+  - The agent can now self-test for regressions
+  - If a known failure recurs, the replay catches it
+  - If a known failure is now fixed, the replay reports it
+  - Both are reported in a single ReplayReport
+
+Next:
+  - User to invoke `replay_all_failures()` on real data
+  - User to run 5 consecutive KEPT rounds (stability test)

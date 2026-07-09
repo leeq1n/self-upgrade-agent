@@ -16,10 +16,20 @@ completed work lives in DONE.md.
   The replay mechanism is implemented (`replay_one`) but no
   automatic replay loop yet — that's a future v2.3.x addition.
 
+- [x] **Automatic replay of failure log** — DONE in v2.3.1
+  (commit `216f7e0`).  See `replay_all()` in [src/failures.py](src/failures.py)
+  and `replay_all_failures()` driver in [src/v2_round.py](src/v2_round.py).
+  The P18 loop is now closed: log on failure + replay the log.
+
 - [ ] **5 consecutive KEPT rounds** — run run_one_round 5 times in a row
   with the same paper (FIXED_PAPER=DyLAN).  Goal: prove the self-improving
   loop is stable, not just one-shot lucky.  User to run (requires real
   LLM time).
+
+- [ ] **Run replay_all_failures() on the real `upgrades/failures.jsonl`**
+  — see which historical failures still recur vs which now pass.
+  User to invoke after the LLM is available.  This is the
+  first time the P18 loop runs on real data.
 
 ## Medium priority (v3.x features)
 
