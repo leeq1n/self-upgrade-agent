@@ -31,7 +31,7 @@ from typing import Optional, List
 from src.v2_agent import improve, Paper, _chat
 from src.v2_apply import apply_patch, revert, cleanup_snapshot, ApplyResult
 from src.llm import LLMConfig
-from src.failures import log_failure
+from src.failures import log_failure, replay_all, ReplayReport
 
 
 @dataclass
@@ -215,3 +215,53 @@ def format_round_result(r: RoundResult) -> str:
         f"target={r.target_module}"
         + (f" error={r.error}" if r.error else "")
     )
+
+
+
+def replay_all_failures(
+    project_root: Optional[str] = None,
+    config: Optional["LLMConfig"] = None,
+    test_path: str = "tests/test_v2_round.py",
+    log_path: Optional[str] = None,
+) -> ReplayReport:
+    """Replay every unique failure in upgrades/failures.jsonl.
+
+    This is the "other half" of P18 (Failure → regression test).
+    For every failure signature we recorded, re-run one round with
+    the same paper+target.  Report now_passes / still_fails / not_replayed.
+
+    The function uses run_one_round internally; if the LLM call is
+    impossible (no keys), play_fn returns a NO_PATCH result which
+    counts as "still_fails" (the failure is still there).
+
+    Args:
+        project_root: where the project lives; defaults to cwd
+        config: LLMConfig; defaults to LLMConfig.from_env()
+        test_path: which test file to use as the decision gate
+                   (default: just the round test file, fast)
+        log_path: where to read the failure log; defaults to
+                  src.failures.DEFAULT_LOG
+
+    Returns:
+        ReplayReport with counts and per-signature details.
+    """
+    project_root = project_root or os.getcwd()
+    config = config or LLMConfig.from_env()
+
+    def play_fn(sig):
+        from src.v2_agent import Paper as _Paper
+        paper = _Paper(arxiv_id=sig.paper_arxiv_id,
+                       title=sig.paper_arxiv_id,
+                       abstract="(replay)")
+        return run_one_round(
+            paper=paper,
+            target_module=sig.target_module,
+            project_root=project_root,
+            config=config,
+            test_path=test_path,
+            keep_snapshot_on_kept=False,
+        )
+
+    if log_path is not None:
+        return replay_all(play_fn, log_path=log_path)
+    return replay_all(play_fn)

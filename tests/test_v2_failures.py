@@ -277,3 +277,89 @@ class TestRunOneRoundLogsFailures:
         assert "NO_PATCH" not in log_calls
         assert "APPLY_FAILED" not in log_calls
         assert "REVERTED" not in log_calls
+
+
+# ─────────────────────────────────────────────────────────────
+# Replay loop tests (v2.3.1)
+# ─────────────────────────────────────────────────────────────
+
+class TestReplayAll:
+    """replay_all() should iterate unique failure modes and
+    aggregate verdicts."""
+
+    def test_replay_all_empty_log(self, tmp_path):
+        from src.failures import replay_all
+        log = str(tmp_path / "f.jsonl")
+        report = replay_all(play_fn=lambda sig: None, log_path=log)
+        assert report.total_unique == 0
+        assert report.now_passes == 0
+        assert report.still_fails == 0
+        assert report.not_replayed == 0
+
+    def test_replay_all_three_modes(self, tmp_path):
+        """3 unique failure modes → replay reports 3 entries."""
+        from src.failures import log_failure, replay_all
+        log = str(tmp_path / "f.jsonl")
+        for arxiv, target, dec in [
+            ("2310.02170", "core/planner.py", "NO_PATCH"),
+            ("2210.03629", "core/llm.py", "REVERTED"),
+            ("2310.02170", "core/agent.py", "APPLY_FAILED"),
+        ]:
+            result = type("R", (), {
+                "paper": type("P", (), {"arxiv_id": arxiv}),
+                "target_module": target, "decision": dec, "error": "e",
+            })()
+            log_failure(result, log_path=log)
+
+        # play_fn returns a 'now_passes' result for every signature
+        ok = type("R", (), {"decision": "KEPT"})()
+        report = replay_all(play_fn=lambda _: ok, log_path=log)
+        assert report.total_unique == 3
+        assert report.now_passes == 3
+        assert report.still_fails == 0
+
+    def test_replay_all_dedup(self, tmp_path):
+        """Same failure mode logged 3 times → 1 unique → 1 replay entry."""
+        from src.failures import log_failure, replay_all
+        log = str(tmp_path / "f.jsonl")
+        for _ in range(3):
+            result = type("R", (), {
+                "paper": type("P", (), {"arxiv_id": "x"}),
+                "target_module": "y", "decision": "REVERTED", "error": "e",
+            })()
+            log_failure(result, log_path=log)
+        ok = type("R", (), {"decision": "KEPT"})()
+        report = replay_all(play_fn=lambda _: ok, log_path=log)
+        assert report.total_unique == 1
+
+    def test_replay_all_mixed_verdicts(self, tmp_path):
+        """play_fn returns KEPT for one, REVERTED for another, raises for third."""
+        from src.failures import log_failure, replay_all
+        log = str(tmp_path / "f.jsonl")
+        for arxiv, dec in [("a", "NO_PATCH"), ("b", "REVERTED"), ("c", "APPLY_FAILED")]:
+            result = type("R", (), {
+                "paper": type("P", (), {"arxiv_id": arxiv}),
+                "target_module": "t", "decision": dec, "error": "e",
+            })()
+            log_failure(result, log_path=log)
+
+        def play_fn(sig):
+            if sig.paper_arxiv_id == "a":
+                return type("R", (), {"decision": "KEPT"})()  # now_passes
+            if sig.paper_arxiv_id == "b":
+                return type("R", (), {"decision": "REVERTED"})()  # still_fails
+            if sig.paper_arxiv_id == "c":
+                raise RuntimeError("LLM unreachable")  # not_replayed
+
+        report = replay_all(play_fn=play_fn, log_path=log)
+        assert report.total_unique == 3
+        assert report.now_passes == 1
+        assert report.still_fails == 1
+        assert report.not_replayed == 1
+
+    def test_replay_report_to_dict(self, tmp_path):
+        from src.failures import replay_all
+        report = replay_all(play_fn=lambda sig: None, log_path=str(tmp_path / "f.jsonl"))
+        d = report.to_dict()
+        assert d["total_unique"] == 0
+        assert "details" in d

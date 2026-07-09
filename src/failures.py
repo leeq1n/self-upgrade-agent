@@ -65,6 +65,82 @@ class FailureSignature:
         return (self.paper_arxiv_id, self.target_module, self.decision)
 
 
+@dataclass
+class ReplayReport:
+    """Summary of one replay_all() run."""
+    total_unique: int
+    now_passes: int
+    still_fails: int
+    not_replayed: int
+    details: List[Dict]   # one entry per (signature, verdict, detail)
+
+    def to_dict(self) -> Dict:
+        return {
+            "total_unique": self.total_unique,
+            "now_passes": self.now_passes,
+            "still_fails": self.still_fails,
+            "not_replayed": self.not_replayed,
+            "details": self.details,
+        }
+
+
+def replay_all(
+    play_fn,
+    log_path: str = DEFAULT_LOG,
+) -> ReplayReport:
+    """Replay every unique failure mode in the log against play_fn.
+
+    Per P18: every failure must be tested.  This function reads
+    unique_failure_modes() (deduplicated), re-instantiates a minimal
+    FailureSignature for each, calls replay_one(), and aggregates
+    the verdicts into a ReplayReport.
+
+    Args:
+        play_fn: callable that takes a FailureSignature and returns
+                 a RoundResult-like object (with .decision).  Same
+                 contract as replay_one.
+        log_path: where to read the failure log from.
+
+    Returns:
+        ReplayReport with counts and per-signature details.
+    """
+    modes = unique_failure_modes(log_path=log_path)
+    sigs = [
+        FailureSignature(
+            paper_arxiv_id=arxiv, target_module=target, decision=decision,
+            error_first_line="", timestamp=0.0,
+        )
+        for (arxiv, target, decision) in modes
+    ]
+    now_passes = 0
+    still_fails = 0
+    not_replayed = 0
+    details: List[Dict] = []
+    for sig in sigs:
+        verdict, detail = replay_one(sig, play_fn)
+        d = {
+            "paper_arxiv_id": sig.paper_arxiv_id,
+            "target_module": sig.target_module,
+            "decision": sig.decision,
+            "verdict": verdict,
+            "detail": detail,
+        }
+        details.append(d)
+        if verdict == "now_passes":
+            now_passes += 1
+        elif verdict == "still_fails":
+            still_fails += 1
+        else:
+            not_replayed += 1
+    return ReplayReport(
+        total_unique=len(sigs),
+        now_passes=now_passes,
+        still_fails=still_fails,
+        not_replayed=not_replayed,
+        details=details,
+    )
+
+
 def _ensure_log_dir(log_path: str = DEFAULT_LOG) -> None:
     """Create the parent dir if missing.  No-op if exists."""
     parent = os.path.dirname(log_path)
