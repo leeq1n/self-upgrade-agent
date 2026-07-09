@@ -1,0 +1,32 @@
+{
+  "run_at": "2026-07-08T17:18:32",
+  "paper": {
+    "arxiv_id": "1",
+    "title": "0",
+    "abstract": "Survey of multi-agent LLM collaboration mechanisms.",
+    "authors": "Han et al.",
+    "published": "2024-06-03",
+    "categories": "cs.CL, cs.MA"
+  },
+  "elapsed_s": 10.2,
+  "state_keys": [
+    "config",
+    "papers",
+    "scored_papers",
+    "best_paper",
+    "patch",
+    "sandbox_passed",
+    "reflect_attempts",
+    "evaluation",
+    "decision",
+    "errors",
+    "done",
+    "dry_run",
+    "research_context"
+  ],
+  "done": false,
+  "decision": null,
+  "evaluation": {},
+  "skill_audit": null,
+  "errors": []
+}

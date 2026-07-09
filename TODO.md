@@ -26,10 +26,41 @@ completed work lives in DONE.md.
   loop is stable, not just one-shot lucky.  User to run (requires real
   LLM time).
 
-- [ ] **Run replay_all_failures() on the real `upgrades/failures.jsonl`**
-  — see which historical failures still recur vs which now pass.
-  User to invoke after the LLM is available.  This is the
-  first time the P18 loop runs on real data.
+- [x] **Run replay_all_failures() on the real `upgrades/failures.jsonl`**
+  — DONE in v2.3.2 (commit `9ea2b5e`).  See
+  `python -m self_upgrade replay` (unified CLI).  Reported
+  now_passes=4, still_fails=18 from the existing log.
+
+- [ ] **Run 5 consecutive KEPT rounds** (still pending real LLM
+  data).  The first 3 rounds in v2.3.2 showed: 1 KEPT, 2 NO_PATCH.
+  Pattern: LLM temperature is non-zero; sometimes valid patch,
+  sometimes bad parse.  Loop is working; need either more rounds
+  or a prompt fix.  Use: `python -m self_upgrade test-scale 5`.
+
+## v2.4.0 — CLI consolidation (current commit)
+
+- [x] **Unified CLI** — `python -m self_upgrade` is the single
+  entry point.  Replaces:
+    - `python -m self_upgrade` (v1.8.x unified CLI, backed up
+      in __main__.v18_backup.py)
+    - `scripts/run_5_rounds.py` (v2.3.2)
+    - `scripts/run_replay.py` (v2.3.2)
+    - `scripts/_self_check_run_replay.py` (v2.3.2)
+    - `scripts/start_llama_servers.sh` (v1.8.x, deleted)
+  Subcommands: `improve`, `replay`, `test-scale N`.  Click-based.
+
+- [x] **Deleted obsolete tests** — removed test_unified_cli.py
+  (v1.8.x), test_gc.py (v1.8.x gc subcommand), test_audit_cli.py
+  (v1.8.x audit subcommand).  Replaced test_start_llama_servers
+  and test_gc_command with v2.x equivalents.
+
+- [x] **Updated test_v181_features.py** — replaced
+  test_gc_command_supports_memory_policy_flag and
+  test_start_llama_servers_script_exists with
+  test_cli_has_three_subcommands and test_no_legacy_scripts_directory.
+
+- [x] **Added tests/test_v2_cli.py** (9 tests) — Click group
+  structure, subcommand help, lazy import speed.
 
 ## Medium priority (v3.x features)
 

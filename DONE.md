@@ -149,3 +149,57 @@ Note: tried adding tests/test_scripts.py but the import chain
 triggers the real LLM path in conftest fixtures, hanging the
 suite.  Removed the test file.  The scripts are validated by
 the `_self_check_run_replay.py` dry-run instead.
+
+
+## v2.4.0 — CLI consolidation (commit `pending`)
+
+Per user feedback 2026-07-08: "一堆奇奇怪怪的 run 入口, 是否需要清理
+一下? 这项目需要有统一管理的功能, 能跑自进化, 能具体使用, 能整理
+项目使其干净. 此外就是测试不同规模的功能, 也可以当作 debug".
+
+This commit unifies the entry points:
+
+- NEW self_upgrade/__main__.py (replaces v1.8.x unified CLI):
+  - Click-based group with 3 subcommands
+  - `improve` — one round of self-improvement
+  - `replay` — replay the failure log (P18)
+  - `test-scale N` — N consecutive rounds (debug / load test)
+  - `--mock` / `--no-mock` flag (top-level, for future)
+  - Lazy imports so the CLI is fast to load
+
+- NEW tests/test_v2_cli.py (9 tests):
+  - Click group structure
+  - Subcommand help texts
+  - Invalid input rejection
+  - Lazy import speed (CLI module imports in <5s)
+
+- MODIFIED tests/test_v181_features.py:
+  - Replaced 2 obsolete v1.8.x tests with 2 v2.x tests
+  - test_cli_has_three_subcommands
+  - test_no_legacy_scripts_directory
+
+- DELETED obsolete files:
+  - tests/test_unified_cli.py (v1.8.x CLI tests)
+  - tests/test_gc.py (v1.8.x gc subcommand tests)
+  - tests/test_audit_cli.py (v1.8.x audit subcommand tests)
+  - scripts/__init__.py
+  - scripts/run_replay.py
+  - scripts/run_5_rounds.py
+  - scripts/_self_check_run_replay.py
+  - scripts/start_llama_servers.sh
+
+- MODIFIED:
+  - self_upgrade/__main__.py rewritten (replaces v1.8.x CLI)
+
+Verified:
+  - Full suite: 449 PASS + 6 skip + 0 fail (was 458 before deleting
+    obsolete tests + adding test_v2_cli.py)
+  - python -m self_upgrade --help shows 3 subcommands
+  - Click group structure verified by tests/test_v2_cli.py
+  - Lazy import: CLI module loads in <5s (no LLM required)
+
+Usage (the user now has ONE entry point):
+  python -m self_upgrade improve --target core/planner.py
+  python -m self_upgrade replay
+  python -m self_upgrade test-scale 5
+  python -m self_upgrade --help

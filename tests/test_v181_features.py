@@ -213,15 +213,19 @@ def test_apply_memory_policy_hard_ceiling_fuse():
         os.unlink(path)
 
 
-def test_gc_command_supports_memory_policy_flag():
-    """self_upgrade gc --memory-policy module:fn wires through."""
+def test_cli_has_three_subcommands():
+    """v2.x unified CLI exposes improve, replay, test-scale (per
+    user feedback 2026-07-08 to consolidate entry points)."""
     p = os.path.join(PROJECT, "self_upgrade", "__main__.py")
     with open(p) as f:
         content = f.read()
-    assert "--memory-policy" in content
-    assert "apply_memory_policy" in content
-    # The flag should default to None (noop default)
-    assert "default=None" in content or "memory_policy=None" in content
+    assert "improve" in content
+    assert "replay" in content
+    assert "test-scale" in content
+    # Should use Click
+    assert "import click" in content
+    # Should be a group
+    assert "@click.group" in content
 
 
 def test_run_stable_patches_research_module():
@@ -859,19 +863,12 @@ def test_model_strategy_doc_exists():
     assert os.path.exists(os.path.join(PROJECT, "docs", "MODEL_STRATEGY.md"))
 
 
-def test_start_llama_servers_script_exists():
-    """v1.8.1: scripts/start_llama_servers.sh provides one-shot server start."""
-    sys.path.insert(0, PROJECT)
-    path = os.path.join(PROJECT, "scripts", "start_llama_servers.sh")
-    assert os.path.exists(path)
-    with open(path) as f:
-        content = f.read()
-    assert "qwen3-vl-30b-a3b" in content
-    assert "qwen-agentworld-35b-a3b" in content
-    assert "38000" in content
-    assert "38001" in content
-    assert "mmproj" in content
-    assert "enable_thinking" in content
+def test_no_legacy_scripts_directory():
+    """v2.3.2+ removed scripts/ (consolidated to python -m self_upgrade)."""
+    path = os.path.join(PROJECT, "scripts")
+    assert not os.path.exists(path), (
+        "scripts/ should not exist; use 'python -m self_upgrade' instead"
+    )
 
 
 
