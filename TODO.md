@@ -127,3 +127,36 @@ permissive.  Future commits should use `git add <file>` or
 `git add -u`.
 
 Status: working tree fully clean.
+
+
+## v3.0.0 — Multi-paper reading (current commit)
+
+- [x] **`src/v3_multipaper.py`** (~150 LOC, NEW): read_papers(),
+  PaperSummary dataclass, parse_literature_catalog().  Reads
+  11 papers from `docs/LITERATURE_DETAIL.md` and returns
+  structured summaries (idea + viewpoint + plan).
+- [x] **`tests/test_v3_multipaper.py`** (17 tests, NEW):
+  PaperSummary, _infer_arxiv_id, parse_literature_catalog,
+  read_papers, paper_count.  All PASS.
+- [x] **No LLM calls** — deterministic parsing only.  This
+  avoids the LLM-temperature noise that has plagued v2.x
+  (per LITERATURE: "Self-Refine in code gen frequently
+  regresses").  LLM-as-judge is the next commit (v3.0.1).
+
+Verified:
+  - Unit tests: 17 PASS (new test_v3_multipaper.py)
+  - Full suite: 466 PASS + 6 skip + 0 fail (was 449; +17 net)
+  - Real catalog parses: 11 papers extracted with arxiv_id,
+    title, idea, viewpoint, plan
+
+Next (separate commits):
+  - v3.0.1 — LLM-as-judge on top of read_papers()
+  - v3.0.2 — wire into run_one_round (multi-paper selection)
+  - v3.0.3 — think-execute harness for LLM
+
+Bug discovered during dev:
+  - Regex greedy/non-greedy pitfall: `\*\*(Why.*?use)\*\*`
+    fails to match `**Why we DON'T use it directly**` because
+    non-greedy .*? stops at the FIRST 'use' and can't backtrack
+    to satisfy the trailing **.  Fix: `[^*]*` between the
+    keyword and the closing **.

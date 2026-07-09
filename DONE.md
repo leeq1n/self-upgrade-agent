@@ -228,3 +228,53 @@ Verified:
 Lesson recorded in TODO.md:
   - `git add -A` is too permissive for our project (has
     runtime artifacts).  Use `git add <file>` or `git add -u`.
+
+
+## v3.0.0 — Multi-paper reading (commit `pending`)
+
+Per user feedback 2026-07-08: 'multi-paper reading,
+generate ideas/views/plans then let LLM judge'.
+
+This commit introduces `src/v3_multipaper.py`:
+
+- [x] **PaperSummary dataclass** — id, title, idea, viewpoint,
+  plan, section.  Each is a 1-line summary extracted from the
+  hand-curated catalog.
+- [x] **parse_literature_catalog(path)** — reads
+  `docs/LITERATURE_DETAIL.md`, splits by `##` headings, extracts
+  `**TL;DR**`, `**Why ... use**`, `**Use it for**` per section.
+- [x] **read_papers(ids=None)** — returns all summaries, or
+  filter by arxiv_id list.
+- [x] **_infer_arxiv_id(heading)** — slugifies "Self-Harness (2026)"
+  to "self-harness".  Good enough for now; full arxiv_id
+  resolution is future work.
+- [x] **17 tests** in `tests/test_v3_multipaper.py`:
+  - PaperSummary / to_dict
+  - _infer_arxiv_id (5 cases: simple, year suffix, dash, em dash,
+    empty)
+  - parse_literature_catalog (5 cases: 3-paper sample,
+    required fields, idea extraction, viewpoint/plan extraction,
+    missing file raises CatalogParseError, real catalog has
+    >= 5 papers)
+  - read_papers (4 cases: all by default, filter by ids,
+    unknown ids, dedup)
+  - paper_count
+
+Verified:
+  - 17 PASS in 0.14s
+  - Real catalog parses: 11 papers extracted
+  - Full suite: 466 PASS + 6 skip + 0 fail (was 449; +17 net)
+
+Design choices (per session lessons):
+  - Deterministic parsing, not LLM.  Avoids LLM-temperature
+    noise that has hurt v2.x (per LITERATURE).
+  - Catalog source: `docs/LITERATURE_DETAIL.md` (per P11:
+    project knowledge, not session memory).
+  - No new deps.  Pure stdlib (re, dataclasses).
+  - Pure functional API: read_papers() returns list, no side
+    effects.
+
+NOT in this commit (future):
+  - v3.0.1 — LLM-as-judge on top of summaries
+  - v3.0.2 — wire into run_one_round (multi-paper selection)
+  - v3.0.3 — think-execute harness for LLM (per user idea)
