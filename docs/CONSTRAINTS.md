@@ -9,7 +9,9 @@ These are invariants derived from real failures during v1.5.0 →
 v1.7.2 development.  The system can behave however it wants as
 long as these hold.
 
-Most-cited in user feedback (2026-07-08):
+Most-cited in user feedback (2026-07-08), with full rationale
+and verification in
+[`CONSTRAINTS_DETAIL.md`](CONSTRAINTS_DETAIL.md):
 
 - C1. `core/planner.py` MD5 stability — no corruption across rounds
 - C2. Memory growth bounded by `MAX_LEARNING_ROWS = 10000` (hard limit)
@@ -19,8 +21,7 @@ Most-cited in user feedback (2026-07-08):
 - C6. Logs preserved; pre-run no GC, post-run archive-only
 - C7. Tests: 438 PASS + 6 skip + 0 fail contract (without regression)
 
-Full list with rationale and verification in
-[`CONSTRAINTS_DETAIL.md`](CONSTRAINTS_DETAIL.md).
+→ [Full list with rationale](CONSTRAINTS_DETAIL.md#constraint-summary).
 
 ## References
 

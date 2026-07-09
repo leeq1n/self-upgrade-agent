@@ -54,10 +54,15 @@ completed work lives in DONE.md.
 
 ## TODO references
 
+For the full paper notes, see [docs/LITERATURE.md](docs/LITERATURE.md)
+and [docs/LITERATURE_DETAIL.md](docs/LITERATURE_DETAIL.md).
+
 - [postsyntax]: production failures → regression test pattern.
   https://postsyntax.substack.com/p/the-agent-improvement-loop-turning
 - [user-2026-07-08]: Multi-paper reading + think-execute + multi-paper
   selection are deferred until fixed-paper loop is verified end-to-end.
-- [user-2026-07-08-readme]: docs should be "摘要+引用" pattern, not
-  long-form essays.  See [project docs strategy](../docs/INDEX.md)
-  once consolidated.
+- [user-2026-07-08-docs]: docs should be "摘要+引用" pattern, not
+  long-form essays.  See [docs/INDEX.md](docs/INDEX.md) for navigation.
+- [user-2026-07-08-project-knowledge]: knowledge from papers belongs
+  in the project (LITERATURE.md), not in agent memory.  Future agents
+  should read LITERATURE_DETAIL.md to learn what we already know.

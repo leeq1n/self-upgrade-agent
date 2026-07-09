@@ -40,3 +40,15 @@ When you finish a TODO, move it here.  Each entry: one line + key commit.
   `81e7574` content carried forward.
 
 - [x] **TODO.md + DONE.md** added as task tracking (you asked 2026-07-08).
+- [x] **LITERATURE.md / LITERATURE_DETAIL.md** added — paper knowledge
+  moved from session memory to project docs.  11 papers covered:
+  Reflexion, Self-Refine, One Step Forward, Constitutional AI,
+  Self-Harness, Harness Engineering, Multi-Agent Failure,
+  HyperAgents, Agent Improvement Loop (Substack), SkillOpt,
+  Factory Droid.  See [docs/LITERATURE.md](docs/LITERATURE.md) for
+  table view; [docs/LITERATURE_DETAIL.md](docs/LITERATURE_DETAIL.md)
+  for full notes.
+
+- [x] **Doc orphan check** — every summary now links to its _DETAIL
+  companion or another doc.  Every cross-doc link resolves.  Verified
+  programmatically.

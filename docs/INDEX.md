@@ -13,14 +13,15 @@ to detail only as needed.
 | [USER_INSIGHTS.md](USER_INSIGHTS.md) | [USER_INSIGHTS_DETAIL.md](USER_INSIGHTS_DETAIL.md) | Paraphrased rules; detail has verbatim quotes |
 | [CONSTRAINTS.md](CONSTRAINTS.md) | [CONSTRAINTS_DETAIL.md](CONSTRAINTS_DETAIL.md) | Invariants the system must preserve |
 | [MODEL_STRATEGY.md](MODEL_STRATEGY.md) | [MODEL_STRATEGY_DETAIL.md](MODEL_STRATEGY_DETAIL.md) | Which LLM, why, deployment notes |
+| [LITERATURE.md](LITERATURE.md) | [LITERATURE_DETAIL.md](LITERATURE_DETAIL.md) | Papers read + how they constrain our design |
 
 ## Project status (live)
 
 - **Branch**: `v2.0.0-minimal`
 - **HEAD commit**: see `git log --oneline -1`
 - **Tests**: see TEST output below
-- **Active code**: `src/v2_agent.py` (gen) + `src/v2_apply.py` (deploy) + `src/v2_round.py` (decide)
-- **deprecated code**: 11 modules (see PROJECT_STATE §Deprecated)
+- **Active code**: `src/v2_agent.py` (gen) + `src/v2_apply.py` (deploy) + `src/v2_round.py` (decide) — see [PROJECT_STATE.md §Active code](PROJECT_STATE.md)
+- **deprecated code**: 11 modules — see [PROJECT_STATE_DETAIL.md §Deprecated](PROJECT_STATE_DETAIL.md#deprecated-modules)
 - **Pending work**: [../TODO.md](../TODO.md)
 - **Completed work**: [../DONE.md](../DONE.md)
 
@@ -36,7 +37,7 @@ Paper ──> v2_agent.improve() ──> Patch ──> v2_apply.apply_patch() �
                                                    RoundResult returned
 ```
 
-Details: [PROJECT_STATE §How it works](PROJECT_STATE.md#how-it-works) (1 paragraph).
+Details: [PROJECT_STATE_DETAIL.md §How it works](PROJECT_STATE_DETAIL.md#how-it-works-data-flow).
 
 ## Recent commits (1 paragraph)
 
@@ -51,10 +52,14 @@ Full chain: `git log --oneline -20`.
 ## Reading order for a new agent
 
 1. This file (INDEX.md) — 2 min
-2. PROJECT_STATE.md §Goal + §Current state — 5 min
-3. CONSTRAINTS.md — 5 min
-4. USER_INSIGHTS.md (skim, focus on items dated 2026-07-08) — 10 min
-5. MODEL_STRATEGY.md — 3 min
-6. ../TODO.md to see pending work — 2 min
+2. [PROJECT_STATE.md](PROJECT_STATE.md) — 5 min
+3. [CONSTRAINTS.md](CONSTRAINTS.md) — 5 min
+4. [USER_INSIGHTS.md](USER_INSIGHTS.md) (skim, focus on items dated 2026-07-08) — 10 min
+5. [LITERATURE.md](LITERATURE.md) — 5 min
+6. [MODEL_STRATEGY.md](MODEL_STRATEGY.md) — 3 min
+7. [../TODO.md](../TODO.md) to see pending work — 2 min
 
-Total: 25 min to full orientation.
+Total: 30 min to full orientation.
+
+If a section is unclear or you need full rationale, follow the
+links — each summary points to its `_DETAIL.md` companion.

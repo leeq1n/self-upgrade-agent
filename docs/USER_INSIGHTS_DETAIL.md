@@ -9,7 +9,7 @@ status: "reference"
 > This file preserves the verbatim quotes that drove each insight
 > in the summary, for audit purposes.
 
-## Goal (paraphrased, see [USER_INSIGHTS §1](USER_INSIGHTS.md))
+## Goal (paraphrased, see [USER_INSIGHTS.md](USER_INSIGHTS.md))
 
 > A self-upgrade agent that reads papers, filters methods,
 > generates code patches, A/B tests them, and only keeps
