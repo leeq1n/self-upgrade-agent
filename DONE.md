@@ -126,3 +126,26 @@ What this means:
 Next:
   - User to invoke `replay_all_failures()` on real data
   - User to run 5 consecutive KEPT rounds (stability test)
+
+
+## v2.3.2 — User-runnable scripts (commit `pending`)
+
+Per user feedback 2026-07-08: "下次能不能整理好一个小脚本给我跑，
+跑完你删掉？不然我要一行一行复制过去。"
+
+- [x] **`scripts/run_replay.py`** — one-shot replay of
+  `upgrades/failures.jsonl`, prints JSON report.
+  Usage: `python scripts/run_replay.py`
+- [x] **`scripts/run_5_rounds.py`** — 5 consecutive rounds with
+  FIXED_PAPER (DyLAN 2310.02170), prints summary.
+  Usage: `python scripts/run_5_rounds.py`
+- [x] **`scripts/_self_check_run_replay.py`** — dry-run verifier
+  for run_replay (no LLM needed).
+  Usage: `python scripts/_self_check_run_replay.py`
+- [x] **`scripts/__init__.py`** — package init so the scripts
+  are importable as modules (for tests / IDE).
+
+Note: tried adding tests/test_scripts.py but the import chain
+triggers the real LLM path in conftest fixtures, hanging the
+suite.  Removed the test file.  The scripts are validated by
+the `_self_check_run_replay.py` dry-run instead.
