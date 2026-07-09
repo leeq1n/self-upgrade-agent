@@ -65,5 +65,11 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
+# Runtime artifacts: upgrades/ holds JSONL, DB, JSON files
+# generated at runtime.  Already listed per-file above, but
+# catch-all for new files in this directory.
+upgrades/*
+!upgrades/.gitkeep
+
 # ad-hoc verification scripts
 verify_p0_fixes.sh
