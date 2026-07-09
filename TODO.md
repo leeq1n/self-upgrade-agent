@@ -112,3 +112,18 @@ For the project's working principles (not task-specific), see
 - [user-2026-07-08-principles]: working principles (整理→思考→行动,
   单元→联合→集成, 摘要+引用, etc.) are extracted into PRINCIPLES.md
   so they survive across projects.
+
+## v2.4.1 — Gitignore cleanup (current commit)
+
+- [x] **Removed upgrades/* runtime artifacts from git** —
+  20 files (JSONL, .db, .json) were accidentally committed
+  via `git add -A` in v2.4.0.  This commit:
+    - `git rm --cached -r upgrades/` (files still on disk)
+    - Added `upgrades/*` catch-all to `.gitignore`
+    - 1 commit, 21 files (1 modify + 20 delete)
+
+Lesson (per P17 honest reporting): `git add -A` is too
+permissive.  Future commits should use `git add <file>` or
+`git add -u`.
+
+Status: working tree fully clean.

@@ -203,3 +203,28 @@ Usage (the user now has ONE entry point):
   python -m self_upgrade replay
   python -m self_upgrade test-scale 5
   python -m self_upgrade --help
+
+
+## v2.4.1 — Gitignore cleanup (commit `a5d3029`)
+
+Per P17 honest reporting: in commit `2442d09` (v2.4.0) I ran
+`git add -A` which inadvertently staged `upgrades/*.json`,
+`*.db`, `*.jsonl`, and `archive/*.json` files (runtime state).
+
+This commit fixes that mistake:
+
+- [x] **`git rm --cached -r upgrades/`** — removed 20 files
+  from git index.  Files remain on disk (no data loss).
+- [x] **Added `upgrades/*` to `.gitignore`** with `!upgrades/.gitkeep`
+  exception so the directory is "tracked" if empty.
+
+Verified:
+  - `git check-ignore` confirms `upgrades/failures.jsonl` is
+    now ignored
+  - 28 PASS in test_v2_cli.py + test_v2_failures.py (no
+    regression)
+  - Working tree fully clean
+
+Lesson recorded in TODO.md:
+  - `git add -A` is too permissive for our project (has
+    runtime artifacts).  Use `git add <file>` or `git add -u`.
