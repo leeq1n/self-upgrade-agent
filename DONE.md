@@ -309,3 +309,35 @@ NOT in this commit (future steps):
 Step 1.1 alone is NOT useful for self-improvement yet.  It is
 the foundation; the LLM judge will replace the length-based
 heuristic in step 1.2.
+
+
+## v3.0.1 step 1.2 — Real LLM judge (commit `3073015`)
+
+Per user workflow (small-step): step 1.1 (mock) → step 1.2
+(real LLM with mock fallback).
+
+- [x] **`select_best(summaries, config=None)`** — real LLM call.
+  Lazy imports `src.v2_agent._chat` so the mock stays cheap.
+- [x] **`_build_judge_prompt(summaries)`** — builds the prompt
+  asking for `{"best_arxiv_id": "..."}` JSON.
+- [x] **`_parse_llm_response(text)`** — regex tolerant of
+  markdown fences, extra spaces, partial JSON.
+- [x] **`_call_llm(prompt, config)`** — wraps `_chat`.
+- [x] **Fallback strategy** (per fail-OPEN):
+  - Non-JSON response → mock
+  - Unknown id → mock
+  - LLM exception → mock
+  - Empty response → mock
+  - config=None → mock
+- [x] **+15 tests** (27 total now):
+  - BuildJudgePrompt (2), ParseLlmResponse (6), Fallback (2),
+    WithMockedLlm (5)
+
+Verified:
+  - 27 PASS in 0.14s
+  - Full suite: 493 PASS + 6 skip + 0 fail (was 478; +15)
+  - 16/16 hermes-verify PASS
+
+NOT in this commit (future steps):
+  - v3.0.1 step 1.3: joint test (e2e with mocked LLM)
+  - v3.0.1 step 1.4: wire into v2_round
