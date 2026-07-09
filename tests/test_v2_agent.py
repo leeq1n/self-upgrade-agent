@@ -292,19 +292,35 @@ class TestHarnessStandalone:
         # Don't assert True/False — we just want no exception
         assert result in (True, False)
 
-    def test_prompt_mentions_no_target_import(self):
-        """Prompt must warn against importing the target module."""
+    def test_harness_injects_typing_imports_via_prelude(self):
+        """Per user feedback 2026-07-08 ("实体承担重要作用"),
+        the entity (harness) auto-injects typing imports — the
+        prompt no longer needs to mention this.  Verify the entity
+        handles it via _PRELUDE in v2_agent.py."""
+        from src.v2_agent import _PRELUDE
+        # _PRELUDE should contain typing import (entity behavior)
+        assert "from typing import" in _PRELUDE
+
+    def test_prompt_is_minimal_no_harness_rules(self):
+        """Per user feedback 2026-07-08 ("启动 prompt 越少越好"),
+        the prompt should NOT carry harness-implementation rules
+        (those belong to the entity)."""
         from src.v2_agent import _build_prompt
         prompt = _build_prompt(
             Paper(arxiv_id="x", title="X", abstract="X"),
             "core/planner.py",
             [],
         )
-        # The prompt should mention NOT to import target module
-        assert "import" in prompt.lower()
-        assert ("do not" in prompt.lower() or "don\'t" in prompt.lower())
-        # Should mention typing imports
-        assert "typing" in prompt.lower() or "from typing" in prompt.lower()
+        # Prompt should NOT mention harness details (those are in entity)
+        assert "harness" not in prompt.lower(), (
+            "harness rules belong to entity, not prompt"
+        )
+        assert "subprocess" not in prompt.lower(), (
+            "subprocess details belong to entity, not prompt"
+        )
+        # But it should still be a valid generation prompt
+        assert "function" in prompt
+        assert "test" in prompt
 
 
 class TestEndToEndRealLLM:

@@ -121,37 +121,14 @@ def memory_find_similar(query: str, top_k: int = 3) -> List[Dict[str, Any]]:
 
 
 # --------------------------------------------------------------------- #
-# Build prompt
-# --------------------------------------------------------------------- #
+# Prompt (abstracted; see src/prompts.py for content)
+# ---------------------------------------------------------------------
 
-PROMPT_TEMPLATE = """You are modifying a Python module to add a new capability.
+# The prompt content lives in src/prompts.py so this module can be
+# treated as an "abstract method" — it consumes a prompt by role.
+# Adding a new role = add a constant in prompts.py + reference here.
 
-Target module: {target_module}
-Existing source:
-```python
-{current_source}
-```
-
-Paper: {title} (arxiv {arxiv_id})
-Abstract: {abstract}
-
-Similar past papers (from memory):
-{similar}
-
-CRITICAL HARNESS RULE: The harness extracts your patch and test into a
-standalone subprocess that does NOT have the target module on sys.path.
-Therefore:
-  - DO NOT "import target_module" inside the test
-  - DO add needed typing imports (e.g. "from typing import Callable, List")
-    INSIDE the function or test body, or use string annotations
-  - The test should call the patch function directly (it's already defined
-    in the same script)
-
-Produce a JSON patch:
-{{"function": "<complete def plan_task() body>", "test": "<pytest-style test that calls the patch function directly>", "module": "{target_module}"}}
-
-Return ONLY the JSON, no markdown fences.
-"""
+from src.prompts import V2_GENERATE_PATCH as PROMPT_TEMPLATE
 
 
 def _read_target_module(path: str) -> str:

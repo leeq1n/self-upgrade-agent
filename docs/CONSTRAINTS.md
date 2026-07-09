@@ -19,7 +19,10 @@ and verification in
 - C4. Fail-OPEN — pre-filters / hardcode rules must let LLM decide
 - C5. No `.env` key mutations by the agent
 - C6. Logs preserved; pre-run no GC, post-run archive-only
-- C7. Tests: 438 PASS + 6 skip + 0 fail contract (without regression)
+- C7. Tests: 439 PASS + 6 skip + 0 fail contract (without regression)
+- **C8. Prompt-as-interface** — all static prompts live in `src/prompts.py`
+  as named constants.  Each prompt < 500 tokens.  Harness-implementation
+  details belong to entity code (e.g. `_PRELUDE`), not the prompt.
 
 → [Full list with rationale](CONSTRAINTS_DETAIL.md#constraint-summary).
 

@@ -204,6 +204,31 @@ for analysis; future v3.x — telemetry → fix automation.
 
 ---
 
+
+
+---
+
+## Pattern: prompt-as-interface (project rule, not a paper)
+
+Per user feedback 2026-07-08 ("启动 prompt 越少越好, 实体承担重要作用"):
+
+- Static prompts (system + the always-on user message) live in
+  `src/prompts.py` as named constants.
+- Each prompt is < 500 tokens.
+- Harness-implementation details belong to the entity (e.g.
+  v2_agent._PRELUDE for typing imports), NOT the prompt.
+- The entity consumes the prompt by role name, so a new role
+  is "add a constant + reference" — same as adding a virtual
+  method to an abstract base.
+
+This is the OOP "abstract method" pattern applied to LLM prompts.
+
+Why it matters:
+- Prompt changes are 1 file, reviewable
+- Entity behavior (typing injection, sandbox setup, etc.)
+  doesn't depend on LLM cooperation
+- Test coverage on entity is independent of LLM
+
 ## What this list does NOT cover
 
 We have NOT yet read:

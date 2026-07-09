@@ -275,6 +275,27 @@ pytest tests/ --ignore=tests/test_e2e.py --ignore=tests/test_evaluate.py
 
 ---
 
+## C8. Prompt-as-interface (per user 2026-07-08)
+
+All static prompts (system + always-on user messages) live in
+`src/prompts.py` as named constants.  Each prompt must be < 500
+tokens.  Harness-implementation details (typing imports, sandbox
+setup, file paths) belong to entity code — NOT the prompt.
+
+Verification:
+- `tests/test_v2_agent.py::TestHarnessStandalone::test_prompt_is_minimal_no_harness_rules`
+  asserts the prompt does NOT mention harness / subprocess
+- `tests/test_v2_agent.py::TestHarnessStandalone::test_harness_injects_typing_imports_via_prelude`
+  asserts entity (v2_agent._PRELUDE) handles typing imports
+
+Why this is the rule:
+- Per user feedback 2026-07-08 ("启动 prompt 越少越好, 实体承担重要作用")
+- The prompt changes if and only if the task description changes
+- The entity changes if and only if the implementation changes
+- Treating prompts as OOP abstract methods: 1 file = 1 role
+
+---
+
 ## Constraint summary
 
 | ID | Rule | Verified by |
