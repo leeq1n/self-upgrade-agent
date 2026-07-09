@@ -149,10 +149,12 @@ Verified:
   - Real catalog parses: 11 papers extracted with arxiv_id,
     title, idea, viewpoint, plan
 
-Next (separate commits):
-  - v3.0.1 — LLM-as-judge on top of read_papers()
-  - v3.0.2 — wire into run_one_round (multi-paper selection)
-  - v3.0.3 — think-execute harness for LLM
+Next (separate commits, per small-step workflow):
+  - v3.0.1 step 1.1 — judge mock (DETERMINISTIC).  DONE in 6158559.
+  - v3.0.1 step 1.2 — judge real (LLM call).  NEXT.
+  - v3.0.1 step 1.3 — joint test (v3_judge + v3_multipaper)
+  - v3.0.1 step 1.4 — wire into v2_round (multi-paper selection)
+  - v3.0.2 — think-execute harness for LLM (你 said experimental)
 
 Bug discovered during dev:
   - Regex greedy/non-greedy pitfall: `\*\*(Why.*?use)\*\*`

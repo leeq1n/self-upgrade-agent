@@ -278,3 +278,34 @@ NOT in this commit (future):
   - v3.0.1 — LLM-as-judge on top of summaries
   - v3.0.2 — wire into run_one_round (multi-paper selection)
   - v3.0.3 — think-execute harness for LLM (per user idea)
+
+
+## v3.0.1 step 1.1 — Judge mock (commit `6158559`)
+
+Per user workflow 2026-07-09: '先测通小功能, 再联合成大
+功能继续测, 一步一步确认功能'.  This is the FIRST of 4
+small steps toward LLM-as-judge.
+
+- [x] **`src/v3_judge.py`** (~70 LOC, NEW):
+  - `select_best_mock(summaries, ranking_fn=None) -> PaperSummary`
+  - `EmptySummariesError` (raised on empty input)
+  - `_default_rank`: plan*2 + idea + viewpoint (length heuristic)
+  - `is_mock()` returns True (sanity check)
+- [x] **`tests/test_v3_judge.py`** (~150 LOC, 12 tests, NEW):
+  - EmptySummaries (1), SingleSummary (2), MultipleSummaries (5),
+    IsMock (1), MockIntegrationWithMultiPaper (3)
+
+Verified:
+  - 12 PASS in 0.08s
+  - Full suite: 478 PASS + 6 skip + 0 fail (was 466; +12)
+  - 10/10 hermes-verify PASS
+
+NOT in this commit (future steps):
+  - v3.0.1 step 1.2: real LLM call (select_best using v2 LLM)
+  - v3.0.1 step 1.3: joint test (v3_judge + v3_multipaper end-to-end)
+  - v3.0.1 step 1.4: wire into v2_round (multi-paper selection
+    replaces FIXED_PAPER)
+
+Step 1.1 alone is NOT useful for self-improvement yet.  It is
+the foundation; the LLM judge will replace the length-based
+heuristic in step 1.2.
