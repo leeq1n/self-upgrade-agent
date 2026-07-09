@@ -71,3 +71,27 @@ When you finish a TODO, move it here.  Each entry: one line + key commit.
 
 - [x] **Doc orphan check** — every summary has _DETAIL pointer or
   next-level reference; PRINCIPLES.md is portable (no _DETAIL needed).
+
+
+## v2.3.0 — Failure → regression test pipeline (commit `0dc68cb`)
+
+- [x] **`src/failures.py`** — append-only JSONL log of failure
+  signatures, dedup by (arxiv, target, decision), replay
+  mechanism (`replay_one` returns now_passes / still_fails /
+  not_replayed).  Total ~150 LOC.
+- [x] **`src/v2_round.py`** wired to call `log_failure()` on each
+  of the 3 failure return paths (NO_PATCH, APPLY_FAILED, REVERTED).
+  KEPT path does NOT log (successes aren't regression tests).
+- [x] **`tests/test_v2_failures.py`** (14 tests) — unit + joint
+  coverage of the log+replay contract.
+- [x] **Real data**: `upgrades/failures.jsonl` shows actual
+  failure signatures from test runs (timestamp + decision + error).
+
+Verified:
+  - Unit (test_v2_failures.py): 14 PASS
+  - Full suite: 453 PASS + 6 skip + 0 fail (was 439; +14)
+  - Real persistence: JSONL file written and readable
+
+Per P18 (PRINCIPLES.md "Failure → regression test"): the loop is
+now half-closed.  The other half — automatic replay of the log
+to detect if a known failure recurs — is a future v2.3.x.

@@ -8,13 +8,13 @@ completed work lives in DONE.md.
 
 ## High priority (next 1-2 sessions)
 
-- [ ] **Failure → regression test pipeline** — every NO_PATCH /
-  APPLY_FAILED / REVERTED outcome must become a permanent regression
-  test.  This is the highest-impact single change per production
-  agent literature ("[every failure becomes a test][postsyntax]").
-  Implementation: append to history.db or a separate `failures.jsonl`,
-  and add a test that re-runs the same paper+target combo and asserts
-  the failure mode no longer occurs (or records that it still does).
+- [x] **Failure → regression test pipeline** — DONE in v2.3
+  (commit `0dc68cb`).  Every NO_PATCH / APPLY_FAILED / REVERTED
+  outcome is logged to `upgrades/failures.jsonl`.  See
+  [src/failures.py](src/failures.py) and
+  [tests/test_v2_failures.py](tests/test_v2_failures.py).
+  The replay mechanism is implemented (`replay_one`) but no
+  automatic replay loop yet — that's a future v2.3.x addition.
 
 - [ ] **5 consecutive KEPT rounds** — run run_one_round 5 times in a row
   with the same paper (FIXED_PAPER=DyLAN).  Goal: prove the self-improving
