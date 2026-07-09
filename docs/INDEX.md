@@ -14,6 +14,7 @@ to detail only as needed.
 | [CONSTRAINTS.md](CONSTRAINTS.md) | [CONSTRAINTS_DETAIL.md](CONSTRAINTS_DETAIL.md) | Invariants the system must preserve |
 | [MODEL_STRATEGY.md](MODEL_STRATEGY.md) | [MODEL_STRATEGY_DETAIL.md](MODEL_STRATEGY_DETAIL.md) | Which LLM, why, deployment notes |
 | [LITERATURE.md](LITERATURE.md) | [LITERATURE_DETAIL.md](LITERATURE_DETAIL.md) | Papers read + how they constrain our design |
+| [PRINCIPLES.md](PRINCIPLES.md) | (no detail — already portable) | Working principles — portable across projects |
 
 ## Project status (live)
 
@@ -56,10 +57,11 @@ Full chain: `git log --oneline -20`.
 3. [CONSTRAINTS.md](CONSTRAINTS.md) — 5 min
 4. [USER_INSIGHTS.md](USER_INSIGHTS.md) (skim, focus on items dated 2026-07-08) — 10 min
 5. [LITERATURE.md](LITERATURE.md) — 5 min
-6. [MODEL_STRATEGY.md](MODEL_STRATEGY.md) — 3 min
-7. [../TODO.md](../TODO.md) to see pending work — 2 min
+6. [PRINCIPLES.md](PRINCIPLES.md) — 3 min (general, not project-specific)
+7. [MODEL_STRATEGY.md](MODEL_STRATEGY.md) — 3 min
+8. [../TODO.md](../TODO.md) to see pending work — 2 min
 
-Total: 30 min to full orientation.
+Total: 35 min to full orientation.
 
 If a section is unclear or you need full rationale, follow the
 links — each summary points to its `_DETAIL.md` companion.

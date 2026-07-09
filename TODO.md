@@ -6,11 +6,7 @@ completed work lives in DONE.md.
 
 > Convention: `- [ ]` = not started, `- [x]` = done, `- [/]` = in progress.
 
-## High priority (block v2.x → v3.0)
-
-- [ ] **Multi-paper reading** — read 5+ more papers on agent self-improvement,
-  innovation extraction, multi-agent selectors.  Goal: inform v3.0 design
-  for multi-paper selection.  See [TODO references](#todo-references).
+## High priority (next 1-2 sessions)
 
 - [ ] **Failure → regression test pipeline** — every NO_PATCH /
   APPLY_FAILED / REVERTED outcome must become a permanent regression
@@ -27,13 +23,17 @@ completed work lives in DONE.md.
 
 ## Medium priority (v3.x features)
 
+- [ ] **Multi-paper reading** — read 5+ more papers on agent self-improvement,
+  innovation extraction, multi-agent selectors.  Goal: inform v3.0 design
+  for multi-paper selection.  Update [docs/LITERATURE.md](docs/LITERATURE.md).
+
 - [ ] **Think-execute harness** for LLM-as-deep-thinker (per user
   2026-07-08).  Uses strong model for planning, light model for
-  execution.  See [TODO references](#todo-references).
+  execution.
 
 - [ ] **Multi-paper selection** — extend FIXED_PAPER (single paper) to a
   paper pool + LLM-driven selection.  Per user: "规划属于思考, 查询和
-  更新记忆属于执行".  See [TODO references](#todo-references).
+  更新记忆属于执行".
 
 - [ ] **Skip-execute-on-decision** optimization — think layer can
   short-circuit execute to save tokens.  Per user: "放在更后面做实验
@@ -45,17 +45,19 @@ completed work lives in DONE.md.
 ## Cleanup (奥卡姆)
 
 - [ ] **Delete deprecated `src/pipeline_lg.py` and 7 sibling files**
-  once v2 is verified stable.  Listed in PROJECT_STATE §3.
+  once v2 is verified stable.  Listed in [PROJECT_STATE_DETAIL.md §Deprecated](docs/PROJECT_STATE_DETAIL.md#deprecated-modules).
 
-- [ ] **Consolidate remaining 4 docs** into a single index.  Current
-  state: `PROJECT_STATE.md` is the parent; the other 3 should each be
-  §X with a 1-paragraph summary + link.  (See docs/INDEX.md once
-  written.)
+- [ ] **Run real end-to-end with new shorter prompt** — verify the
+  prompt-as-interface refactor (commit `19ebf8b`) didn't break real
+  LLM output.  User to run.
 
 ## TODO references
 
 For the full paper notes, see [docs/LITERATURE.md](docs/LITERATURE.md)
 and [docs/LITERATURE_DETAIL.md](docs/LITERATURE_DETAIL.md).
+
+For the project's working principles (not task-specific), see
+[docs/PRINCIPLES.md](docs/PRINCIPLES.md).
 
 - [postsyntax]: production failures → regression test pattern.
   https://postsyntax.substack.com/p/the-agent-improvement-loop-turning
@@ -66,3 +68,6 @@ and [docs/LITERATURE_DETAIL.md](docs/LITERATURE_DETAIL.md).
 - [user-2026-07-08-project-knowledge]: knowledge from papers belongs
   in the project (LITERATURE.md), not in agent memory.  Future agents
   should read LITERATURE_DETAIL.md to learn what we already know.
+- [user-2026-07-08-principles]: working principles (整理→思考→行动,
+  单元→联合→集成, 摘要+引用, etc.) are extracted into PRINCIPLES.md
+  so they survive across projects.

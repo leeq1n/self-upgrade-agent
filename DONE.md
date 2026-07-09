@@ -52,3 +52,22 @@ When you finish a TODO, move it here.  Each entry: one line + key commit.
 - [x] **Doc orphan check** — every summary now links to its _DETAIL
   companion or another doc.  Every cross-doc link resolves.  Verified
   programmatically.
+
+## Stage gate: doc structure (commit `c51dfd4`, then `19ebf8b`, then this)
+
+- [x] **PRINCIPLES.md added** — 18 cross-project portable principles
+  distilled from this session.  Categories: workflow (P1-P6), design
+  (P7-P10), documentation (P11-P14), process (P15-P18).  See
+  [docs/PRINCIPLES.md](docs/PRINCIPLES.md).  Each rule has WHY +
+  HOW.  Can be copied verbatim to any future project.
+
+- [x] **TODO.md updated** — closed stage gate (v2.0.0 → v2.2.0) items
+  re-stated; PRINCIPLES link added; "run real e2e with new prompt"
+  added as a fresh TODO (the prompt-as-interface refactor needs real
+  verification).
+
+- [x] **INDEX.md updated** — PRINCIPLES row added; reading order now
+  includes PRINCIPLES as step 6 (general, not project-specific).
+
+- [x] **Doc orphan check** — every summary has _DETAIL pointer or
+  next-level reference; PRINCIPLES.md is portable (no _DETAIL needed).
