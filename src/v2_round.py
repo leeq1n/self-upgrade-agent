@@ -31,6 +31,7 @@ from typing import Optional, List
 from src.v2_agent import improve, Paper, _chat
 from src.v2_apply import apply_patch, revert, cleanup_snapshot, ApplyResult
 from src.llm import LLMConfig
+from src.failures import log_failure
 
 
 @dataclass
@@ -139,13 +140,15 @@ def run_one_round(
     patch = improve(paper, target_module=target_module, config=config)
 
     if patch is None:
-        return RoundResult(
+        result = RoundResult(
             decision="NO_PATCH",
             paper=paper,
             target_module=target_module,
             elapsed_s=time.time() - t0,
             error="improve() returned None — LLM did not produce valid Patch",
         )
+        log_failure(result)
+        return result
 
     # 2. Apply
     apply_result = apply_patch(patch, target_module=target_module,
@@ -153,7 +156,7 @@ def run_one_round(
     if apply_result.status != "APPLIED":
         # apply already reverted; cleanup any snapshot it left
         cleanup_snapshot(apply_result.snapshot_path)
-        return RoundResult(
+        result = RoundResult(
             decision="APPLY_FAILED",
             paper=paper,
             target_module=target_module,
@@ -162,6 +165,8 @@ def run_one_round(
             elapsed_s=time.time() - t0,
             error=apply_result.error,
         )
+        log_failure(result)
+        return result
 
     # 3. Run project tests (default = just the round test file; user
     # can pass test_path="tests/" for full suite)
@@ -184,7 +189,7 @@ def run_one_round(
             snapshot_to_return = ""
         error = None
 
-    return RoundResult(
+    result = RoundResult(
         decision=decision,
         paper=paper,
         target_module=target_module,
@@ -196,6 +201,10 @@ def run_one_round(
         error=error,
         snapshot_path=snapshot_to_return,
     )
+    # P18: Failure → regression test.  Log only failures.
+    if decision != "KEPT":
+        log_failure(result)
+    return result
 
 
 def format_round_result(r: RoundResult) -> str:
