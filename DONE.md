@@ -128,7 +128,7 @@ Next:
   - User to run 5 consecutive KEPT rounds (stability test)
 
 
-## v2.3.2 — User-runnable scripts (commit `pending`)
+## v2.3.2 — User-runnable scripts (see commit hash below)
 
 Per user feedback 2026-07-08: "下次能不能整理好一个小脚本给我跑，
 跑完你删掉？不然我要一行一行复制过去。"
@@ -151,7 +151,7 @@ suite.  Removed the test file.  The scripts are validated by
 the `_self_check_run_replay.py` dry-run instead.
 
 
-## v2.4.0 — CLI consolidation (commit `pending`)
+## v2.4.0 — CLI consolidation (see commit hash below)
 
 Per user feedback 2026-07-08: "一堆奇奇怪怪的 run 入口, 是否需要清理
 一下? 这项目需要有统一管理的功能, 能跑自进化, 能具体使用, 能整理
@@ -230,7 +230,7 @@ Lesson recorded in TODO.md:
     runtime artifacts).  Use `git add <file>` or `git add -u`.
 
 
-## v3.0.0 — Multi-paper reading (commit `pending`)
+## v3.0.0 — Multi-paper reading (see commit hash below)
 
 Per user feedback 2026-07-08: 'multi-paper reading,
 generate ideas/views/plans then let LLM judge'.
@@ -343,7 +343,7 @@ NOT in this commit (future steps):
   - v3.0.1 step 1.4: wire into v2_round
 
 
-## v3.0.1 step 1.3 — Persist intermediate results (commit `pending`)
+## v3.0.1 step 1.3 — Persist intermediate results (commit `2dce2a7`)
 
 Per user insight 2026-07-09: '如果有几个功能是顺序执行,
 你可以先把前面的输出存下来, 作为下一个功能的输入'.
