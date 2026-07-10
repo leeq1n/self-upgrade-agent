@@ -193,10 +193,9 @@ Failure mode P20 guards against:
 ### P20.细则 (concrete rules — mechanical, not interpreted)
 
 > P20 is the principle (abstract); this list is the binding
-> contract.  Each rule is mechanically checkable by
-> `scripts/check_docs.py` — a violation is a verify FAIL, not
-> a judgment call.  Per the user's 2026-07-10 framing:
-> "原则 (P20) = 抽象类, 细则 = 具体实现".
+> contract.  Each rule is doc-level (mentally checked by future
+> agents per P20 self-discipline).  Per the user's 2026-07-10
+> framing: "原则 (P20) = 抽象类, 细则 = 具体实现".
 
 | # | Rule | Failure mode it catches |
 |---|---|---|
@@ -209,19 +208,15 @@ Failure mode P20 guards against:
 | R7 | Principles (P-n) are defined ONLY in `PRINCIPLES.md` (this file).  Any other `docs/*.md` may REFERENCE a P-n but must NOT redefine it.  Redefinition is a hard violation. | Drift: parent says P7 is X, child says P7 is Y — system collapses. |
 | R8 | Cross-project links use relative paths (`../other-project/...`).  Absolute paths or `https://` (except for external sources) are not allowed in `docs/`. | A doc breaks when the project is moved or cloned. |
 | R9 | Every `docs/*.md` must begin with a single-line `L0:` frontmatter (≤ 120 chars) describing what the file is, in plain language.  This line is the L0 layer; the rest is L1+. | Doc with no L0 = not findable by the L0-only reader. |
-| R10 | Every `docs/*.md` must end with a `Last P20-verified: YYYY-MM-DD` line, updated whenever the doc passes `scripts/check_docs.py`. | Stale doc — the L0/L1/L2 contract was true on date X but may have rotted. |
-| R11 | Any newly-added `docs/*.md` file must pass `scripts/check_docs.py` BEFORE commit.  The commit message must include the verify output (e.g. "P20 verify: 12/12 PASS"). | New doc slipped in without verify, rotting the layer contract. |
+| R10 | Every `docs/*.md` should end with a `Last P20-verified: YYYY-MM-DD` line, updated whenever the doc is meaningfully changed. | Stale doc — the L0/L1/L2 contract was true on date X but may have rotted. |
+| R11 | Before commit, mentally check R1-R10 against any changed/new `docs/*.md` file. | New doc slipped in without verify, rotting the layer contract. |
 | R12 | When `PRINCIPLES.md` is modified, every child project's `docs/PHILOSOPHY.md` (if it exists) must be re-synced in the SAME commit.  Per P21. | Parent-child drift: parent adds P22, child doesn't know, child cites "P1-P21" forever. |
 
-How to use this list:
+How to use this list (per user 2026-07-10 'doc > script' 哲学):
 1. Before any `docs/*.md` change, mentally check R1-R12.
-2. Before commit, run `python scripts/check_docs.py` — it
-   mechanically checks all 12.
-3. If any rule fails, fix the doc; do not weaken the rule.
-
-If a rule is too strict in practice (e.g. R5's 7KB threshold
-turns out to be wrong for some doc type), the fix is to update
-the rule AND the verify script — not to skip the rule.
+2. No mechanical script — doc-level self-discipline.
+3. If a rule is too strict in practice, update the rule — don't
+   skip or weaken it.
 
 ### P21. Independent projects (cross-project boundaries)
 

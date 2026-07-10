@@ -405,3 +405,106 @@ class TestV2CliUnifiedImprove:
         visible_cmds = [c for c in ["improve", "replay", "test-scale"]
                         if c in result.output]
         assert len(visible_cmds) == 3
+
+
+class TestV2CliDailyLoop:
+    """Per user vision 2026-07-08: '我希望这个项目之后可以自己独立运行'.
+    Autonomous daily loop subcommand."""
+
+    def test_help_lists_flags(self):
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        runner = CliRunner()
+        result = runner.invoke(cli, ["daily-loop", "--help"])
+        assert result.exit_code == 0
+        for opt in ["--interval", "--max-rounds", "--target",
+                     "--multi", "--max-retries", "--test-path"]:
+            assert opt in result.output
+
+    def test_max_rounds_runs_N_then_stops(self):
+        """--max-rounds 3 with all KEPT -> 3 rounds, exit 0."""
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        from src.v2_agent import Paper
+        from src.v2_round import RoundResult
+        kept = RoundResult(decision="KEPT",
+                           paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                           target_module="x.py")
+        runner = CliRunner()
+        with patch("src.v2_round.run_one_round_with_harness", return_value=kept) as m:
+            result = runner.invoke(cli, [
+                "daily-loop", "--max-rounds", "3",
+                "--target", "x.py",
+                "--interval", "0",  # don't actually sleep
+                "--max-retries", "0",
+            ])
+        assert m.call_count == 3
+        assert "Daily loop done: 3 rounds, 3 KEPT" in result.output
+        assert result.exit_code == 0
+
+    def test_max_rounds_zero_kept(self):
+        """--max-rounds 2 with all NO_PATCH -> exit 1."""
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        from src.v2_agent import Paper
+        from src.v2_round import RoundResult
+        no = RoundResult(decision="NO_PATCH",
+                         paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                         target_module="x.py")
+        runner = CliRunner()
+        with patch("src.v2_round.run_one_round_with_harness", return_value=no):
+            result = runner.invoke(cli, [
+                "daily-loop", "--max-rounds", "2",
+                "--target", "x.py",
+                "--interval", "0",
+                "--max-retries", "0",
+            ])
+        assert "Daily loop done: 2 rounds, 0 KEPT" in result.output
+        assert result.exit_code == 1
+
+    def test_interval_zero_skips_sleep(self):
+        """--interval 0 should not actually sleep (test fast)."""
+        import time
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        from src.v2_agent import Paper
+        from src.v2_round import RoundResult
+        kept = RoundResult(decision="KEPT",
+                           paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                           target_module="x.py")
+        runner = CliRunner()
+        with patch("src.v2_round.run_one_round_with_harness", return_value=kept):
+            t0 = time.time()
+            result = runner.invoke(cli, [
+                "daily-loop", "--max-rounds", "2",
+                "--target", "x.py",
+                "--interval", "0",
+                "--max-retries", "0",
+            ])
+            elapsed = time.time() - t0
+        # Should be fast (< 5s), not actually sleep 0+0=0 but still < 5s
+        assert elapsed < 5, f"daily-loop took {elapsed:.1f}s, expected <5"
+
+    def test_mixed_kept_and_no_patch(self):
+        """--max-rounds 3 with 2 KEPT + 1 NO_PATCH -> exit 0 (kept > 0)."""
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        from src.v2_agent import Paper
+        from src.v2_round import RoundResult
+        kept = RoundResult(decision="KEPT",
+                           paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                           target_module="x.py")
+        no = RoundResult(decision="NO_PATCH",
+                         paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                         target_module="x.py")
+        runner = CliRunner()
+        with patch("src.v2_round.run_one_round_with_harness",
+                    side_effect=[kept, no, kept]):
+            result = runner.invoke(cli, [
+                "daily-loop", "--max-rounds", "3",
+                "--target", "x.py",
+                "--interval", "0",
+                "--max-retries", "0",
+            ])
+        assert "Daily loop done: 3 rounds, 2 KEPT" in result.output
+        assert result.exit_code == 0

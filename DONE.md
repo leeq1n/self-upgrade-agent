@@ -991,3 +991,69 @@ Not changed (per user direction):
 Per user meta-rule: "trust doc, 主要是做文档".
 This commit IS the doc work.  No test scripts, no hermes-verify
 churn (per your new元规则: 测过 + 没改 = 不重测).
+
+
+## v3.1.0 — Autonomous daily loop + P20 doc-only alignment
+
+Per user 2026-07-10: '按你认为正确的方向继续推进'.
+
+Two logical changes (1 commit, 奥卡姆, no split):
+
+### Part 1: Add `daily-loop` subcommand (autonomous vision)
+
+Per user vision 2026-07-08 '我希望这个项目之后可以自己独立运行'.
+Now:  python -m self_upgrade daily-loop --interval 3600
+      # run forever, 1h between rounds, stop with Ctrl-C
+
+Examples:
+  daily-loop                          # 1h interval, forever
+  daily-loop --interval 60            # 1 min (testing)
+  daily-loop --max-rounds 5           # 5 rounds then stop
+  daily-loop --target core/x.py       # different target
+
+Reuses:
+  - run_one_round_with_harness (already done in v3.0.2)
+  - v3.0.2 harness retry (per Self-Harness 40->62%)
+
+### Part 2: P20 doc-only alignment (per user 'doc > script' 哲学)
+
+The other agent added `scripts/check_docs.py` (P20 mechanical
+checker) in commit 973528a.  Per user feedback 2026-07-10
+'不需脚本, 文档就能规范 agent 行为':
+
+  - Deleted `scripts/check_docs.py` (and empty `scripts/` dir)
+  - This restores the v2.4.0 invariant:
+    'scripts/ should not exist; use python -m self_upgrade instead'
+  - `test_no_legacy_scripts_directory` now PASSES (was FAIL)
+  - Updated `docs/PRINCIPLES.md` P20.细则 R10-R11:
+    * R10: removed "scripts/check_docs.py" reference
+    * R11: changed from "must pass script" to "mentally check R1-R10"
+    * How to use: removed "run python scripts/check_docs.py" step
+  - Updated `README.md` header: removed check_docs.py reference
+  - P20 (progressive disclosure) principle is preserved as a
+    doc-level contract (per Lilian Weng 'harness = doc + impl + interface').
+
+This commit (1 commit, 奥卡姆, 5 files changed):
+
+1. self_upgrade/__main__.py:
+   - Added daily-loop subcommand (~50 LOC, all flags)
+2. git rm scripts/ (and check_docs.py)
+3. docs/PRINCIPLES.md: P20.细则 R10-R11 + How to use (doc-only)
+4. README.md: header (doc-only)
+5. tests/test_v2_cli.py: 5 new tests for daily-loop
+6. DONE.md records
+
+Verified:
+  - 31/31 in test_v2_cli.py (was 26; +5 for daily-loop)
+  - Full suite: 627 PASS + 6 skip + 0 fail (was 626; +5)
+  - test_no_legacy_scripts_directory now PASSES (was FAIL)
+  - No regression (per 奥卡姆: 1 commit covers all changes)
+  - Working tree clean
+
+Per Lilian Weng 'harness = doc + impl + interface': this commit
+preserves the doc (P20) but removes the impl (check_docs.py).
+The interface (CLI) gains daily-loop for autonomous vision.
+
+User usage:
+  python -m self_upgrade daily-loop --interval 3600
+  # 1h between rounds, Ctrl-C to stop

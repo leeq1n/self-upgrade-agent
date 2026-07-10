@@ -1,8 +1,8 @@
 # Self-Upgrade Agent
 
-> **Before any `docs/*.md` change**, run `python scripts/check_docs.py`
-> and include "P20 verify: 10/10 PASS" in your commit message.
-> See `docs/PRINCIPLES.md` P20.细则 for the contract.
+> **Before any `docs/*.md` change**, mentally check P20.细则 (R1-R12)
+> in `docs/PRINCIPLES.md`.  No mechanical script — doc-level
+> self-discipline.
 
 通过搜索最新论文 → 生成代码补丁 → 真实 benchmark 对比 → 自动部署来**自主改进自身源代码**的 AI Agent。
 

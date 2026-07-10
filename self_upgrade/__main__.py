@@ -227,6 +227,63 @@ def improve_multi(obj, target, test_path, no_judge_llm, count):
                multi=True, count=count)
 
 
+@cli.command(name="daily-loop")
+@click.option("--target", default="core/planner.py",
+              help="Target module to improve (default: core/planner.py).")
+@click.option("--interval", default=3600.0, type=float,
+              help="Seconds to wait between rounds (default 3600 = 1h).")
+@click.option("--max-rounds", default=None, type=int,
+              help="Stop after N rounds (default: run forever until Ctrl-C).")
+@click.option("--multi", is_flag=True, default=True,
+              help="Use multi-paper selection (LLM judge).  Default true.")
+@click.option("--max-retries", default=2, type=int,
+              help="Retry per round (harness-style, default 2).")
+@click.option("--test-path", default="tests/test_v2_round.py",
+              help="Test path used as the decision gate.")
+@click.pass_obj
+def daily_loop(obj, target, interval, max_rounds, multi, max_retries, test_path):
+    """Autonomous daily loop: keep improving target forever (or until max-rounds).
+
+    Per user vision 2026-07-08 '我希望这个项目之后可以自己独立运行':
+    Runs rounds back-to-back, waiting `--interval` seconds between each.
+    Stop with Ctrl-C.  All flags match the unified `improve` subcommand.
+
+    Examples:
+      python -m self_upgrade daily-loop                       # 1h interval, forever
+      python -m self_upgrade daily-loop --interval 60         # 1 min (testing)
+      python -m self_upgrade daily-loop --max-rounds 5        # 5 rounds then stop
+      python -m self_upgrade daily-loop --target core/x.py    # different target
+    """
+    run_one_round, run_one_round_multi, _, run_with_harness, _, _ = _lazy_v2()
+    from src.llm import LLMConfig
+    config = LLMConfig.from_env() if obj["mock"] is False else None
+
+    rounds = 0
+    kept = 0
+    try:
+        while max_rounds is None or rounds < max_rounds:
+            rounds += 1
+            click.echo(f"\n===== Round {rounds} @ {time.strftime('%Y-%m-%d %H:%M:%S')} =====")
+            if multi:
+                r = run_with_harness(target_module=target, config=config,
+                                     max_retries=max_retries, test_path=test_path)
+            else:
+                _, _, _, FIXED_PAPER, Paper = _lazy_v2()
+                r = run_one_round_multi(target_module=target, config=config,
+                                         llm_config=config, test_path=test_path)
+            click.echo(_format_round_result(r))
+            if hasattr(r, "decision") and r.decision == "KEPT":
+                kept += 1
+            if max_rounds is None or rounds < max_rounds:
+                click.echo(f"  Sleeping {interval}s... (Ctrl-C to stop)")
+                time.sleep(interval)
+    except KeyboardInterrupt:
+        click.echo("\n[stopped by user]")
+
+    click.echo(f"\n===== Daily loop done: {rounds} rounds, {kept} KEPT =====")
+    sys.exit(0 if kept > 0 else 1)
+
+
 def main():
     """Module entry point."""
     cli()
