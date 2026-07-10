@@ -594,3 +594,36 @@ Verified:
 NOT in this commit:
   - step 2.3: `src/v4_loop.py` (Think → Execute → Observe)
   - step 2.4: joint test (end-to-end with mock)
+
+
+## v3.0.2 step 2.3 — Loop controller (commit `pending hash`)
+
+Per LITERATURE (Self-Harness, Nate Berkopec, Signal-to-Fix,
+Lilian Weng): the harness needs a loop controller.
+Thinker (2.1) + Executor (2.2) + Loop (2.3) = full harness.
+
+- [x] **`src/v4_loop.py`** (~125 LOC, NEW):
+  - `LoopStatus(Enum)`: SUCCEEDED | FAILED | PARTIAL
+  - `LoopResult` dataclass: status + plan + results + attempts
+  - `Loop(thinker, executor)`: orchestrator
+    * `run(prompt, max_retries=0) -> LoopResult`
+    * Fail-fast on first failure (P9)
+    * Optional re-plan (Self-Harness iterative)
+    * Per P19: `history` for observability
+  - Strict status logic: any failure -> FAILED
+- [x] **`tests/test_v4_loop.py`** (~225 LOC, 14 tests):
+  - LoopStatus (1), LoopResult (2), BasicLoop (5),
+    Retry (3), History (2), JointEndToEnd (1)
+
+Verified:
+  - 14/14 unit tests (0.09s)
+  - Full suite: 586 PASS + 6 skip + 0 fail (was 572; +14)
+  - 3 test bugs found + fixed before commit:
+    * test_partial_status: wrong expected len(results)
+    * test_retry_max_2: missing max_retries arg
+    * code: status logic was inconsistent (PARTIAL on fail-fast)
+  - Joint with v4_thinker + v4_executor works
+
+NOT in this commit:
+  - step 2.4: joint test (end-to-end with mock)
+  - Wire Loop into v2_round (out of scope per P7)
