@@ -153,25 +153,39 @@ def test_scale(obj, n_rounds, target, paper):
               help="Test path used as the decision gate.")
 @click.option("--max-retries", default=2, type=int,
               help="How many times to retry on failure (default 2).")
+@click.option("--count", default=1, type=int,
+              help="Run N consecutive harness rounds (default 1).")
 @click.pass_obj
-def improve_harness(obj, target, test_path, max_retries):
+def improve_harness(obj, target, test_path, max_retries, count):
     """Harness-wrapped self-improvement (v3.0.2 follow-up).
 
     Per LITERATURE (Self-Harness 40->62%): iterative re-plan on
     failure.  Wraps run_one_round_multi in a Loop with retry-on-fail.
     Per P7 奥卡姆: simple retry wrapper.
+
+    --count N: run N consecutive rounds (each is a fresh harness
+    with its own retries).  Useful for stability testing.
     """
     from src.v2_round import run_one_round_with_harness
     from src.llm import LLMConfig
     config = LLMConfig.from_env() if obj["mock"] is False else None
-    r = run_one_round_with_harness(
-        target_module=target,
-        config=config,
-        max_retries=max_retries,
-        test_path=test_path,
-    )
-    click.echo(_format_round_result(r))
-    sys.exit(0 if r.decision == "KEPT" else 1)
+    kept_count = 0
+    for i in range(count):
+        if count > 1:
+            click.echo(f"===== Round {i + 1}/{count} =====")
+        r = run_one_round_with_harness(
+            target_module=target,
+            config=config,
+            max_retries=max_retries,
+            test_path=test_path,
+        )
+        click.echo(_format_round_result(r))
+        if r.decision == "KEPT":
+            kept_count += 1
+    if count > 1:
+        click.echo(f"===== Summary =====")
+        click.echo(f"KEPT: {kept_count}/{count} ({100*kept_count//count}%)")
+    sys.exit(0 if kept_count == count else 1)
 
 
 @cli.command(name="improve-multi")

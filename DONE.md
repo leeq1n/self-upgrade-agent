@@ -765,3 +765,35 @@ Verified:
 
 Per new meta-rule: {测通 → 整理 → 合并 → 测通 → 提交}.
 This commit is a 整理+合并 step (delete unused + cleanup comment).
+
+
+## v3.0.2 follow-up #3 — `--count N` flag for `improve-harness`
+
+Per user 2026-07-10: '哪怕是测试, 我也希望能简化用户操作'.
+Now `python -m self_upgrade improve-harness --count 5` runs 5
+rounds in one line (was: 6-line shell loop).
+
+This commit (1 commit, 奥卡姆, no split):
+
+- [x] **`self_upgrade/__main__.py`**:
+  - Added `--count N` option to `improve-harness`
+  - Default: 1 (no behavior change for existing users)
+  - When N>1: prints `===== Round i/N =====` markers
+  - When N>1: prints `===== Summary =====` with KEPT count + ratio
+  - Exit code: 0 only if all N rounds KEPT, else 1
+- [x] **`tests/test_v2_cli.py`** — added `TestV2CliHarnessCount` (5 tests):
+  - flag accepted, all-KEPT, all-NO_PATCH, mixed, count=1 (no summary)
+- [x] **DONE.md** records
+
+Verified:
+  - 14/14 in test_v2_cli.py (was 9, +5)
+  - Full suite: 610 PASS + 6 skip + 0 fail (was 605; +5)
+  - No regression
+
+Per LITERATURE: stability testing needs 5+ runs to estimate
+reliability (per Observations.md: 0% KEPT in 6 attempts so far,
+need more data).
+
+User should run:
+  python -m self_upgrade improve-harness --count 5
+  # 5 consecutive rounds, prints summary
