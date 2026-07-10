@@ -436,3 +436,31 @@ PRINCIPLES.md row now has detail link:
   4. P23: doc-first, no script
   5. P7 奥卡姆: 1 commit, not split (logical feature = doc reorganization)
   6. P17 honest: LITERATURE_DETAIL 8K slight over, but is _DETAIL by name
+
+
+## v3.1.0 follow-up — OBSERVATIONS entry for daily-loop run (1/3 KEPT)
+
+Per user 2026-07-10 ran `daily-loop --max-rounds 3 --interval 0`:
+1/3 KEPT (33%), 12 min total.  Working tree clean (auto-revert).
+
+This commit (1 commit, 奥卡姆, doc-only, no split):
+
+  - Add OBSERVATIONS.md entry with full trace + implications
+  - Per P19 data flow observability: empirical data should live in
+    the project (docs/OBSERVATIONS.md), not in agent memory
+  - Per P22: find commonality — Round 2 KEPT but auto-revert
+    highlights a gap in autonomous vision (harness doesn't auto-commit)
+  - Per P11 摘要+引用: 1-paragraph observation + table
+
+### Honest (per P17):
+  - KEPT = 16/16 tests pass = LLM real contribution
+  - But auto-reverted by Harness = no permanent change
+  - This is per design (P18 atomic + revert) but means daily-loop
+    without auto-commit = same as no run from code-state POV
+  - **Gap**: autonomous vision needs auto-commit on KEPT
+  - This is a TODO, not a code change in this commit
+
+Verified:
+  - 31/31 in test_v2_cli.py (no code change, doc-only)
+  - Per P23 doc-first: no hermes-verify script
+  - 1 commit, no split

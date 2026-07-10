@@ -150,3 +150,42 @@ real improvements when it succeeds** (not just valid syntax).
 - ✅ Confirmation that progress markers help (you saw each stage)
 - ✅ Confirmation that the retry loop runs (3 attempts, not 1)
 - ✅ A reminder: don't conclude from small samples
+
+
+## 2026-07-10 — daily-loop --max-rounds 3 --interval 0 (1/3 KEPT)
+
+User ran `python -m self_upgrade daily-loop --max-rounds 3 --interval 0`
+after my v3.1.0 commit (9d75533).  Output:
+
+| Round | Round winners | KEPT? | Tests | Time |
+|---|---|---|---|---|
+| 1 | self-harness → self-refine → the-agent-improvement-loop (3 attempts) | No | 0/0 | 274.3s |
+| 2 | harness-engineering → harness-engineering (2 attempts) | **Yes** | **16/16** | 222.3s |
+| 3 | harness-engineering → the-agent-improvement-loop → harness-engineering (3 attempts) | No | 0/0 | 217.0s |
+
+Total: 3 rounds, 1 KEPT (33%), 713.6s.
+
+**Observations**:
+- 33% KEPT (n=3) is within range of n=5=20% and n=2=0% from earlier
+  runs — LLM probability, not a code issue
+- Round 2 KEPT is real: 16/16 tests pass after harness retry
+  (1st attempt NO_PATCH, 2nd attempt KEPT)
+- **Auto-revert**: core/planner.py modified by LLM, then reverted by
+  Harness atomic mechanism (per P18).  Working tree clean after
+  run — NO permanent change.  (KEPT-but-not-committed = same as
+  no run, from a code-state perspective.)
+- Total time 12 min matches expectation (3 rounds × ~4 min avg)
+
+**Implication for autonomous vision**:
+Per user vision '我希望这个项目之后可以自己独立运行':
+daily-loop currently runs rounds but does NOT auto-commit KEPT
+patches.  KEPT patches are immediately auto-reverted because no
+agent/user commits them.  For true autonomous improvement, the
+harness should auto-commit KEPT patches (or write a patch bundle
+for human review).
+- This is a TODO item, not a code bug
+- User decides: auto-commit or human-in-the-loop
+
+**Related commits**:
+- 9d75533 feat: autonomous daily-loop + P20 doc-only alignment
+- de5213d docs(PRINCIPLES): sync L0 to P23 + R7 split-aware
