@@ -505,3 +505,31 @@ Verified:
 NOT in this commit:
   - LLM streaming (would need API support; current API is non-streaming)
   - Patching large files (existing v2_apply handles this)
+
+
+## v3.0.2 step 1 — Replay default = inspect (fast) (commit `pending hash`)
+
+User reported: 'replay 卡 5+ min 因为调真 LLM'.  P18's
+`replay_all_failures()` calls `run_one_round()` which calls LLM
+— too slow for normal use.
+
+Fix: split replay into two modes.
+  - default = inspect the log (no LLM, sub-second)
+  - --live = actually replay (slow, real LLM, opt-in)
+
+- [x] **`src/v3_replay.py`** (~75 LOC, NEW):
+  - `inspect_failures(log_path)` -> dict (no LLM)
+  - `format_inspect(insp)` -> str (human-readable)
+- [x] **`tests/test_v3_replay.py`** (~170 LOC, 9 tests):
+  - Empty / missing / with-logged / top-papers / recent-truncated
+  - format tests, no-llm-call spy, real-log
+- [x] **`self_upgrade/__main__.py`**: --live/--no-live flag on replay
+
+Verified:
+  - 9/9 unit tests (0.4s)
+  - Full suite: 527 PASS + 6 skip + 0 fail (was 518; +9)
+  - `python -m self_upgrade replay` runs in < 1s
+  - Output: 433 entries, 147 unique, NO_PATCH 363 / REVERTED 68 / APPLY_FAILED 2
+
+NOT in this commit:
+  - v3.0.2 think-execute harness (next)
