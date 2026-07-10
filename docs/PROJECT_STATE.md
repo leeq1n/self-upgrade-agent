@@ -1,6 +1,7 @@
 ---
 description: "Project goal, status, mistakes, constraints, next step"
 status: "summary"
+last_updated: "2026-07-10 (v3.0.2 OVERALL COMPLETE)"
 ---
 
 # PROJECT_STATE — brief
@@ -10,28 +11,50 @@ modifies its own code in `core/planner.py`, verifies via the project
 test suite, and either keeps or reverts.  Local framework + remote
 minimax LLM API.
 
-**Tests**: 438 PASS + 6 skip + 0 fail (last commit `9915a9e`).
+**Tests**: 621 PASS + 6 skip + 0 fail (last commit `2b88a79`).
+*Excludes* 1 deselected test (`test_core_planner_md5_matches_head`)
+because the user modified `core/planner.py` directly (LLM Round 5
+KEPT, commit `20e958d`) — user decides keep/revert.
 
-**Active code** (~620 LOC across 3 modules):
+## Current status (v3.0.2 OVERALL COMPLETE)
 
-- `src/v2_agent.py` — generate Patch from paper via 1 LLM call + harness
-- `src/v2_apply.py` — atomically deploy Patch to source (snapshot +
-  AST-based replace + revert on fail)
-- `src/v2_round.py` — close the loop (improve → apply → tests → KEPT/REVERTED)
+Per LITERATURE (Self-Harness 40→62%, Lilian Weng "harness as
+important as model"), v3.0.2 implements a think-execute harness:
 
-For deeper details on each module, see its module docstring + tests
-(`tests/test_v2_*.py`).
+| Module | Purpose | LOC |
+|--------|---------|-----|
+| `src/v3_multipaper.py` | read all 11 papers from catalog | 180 |
+| `src/v3_judge.py` | LLM judge picks best paper (with mock fallback) | 265 |
+| `src/v3_persist.py` | save summaries + decisions (P19) | 167 |
+| `src/v3_replay.py` | inspect failures (fast, no LLM) | 81 |
+| `src/v4_thinker.py` | Thinker abstract (plan API + 5 fallback paths) | 169 |
+| `src/v4_executor.py` | Executor abstract (skill dispatcher) | 129 |
+| `src/v4_loop.py` | Loop controller (Think → Execute → Observe) | 124 |
+| `src/v2_round.py` | extended: `run_one_round_with_harness()` | 360+ |
 
-**Deprecated (do not extend)**: 11 modules in `src/` are listed for
-historical reasons only.  See
-[`PROJECT_STATE_DETAIL.md → Deprecated modules`](PROJECT_STATE_DETAIL.md#deprecated-modules).
+**CLI (unified, 3 visible subcommands)**:
+```bash
+python -m self_upgrade improve --multi --max-retries 2 --count 5
+python -m self_upgrade replay   # inspect failures (default) or --live
+python -m self_upgrade test-scale 5  # N consecutive single-paper rounds
+```
+
+**Hidden aliases** (backward compat): `improve-multi`, `improve-harness`.
+
+## Real LLM data (v3.0.2 follow-up #4 + #5)
+
+- `--count 5` multi-paper run (commit `20e958d`): **1/5 KEPT (20%)**
+- Round 5 KEPT: LLM added `generate_tests` option to `core/planner.py`
+  (Self-Harness-style improvement, 16/16 tests pass)
+- `core/planner.py` is LLM-modified, **user decides keep/revert**
 
 ## Mistakes made (do not repeat)
 
 See full table in
 [`PROJECT_STATE_DETAIL.md §Mistakes`](PROJECT_STATE_DETAIL.md#mistakes-made-do-not-repeat);
-short version: 8 specific bugs (LLM timeout misinterpreted, key bypass
-missing, hardcoded pre-filter, etc.) — don't re-introduce them.
+short version: 12 specific bugs (LLM timeout misinterpreted, key bypass
+missing, hardcoded pre-filter, `git add -A` danger, retry logic
+status confusion, etc.) — don't re-introduce them.
 
 ## Constraints
 
@@ -41,16 +64,15 @@ constraints change rarely; that file is the source of truth.
 
 ## Next step
 
-See [../TODO.md](../../TODO.md) for pending work.  Top three (in
-priority order):
+See [../../TODO.md](../../TODO.md) for pending work.  Top priority
+is **v3.0.3 — autonomous daily loop** (per user 2026-07-10
+"我希望这个项目之后可以自己独立运行"):
 
-1. **Failure → regression test pipeline** — every NO_PATCH /
-   APPLY_FAILED / REVERTED outcome should become a permanent
-   regression test (per production-agent literature).
-2. **5 consecutive KEPT rounds** — user runs the loop repeatedly with
-   FIXED_PAPER (DyLAN) to prove stability.
-3. **Multi-paper reading** (5+ papers) — informs the v3.0 multi-paper
-   selection design.
+1. **More 5-round data** — `--count 5` 拿 10+ runs 拿统计 KEPT ratio
+2. **Decide `core/planner.py`** — keep (LLM 真贡献) or revert
+3. **`daily-loop --interval 24h`** — autonomous, cron-driven
+4. **state.json + failure recovery** (P18 + P19)
+5. **Skill registry** (per LITERATURE: SkillOpt)
 
 ## References
 
@@ -58,6 +80,9 @@ priority order):
 - User intent (verbatim quotes): [USER_INSIGHTS.md](USER_INSIGHTS.md)
 - Hard rules: [CONSTRAINTS.md](CONSTRAINTS.md)
 - LLM choice: [MODEL_STRATEGY.md](MODEL_STRATEGY.md)
+- Working principles: [PRINCIPLES.md](PRINCIPLES.md)
+- Real-run data: [OBSERVATIONS.md](OBSERVATIONS.md)
 - Pending tasks: [../../TODO.md](../../TODO.md)
 - Done tasks: [../../DONE.md](../../DONE.md)
 - **Detailed technical history** (the long form): [PROJECT_STATE_DETAIL.md](PROJECT_STATE_DETAIL.md)
+- **Knowledge Graph (P1, deferred)**: [TODO_KNOWLEDGE_GRAPH.md](TODO_KNOWLEDGE_GRAPH.md)

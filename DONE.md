@@ -943,3 +943,51 @@ User usage:
 
   # New way (recommended):
   python -m self_upgrade improve --multi --max-retries 2 --count 5
+
+
+## v3.0.2 follow-up #7 — Docs current (P14 cleanup)
+
+Per user 2026-07-10: 'trust doc, 你现在主要是做文档, 没有测过
+之类的说法.  自进化项目和知识图谱项目文档都是最新的嘛?'.
+
+Per P14 (docs stay current), updated 4 docs to reflect v3.0.2
+state.  Also deleted 1 transient note.
+
+This commit (1 commit, 奥卡姆, doc-only):
+
+1. `TODO.md` — updated:
+   - Marked v3.0.2 think-execute harness + 6 follow-ups as [x]
+   - In-progress section now points to v3.0.3 (autonomous daily loop)
+   - Updated User-side commands to unified `improve --multi --count 5`
+   - Added Skill registry + KG to Future
+   - Added Self-Harness lesson
+
+2. `docs/PROJECT_STATE.md` — updated:
+   - Tests: 438 → 621 PASS
+   - Listed v3.0.2 modules (v3_multipaper, v3_judge, v3_persist,
+     v3_replay, v4_thinker, v4_executor, v4_loop)
+   - Documented unified CLI (3 visible subcommands)
+   - Added real LLM data: 1/5 KEPT (20%) Round 5 KEPT modified
+     `core/planner.py` (user decides)
+   - Mistakes count: 8 → 12 (added 4 new in v3.0.2)
+   - Next step: v3.0.3 autonomous daily loop
+   - References: added OBSERVATIONS + TODO_KNOWLEDGE_GRAPH
+
+3. `docs/INDEX.md` — added:
+   - OBSERVATIONS.md to reading order (entry 8)
+   - EXTENSIONS.md kept as entry 10
+   - Total time: 35 → 35-40 min
+
+4. `git rm docs/USER_INSIGHTS_KNOWLEDGEGRAPH_20260710.md`:
+   - Was a transient note I wrote in Phase 56 (now stale)
+   - Content already in PRINCIPLES / OBSERVATIONS
+   - P14 violation cleanup
+
+Not changed (per user direction):
+- `core/planner.py` — LLM Round 5 KEPT, user decides
+- `docs/EXTENSIONS.md`, `docs/PRINCIPLES.md` — by another agent
+- `docs/TODO_KNOWLEDGE_GRAPH.md` — P1 idea, user said "保持原样不动"
+
+Per user meta-rule: "trust doc, 主要是做文档".
+This commit IS the doc work.  No test scripts, no hermes-verify
+churn (per your new元规则: 测过 + 没改 = 不重测).

@@ -16,53 +16,61 @@ completed work lives in DONE.md.
 - [x] **Multi-paper selection** — v3.0.1 (4 sub-steps, 4 stage gates)
 - [x] **Hotfix timeout bump** — v3.0.1 (commit `be0072c`)
 - [x] **Progress markers** — v3.0.1 (commit `eb70e90`)
-- [x] **Replay default = inspect** — v3.0.2 step 1 (commit `3d74ba8`)
+- [x] **v3.0.2 think-execute harness OVERALL** — 4 sub-steps + joint
+      + wire into v2_round.  Commits `3d74ba8` + `d5b4a84` +
+      `8b85660` + `009a26c` + `38920ff` + `9c69648` + `5623591`.
+- [x] **v3.0.2 follow-ups** — 6 commits (--count N on harness+multi,
+      奥卡姆 cleanup x2, unified `improve` with flags).
+      Commits `30bcb1b` + `4f475eb` + `ed239b4` + `bb69983` +
+      `2b88a79` + `20e958d`.
 
 ## In progress (current 1-2 sessions)
 
-### v3.0.2 — think-execute harness (LITERATURE: Self-Harness, Lilian Weng)
+### v3.0.3 — autonomous daily loop (LITERATURE: Self-Harness "iterative
+re-plan", Lilian Weng "harness as important as model")
 
-Per user feedback 2026-07-10: '分治, 多次将功能分块, 直到足够小,
-每个功能测通了再联合起来测, 继续你认为正确的方向, 中间记得
-记录, 还有一开始那些关于 agent 的知识也要灵活运用'.
+Per user 2026-07-10: '我希望这个项目之后可以自己独立运行'.
 
-- [/] **step 1** — replay default = inspect (fast, no LLM)
-      DONE in `3d74ba8` + `1b044ae`.  Verifier 16/16 PASS.
-      `python -m self_upgrade replay` now < 1s (was 5+ min).
-- [ ] **step 2.1** — `src/v4_thinker.py` (Thinker 抽象, plan API)
-      5 tests.  ~80 LOC.  LLM-as-deep-thinker.
-- [ ] **step 2.2** — `src/v4_executor.py` (Executor 抽象, tool dispatch)
-      5 tests.  ~80 LOC.  Tool calls.
-- [ ] **step 2.3** — `src/v4_loop.py` (Think → Execute → Observe)
-      5 tests.  ~60 LOC.  Loop controller.
-- [ ] **step 2.4** — joint test (LLM mock + thinker + executor)
-      3 tests.  ~50 LOC.  End-to-end mock.
+- [ ] **step 1** — `python -m self_upgrade improve --multi --count 5`
+      data: 1/5 KEPT (20%, n=5, commit `20e958d`).  Need 10+ runs.
+- [ ] **step 2** — Decide `core/planner.py` (LLM Round 5 KEPT added
+      `generate_tests` option).  User decides keep or revert.
+- [ ] **step 3** — `python -m self_upgrade daily-loop --interval 24h`
+      (autonomous vision, not user-triggered).
+- [ ] **step 4** — state.json persistence (P19) + failure recovery
+      (P18) + self-test gate.
 
 ## Backlog (NOT in current session, recorded per user principle)
 
 Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功能时,
 可以作为 TODO 记录下来, 这时候要整理文档'.
 
-### Cleanup (低风险, 1 commit each)
+### Cleanup (low risk, 1 commit each, optional)
 
-- [ ] 删 v1.8.x deprecated modules (11 个)
-      `src/pipeline_lg.py`, `src/react.py`, `src/mcp_client.py`,
-      `src/memory_server.py`, `src/langchain_bridge.py`, etc.
-- [ ] 删 `self_upgrade/__main__.v18_backup.py` (469 行, 没用)
-- [ ] 更新 LITERATURE.md (新加 11 papers 待 better notes)
+- [ ] 删 6 个 v1.8.x files still referenced by tests + docs
+      (`run_1round.py`, `run_3rounds_manual.py`, `run_stable.py`,
+      `collect_papers.py`, `PROJECT_BRIEF.md`, `ISSUES.md`).
+      Done in v3.0.2 follow-up #4: 删了 3 个 truly unused
+      (`IDEA.md`, `run.py`, `run_5rounds_day6.py`).
+- [ ] Update LITERATURE.md with better notes on 11 papers
+      (per user 2026-07-10 "灵活运用 agent 知识").
+- [ ] Delete `docs/USER_INSIGHTS_KNOWLEDGEGRAPH_20260710.md`
+      (transient note, content now in PRINCIPLES / OBSERVATIONS).
+      Will be done in docs cleanup commit.
 
-### User-side (你跑)
+### User-side (you run)
 
-- [ ] 5 consecutive multi-paper rounds stability test
-      CLI: `python -m self_upgrade test-scale 5`
-- [ ] `python -m self_upgrade replay --live` (慢, 真 LLM, debug only)
-- [ ] 真 `improve-multi` 跑 5+ 次,看 KEPT/NO_PATCH ratio
+- [ ] 5+ consecutive multi-paper rounds stability test
+      New CLI: `python -m self_upgrade improve --multi --max-retries 2 --count 5`
+- [ ] Verify unified CLI works: `python -m self_upgrade improve --help`
 
 ### Future (v3.1+ or v4+)
 
 - [ ] 真实 daily loop (cron job)
 - [ ] A/B benchmark (新 patch vs 旧)
 - [ ] bootloader 风格 atomic 切换 (你 vision 起点)
+- [ ] Skill registry (per LITERATURE: SkillOpt)
+- [ ] Knowledge graph (per docs/TODO_KNOWLEDGE_GRAPH.md, P1 status)
 
 ## Lesson (per P19 + LITERATURE)
 
@@ -72,3 +80,6 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
   我们 = failures.jsonl / judge_*.jsonl 作为 truth
 - P19 data flow observability: persist intermediate results
   step 1.3 (save_summaries + save_decision) 已实现
+- Self-Harness (40→62%): harness > model.  v3.0.2 implements this
+  via Thinker+Executor+Loop.  v3.0.2 follow-up #6 unifies CLI
+  with `--multi --max-retries --count` flags.
