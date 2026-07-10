@@ -459,3 +459,49 @@ Verified:
 Not in this commit:
   - Real LLM end-to-end (user must run with .env)
   - 5 round stability test
+
+
+## v3.0.1 follow-up — per-stage progress markers (commit `eb70e90`)
+
+User reported: '跑的时候只有Reading papers from catalog这一句,
+很长时间不知道运行状态, 能不能显示大模型的一部分输出,
+看看调用情况? 或者有没有更好的解决方法让我能知道运行状态是健康的?'
+
+Fix: per-stage progress markers in v2_round.
+
+Before:
+  Reading papers from catalog...
+  [135.7s silence]
+  decision=KEPT elapsed=135.7s
+
+After (real LLM run):
+  [  0.0s] Reading catalog...
+  [  0.0s]   loaded 11 papers
+  [  0.0s] Persisting summaries...
+  [  0.0s] Selecting best paper (llm judge)...
+  [120.0s]   winner: 2310.02170
+  [120.0s] Persisting decision...
+  [120.0s] Generating patch (LLM call)...
+  [240.0s]   patch: True
+  [240.0s] Applying patch to disk...
+  [240.0s]   apply status: APPLIED
+  [240.0s] Running tests (tests/test_v2_round.py)...
+  [255.0s]   tests: 16 passed, 0 failed (rc=0)
+  decision=KEPT elapsed=255.0s tests_passed=16 ...
+
+What changed:
+  - new `_stage(name, t0)` helper in src/v2_round.py
+  - `flush=True` so output is visible immediately
+  - run_one_round_multi() emits 6 stages
+  - run_one_round() emits 6 stages
+  - CLI banner removed (v2_round now does that)
+
+Verified:
+  - 9/10 hermes-verify PASS
+  - test_v2_round.py: 16 PASS
+  - Full suite: 518 PASS
+  - Manual: stage markers visible during mocked run
+
+NOT in this commit:
+  - LLM streaming (would need API support; current API is non-streaming)
+  - Patching large files (existing v2_apply handles this)
