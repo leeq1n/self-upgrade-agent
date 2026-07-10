@@ -85,6 +85,56 @@ reliably.
       (LLM probabilistic, retry has same expected outcome).
       **Defer** until we have more data to justify the change.
 
+## 2026-07-10 — 5-round multi-paper run (--count 5)
+
+**Command**:
+```bash
+python -m self_upgrade improve-multi --count 5
+# 5 consecutive rounds, --no-judge-llm not used (default = LLM judge)
+```
+
+**Result**:
+| Round | Judge winner | LLM call | Patch | Result |
+|-------|--------------|----------|-------|--------|
+| 1 | harness-engineering (22.0s) | 115.4s | False | NO_PATCH |
+| 2 | self-harness (7.6s) | 117.9s | False | NO_PATCH |
+| 3 | self-harness (8.0s) | 102.6s | False | NO_PATCH |
+| 4 | harness-engineering (26.1s) | 26.8s | False | NO_PATCH |
+| 5 | harness-engineering (9.3s) | 97.9s | **True** | **KEPT** (16/16) |
+| **Total** | | **~460s** | | **1/5 KEPT (20%)** |
+
+**Round 5 KEPT details**:
+- LLM modified `core/planner.py`: added `generate_tests: bool = False`
+  parameter to `plan_task()`, which when True generates regression
+  tests for each step
+- 16/16 tests in `tests/test_v2_round.py` passed
+- This is **Self-Harness-style** improvement (per LITERATURE:
+  "Harness as important as model") — the LLM recognized that
+  test generation is a valuable capability and added it
+
+**KEPT ratio**:
+- v1.8.x single-paper: 33% (1/3)
+- v3.0.1 single-paper: 33% (1/3)  
+- v3.0.1 multi-paper (single run): 0% (0/3)
+- v3.0.2 multi-paper (single run): 0% (0/3)
+- v3.0.2 multi-paper (5-round batch): 20% (1/5)
+
+**Trend**: 20% KEPT is within expected range. n=5 is still too
+small to be statistically significant. But **the LLM is producing
+real improvements when it succeeds** (not just valid syntax).
+
+**Working tree after run** (uncommitted):
+- `M core/planner.py` — LLM's patch
+- `M docs/INDEX.md` — possibly from another agent
+- `?? docs/EXTENSIONS.md` — possibly from another agent
+
+**Action items**:
+- [ ] **User decides**: commit core/planner.py (real improvement)
+      or revert (don't trust LLM changes)?
+- [ ] **More 5-round runs** to get statistical signal (target n>=10)
+- [ ] **Investigate** why Round 4 LLM call was so short (26.8s vs
+      100s+ in other rounds) — was it cut off?
+
 ## What this is NOT
 
 - ❌ A bug report — harness works as designed
