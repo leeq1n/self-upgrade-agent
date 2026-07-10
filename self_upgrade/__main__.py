@@ -75,8 +75,24 @@ def improve(obj, target, paper, test_path):
 
 
 @cli.command()
-def replay():
-    """Replay every unique failure in upgrades/failures.jsonl (P18)."""
+@click.option("--live/--no-live", default=False,
+              help="If --live, actually replay (slow, real LLM). Default is "
+                   "inspect (fast, no LLM) per user feedback 2026-07-10 "
+                   "'跑的时候卡了 5+ min'.")
+def replay(live):
+    """Replay (or inspect) failures from upgrades/failures.jsonl (P18).
+
+    By default, just inspects the log (no LLM call).  Pass --live to
+    actually replay each unique failure through run_one_round (slow).
+    """
+    if not live:
+        # Fast: just inspect the log
+        from src.v3_replay import inspect_failures, format_inspect
+        insp = inspect_failures()
+        click.echo(format_inspect(insp))
+        return
+
+    # Live: actually replay (slow)
     _, _, replay_all_failures, _, _ = _lazy_v2()
     report = replay_all_failures(test_path="tests/test_pipeline.py")
     click.echo(json.dumps(report.to_dict(), indent=2, ensure_ascii=False))
