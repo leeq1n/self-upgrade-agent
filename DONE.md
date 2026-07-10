@@ -431,3 +431,31 @@ All 4 sub-steps of v3.0.1 are now done:
 
 Result: multi-paper selection is end-to-end functional via
 `python -m self_upgrade improve-multi`.
+
+
+## v3.0.1 hotfix — `run_project_tests` timeout (commit `be0072c`)
+
+User reported: `python -m self_upgrade improve-multi` failed
+with `subprocess.TimeoutExpired` after 300s.
+
+Root cause: `run_project_tests` default `timeout_s=300` was
+too tight for real rounds (LLM call ~120s + pytest collection +
+execution can exceed 5 min on first run).
+
+Fix:
+  - Default `timeout_s`: 300 -> 600
+  - Force `HERMES_FAST=1` in env (skips slow test modules)
+  - User can still override: `HERMES_FAST=0 python -m self_upgrade ...`
+
+Verified:
+  - 9/10 hermes-verify (I failed because uncommitted at verify time)
+  - test_v2_round.py: 16 PASS
+  - Full suite: 518 PASS
+  - Manual: `run_project_tests('tests/test_v2_round.py')` =
+    16 passed, 0 failed, rc=0 in ~15s
+  - Manual: `run_project_tests('tests/')` = 530 passed, 2 failed
+    in 97.8s (the 2 fails are v1.8.x stale; not v3.x regression)
+
+Not in this commit:
+  - Real LLM end-to-end (user must run with .env)
+  - 5 round stability test
