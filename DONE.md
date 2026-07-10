@@ -1116,3 +1116,66 @@ This commit (1 commit, 奥卡姆, doc-only, no split):
   The logical feature is "extract meta-meta-rules from user's
   conversation and add to PRINCIPLES.md as P22 + P23, with L0
   reference in INDEX.md".  Multiple files but one feature.
+
+
+## v3.1.0 follow-up — Top-down L0/L1/L2 doc structure (P22 + 4 root axioms)
+
+Per user 2026-07-10 meta-meta-meta-rule:
+'知识图谱我已经新开项目实现了, 但是对应的原则应该还留着,
+那些里面有我的基础想法, 尽管那些靠代码实现起来很麻烦, 但是
+现在做文档的时候你可以手动基于那原则控制更新, 保证文档的
+结构层级分明, 从 root 原则 (例如奥卡姆剃刀原则) 开始到
+实际操作要求 (例如具体文档要如何符合该原则) 自上而下
+多个层次分明'.
+
+This commit (1 commit, 奥卡姆, doc-only, no split):
+
+### 1. PRINCIPLES.md L0/L1/L2 structure
+
+Per user 2026-07-10 '自上而下多层' (KG project's top-down
+principle, now in doc form):
+
+  L0: Root principles (4 axioms)
+    - 奥卡姆 (P7, P9, P13, P23)
+    - Workflow (P1, P2, P4, P5, P6, P15, P22, P23)
+    - Test (P3, P5, P6, P16, P18, P19)
+    - Doc (P10, P11, P12, P14, P17, P20, P21)
+
+  L1: P-n principles (existing, all 23)
+    - Workflow, Design, Process, Meta sections
+
+  L2: 实操 (per P-n, how to implement)
+    - 1-line "实操" per P-n
+    - References root axiom (L0) + sibling L1
+    - 23 实操 added (one per P1-P23)
+
+### 2. Why this matters (per P22 步骤 3: 找 rule 共性)
+
+  - Before: P-n scattered, no clear hierarchy
+  - After: 4 root axioms act as taxonomies; P-n descend from one
+  - Per P7 奥卡姆: don't add new L1 if L0 already covers
+  - Per P20 progressive disclosure: L0 (1 line) + L1 (3 para) +
+    L2 (实操) = 3 layers, agent can stop at any layer
+
+### 3. Cross-references added (P22 步骤 3 explicit)
+
+  Per user '找规则之间的共性, 文档不同层级之间可能也会有变动':
+  - P22 -> P1 (workflow root axiom)
+  - P22 -> P20 (doc root axiom)
+  - P23 -> P7 奥卡姆 (奥卡姆 root axiom)
+  - P23 -> P20 (doc root axiom)
+  - Each L2 references its root + 1-2 siblings
+
+### Verified:
+  - 31/31 in test_v2_cli.py (no code change, doc-only)
+  - No new tests (per 奥卡姆, doc-only)
+  - Per P23 doc-first: no hermes-verify script
+  - 1 commit, no split
+  - Working tree clean
+
+### Per 你的 workflow:
+  1. P22: check state (working tree, recent commits)
+  2. P22: write plan (this commit, multi-file but 1 feature)
+  3. P22: update docs (PRINCIPLES.md, INDEX, DONE)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: 1 commit, not split
