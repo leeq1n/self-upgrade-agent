@@ -419,3 +419,15 @@ Verified:
 NOT in this commit:
   - Real LLM call (needs user run with .env)
   - 5 consecutive rounds stability test
+
+
+## v3.0.1 — COMPLETE (4 steps)
+
+All 4 sub-steps of v3.0.1 are now done:
+  - [x] step 1.1: judge mock (deterministic) — commit 6158559
+  - [x] step 1.2: judge real (LLM with mock fallback) — commit 3073015
+  - [x] step 1.3: persist intermediate results (P19) — commit 2dce2a7
+  - [x] step 1.4: wire into v2_round — commit 17647ab
+
+Result: multi-paper selection is end-to-end functional via
+`python -m self_upgrade improve-multi`.
