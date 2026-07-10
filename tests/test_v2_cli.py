@@ -16,8 +16,8 @@ sys.path.insert(0, PROJECT)
 
 
 class TestV2CliStructure:
-    """The CLI is a Click group with 3 subcommands: improve, replay,
-    test-scale."""
+    """The CLI is a Click group with subcommands: improve, improve-multi,
+improve-harness, replay, test-scale."""
 
     def test_cli_is_click_group(self):
         from self_upgrade.__main__ import cli

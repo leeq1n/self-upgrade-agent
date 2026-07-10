@@ -327,6 +327,75 @@ def run_one_round_multi(
     )
 
 
+def run_one_round_with_harness(
+    target_module: str,
+    project_root: Optional[str] = None,
+    config: Optional["LLMConfig"] = None,
+    max_retries: int = 2,
+    test_path: str = "tests/test_v2_round.py",
+) -> RoundResult:
+    """Run run_one_round_multi inside a v3.0.2 harness loop.
+
+    Per LITERATURE (Self-Harness 40->62%): iterative re-plan on
+    failure.  Per P7 奥卡姆: simple retry wrapper, no new handler
+    dispatch.  Returns the result of the last attempt.
+
+    Args:
+      target_module: the module to improve
+      max_retries:    0 = no retry (default 2)
+      test_path:      which tests to run after apply
+    """
+    from src.v4_thinker import MockThinker, Step
+    from src.v4_executor import FunctionExecutor, Result
+    from src.v4_loop import Loop
+
+    project_root = project_root or os.getcwd()
+    config = config or LLMConfig.from_env()
+    t0 = time.time()
+    _stage(f"Harness: max_retries={max_retries}", t0)
+
+    def round_handler(step: Step) -> Result:
+        rr = run_one_round_multi(
+            target_module=target_module,
+            project_root=project_root,
+            config=config,
+            llm_config=config,
+            test_path=test_path,
+        )
+        return Result(
+            success=(rr.decision == "KEPT"),
+            value=rr,
+            step_name=step.name,
+        )
+
+    # Per P7 奥卡姆: fixed plan = single "round" step.
+    # The "thinking" is the LLM judge inside run_one_round_multi.
+    # The harness loop adds retry-on-fail (Self-Harness pattern).
+    thinker = MockThinker(fixed_plan=[Step("round", args={"target": target_module})])
+    executor = FunctionExecutor({"round": round_handler})
+    harness = Loop(thinker, executor)
+    loop_result = harness.run(f"improve {target_module}", max_retries=max_retries)
+
+    # Find the last round result (the one we'll return)
+    last_round: Optional[RoundResult] = None
+    for r in loop_result.results:
+        if r.value is not None and isinstance(r.value, RoundResult):
+            last_round = r.value
+
+    if last_round is None:
+        return RoundResult(
+            decision="NO_PATCH",
+            target_module=target_module,
+            elapsed_s=time.time() - t0,
+            error="harness produced no result",
+        )
+
+    # Annotate with harness metadata
+    last_round.elapsed_s = time.time() - t0
+    _stage(f"Harness done: {last_round.decision} after {loop_result.attempts} attempt(s)", t0)
+    return last_round
+
+
 
 def replay_all_failures(
     project_root: Optional[str] = None,

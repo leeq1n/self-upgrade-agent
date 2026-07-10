@@ -690,3 +690,40 @@ result = harness.run("read foo and write summary", max_retries=2)
 - Wire Loop into v2_round (defer to v3.1+)
 - 5-round stability test (user runs)
 - 删 v1.8.x deprecated modules (TODO backlog)
+
+
+## v3.0.2 follow-up — Wire harness into v2_round (1 commit, no split)
+
+Per user 2026-07-10: '测过再 commit, 继续任务, 奥卡姆 = 干净'.
+Per LITERATURE (Self-Harness 40→62%): iterative re-plan on failure.
+
+**1 commit (per 奥卡姆, no feat/docs split)**:
+
+- [x] **`src/v2_round.py`** — added `run_one_round_with_harness()`
+  - Wraps `run_one_round_multi()` in a `Loop` (v3.0.2)
+  - Default `max_retries=2` (Self-Harness style)
+  - Fail-fast: if first attempt succeeds (KEPT), no retry
+  - On failure (NO_PATCH / REVERTED), retry up to max_retries
+  - Returns last `RoundResult` with harness-annotated elapsed_s
+- [x] **`self_upgrade/__main__.py`** — added `improve-harness` subcommand
+  - Click command, 5th in the CLI
+  - `--target`, `--test-path`, `--max-retries` options
+- [x] **`tests/test_v2_round_harness.py`** (9 tests, 0.27s):
+  - TestStructure (2: exists, signature)
+  - TestBehavior (5: KEPT, retry on NO_PATCH, exhausted, max_retries=0,
+    retry on REVERTED)
+  - TestMetadata (2: elapsed_s set, target_module propagated)
+- [x] **`tests/test_v2_cli.py`** — docstring updated
+  - "3 subcommands" → "5 subcommands" (per P14 docs stay current)
+
+Verified:
+  - 9/9 new unit tests pass (0.27s)
+  - Full suite: 605 PASS + 6 skip + 0 fail (was 596; +9)
+  - No regression
+  - CLI 5 subcommands (improve, improve-multi, improve-harness, replay, test-scale)
+
+Design choices (per P7 奥卡姆):
+  - One big commit, not split (per user '不在意提交的代码量')
+  - Simple retry wrapper, no new handler dispatch
+  - MockThinker + FunctionExecutor used minimally (1 fixed step)
+  - Reuses existing `run_one_round_multi` (no code duplication)
