@@ -1,17 +1,21 @@
 """self_upgrade - unified CLI for the self-upgrade agent.
 
-Per user feedback 2026-07-08: '需要统一管理的功能, 能跑自进化,
-能具体使用, 能整理项目使其干净'.
+Per user feedback 2026-07-08: 'need unified management, can run
+self-improvement, can use specifically, can keep project clean'.
 
 This file replaces the v1.8.x unified CLI (backed up in
-self_upgrade/__main__.v18_backup.py).  The new CLI uses Click
-and exposes the v2.x system: improve (1 round), replay (P18
-regression pipeline), test-scale N (debug / load test).
+self_upgrade/__main__.v18_backup.py).  The CLI uses Click
+and exposes:
+  - improve:        one round with FIXED_PAPER (single paper)
+  - replay:         replay failure log (P18)
+  - test-scale:     N consecutive rounds (debug / load test)
+  - improve-multi:  multi-paper selection + 1 round (v3.0.1)
 
 Usage:
   python -m self_upgrade improve --target core/planner.py
   python -m self_upgrade replay
   python -m self_upgrade test-scale 5
+  python -m self_upgrade improve-multi --target core/planner.py
   python -m self_upgrade --help
 """
 import os
@@ -25,9 +29,9 @@ import click
 # trigger LLMConfig / v2 module loading at import time.
 
 def _lazy_v2():
-    from src.v2_round import run_one_round, replay_all_failures
+    from src.v2_round import run_one_round, run_one_round_multi, replay_all_failures
     from src.v2_agent import FIXED_PAPER, Paper
-    return run_one_round, replay_all_failures, FIXED_PAPER, Paper
+    return run_one_round, run_one_round_multi, replay_all_failures, FIXED_PAPER, Paper
 
 
 def _format_round_result(r) -> str:
@@ -57,7 +61,7 @@ def cli(mock):
 @click.pass_obj
 def improve(obj, target, paper, test_path):
     """Run one round of self-improvement (generate + apply + decide)."""
-    run_one_round, _, FIXED_PAPER, Paper = _lazy_v2()
+    run_one_round, _, _, FIXED_PAPER, Paper = _lazy_v2()
     if obj["mock"]:
         click.echo("ERROR: --mock not yet supported for 'improve'. "
                    "Use 'test-scale' for now.", err=True)
@@ -73,7 +77,7 @@ def improve(obj, target, paper, test_path):
 @cli.command()
 def replay():
     """Replay every unique failure in upgrades/failures.jsonl (P18)."""
-    _, replay_all_failures, _, _ = _lazy_v2()
+    _, _, replay_all_failures, _, _ = _lazy_v2()
     report = replay_all_failures(test_path="tests/test_pipeline.py")
     click.echo(json.dumps(report.to_dict(), indent=2, ensure_ascii=False))
 
@@ -87,7 +91,7 @@ def replay():
 @click.pass_obj
 def test_scale(obj, n_rounds, target, paper):
     """Run N consecutive rounds (debug / load test / stability probe)."""
-    run_one_round, _, FIXED_PAPER, Paper = _lazy_v2()
+    run_one_round, _, _, FIXED_PAPER, Paper = _lazy_v2()
     if obj["mock"]:
         click.echo("ERROR: --mock not yet supported for 'test-scale'.",
                    err=True)
@@ -126,6 +130,37 @@ def test_scale(obj, n_rounds, target, paper):
     click.echo()
     click.echo("To restore core/planner.py if a round KEPT:")
     click.echo("  git checkout core/planner.py")
+
+
+@cli.command(name="improve-multi")
+@click.option("--target", default="core/planner.py",
+              help="Target module (default: core/planner.py).")
+@click.option("--test-path", default="tests/test_v2_round.py",
+              help="Test path used as the decision gate.")
+@click.option("--no-judge-llm/--judge-llm", default=True,
+              help="Whether to use LLM for paper selection (mock if off).")
+@click.pass_obj
+def improve_multi(obj, target, test_path, no_judge_llm):
+    """Multi-paper self-improvement (v3.0.1 step 1.4).
+
+    Reads all papers from the catalog, uses LLM (or mock) to pick
+    the best one, then runs the standard self-improvement loop
+    on that paper.  Intermediate results are persisted per P19.
+    """
+    _, run_one_round_multi, _, _, _ = _lazy_v2()
+    from src.llm import LLMConfig
+    config = LLMConfig.from_env() if obj["mock"] is False else None
+    llm_config = config if no_judge_llm else None
+    click.echo(f"Reading papers from catalog...")
+    r = run_one_round_multi(
+        target_module=target,
+        config=config,
+        llm_config=llm_config,
+        test_path=test_path,
+    )
+    click.echo(_format_round_result(r))
+    click.echo(f"Decision source: "
+               f"{'llm' if no_judge_llm else 'mock'} (judge)")
 
 
 def main():

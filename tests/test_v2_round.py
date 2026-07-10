@@ -244,3 +244,186 @@ class TestRealEndToEnd:
             assert r.returncode == 0, f"no-op patch broke test: {r.stdout[-500:]}"
         finally:
             target.write_text(original, encoding="utf-8")
+
+
+
+# ── v3.0.1 step 1.4: Multi-paper integration tests ────────────────
+
+import unittest.mock as mock_lib
+from src.v2_round import (
+    run_one_round_multi,
+    run_one_round,
+    _paper_summary_to_paper,
+    RoundResult,
+)
+from src.v3_multipaper import PaperSummary, read_papers
+from src.v3_persist import (
+    DEFAULT_SUMMARIES_PATH,
+    DEFAULT_DECISIONS_PATH,
+    read_summaries,
+    read_decisions,
+)
+
+
+class TestPaperSummaryToPaper:
+    """_paper_summary_to_paper converts a PaperSummary to a Paper
+    that v2_agent.improve() can consume."""
+
+    def test_conversion(self):
+        s = PaperSummary(
+            paper_arxiv_id="x",
+            title="X",
+            idea="specific idea",
+            viewpoint="a viewpoint",
+            plan="an actionable plan",
+        )
+        paper = _paper_summary_to_paper(s)
+        assert paper.arxiv_id == "x"
+        assert paper.title == "X"
+        # Abstract contains idea and plan
+        assert "specific idea" in paper.abstract
+        assert "an actionable plan" in paper.abstract
+
+
+class TestRunOneRoundMultiMockFallback:
+    """When llm_config is None, judge falls back to mock (per step 1.2).
+    The patch generator still requires an LLM, so this test mocks both.
+    """
+
+    def test_empty_catalog_returns_no_patch(self, tmp_path, monkeypatch):
+        from src.v2_round import _paper_summary_to_paper
+        from src.v3_multipaper import read_papers
+        # Empty catalog
+        monkeypatch.setattr(read_papers, "__defaults__", ())
+        with mock_lib.patch("src.v2_round.read_papers", return_value=[]):
+            r = run_one_round_multi(target_module="core/planner.py",
+                                     llm_config=None, config=None)
+        assert r.decision == "NO_PATCH"
+        assert "no papers in catalog" in (r.error or "")
+
+    def test_no_llm_no_patch(self, tmp_path, monkeypatch):
+        """Without any LLM, improve() returns None → NO_PATCH."""
+        from src.v3_judge import select_best
+        # Provide config=None for both judge and improve; improve
+        # will fail because it has no LLM.  This is expected.
+        monkeypatch.setattr("src.v2_round.improve", lambda *args, **kw: None)
+        r = run_one_round_multi(target_module="core/planner.py",
+                                 llm_config=None, config=None)
+        assert r.decision == "NO_PATCH"
+        assert "improve() returned None" in (r.error or "")
+
+    def test_judge_uses_mock_when_llm_config_none(self, tmp_path, monkeypatch):
+        """When llm_config is None, the judge uses mock (length-based).
+        The 'winner' is the paper with the longest plan."""
+        from src.v3_multipaper import PaperSummary
+        from src.v2_round import improve, apply_patch
+        # Mock read_papers to return a fixed small set
+        small_catalog = [
+            PaperSummary("a", "A", "i", "v", "short"),
+            PaperSummary("b", "B", "i", "v", "much longer plan here"),
+        ]
+        monkeypatch.setattr("src.v2_round.read_papers",
+                            lambda: small_catalog)
+        # Capture the paper that improve() sees
+        captured = {}
+        def fake_improve(paper, target_module, config=None):
+            captured["paper"] = paper
+            return None  # NO_PATCH path
+        monkeypatch.setattr("src.v2_round.improve", fake_improve)
+
+        r = run_one_round_multi(target_module="core/planner.py",
+                                 llm_config=None, config=None)
+        # The paper passed to improve() should be "b" (longest plan)
+        assert captured["paper"].arxiv_id == "b"
+        # Decision is NO_PATCH because improve returned None
+        assert r.decision == "NO_PATCH"
+
+    def test_judge_uses_llm_when_llm_config_provided(self, tmp_path, monkeypatch):
+        """When llm_config is given, select_best calls the LLM."""
+        from src.v3_multipaper import PaperSummary
+        small_catalog = [
+            PaperSummary("a", "A", "i", "v", "short"),
+            PaperSummary("b", "B", "i", "v", "much longer plan"),
+        ]
+        monkeypatch.setattr("src.v2_round.read_papers",
+                            lambda: small_catalog)
+        # Mock the LLM to pick "a" (not the longest plan)
+        monkeypatch.setattr(
+            "src.v3_judge._call_llm",
+            lambda prompt, config: '''{"best_arxiv_id": "a"}''',
+        )
+        captured = {}
+        def fake_improve(paper, target_module, config=None):
+            captured["paper"] = paper
+            return None
+        monkeypatch.setattr("src.v2_round.improve", fake_improve)
+
+        r = run_one_round_multi(
+            target_module="core/planner.py",
+            llm_config={"fake": True},  # truthy -> LLM path
+            config=None,
+        )
+        # LLM picked "a", not the mock's "b"
+        assert captured["paper"].arxiv_id == "a"
+        assert r.decision == "NO_PATCH"
+
+
+class TestRunOneRoundMultiPersistsData:
+    """Per P19: intermediate summaries and final decision are persisted."""
+
+    def test_summaries_persisted(self, monkeypatch, tmp_path):
+        from src.v3_persist import save_summaries as real_save
+        from src.v3_multipaper import PaperSummary
+        small_catalog = [
+            PaperSummary("a", "A", "i", "v", "short"),
+            PaperSummary("b", "B", "i", "v", "longer plan"),
+        ]
+        # Redirect save to tmp
+        out_path = str(tmp_path / "s.jsonl")
+        monkeypatch.setattr("src.v2_round.save_summaries",
+                            lambda papers, path=out_path: real_save(papers, path=path))
+        monkeypatch.setattr("src.v2_round.read_papers",
+                            lambda: small_catalog)
+        monkeypatch.setattr("src.v2_round.improve", lambda *args, **kw: None)
+        run_one_round_multi(target_module="core/planner.py",
+                            llm_config=None, config=None)
+        loaded = read_summaries(path=out_path)
+        assert len(loaded) == 2
+        assert loaded[0].paper_arxiv_id == "a"
+
+    def test_decision_persisted_with_source(self, monkeypatch, tmp_path):
+        from src.v3_persist import save_decision as real_save_dec
+        from src.v3_multipaper import PaperSummary
+        small_catalog = [
+            PaperSummary("a", "A", "i", "v", "short"),
+            PaperSummary("b", "B", "i", "v", "longer plan"),
+        ]
+        out_path = str(tmp_path / "d.jsonl")
+        monkeypatch.setattr("src.v2_round.save_decision",
+                            lambda w, s, source, path=out_path:
+                                real_save_dec(w, s, source=source, path=path))
+        monkeypatch.setattr("src.v2_round.read_papers",
+                            lambda: small_catalog)
+        monkeypatch.setattr("src.v2_round.improve", lambda *args, **kw: None)
+        run_one_round_multi(target_module="core/planner.py",
+                            llm_config=None, config=None)
+        decisions = read_decisions(path=out_path)
+        assert len(decisions) == 1
+        assert decisions[0].source == "mock"
+        assert decisions[0].winner_arxiv_id == "b"
+
+
+class TestRunOneRoundMultiNoRegression:
+    """The single-paper run_one_round must still work unchanged."""
+
+    def test_run_one_round_still_importable(self):
+        assert callable(run_one_round)
+
+    def test_run_one_round_still_works(self, monkeypatch, tmp_path):
+        """Single-paper path is unaffected by adding run_one_round_multi."""
+        from src.v2_agent import Paper
+        paper = Paper(arxiv_id="x", title="X", abstract="x")
+        monkeypatch.setattr("src.v2_round.improve", lambda *args, **kw: None)
+        r = run_one_round(paper=paper, target_module="core/planner.py",
+                          config=None)
+        assert r.decision == "NO_PATCH"

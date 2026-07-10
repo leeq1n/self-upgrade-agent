@@ -32,6 +32,9 @@ from src.v2_agent import improve, Paper, _chat
 from src.v2_apply import apply_patch, revert, cleanup_snapshot, ApplyResult
 from src.llm import LLMConfig
 from src.failures import log_failure, replay_all, ReplayReport
+from src.v3_multipaper import read_papers, PaperSummary
+from src.v3_judge import select_best
+from src.v3_persist import save_summaries, save_decision
 
 
 @dataclass
@@ -214,6 +217,84 @@ def format_round_result(r: RoundResult) -> str:
         f"tests_passed={r.tests_passed} tests_failed={r.tests_failed} "
         f"target={r.target_module}"
         + (f" error={r.error}" if r.error else "")
+    )
+
+
+# ── Multi-paper variant (v3.0.1 step 1.4) ────────────────────────
+
+def _paper_summary_to_paper(s: PaperSummary) -> Paper:
+    """Convert a PaperSummary into the Paper dataclass that
+    v2_agent.improve() expects.  Title becomes the prompt's
+    background context; abstract is what LLM sees.
+    """
+    return Paper(
+        arxiv_id=s.paper_arxiv_id,
+        title=s.title,
+        abstract=f"{s.idea}\n\nPlan: {s.plan}",
+    )
+
+
+def run_one_round_multi(
+    target_module: str,
+    project_root: Optional[str] = None,
+    config: Optional[LLMConfig] = None,
+    llm_config: Optional[LLMConfig] = None,
+    keep_snapshot_on_kept: bool = True,
+    test_path: str = "tests/test_v2_round.py",
+) -> RoundResult:
+    """Multi-paper variant of run_one_round.
+
+    Steps:
+      1. read_papers()                 -> List[PaperSummary] (catalog)
+      2. save_summaries(summaries)     -> JSONL (per P19)
+      3. select_best(summaries, llm_config) -> PaperSummary
+      4. save_decision(winner, summaries, source)
+      5. _paper_summary_to_paper(winner) -> Paper
+      6. run_one_round(paper, ...)     -> RoundResult
+
+    The single-paper run_one_round still exists; this is additive.
+    Use config=None to run everything without an LLM (mock fallback
+    for the judge, no LLM for the patch generator).
+    """
+    project_root = project_root or os.getcwd()
+    config = config or LLMConfig.from_env()
+    t0 = time.time()
+
+    # 1. Read all papers from the catalog
+    summaries = read_papers()
+    if not summaries:
+        # No papers in catalog -> NO_PATCH (we can't pick anything)
+        fake_paper = Paper(arxiv_id="unknown", title="(empty catalog)",
+                           abstract="")
+        return RoundResult(
+            decision="NO_PATCH",
+            paper=fake_paper,
+            target_module=target_module,
+            elapsed_s=time.time() - t0,
+            error="no papers in catalog",
+        )
+
+    # 2. Persist summaries (per P19)
+    save_summaries(summaries)
+
+    # 3. Select best (mock fallback if llm_config is None)
+    winner = select_best(summaries, config=llm_config)
+    source = "llm" if llm_config is not None else "mock"
+
+    # 4. Persist decision
+    save_decision(winner, summaries, source=source)
+
+    # 5. Convert to Paper for v2_agent.improve()
+    paper = _paper_summary_to_paper(winner)
+
+    # 6. Delegate to existing run_one_round (reuses all logic)
+    return run_one_round(
+        paper=paper,
+        target_module=target_module,
+        project_root=project_root,
+        config=config,
+        keep_snapshot_on_kept=keep_snapshot_on_kept,
+        test_path=test_path,
     )
 
 
