@@ -217,3 +217,48 @@ working tree (or auto-revert).  User stays in control.
 in `run_one_round_with_harness` was missing `paper` field (P9
 hard rule: required field).  Now passes `paper=None` per P18
 fallback pattern.
+
+
+## 2026-07-10 — Auto-commit regression: KEPT but production broken
+
+User ran `python -m self_upgrade daily-loop --max-rounds 5 --interval 0
+--auto-commit` and previously `improve --multi --auto-commit`.  The
+auto-commit flag worked: 2 [auto] KEPT commits (78fb12e + 1238c09)
+were created with bundle in upgrades/auto-patches/.
+
+**What happened**: LLM rewrote `core/planner.py`:
+- Added `plan_regression_tests(task, failure_output, llm_call)`
+- Added `plan_harness_test(task, failure_output, code_context, llm_call)`
+- REMOVED `plan_task(task, llm_call)` (the v1 API)
+
+**Why this was a regression** (per P18 + P9):
+- `core/agent.py` imports `plan_task` -> ImportError
+- `core/__init__.py` exports `plan_task` -> ImportError
+- `src/patchgen.py` references `plan_task` -> broken
+- 24 tests failed (test_core_agent, test_pipeline_harness_integration,
+  test_v2_agent, test_patchgen, test_iss004, test_harness_integration,
+  + 8 auto-generated test_planner_harness tests)
+
+**Decision**: Reverted 2 [auto] commits via `git reset --hard b0f6bd4`
++ `git cherry-pick 4310a50` (preserve chain tests + doc commits).
+Per P18 (failure → regression test): 24 fails = real regression.
+Per P9 (hard rule, not LLM-judged): test pass ≠ acceptable if
+production breaks.
+
+**Lesson (per LITERATURE Self-Harness paper + Nate Berkopec)**:
+Self-Harness paper assumes the harness has well-defined boundaries
+(the "interface" layer).  Our auto-commit doesn't yet check that
+production callers still work after patch.  This is a TODO for v3.1.x:
+- v3.1.x: pre-commit validate that ALL callers still resolve
+- This would have caught the regression before commit
+
+**LLM real contribution (lost in revert)**:
+The 2 [auto] commits added test-harness functions aligned with
+Self-Harness paper (harness as first-class feature).  Code is
+preserved in upgrades/auto-patches/ bundles for future reference.
+Could be re-applied as additive functions (not replacements) in
+future iteration.
+
+**Honest (P17)**: my `v3_auto_commit.py` is too aggressive — it
+commits without validating public API surface.  This is a real
+bug in my code, not in LLM.  Future: add caller check before commit.

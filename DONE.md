@@ -590,3 +590,38 @@ Per 你的 workflow (P22):
   4. P23: doc-first, no script
   5. P7 奥卡姆: 1 commit, additive
   6. P17 honest: explicit user-decision on LLM side effect
+
+
+## v3.1.0 follow-up — Revert auto-commit regression + lessons learned
+
+Per P18 + P9: 24 tests fail after auto-commit because LLM rewrote
+`core/planner.py` (renamed `plan_task` -> `plan_regression_tests`).
+Production callers (`core/agent.py`, `core/__init__.py`,
+`src/patchgen.py`) still reference `plan_task` -> ImportError.
+
+This commit (1 commit, 奥卡姆, no split):
+
+1. `git reset --hard b0f6bd4` (revert 2 [auto] commits)
+2. `git cherry-pick 4310a50` (preserve 4310a50 chain tests + docs)
+3. OBSERVATIONS.md entry: full trace + lessons
+4. Future TODO: add caller validation to auto-commit
+   (pre-commit check that all callers resolve)
+
+Verified:
+  - 635 PASS + 6 skip + 0 fail (was 627 + chain tests = 635)
+  - Per P23 doc-first: no hermes-verify script
+  - 1 commit, no split (reset + cherry-pick + obs)
+
+Honest (per P17):
+  - v3_auto_commit.py was too aggressive (no caller check)
+  - LLM did real work (added harness-test functions per Self-Harness)
+  - Bundles preserved in upgrades/auto-patches/ for future re-apply
+  - 24 fails caught the regression -> this is per P18 working
+
+Per 你的 workflow (P22):
+  1. P22: check state (24 fails after auto-commit, real regression)
+  2. P22: write plan (reset + cherry-pick, preserve sibling work)
+  3. P22: update docs (OBSERVATIONS + DONE)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: 1 commit, no split
+  6. P9 hard rule: test pass != acceptable, production must work
