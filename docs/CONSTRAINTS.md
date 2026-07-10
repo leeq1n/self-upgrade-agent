@@ -1,3 +1,6 @@
+L0: Project constraints — must-not-violate rules (C1, C2, ...).
+Last P20-verified: 2026-07-10
+
 ---
 description: "Hard rules the code must preserve"
 status: "summary"

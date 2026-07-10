@@ -1,3 +1,6 @@
+L0: LLM model choice summary — why MiniMax-M2/M3, fallback plan.
+Last P20-verified: 2026-07-10
+
 ---
 description: "Current LLM, fallback chain, and deployment notes"
 status: "summary"

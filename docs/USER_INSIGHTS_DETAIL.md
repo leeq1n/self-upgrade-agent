@@ -1,3 +1,6 @@
+L0: Verbatim user quotes — original Chinese (no paraphrase).
+Last P20-verified: 2026-07-10
+
 ---
 description: "Full verbatim user quotes (long form reference)"
 status: "reference"

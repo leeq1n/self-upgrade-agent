@@ -1,3 +1,6 @@
+L0: Pending tasks — backlog of next-up features.  Done items live in DONE.md.
+Last P20-verified: 2026-07-10
+
 # TODO —
 
 Each task is a checkbox.  To claim: change `[ ]` to `[x]` and move
@@ -39,6 +42,10 @@ Per user 2026-07-10: '我希望这个项目之后可以自己独立运行'.
       (autonomous vision, not user-triggered).
 - [ ] **step 4** — state.json persistence (P19) + failure recovery
       (P18) + self-test gate.
+- [/] **step 5** — Doc organization: L0/L1/L2 structure (per
+      user 2026-07-10 '按你认为正确的思路整理文档').
+      Now: all 17 docs have L0 header.  TODO: split
+      DONE.md if > 7KB, archive CONSTRAINTS_DETAIL > 7KB.
 
 ## Backlog (NOT in current session, recorded per user principle)
 

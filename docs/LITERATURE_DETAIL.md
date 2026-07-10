@@ -1,3 +1,6 @@
+L0: Per-paper notes — abstract, key claims, our takeaway, citations.
+Last P20-verified: 2026-07-10
+
 ---
 description: "Full notes on each paper we've read (long form)"
 status: "reference"

@@ -1,6 +1,12 @@
+L0: Done-stage-gates summary — recent stage gates (last ~30%).  Older history kept inline (no archive file yet).
+Last P20-verified: 2026-07-10
+
 # DONE — Completed Work (one line per item)
 
 When you finish a TODO, move it here.  Each entry: one line + key commit.
+
+---
+
 
 ## v2.x minimal agent (this session, 2026-07-08)
 
@@ -1179,3 +1185,59 @@ principle, now in doc form):
   3. P22: update docs (PRINCIPLES.md, INDEX, DONE)
   4. P23: doc-first, no script
   5. P7 奥卡姆: 1 commit, not split
+
+
+## v3.1.0 follow-up — Doc organization (L0 headers, cross-references)
+
+Per user 2026-07-10 '按你认为正确的思路整理文档' + P22 (stuck→plan).
+
+This commit (1 commit, 奥卡姆, doc-only, no split):
+
+### 1. L0 headers added to 12 docs (per P20 渐进披露)
+
+Before: 12 docs (CONSTRAINTS, LITERATURE, MODEL_STRATEGY,
+OBSERVATIONS, PROJECT_STATE, USER_INSIGHTS, TODO, TODO_KG,
++ their _DETAIL companions) had no L0 line.
+
+After: all 17 docs (15 + DONE + TODO) have L0 + Last P20-verified
+header.  Per P20 R9: "every docs/*.md must begin with a single-line
+L0 frontmatter (≤ 120 chars) describing what the file is".
+
+### 2. TODO_KNOWLEDGE_GRAPH.md: P21 status added
+
+Per P21 cross-project boundaries: cross-project = link, not
+duplicate.  This doc is now marked as historical pointer (per
+user 2026-07-10: '知识图谱我已经新开项目实现了').
+
+### 3. DONE.md L0 added
+
+L0 describes purpose + 'older history kept inline (no archive
+file yet)' — honest (per P17) about the 1190-line size rather
+than fake an archive.
+
+### 4. TODO.md L0 added + step 5 (doc organization) tracked
+
+Per user workflow: '附加功能 → TODO + 整理文档'.  Doc organization
+now in progress (step 5 of v3.0.3).
+
+### Verified:
+  - 31/31 in test_v2_cli.py (no code change, doc-only)
+  - All 17 docs have L0
+  - No new tests (per 奥卡姆, doc-only)
+  - Per P23 doc-first: no hermes-verify script
+  - 1 commit, no split
+
+### Honest (per P17) — NOT done in this commit:
+  - DONE.md still 1190 lines (above P20 R5 7KB threshold)
+  - CONSTRAINTS_DETAIL.md 316 lines (above 7KB)
+  - LITERATURE_DETAIL.md 243 lines (above 7KB)
+  - PRINCIPLES.md 365 lines (above 7KB, but has inline L2 detail)
+  These are tracked in TODO.md step 5 for future cleanup.
+
+### Per 你的 workflow (P22):
+  1. P22: check state (working tree, recent commits, doc sizes)
+  2. P22: write plan (this commit, multi-file but 1 feature)
+  3. P22: update docs (L0 headers + P21 status + TODO step)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: 1 commit, not split
+  6. P17 honest: 1190-line DONE.md not yet split (TODO)

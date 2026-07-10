@@ -1,3 +1,6 @@
+L0: User intent summary — paraphrased rules from past sessions.
+Last P20-verified: 2026-07-10
+
 ---
 description: "User's vision and feedback (verbatim excerpts)"
 status: "summary"

@@ -1,3 +1,6 @@
+L0: Literature summary — 11 papers distilled to 1-line lessons each.
+Last P20-verified: 2026-07-10
+
 ---
 description: "Papers we've read + how they inform v2.x / v3.x design"
 status: "summary"

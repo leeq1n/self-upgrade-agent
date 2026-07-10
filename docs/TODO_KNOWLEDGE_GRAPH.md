@@ -1,3 +1,6 @@
+L0: Knowledge-as-graph refactor idea (per user 2026-07-10).  Now in separate project per P21.
+Last P20-verified: 2026-07-10
+
 # TODO: Knowledge-as-Graph Refactor
 
 > **Status**: idea, awaiting user confirmation before implementation.
@@ -74,3 +77,5 @@ blocking for real self-upgrade loops.
 
 `330801f` is a good first node to test the schema on — has all four
 edge types implicit in the commit message + the ad-hoc verify report.
+
+> **Status (2026-07-10)**: this idea is now implemented in a separate project (per user).  Kept here as historical record + pointer.  Per P21: cross-project = link, not duplicate.
