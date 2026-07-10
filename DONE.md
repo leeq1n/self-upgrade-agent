@@ -837,3 +837,33 @@ Verified:
 
 Per LITERATURE: Signal-to-Fix Loop — finding dead code, removing
 it, testing = a real signal-to-fix iteration.
+
+
+## v3.0.2 follow-up #5 — `--count N` symmetric to `improve-multi`
+
+Per user 2026-07-10: '哪怕是测试, 我也希望能简化用户操作'
++ '有 commit 的时候别怕, 继续任务'.
+
+Symmetric to `--count N` on `improve-harness` (commit 30bcb1b).
+Now both `improve-multi` and `improve-harness` accept `--count N`.
+
+This commit (1 commit, 奥卡姆, no split):
+
+1. self_upgrade/__main__.py:
+   - improve-multi: added --count N option
+   - When N>1: prints round markers + summary (KEPT count)
+   - Exit 0 only if all N rounds KEPT, else 1
+   - Default 1 (no behavior change for existing users)
+2. tests/test_v2_cli.py (5 new tests, 0.33s):
+   - TestV2CliImproveMultiCount: flag accepted, all-KEPT,
+     all-NO_PATCH, mixed, count=1 (no summary)
+3. DONE.md records
+
+Verified:
+  - 19/19 in test_v2_cli.py (was 14; +5)
+  - Full suite: 615 PASS + 6 skip + 0 fail (was 610; +5)
+  - No regression
+
+User usage (1 line, both CLIs now symmetric):
+  python -m self_upgrade improve-multi --count 5
+  python -m self_upgrade improve-harness --count 5

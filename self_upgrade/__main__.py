@@ -195,31 +195,41 @@ def improve_harness(obj, target, test_path, max_retries, count):
               help="Test path used as the decision gate.")
 @click.option("--no-judge-llm/--judge-llm", default=True,
               help="Whether to use LLM for paper selection (mock if off).")
+@click.option("--count", default=1, type=int,
+              help="Run N consecutive multi-paper rounds (default 1).")
 @click.pass_obj
-def improve_multi(obj, target, test_path, no_judge_llm):
+def improve_multi(obj, target, test_path, no_judge_llm, count):
     """Multi-paper self-improvement (v3.0.1 step 1.4).
 
     Reads all papers from the catalog, uses LLM (or mock) to pick
     the best one, then runs the standard self-improvement loop
     on that paper.  Intermediate results are persisted per P19.
+
+    --count N: run N consecutive rounds (useful for stability testing).
     """
     _, run_one_round_multi, _, _, _ = _lazy_v2()
     from src.llm import LLMConfig
     config = LLMConfig.from_env() if obj["mock"] is False else None
     llm_config = config if no_judge_llm else None
-    # NOTE: v2_round.run_one_round_multi() now emits per-stage
-    # progress markers (Reading catalog... -> Selecting best ->
-    # Generating patch -> Applying -> Running tests).  We no
-    # longer print a banner here so we don't double up.
-    r = run_one_round_multi(
-        target_module=target,
-        config=config,
-        llm_config=llm_config,
-        test_path=test_path,
-    )
-    click.echo(_format_round_result(r))
-    click.echo(f"Decision source: "
-               f"{'llm' if no_judge_llm else 'mock'} (judge)")
+    kept_count = 0
+    for i in range(count):
+        if count > 1:
+            click.echo(f"===== Round {i + 1}/{count} =====")
+        r = run_one_round_multi(
+            target_module=target,
+            config=config,
+            llm_config=llm_config,
+            test_path=test_path,
+        )
+        click.echo(_format_round_result(r))
+        click.echo(f"Decision source: "
+                   f"{'llm' if no_judge_llm else 'mock'} (judge)")
+        if r.decision == "KEPT":
+            kept_count += 1
+    if count > 1:
+        click.echo(f"===== Summary =====")
+        click.echo(f"KEPT: {kept_count}/{count} ({100*kept_count//count}%)")
+    sys.exit(0 if kept_count == count else 1)
 
 
 def main():

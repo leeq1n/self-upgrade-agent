@@ -196,3 +196,88 @@ class TestV2CliHarnessCount:
         assert result.exit_code == 0
         assert "Summary" not in result.output  # no summary for count=1
         assert "Round 1/" not in result.output  # no round marker for count=1
+
+
+class TestV2CliImproveMultiCount:
+    """Symmetric to TestV2CliHarnessCount: --count N for improve-multi."""
+
+    def test_count_flag_accepted(self):
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        runner = CliRunner()
+        result = runner.invoke(cli, ["improve-multi", "--count", "3", "--help"])
+        assert result.exit_code == 0
+        assert "--count" in result.output
+
+    def test_count_3_all_kept(self):
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        from src.v2_agent import Paper
+        from src.v2_round import RoundResult
+        kept = RoundResult(decision="KEPT",
+                           paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                           target_module="x.py")
+        runner = CliRunner()
+        with patch("src.v2_round.run_one_round_multi", return_value=kept):
+            result = runner.invoke(cli, ["improve-multi", "--count", "3",
+                                          "--target", "x.py",
+                                          "--no-judge-llm"])
+        assert result.exit_code == 0, f"got {result.exit_code}, out: {result.output}"
+        assert "KEPT: 3/3" in result.output
+        assert "Round 1/3" in result.output
+        assert "Round 3/3" in result.output
+
+    def test_count_2_no_patch(self):
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        from src.v2_agent import Paper
+        from src.v2_round import RoundResult
+        no = RoundResult(decision="NO_PATCH",
+                         paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                         target_module="x.py")
+        runner = CliRunner()
+        with patch("src.v2_round.run_one_round_multi", return_value=no):
+            result = runner.invoke(cli, ["improve-multi", "--count", "2",
+                                          "--target", "x.py",
+                                          "--no-judge-llm"])
+        assert result.exit_code == 1
+        assert "KEPT: 0/2" in result.output
+
+    def test_count_1_no_summary(self):
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        from src.v2_agent import Paper
+        from src.v2_round import RoundResult
+        kept = RoundResult(decision="KEPT",
+                           paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                           target_module="x.py")
+        runner = CliRunner()
+        with patch("src.v2_round.run_one_round_multi", return_value=kept):
+            result = runner.invoke(cli, ["improve-multi", "--count", "1",
+                                          "--target", "x.py",
+                                          "--no-judge-llm"])
+        assert result.exit_code == 0
+        assert "Summary" not in result.output
+        assert "Round 1/" not in result.output
+        # Decision source line should still be there
+        assert "Decision source" in result.output
+
+    def test_count_3_mixed(self):
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        from src.v2_agent import Paper
+        from src.v2_round import RoundResult
+        kept = RoundResult(decision="KEPT",
+                           paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                           target_module="x.py")
+        no = RoundResult(decision="NO_PATCH",
+                         paper=Paper(arxiv_id="x", title="t", abstract="a"),
+                         target_module="x.py")
+        runner = CliRunner()
+        with patch("src.v2_round.run_one_round_multi",
+                    side_effect=[kept, no, no]):
+            result = runner.invoke(cli, ["improve-multi", "--count", "3",
+                                          "--target", "x.py",
+                                          "--no-judge-llm"])
+        assert result.exit_code == 1
+        assert "KEPT: 1/3" in result.output
