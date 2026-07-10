@@ -18,7 +18,7 @@ to detail only as needed.
 | [CONSTRAINTS.md](CONSTRAINTS.md) | [CONSTRAINTS_DETAIL.md](CONSTRAINTS_DETAIL.md) | Invariants the system must preserve |
 | [MODEL_STRATEGY.md](MODEL_STRATEGY.md) | [MODEL_STRATEGY_DETAIL.md](MODEL_STRATEGY_DETAIL.md) | Which LLM, why, deployment notes |
 | [LITERATURE.md](LITERATURE.md) | [LITERATURE_DETAIL.md](LITERATURE_DETAIL.md) | Papers read + how they constrain our design |
-| [PRINCIPLES.md](PRINCIPLES.md) | (no detail — already portable) | Working principles — portable across projects |
+| [PRINCIPLES.md](PRINCIPLES.md) | [PRINCIPLES_DETAIL.md](PRINCIPLES_DETAIL.md) | Working principles (L0+L1) + per-P-n 实操 (L2) |
 
 ## Reading order for a new agent
 
