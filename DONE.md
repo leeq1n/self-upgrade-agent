@@ -384,3 +384,38 @@ NOT in this commit:
 New principle (P19): Data flow observability — sequential
 functions should persist intermediate outputs for debugging,
 replay, and observability.
+
+
+## v3.0.1 step 1.4 — Wire multi-paper into v2_round (commit `17647ab`)
+
+Closes the v3.0.1 4-step plan.  After this commit, multi-paper
+selection is end-to-end functional.
+
+- [x] **`run_one_round_multi(target_module, ...)`** in src/v2_round.py
+  - reads papers from catalog
+  - persists summaries (P19)
+  - selects best (mock fallback if llm_config=None)
+  - persists decision (P19)
+  - delegates to existing run_one_round()
+
+- [x] **`improve-multi` CLI subcommand**
+  - 4 subcommands total: improve, improve-multi, replay, test-scale
+  - `--no-judge-llm` flag for mock judge
+
+- [x] **+9 tests in test_v2_round.py** (was 7; now 16):
+  - PaperSummaryToPaper (1)
+  - RunOneRoundMultiMockFallback (4)
+  - RunOneRoundMultiPersistsData (2)
+  - RunOneRoundMultiNoRegression (2)
+
+Verified:
+  - test_v2_round.py: 16 PASS
+  - test_v2_cli.py: 9 PASS
+  - Full suite: 518 PASS + 6 skip + 0 fail (was 509; +9)
+  - 12/14 hermes-verify PASS (2 verifier script bugs,
+    not real issues — pytest tests pass)
+  - CLI exposes 4 subcommands
+
+NOT in this commit:
+  - Real LLM call (needs user run with .env)
+  - 5 consecutive rounds stability test

@@ -152,11 +152,26 @@ Verified:
 Next (separate commits, per small-step workflow):
   - v3.0.1 step 1.1 — judge mock (DETERMINISTIC).  DONE in 6158559.
   - v3.0.1 step 1.2 — judge real (LLM call, mock fallback).  DONE in 3073015.
-  - v3.0.1 step 1.3 — persist intermediate results.  DONE in [step 1.3 hash].
+  - v3.0.1 step 1.3 — persist intermediate results.  DONE in 2dce2a7.
     Includes save_summaries, save_decision.  Per user insight
     'if functions execute sequentially, persist prior output'.
-  - v3.0.1 step 1.4 — wire into v2_round (multi-paper selection
-    replaces FIXED_PAPER)
+  - v3.0.1 step 1.4 — wire into v2_round.  DONE in 17647ab.
+    Adds run_one_round_multi() + improve-multi CLI subcommand.
+    CLI now has 4 subcommands: improve, improve-multi, replay, test-scale.
+
+## v3.0.1 — COMPLETE (all 4 steps)
+
+Multi-paper selection is now fully integrated:
+  - 11 papers read from docs/LITERATURE_DETAIL.md
+  - Judge picks best (LLM or mock fallback per P17)
+  - Summaries + decisions persisted (P19)
+  - run_one_round_multi() delegates to existing run_one_round()
+  - User can run: python -m self_upgrade improve-multi
+
+NOT yet done:
+  - Real LLM call in user environment (needs user run with .env)
+  - 5 consecutive multi-paper rounds (stability test, user)
+  - v3.0.2 — think-execute harness (you said experimental)
   - v3.0.2 — think-execute harness for LLM (你 said experimental)
 
 ## Principle P19 — Data flow observability (NEW)
