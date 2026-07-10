@@ -1057,3 +1057,62 @@ The interface (CLI) gains daily-loop for autonomous vision.
 User usage:
   python -m self_upgrade daily-loop --interval 3600
   # 1h between rounds, Ctrl-C to stop
+
+
+## v3.1.0 follow-up — Add P22 (stuck→plan) + P23 (doc>script nuance)
+
+Per user 2026-07-10 meta-meta-rule:
+'当大任务开始、agent 思路不清晰, 陷进去的时候, 一定要看项目
+本身状态, 然后做一次 plan 清醒一下.  (如果你认为我说的话有用,
+记得更新文档, 看看和哪个规则最相关, 分清楚是哪一层级的, 根据
+奥卡姆剃刀原则和渐进式披露原则加到合适的位置, 注意找规则之间
+的共性)'.
+
+Plus: 'doc > script 原则可能有点问题...  你可能需要权衡一下
+怎么处理'.
+
+This commit (1 commit, 奥卡姆, doc-only, no split):
+
+### 1. P22 (Workflow): Stuck → plan + update docs (meta-rule)
+
+  Three actions, in order:
+  - Check state (git status, recent commits, docs, tests, P14)
+  - Write plan (goal, current state, next steps, risk)
+  - Update docs (find related P1-P21, look for commonalities,
+    add cross-references rather than redefine, pick L0/L1/L2
+    per P20 progressive disclosure, per P7 奥卡姆)
+
+  Related: P1 整理→思考→行动 (shared "先思考再行动" 哲学)
+  Per 奥卡姆: not a new rule, but explicit "写下来 plan + update
+  docs" emphasis that P1 didn't capture.
+
+  Recursive: when planning the docs update, itself trigger P22.
+
+### 2. P23 (Design): Doc > script, with nuance
+
+  Per user 'doc > script 原则可能有点问题':
+  - Doc IS the contract (per P7 奥卡姆 — earn the script)
+  - Script allowed but only AFTER doc violated 3+ times
+  - Pattern: doc-first → violations → script (script is second)
+  - Related: P20 progressive disclosure (doc structure)
+  - Clarification: "doc > script" means "doc first, script after
+    — not script never"
+
+  Historical reference: scripts/check_docs.py was deleted in
+  9d75533 because the doc contract (P20.细则 R1-R12) was still
+  being internalized — too early for mechanical enforcement.
+
+### 3. INDEX.md L0 updated:
+  - P22 trigger: check state, write plan, update docs
+  - P23 clarify: doc first, script only after 3+ violations
+
+### Verified:
+  - 31/31 in test_v2_cli.py (no code change, doc-only)
+  - No new tests (per 奥卡姆, doc-only)
+  - Per user 'doc > script' 哲学: no hermes-verify script
+  - 1 commit, no split
+
+### Why this is one commit (per P4 1 commit = 1 logical feature):
+  The logical feature is "extract meta-meta-rules from user's
+  conversation and add to PRINCIPLES.md as P22 + P23, with L0
+  reference in INDEX.md".  Multiple files but one feature.

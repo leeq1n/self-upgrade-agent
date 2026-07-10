@@ -44,6 +44,47 @@ Especially: integration tests catch bugs the unit tests can't
 If the user has a real-world run they care about, simulate it
 yourself before commit.  Don't assume "if it parses, it works".
 
+### P22. Stuck → plan + update docs (meta-rule)
+When a big task starts and thinking is fuzzy, **stop and look at
+project state** (working tree, recent commits, current docs, test
+status), then **write a plan down** before continuing.
+
+Three actions, in order:
+1. **Check state**: `git status`, `git log --oneline -10`, list
+   `docs/`, count tests, identify which docs are stale (per P14).
+2. **Write plan**: goal, current state, next steps, risk.  Not
+   "thinking out loud" — a written plan is reviewable, mutable,
+   and survives the next context window.
+3. **Update docs**: for any new meta-rule discovered, find which
+   existing principle (P1-P21) is most related.  Look for
+   **commonalities** (P22 + P1 share "先思考再行动").  Add
+   cross-references rather than redefining.  Per P20 progressive
+   disclosure: L0 summary, L1 detail, L2 deep — pick the right
+   layer.  Per P7 奥卡姆: don't duplicate; reference.
+
+This rule applies recursively: when planning the docs update,
+itself trigger P22 ("which doc layer? which existing rule?").
+
+### P23. Doc > script, with nuance
+Per user 2026-07-10 '不需脚本, 文档就能规范 agent 行为':
+**a well-written doc IS the contract**.  Don't write a script
+to mechanically enforce a doc rule until the doc rule has been
+broken 3+ times (per P7 奥卡姆 — earn the script).
+
+Nuance: script is **allowed** (not banned), but only after the
+doc has been clearly stated AND violated enough times to justify
+the maintenance cost.  Pattern: doc-first → violations → script.
+**Script is the SECOND step, never the first.**
+
+Related: P20 progressive disclosure (doc structure) and
+`scripts/check_docs.py` was deleted in 9d75533 because the doc
+contract (P20.细则 R1-R12) was still being internalized — too
+early for mechanical enforcement.  Re-introduce only when
+violations become a real cost.
+
+This rule clarifies the original "doc > script" 哲学:
+"doc > script" means "doc first, script after — not script never".
+
 ## Design principles
 
 ### P7. 奥卡姆剃刀
