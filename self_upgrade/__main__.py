@@ -28,8 +28,10 @@ import click
 
 def _lazy_v2():
     from src.v2_round import run_one_round, run_one_round_multi, replay_all_failures
+    from src.v2_round import run_one_round_with_harness
     from src.v2_agent import FIXED_PAPER, Paper
-    return run_one_round, run_one_round_multi, replay_all_failures, FIXED_PAPER, Paper
+    return (run_one_round, run_one_round_multi, replay_all_failures,
+            run_one_round_with_harness, FIXED_PAPER, Paper)
 
 
 def _format_round_result(r) -> str:
@@ -53,23 +55,76 @@ def cli(mock):
 @click.option("--target", default="core/planner.py",
               help="Target module to improve (default: core/planner.py).")
 @click.option("--paper", default=None,
-              help="Paper arxiv_id (default: FIXED_PAPER = DyLAN 2310.02170).")
-@click.option("--test-path", default="tests/test_pipeline.py",
-              help="Test path used as the decision gate.")
+              help="Paper arxiv_id (default: FIXED_PAPER = DyLAN 2310.02170). "
+                   "Ignored when --multi is set.")
+@click.option("--multi", is_flag=True, default=False,
+              help="Use multi-paper selection (LLM judge picks best paper).")
+@click.option("--max-retries", default=0, type=int,
+              help="Retry up to N times on failure (default 0).")
+@click.option("--count", default=1, type=int,
+              help="Run N consecutive rounds (default 1).")
+@click.option("--test-path", default=None,
+              help="Test path used as the decision gate (default depends on mode).")
 @click.pass_obj
-def improve(obj, target, paper, test_path):
-    """Run one round of self-improvement (generate + apply + decide)."""
-    run_one_round, _, _, FIXED_PAPER, Paper = _lazy_v2()
-    if obj["mock"]:
-        click.echo("ERROR: --mock not yet supported for 'improve'. "
-                   "Use 'test-scale' for now.", err=True)
+def improve(obj, target, paper, multi, max_retries, count, test_path):
+    """Run one round of self-improvement (generate + apply + decide).
+
+    Modes (mutually compatible flags):
+      (default)    Single paper, fixed DyLAN, no retry, 1 round.
+      --multi      Multi-paper selection (LLM judge picks best paper).
+      --max-retries N  Retry on failure (harness-style, per Self-Harness paper).
+      --count N    Run N consecutive rounds (batch mode).
+
+    Examples:
+      python -m self_upgrade improve --target core/planner.py
+      python -m self_upgrade improve --target core/planner.py --multi
+      python -m self_upgrade improve --target core/planner.py --multi --max-retries 2
+      python -m self_upgrade improve --target core/planner.py --multi --max-retries 2 --count 5
+    """
+    # Default test_path depends on mode
+    if test_path is None:
+        test_path = "tests/test_v2_round.py" if multi else "tests/test_pipeline.py"
+
+    run_one_round, run_one_round_multi, _, run_with_harness, FIXED_PAPER, Paper = _lazy_v2()
+
+    if obj["mock"] and not multi:
+        click.echo("ERROR: --mock not yet supported for single-paper 'improve'. "
+                   "Use --multi (mock judge) instead.", err=True)
         sys.exit(1)
-    if paper is None:
-        paper = FIXED_PAPER
-    else:
-        paper = Paper(arxiv_id=paper, title=paper, abstract="(manual)")
-    r = run_one_round(paper=paper, target_module=target, test_path=test_path)
-    click.echo(_format_round_result(r))
+
+    kept_count = 0
+    for i in range(count):
+        if count > 1:
+            click.echo(f"===== Round {i + 1}/{count} =====")
+
+        if multi:
+            # Multi-paper mode (LLM or mock judge + retry-on-fail harness)
+            from src.llm import LLMConfig
+            config = LLMConfig.from_env() if obj["mock"] is False else None
+            r = run_with_harness(
+                target_module=target,
+                config=config,
+                max_retries=max_retries,
+                test_path=test_path,
+            )
+        else:
+            # Single-paper mode
+            if paper is None:
+                p = FIXED_PAPER
+            else:
+                p = Paper(arxiv_id=paper, title=paper, abstract="(manual)")
+            r = run_one_round(paper=p, target_module=target,
+                              test_path=test_path)
+
+        click.echo(_format_round_result(r))
+        if hasattr(r, "decision") and r.decision == "KEPT":
+            kept_count += 1
+
+    if count > 1:
+        click.echo(f"===== Summary =====")
+        click.echo(f"KEPT: {kept_count}/{count} ({100*kept_count//count}%)")
+    sys.exit(0 if (count == 1 and hasattr(r, "decision") and r.decision == "KEPT")
+                  or (count > 1 and kept_count == count) else 1)
 
 
 @cli.command()
@@ -91,7 +146,7 @@ def replay(live):
         return
 
     # Live: actually replay (slow)
-    _, _, replay_all_failures, _, _ = _lazy_v2()
+    _, _, replay_all_failures, _, _, _ = _lazy_v2()
     report = replay_all_failures(test_path="tests/test_pipeline.py")
     click.echo(json.dumps(report.to_dict(), indent=2, ensure_ascii=False))
 
@@ -105,7 +160,7 @@ def replay(live):
 @click.pass_obj
 def test_scale(obj, n_rounds, target, paper):
     """Run N consecutive rounds (debug / load test / stability probe)."""
-    run_one_round, _, _, FIXED_PAPER, Paper = _lazy_v2()
+    run_one_round, _, _, _, FIXED_PAPER, Paper = _lazy_v2()
     if obj["mock"]:
         click.echo("ERROR: --mock not yet supported for 'test-scale'.",
                    err=True)
@@ -146,90 +201,30 @@ def test_scale(obj, n_rounds, target, paper):
     click.echo("  git checkout core/planner.py")
 
 
-@cli.command(name="improve-harness")
-@click.option("--target", default="core/planner.py",
-              help="Target module (default: core/planner.py).")
-@click.option("--test-path", default="tests/test_v2_round.py",
-              help="Test path used as the decision gate.")
-@click.option("--max-retries", default=2, type=int,
-              help="How many times to retry on failure (default 2).")
-@click.option("--count", default=1, type=int,
-              help="Run N consecutive harness rounds (default 1).")
+@cli.command(name="improve-harness", hidden=True)
+@click.option("--target", default="core/planner.py")
+@click.option("--test-path", default="tests/test_v2_round.py")
+@click.option("--max-retries", default=2, type=int)
+@click.option("--count", default=1, type=int)
 @click.pass_obj
 def improve_harness(obj, target, test_path, max_retries, count):
-    """Harness-wrapped self-improvement (v3.0.2 follow-up).
-
-    Per LITERATURE (Self-Harness 40->62%): iterative re-plan on
-    failure.  Wraps run_one_round_multi in a Loop with retry-on-fail.
-    Per P7 奥卡姆: simple retry wrapper.
-
-    --count N: run N consecutive rounds (each is a fresh harness
-    with its own retries).  Useful for stability testing.
-    """
-    from src.v2_round import run_one_round_with_harness
-    from src.llm import LLMConfig
-    config = LLMConfig.from_env() if obj["mock"] is False else None
-    kept_count = 0
-    for i in range(count):
-        if count > 1:
-            click.echo(f"===== Round {i + 1}/{count} =====")
-        r = run_one_round_with_harness(
-            target_module=target,
-            config=config,
-            max_retries=max_retries,
-            test_path=test_path,
-        )
-        click.echo(_format_round_result(r))
-        if r.decision == "KEPT":
-            kept_count += 1
-    if count > 1:
-        click.echo(f"===== Summary =====")
-        click.echo(f"KEPT: {kept_count}/{count} ({100*kept_count//count}%)")
-    sys.exit(0 if kept_count == count else 1)
+    """DEPRECATED: alias for `improve --multi --max-retries N`."""
+    ctx = click.get_current_context()
+    ctx.invoke(improve, target=target, test_path=test_path,
+               multi=True, max_retries=max_retries, count=count)
 
 
-@cli.command(name="improve-multi")
-@click.option("--target", default="core/planner.py",
-              help="Target module (default: core/planner.py).")
-@click.option("--test-path", default="tests/test_v2_round.py",
-              help="Test path used as the decision gate.")
-@click.option("--no-judge-llm/--judge-llm", default=True,
-              help="Whether to use LLM for paper selection (mock if off).")
-@click.option("--count", default=1, type=int,
-              help="Run N consecutive multi-paper rounds (default 1).")
+@cli.command(name="improve-multi", hidden=True)
+@click.option("--target", default="core/planner.py")
+@click.option("--test-path", default="tests/test_v2_round.py")
+@click.option("--no-judge-llm/--judge-llm", default=True)
+@click.option("--count", default=1, type=int)
 @click.pass_obj
 def improve_multi(obj, target, test_path, no_judge_llm, count):
-    """Multi-paper self-improvement (v3.0.1 step 1.4).
-
-    Reads all papers from the catalog, uses LLM (or mock) to pick
-    the best one, then runs the standard self-improvement loop
-    on that paper.  Intermediate results are persisted per P19.
-
-    --count N: run N consecutive rounds (useful for stability testing).
-    """
-    _, run_one_round_multi, _, _, _ = _lazy_v2()
-    from src.llm import LLMConfig
-    config = LLMConfig.from_env() if obj["mock"] is False else None
-    llm_config = config if no_judge_llm else None
-    kept_count = 0
-    for i in range(count):
-        if count > 1:
-            click.echo(f"===== Round {i + 1}/{count} =====")
-        r = run_one_round_multi(
-            target_module=target,
-            config=config,
-            llm_config=llm_config,
-            test_path=test_path,
-        )
-        click.echo(_format_round_result(r))
-        click.echo(f"Decision source: "
-                   f"{'llm' if no_judge_llm else 'mock'} (judge)")
-        if r.decision == "KEPT":
-            kept_count += 1
-    if count > 1:
-        click.echo(f"===== Summary =====")
-        click.echo(f"KEPT: {kept_count}/{count} ({100*kept_count//count}%)")
-    sys.exit(0 if kept_count == count else 1)
+    """DEPRECATED: alias for `improve --multi`.  Kept for backward compat."""
+    ctx = click.get_current_context()
+    ctx.invoke(improve, target=target, test_path=test_path,
+               multi=True, count=count)
 
 
 def main():

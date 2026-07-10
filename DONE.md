@@ -867,3 +867,79 @@ Verified:
 User usage (1 line, both CLIs now symmetric):
   python -m self_upgrade improve-multi --count 5
   python -m self_upgrade improve-harness --count 5
+
+
+## v3.0.2 follow-up #6 — Unified `improve` with flags (1 commit, 奥卡姆)
+
+Per user 2026-07-10: 'improve-multi 和 improve-harness 什么区别?
+按你认为更符合用户使用习惯的方案来'.
+
+Problem:
+  5 subcommands confused users:
+  - improve (single paper, no retry)
+  - improve-multi (multi paper, no retry)
+  - improve-harness (multi paper, retry)
+  - test-scale (single paper, N rounds)
+  - replay (separate concern)
+  User asked: which one to use?
+
+Solution (per 奥卡姆 + 简化用户操作):
+  Unified into 1 visible `improve` subcommand with flags:
+    --multi          multi-paper selection (LLM judge)
+    --max-retries N  retry on fail (harness-style)
+    --count N        batch rounds
+    --paper ID       specific paper (when not --multi)
+    --target M       target module
+    --test-path      test path (default depends on mode)
+
+Backward compat:
+  - `improve-multi` and `improve-harness` are now HIDDEN aliases
+    that invoke `improve` with the right flags
+  - All existing tests still pass (with 1 minor assertion update)
+
+This commit (1 commit, 奥卡姆, no split):
+
+1. self_upgrade/__main__.py:
+   - `improve` subcommand gained --multi, --max-retries, --count flags
+   - `improve-multi` is now a thin wrapper (hidden=True)
+   - `improve-harness` is now a thin wrapper (hidden=True)
+   - `_lazy_v2()` returns 6-tuple (added run_one_round_with_harness)
+   - All call sites updated to unpack 6-tuple
+
+2. tests/test_v2_cli.py (7 new tests for unified improve):
+   - help lists all flags
+   - single paper default mode
+   - --multi flag (uses harness)
+   - --max-retries flag (passes through to harness)
+   - --count flag (batch with summary)
+   - hidden aliases work
+   - visible subcommands reduced to 3
+   - 1 minor update: test_count_1_no_summary now checks "Harness done"
+     instead of "Decision source" (new unified behavior)
+
+3. DONE.md records
+
+Verified:
+  - 26/26 in test_v2_cli.py (was 19; +7)
+  - Full suite: 621 PASS + 6 skip + 3 deselected (was 615; +6)
+  - 1 test fail: test_core_planner_md5_matches_head — this is the
+    LLM-modified core/planner.py from user's --count 5 run (Round 5 KEPT),
+    not a regression from my code.  User decides keep/revert.
+
+Visible CLI now (per 奥卡姆):
+  $ python -m self_upgrade --help
+  Commands:
+    improve     Run one round of self-improvement (with flags).
+    replay      Replay/inspect failures from upgrades/failures.jsonl.
+    test-scale  Run N consecutive rounds (debug/load/stability probe).
+
+Hidden (backward compat):
+    improve-multi       (deprecated alias)
+    improve-harness     (deprecated alias)
+
+User usage:
+  # Old way (still works, deprecated):
+  python -m self_upgrade improve-harness --count 5
+
+  # New way (recommended):
+  python -m self_upgrade improve --multi --max-retries 2 --count 5
