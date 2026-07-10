@@ -159,6 +159,34 @@ Next (separate commits, per small-step workflow):
     Adds run_one_round_multi() + improve-multi CLI subcommand.
     CLI now has 4 subcommands: improve, improve-multi, replay, test-scale.
 
+
+## Next (分治 + 记录 + 灵活运用) — per user 2026-07-10
+
+User: '分治, 多次将功能分块, 直到足够小, 每个功能测通了再
+联合起来测, 继续你认为正确的方向, 中间记得记录, 还有
+一开始那些关于 agent 的知识也要灵活运用'.
+
+- [ ] **修 replay (--mock default)** — 你跑会卡 5+ min, 真问题
+  - step 1.1: replay --mock = show log summary (fast)
+  - step 1.2: replay --live = 真 replay (slow, opt-in)
+  - step 1.3: tests + stage gate
+- [ ] **v3.0.2 — think-execute harness** (experimental, LITERATURE
+      Self-Harness / Harness Engineering / Nate Berkopec 方向)
+  - step 2.1: `src/v4_thinker.py` (Thinker 抽象, plan API), 5 tests
+  - step 2.2: `src/v4_executor.py` (Executor 抽象, tool dispatch), 5 tests
+  - step 2.3: `src/v4_loop.py` (Think → Execute → Observe), 5 tests
+  - step 2.4: joint test (LLM mock), 3 tests
+- [ ] **5 round stability test** (你跑: `python -m self_upgrade test-scale 5`)
+- [ ] **删 v1.8.x deprecated modules** (cleanup, 1 commit)
+- [ ] **更新 LITERATURE.md** (新加 11 papers 待 better notes)
+
+## Lesson from this session
+
+- Signal-to-Fix Loop: telemetry → signal → fix → deploy
+  我们 = progress markers (signal) → next commit (fix) → user run (deploy)
+- SkillOpt: skills as external state = upgrades/judge_*.jsonl 是 truth
+
+
 ## v3.0.1 — COMPLETE (all 4 steps)
 
 Multi-paper selection is now fully integrated:
