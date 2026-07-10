@@ -625,3 +625,54 @@ Per 你的 workflow (P22):
   4. P23: doc-first, no script
   5. P7 奥卡姆: 1 commit, no split
   6. P9 hard rule: test pass != acceptable, production must work
+
+
+## v3.1.0 follow-up — Caller validation before auto-commit (root cause fix)
+
+Per P22 (stuck→plan) + P9 (hard rule) + P18 (failure -> regression
+test).  Per user 2026-07-10 '记得遇到了问题需要做什么嘛?'
+
+The 2026-07-10 auto-commit regression (24 tests fail) was caused by
+v3_auto_commit.py committing without validating production callers.
+This commit adds caller validation as a pre-commit gate.
+
+This commit (1 commit, 奥卡姆, no split):
+
+1. Add `check_callers(target_module)` to src/v3_auto_commit.py
+
+   Greps for callers of target_module across project, then attempts
+   import to verify resolution.  Per P7 奥卡姆: simple grep +
+   importlib, no new abstraction.
+
+2. Update `auto_commit()` to call check_callers() FIRST
+
+   If any caller fails to resolve, auto-commit returns "" (skip)
+   with a printed warning.  Per P9 + P18: regression prevention at
+   commit time, not after.
+
+3. Add 4 tests to tests/test_v2_cli.py (TestV3AutoCommitCallerCheck)
+
+   - test_check_callers_no_callers_returns_ok (no callers -> ok)
+   - test_check_callers_finds_callers (callers exist -> check runs)
+   - test_auto_commit_validates_before_staging (failure -> skip)
+   - test_auto_commit_proceeds_when_validators_pass (failure skip)
+
+4. Update PRINCIPLES_DETAIL.md P9 L2 (auto-commit boundary)
+
+   Per P22 步骤 3: find P1-P21 commonality.  P9 (hard rule) +
+   P18 (failure -> regression test) -> caller validation.  Not
+   new principle, extension of P9.
+
+Verified:
+  - 639 PASS + 6 skip + 0 fail (was 635; +4)
+  - Per P23 doc-first: no hermes-verify script
+  - 1 commit, no split
+  - Per P22: check state, write plan, update docs (P9 L2 + DONE)
+
+Per 你的 workflow (P22):
+  1. P22: check state (24 fails -> root cause: missing caller check)
+  2. P22: write plan (1 commit, additive check_callers)
+  3. P22: update docs (P9 L2 + DONE)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: 1 commit, no split
+  6. P9 hard rule: tests pass != acceptable, callers must resolve

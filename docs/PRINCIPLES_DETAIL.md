@@ -146,6 +146,15 @@ Examples: P20 doc structure, P11 摘要+引用, file naming.
 **实操 (L2)**: per "doc structure", `INDEX.md` order, file naming,
 test naming — all mechanical, not LLM-judged.  Per 奥卡姆 root.
 
+**Auto-commit boundary (per user 2026-07-10)**: test pass ≠
+acceptable if production breaks.  When auto-committing patches,
+callers of the modified module must still resolve.  Per
+OBSERVATIONS.md 2026-07-10 entry: LLM rename of plan_task
+broke 24 tests because production callers (core/agent.py,
+core/__init__.py, src/patchgen.py) still referenced the old
+name.  Auto-commit now runs caller validation before commit
+(via src/v3_auto_commit.py check_callers).
+
 ### P10. Entity behavior > prompt instruction
 Prefer creating a new entity (class, module) with explicit
 behavior over relying on a prompt to instruct the LLM.  Prompts
