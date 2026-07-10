@@ -727,3 +727,41 @@ Design choices (per P7 奥卡姆):
   - Simple retry wrapper, no new handler dispatch
   - MockThinker + FunctionExecutor used minimally (1 fixed step)
   - Reuses existing `run_one_round_multi` (no code duplication)
+
+
+## v3.0.2 follow-up #2 — 奥卡姆 cleanup (experiments/)
+
+Per user 2026-07-10: '应该优先按照奥卡姆剃刀原则保持项目干净'.
+Per user new meta-rule: '之前测过的功能如果没改就不再重复测'.
+
+Investigation found:
+- 11 v1.8.x modules are NOT really unused (referenced by tests,
+  run.py, run_*.py, experiments, etc.) — can't safely delete
+- 2 experiments POCs + 1 comment ref were TRULY unused
+
+This commit (1 commit, 奥卡姆):
+
+- [x] **Deleted**:
+  - `experiments/langgraph_agent_poc.py` (POC, no test)
+  - `experiments/langgraph_mcp_poc.py` (POC, no test)
+- [x] **Cleaned up** comment in `self_upgrade/__main__.py`:
+  - Removed stale reference to `__main__.v18_backup.py`
+  - File was already absent (never committed)
+- [x] `DONE.md` records (P14 docs stay current)
+
+NOT done in this commit (out of scope, too risky):
+- 11 v1.8.x modules in `src/` — heavily referenced
+  - `pipeline_lg`, `react`, `mcp_client`, `memory_server`,
+    `langchain_bridge`, `reflect`, `switcher`, `pipeline`,
+    `learning`, `skill_lifecycle`, `scraper`, `research*`
+  - Deleting would break 10+ tests + run.py
+- `run.py`, `run_*.py` — v1.8.x entry points
+  - User still references them?  Need user input to delete
+
+Verified:
+  - Smoke test: 605 PASS + 6 skip + 0 fail (no regression)
+  - 1 commit, no split
+  - Working tree clean before commit
+
+Per new meta-rule: {测通 → 整理 → 合并 → 测通 → 提交}.
+This commit is a 整理+合并 step (delete unused + cleanup comment).

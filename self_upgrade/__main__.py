@@ -3,9 +3,7 @@
 Per user feedback 2026-07-08: 'need unified management, can run
 self-improvement, can use specifically, can keep project clean'.
 
-This file replaces the v1.8.x unified CLI (backed up in
-self_upgrade/__main__.v18_backup.py).  The CLI uses Click
-and exposes:
+This file is the unified CLI.  It uses Click and exposes:
   - improve:        one round with FIXED_PAPER (single paper)
   - replay:         replay failure log (P18)
   - test-scale:     N consecutive rounds (debug / load test)
