@@ -569,3 +569,28 @@ NOT in this commit:
   - step 2.2: `src/v4_executor.py` (Executor abstract)
   - step 2.3: `src/v4_loop.py` (Think → Execute → Observe)
   - step 2.4: joint test (end-to-end with mock)
+
+
+## v3.0.2 step 2.2 — Executor abstract (commit `pending hash`)
+
+Per LITERATURE SkillOpt: executor = skill dispatcher.  Takes
+Step, returns Result.  In tests, MockExecutor records calls.
+
+- [x] **`src/v4_executor.py`** (~140 LOC, NEW):
+  - `Result(success, value, error, step_name)` dataclass
+  - `Executor` abstract base
+  - `MockExecutor`: records calls, fail_on injection
+  - `FunctionExecutor`: dispatch by name to handler dict
+- [x] **`tests/test_v4_executor.py`** (~210 LOC, 21 tests):
+  - Result (4), AbstractExecutor (2), MockExecutor (6),
+    FunctionExecutor (7), JointWithThinker (2)
+
+Verified:
+  - 21/21 unit tests (0.10s)
+  - Full suite: 572 PASS + 6 skip + 0 fail (was 551; +21)
+  - 17/17 hermes-verify PASS
+  - Joint with v4_thinker works (MockThinker + MockExecutor)
+
+NOT in this commit:
+  - step 2.3: `src/v4_loop.py` (Think → Execute → Observe)
+  - step 2.4: joint test (end-to-end with mock)
