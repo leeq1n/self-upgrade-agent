@@ -627,3 +627,66 @@ Verified:
 NOT in this commit:
   - step 2.4: joint test (end-to-end with mock)
   - Wire Loop into v2_round (out of scope per P7)
+
+
+## v3.0.2 OVERALL — think-execute harness COMPLETE
+
+Per LITERATURE: Self-Harness 40→62%, Lilian Weng "harness as
+important as model", Nate Berkopec "verifiable + looped", Signal-to-Fix
+Loop, SkillOpt.  The harness is the smallest unit of v3.0.2.
+
+### Sub-steps (all done, all tested, all committed)
+
+- [x] **step 1** — replay default = inspect (fast, no LLM)
+      commit `3d74ba8` + `1b044ae`
+- [x] **step 2.1** — Thinker abstract base
+      commit `d5b4a84` + `0b5de79`
+- [x] **step 2.2** — Executor abstract base
+      commit `8b85660` + `ed43b22`
+- [x] **step 2.3** — Loop controller (Think → Execute → Observe)
+      commit `009a26c` + `e594746`
+- [x] **step 2.4** — joint test (end-to-end harness)
+      commit `pending hash` (above)
+
+### Public API of v3.0.2 harness
+
+```python
+from src.v4_thinker import MockThinker, JsonThinker
+from src.v4_executor import MockExecutor, FunctionExecutor
+from src.v4_loop import Loop, LoopStatus
+
+# 1. Mock harness (no LLM)
+thinker = MockThinker(fixed_plan=[Step("a"), Step("b")])
+executor = MockExecutor()
+harness = Loop(thinker, executor)
+result = harness.run("prompt")
+assert result.status == LoopStatus.SUCCEEDED
+
+# 2. Real LLM harness (with fail-OPEN)
+jt = JsonThinker(config=LLMConfig.from_env())
+fe = FunctionExecutor({
+    "read": lambda s: Result(success=True, value="content", step_name=s.name),
+    "write": lambda s: Result(success=True, value="ok", step_name=s.name),
+})
+harness = Loop(jt, fe)
+result = harness.run("read foo and write summary", max_retries=2)
+```
+
+### Test counts
+
+- v4_thinker: 24 tests
+- v4_executor: 21 tests
+- v4_loop: 14 tests
+- v4_harness_joint: 10 tests
+- **Total new: 69 tests**
+- Full suite: 596 PASS (was 551 before v3.0.2; +45 since v3.0.1)
+- No regression
+
+### NOT in this commit (out of scope per P7 奥卡姆)
+
+- Knowledge graph (per user insight 2026-07-10, marked in
+  `docs/USER_INSIGHTS_KNOWLEDGEGRAPH_20260710.md` as "P1 idea,
+  not promoted")
+- Wire Loop into v2_round (defer to v3.1+)
+- 5-round stability test (user runs)
+- 删 v1.8.x deprecated modules (TODO backlog)
