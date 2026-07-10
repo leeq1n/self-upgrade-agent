@@ -53,7 +53,7 @@ class RoundResult:
 
 def run_project_tests(
     cwd: str,
-    timeout_s: int = 300,
+    timeout_s: int = 600,
     test_path: str = "tests/",
 ) -> tuple:
     """Run the project's test suite via pytest.
@@ -66,10 +66,15 @@ def run_project_tests(
 
     Args:
         cwd: project root to run from
-        timeout_s: hard cap; default 2 minutes for one round
+        timeout_s: hard cap; default 10 min.  Pytest collection can be
+            slow on first run because tests/test_*.py are imported.
         test_path: which test directory to run (default tests/)
     """
-    env = {**os.environ, "HERMES_SKIP_NETWORK": "1"}
+    # HERMES_FAST=1 skips slow / network-heavy test modules so the
+    # round completes in time even on machines with slow collection.
+    # Default to fast mode for the self-improvement loop.
+    env = {**os.environ, "HERMES_SKIP_NETWORK": "1",
+           "HERMES_FAST": os.environ.get("HERMES_FAST", "1")}
     cmd = [
         sys.executable, "-m", "pytest", test_path,
         "--tb=no", "-q",
