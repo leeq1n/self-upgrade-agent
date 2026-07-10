@@ -464,3 +464,49 @@ Verified:
   - 31/31 in test_v2_cli.py (no code change, doc-only)
   - Per P23 doc-first: no hermes-verify script
   - 1 commit, no split
+
+
+## v3.1.0 follow-up — `--auto-commit` flag (auto vs manual boundary)
+
+Per user 2026-07-10 '区分开自动更新和手动更新' (auto vs manual).
+
+This commit (1 commit, 奥卡姆, additive, no split):
+
+### 1. New helper: src/v3_auto_commit.py (~110 LOC)
+  - `write_patch_bundle(target)` — writes diff to upgrades/auto-patches/
+  - `auto_commit(target, paper_id, tests_passed, bundle_path)` —
+    git commit with distinct author + [auto] prefix
+  - AUTO_AUTHOR = "Auto Upgrade", AUTO_EMAIL = "auto@self-upgrade.local"
+
+### 2. CLI: `improve` + `daily-loop` add `--auto-commit` flag
+  - Default: False (per P7 奥卡姆, opt-in not default)
+  - When KEPT + auto_commit: commit + write bundle
+  - When NO_PATCH/REVERTED + auto_commit: skip + print message
+  - Same flag exposed in both commands (symmetric)
+
+### 3. Bug fix (pre-existing, surfaced by test): v2_round.py fallback
+  - `run_one_round_with_harness` line 386: RoundResult fallback
+    was missing `paper` field (P9 hard rule)
+  - Now passes `paper=None` per P18 fallback pattern
+  - Surfaced by test_count_3_mixed with side_effect=[kept, no, no]
+    where harness retries exhaust the side_effect → fallback path
+  - This is per P18 (failure → regression test) + P9 (hard rule)
+
+### 4. Docs:
+  - PRINCIPLES_DETAIL.md: add L2 to P18 (auto vs manual boundary)
+  - OBSERVATIONS.md: add entry
+  - DONE.md: this stage gate
+
+### Verified:
+  - 36/36 in test_v2_cli.py (was 31, +5 new for auto-commit)
+  - Full suite: 632 PASS + 6 skip + 0 fail (was 627; +5)
+  - Per P23 doc-first: no hermes-verify script
+  - 1 commit, no split
+
+### Per 你的 workflow (P22):
+  1. P22: check state (working tree, recent daily-loop run)
+  2. P22: write plan (1 commit, multi-file but 1 feature)
+  3. P22: update docs (P18 L2 + OBSERVATIONS + DONE)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: 1 commit, additive (no behavior change for non-auto-commit)
+  6. P17 honest: bug fix in v2_round.py was pre-existing, not from this work

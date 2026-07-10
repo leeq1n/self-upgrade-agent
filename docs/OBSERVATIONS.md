@@ -189,3 +189,31 @@ for human review).
 **Related commits**:
 - 9d75533 feat: autonomous daily-loop + P20 doc-only alignment
 - de5213d docs(PRINCIPLES): sync L0 to P23 + R7 split-aware
+
+
+## 2026-07-10 — `--auto-commit` flag added (auto vs manual boundary)
+
+Per user 2026-07-10: '继续, 但是我觉得自动更新的和你更新的应该
+区分开, 不然感觉会有些问题'.
+
+Solution: `--auto-commit` opt-in flag on `improve` and `daily-loop`.
+When set, KEPT patches auto-commit with:
+- Author: `Auto Upgrade <auto@self-upgrade.local>` (distinct)
+- Commit message prefix: `[auto]`
+- Patch bundle: `upgrades/auto-patches/<date>-<hash>.patch`
+  for human review, selective apply, rejection
+- `git log --author="Auto"` filters auto commits in 1 step
+
+Default behavior unchanged: no `--auto-commit` = file stays in
+working tree (or auto-revert).  User stays in control.
+
+**Why opt-in (not default)**:
+- Per P7 奥卡姆: minimal default, opt-in for opt-out behavior
+- Per P9: hard rule that user reviews KEPT patches before commit
+- Per LITERATURE Signal-to-Fix Loop: deploy = patch bundle,
+  not commit, unless explicitly opted in
+
+**Bug fix in v2_round.py (pre-existing)**: fallback RoundResult
+in `run_one_round_with_harness` was missing `paper` field (P9
+hard rule: required field).  Now passes `paper=None` per P18
+fallback pattern.

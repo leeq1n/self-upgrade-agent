@@ -215,3 +215,17 @@ test.  Production-grade systems are built on this rule.
 **实操 (L2)**: when a real failure is observed, add a test that
 reproduces it before fixing.  Per Test root.
 
+**Boundary: auto vs manual (per user 2026-07-10)**:
+KEPT patches come in two flavors:
+- Manual commits (user runs `git commit`): the source of truth for
+  human-curated changes
+- Auto commits (daily-loop / improve with `--auto-commit`): KEPT
+  patches committed by the agent itself, distinguishable by:
+  - Author: `Auto Upgrade <auto@self-upgrade.local>` (never the user)
+  - Prefix: `[auto]` in commit message
+  - Bundle: also written to `upgrades/auto-patches/<date>-<hash>.patch`
+    for human review, selective apply, or rejection
+- `git log --author="Auto"` filters auto commits in 1 step
+- Default behavior (no `--auto-commit`): KEPT files stay in working
+  tree (or auto-revert per existing logic).  User stays in control.
+

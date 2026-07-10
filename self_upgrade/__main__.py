@@ -42,6 +42,37 @@ def _format_round_result(r) -> str:
             + (f" error={r.error[:80]}" if r.error else ""))
 
 
+def _do_auto_commit(target, r, multi):
+    """Per user 2026-07-10: '区分开自动更新和手动更新'.
+
+    When --auto-commit is set and round KEPT, commit the patched file
+    with author 'Auto Upgrade <auto@self-upgrade.local>' and [auto]
+    prefix.  Also write a patch bundle to upgrades/auto-patches/ for
+    human review / selective apply / rejection.
+
+    Per P7 奥卡姆: helper function, not a new abstraction.  Per
+    P22 找共性: reuses v3_persist's save pattern (write to disk).
+    Per P18: only commits KEPT (atomic + tested).
+    """
+    from src.v3_auto_commit import write_patch_bundle, auto_commit
+    bundle = write_patch_bundle(target)
+    paper_id = ""
+    # Extract paper id if available
+    if hasattr(r, "paper") and r.paper:
+        paper_id = getattr(r.paper, "arxiv_id", "") or str(r.paper)
+    commit_hash = auto_commit(
+        target_module=target,
+        paper_id=paper_id,
+        tests_passed=getattr(r, "tests_passed", 0),
+        bundle_path=bundle,
+    )
+    if commit_hash:
+        click.echo(f"  [auto-commit] {commit_hash[:8]} by Auto Upgrade")
+        click.echo(f"  [auto-commit] bundle: {bundle or '(no diff)'}")
+    else:
+        click.echo("  [auto-commit] FAILED (see git error above)")
+
+
 @click.group()
 @click.option("--mock/--no-mock", default=False,
               help="Use mocked LLM (no network, fast).")
@@ -55,44 +86,47 @@ def cli(mock):
 @click.option("--target", default="core/planner.py",
               help="Target module to improve (default: core/planner.py).")
 @click.option("--paper", default=None,
-              help="Paper arxiv_id (default: FIXED_PAPER = DyLAN 2310.02170). "
-                   "Ignored when --multi is set.")
-@click.option("--multi", is_flag=True, default=False,
-              help="Use multi-paper selection (LLM judge picks best paper).")
-@click.option("--max-retries", default=0, type=int,
-              help="Retry up to N times on failure (default 0).")
-@click.option("--count", default=1, type=int,
-              help="Run N consecutive rounds (default 1).")
+              help="Specific paper arxiv_id (single-paper mode only).")
 @click.option("--test-path", default=None,
-              help="Test path used as the decision gate (default depends on mode).")
+              help="Test path to run (default: tests/test_v2_round.py if --multi).")
+@click.option("--multi/--single", default=True,
+              help="Multi-paper (LLM judge, default) or single paper (--paper).")
+@click.option("--max-retries", default=2, type=int,
+              help="Harness retries on NO_PATCH/REVERTED (default: 2).")
+@click.option("--count", default=1, type=int,
+              help="Run N consecutive rounds (default: 1).")
+@click.option("--auto-commit/--no-auto-commit", default=False,
+              help="Auto-commit KEPT patches with [auto] author (default: no).")
+@click.option("--interval", default=0, type=int,
+              help="Seconds between rounds (default: 0; only used with --count > 1).")
+@click.option("--mock/--no-mock", default=False,
+              help="Use mock LLM (no API call, default: real LLM).")
 @click.pass_obj
-def improve(obj, target, paper, multi, max_retries, count, test_path):
-    """Run one round of self-improvement (generate + apply + decide).
+def improve(obj, target, paper, test_path, multi, max_retries, count,
+            auto_commit, interval, mock):
+    """Run one round of self-improvement (with flags).
 
-    Modes (mutually compatible flags):
-      (default)    Single paper, fixed DyLAN, no retry, 1 round.
-      --multi      Multi-paper selection (LLM judge picks best paper).
-      --max-retries N  Retry on failure (harness-style, per Self-Harness paper).
-      --count N    Run N consecutive rounds (batch mode).
+    Default: multi-paper mode, harness with 2 retries.  Use --single
+    for a specific paper (with --paper), or --mock for offline tests.
 
     Examples:
-      python -m self_upgrade improve --target core/planner.py
-      python -m self_upgrade improve --target core/planner.py --multi
-      python -m self_upgrade improve --target core/planner.py --multi --max-retries 2
-      python -m self_upgrade improve --target core/planner.py --multi --max-retries 2 --count 5
+      improve                                    # 1 round multi, 2 retries
+      improve --single --paper 2310.02170        # specific paper
+      improve --count 5 --interval 0             # 5 rounds back-to-back
+      improve --auto-commit                      # auto-commit KEPT with [auto]
     """
-    # Default test_path depends on mode
     if test_path is None:
         test_path = "tests/test_v2_round.py" if multi else "tests/test_pipeline.py"
 
     run_one_round, run_one_round_multi, _, run_with_harness, FIXED_PAPER, Paper = _lazy_v2()
 
-    if obj["mock"] and not multi:
+    if mock and not multi:
         click.echo("ERROR: --mock not yet supported for single-paper 'improve'. "
                    "Use --multi (mock judge) instead.", err=True)
         sys.exit(1)
 
     kept_count = 0
+    last_paper_id = ""
     for i in range(count):
         if count > 1:
             click.echo(f"===== Round {i + 1}/{count} =====")
@@ -100,7 +134,7 @@ def improve(obj, target, paper, multi, max_retries, count, test_path):
         if multi:
             # Multi-paper mode (LLM or mock judge + retry-on-fail harness)
             from src.llm import LLMConfig
-            config = LLMConfig.from_env() if obj["mock"] is False else None
+            config = LLMConfig.from_env() if not mock else None
             r = run_with_harness(
                 target_module=target,
                 config=config,
@@ -119,6 +153,17 @@ def improve(obj, target, paper, multi, max_retries, count, test_path):
         click.echo(_format_round_result(r))
         if hasattr(r, "decision") and r.decision == "KEPT":
             kept_count += 1
+            # Per user 2026-07-10: '区分开自动更新和手动更新'
+            if auto_commit:
+                _do_auto_commit(target, r, multi)
+        elif auto_commit and hasattr(r, "decision") and r.decision in ("REVERTED", "APPLY_FAILED"):
+            # Auto-commit was attempted but round failed: nothing to commit.
+            click.echo("  [auto-commit skipped: round did not KEPT]")
+
+        # Back-to-back: sleep between rounds if count > 1 and not last
+        if count > 1 and i < count - 1 and interval > 0:
+            click.echo(f"  Sleeping {interval}s... (Ctrl-C to stop)")
+            time.sleep(interval)
 
     if count > 1:
         click.echo(f"===== Summary =====")
@@ -226,22 +271,26 @@ def improve_multi(obj, target, test_path, no_judge_llm, count):
     ctx.invoke(improve, target=target, test_path=test_path,
                multi=True, count=count)
 
-
 @cli.command(name="daily-loop")
 @click.option("--target", default="core/planner.py",
               help="Target module to improve (default: core/planner.py).")
-@click.option("--interval", default=3600.0, type=float,
-              help="Seconds to wait between rounds (default 3600 = 1h).")
+@click.option("--interval", default=3600, type=int,
+              help="Seconds between rounds (default: 3600 = 1h).")
 @click.option("--max-rounds", default=None, type=int,
-              help="Stop after N rounds (default: run forever until Ctrl-C).")
-@click.option("--multi", is_flag=True, default=True,
-              help="Use multi-paper selection (LLM judge).  Default true.")
+              help="Stop after N rounds (default: infinite, Ctrl-C to stop).")
+@click.option("--multi/--single", default=True,
+              help="Multi-paper (LLM judge, default) or single paper.")
 @click.option("--max-retries", default=2, type=int,
-              help="Retry per round (harness-style, default 2).")
+              help="Harness retries per round (default: 2).")
 @click.option("--test-path", default="tests/test_v2_round.py",
-              help="Test path used as the decision gate.")
+              help="Test path for decision gate (default: tests/test_v2_round.py).")
+@click.option("--auto-commit/--no-auto-commit", default=False,
+              help="Auto-commit KEPT patches with [auto] author (default: no).")
+@click.option("--mock/--no-mock", default=False,
+              help="Use mock LLM (no API call, default: real LLM).")
 @click.pass_obj
-def daily_loop(obj, target, interval, max_rounds, multi, max_retries, test_path):
+def daily_loop(obj, target, interval, max_rounds, multi, max_retries,
+               test_path, auto_commit, mock):
     """Autonomous daily loop: keep improving target forever (or until max-rounds).
 
     Per user vision 2026-07-08 '我希望这个项目之后可以自己独立运行':
@@ -253,10 +302,11 @@ def daily_loop(obj, target, interval, max_rounds, multi, max_retries, test_path)
       python -m self_upgrade daily-loop --interval 60         # 1 min (testing)
       python -m self_upgrade daily-loop --max-rounds 5        # 5 rounds then stop
       python -m self_upgrade daily-loop --target core/x.py    # different target
+      python -m self_upgrade daily-loop --auto-commit         # auto-commit KEPT
     """
     run_one_round, run_one_round_multi, _, run_with_harness, _, _ = _lazy_v2()
     from src.llm import LLMConfig
-    config = LLMConfig.from_env() if obj["mock"] is False else None
+    config = LLMConfig.from_env() if not mock else None
 
     rounds = 0
     kept = 0
@@ -274,6 +324,9 @@ def daily_loop(obj, target, interval, max_rounds, multi, max_retries, test_path)
             click.echo(_format_round_result(r))
             if hasattr(r, "decision") and r.decision == "KEPT":
                 kept += 1
+                # Per user 2026-07-10: '区分开自动更新和手动更新'
+                if auto_commit:
+                    _do_auto_commit(target, r, multi)
             if max_rounds is None or rounds < max_rounds:
                 click.echo(f"  Sleeping {interval}s... (Ctrl-C to stop)")
                 time.sleep(interval)

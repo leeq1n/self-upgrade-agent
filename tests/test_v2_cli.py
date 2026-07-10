@@ -508,3 +508,65 @@ class TestV2CliDailyLoop:
             ])
         assert "Daily loop done: 3 rounds, 2 KEPT" in result.output
         assert result.exit_code == 0
+
+
+class TestV2CliAutoCommit:
+    """Per user 2026-07-10 '区分开自动更新和手动更新':
+    --auto-commit flag = auto-commit KEPT patches with [auto] author.
+    """
+    def test_auto_commit_helper_writes_bundle(self, tmp_path):
+        """write_patch_bundle writes a .patch file to upgrades/auto-patches/."""
+        import subprocess
+        from src.v3_auto_commit import write_patch_bundle
+        # Create a temp git repo with one modified file
+        repo = tmp_path / "repo"
+        repo.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+        subprocess.run(["git", "config", "user.email", "t@t"], cwd=repo, check=True)
+        subprocess.run(["git", "config", "user.name", "t"], cwd=repo, check=True)
+        (repo / "foo.txt").write_text("orig")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True)
+        subprocess.run(["git", "commit", "-m", "init"], cwd=repo, check=True)
+        (repo / "foo.txt").write_text("MODIFIED")
+        # Run helper from repo cwd
+        old = os.getcwd()
+        try:
+            os.chdir(repo)
+            # Need upgrades/ relative to repo
+            bundle = write_patch_bundle("foo.txt")
+            assert bundle.endswith(".patch"), f"expected .patch, got {bundle}"
+            assert os.path.exists(bundle)
+            content = open(bundle).read()
+            assert "MODIFIED" in content or "+MODIFIED" in content
+        finally:
+            os.chdir(old)
+
+    def test_auto_commit_uses_distinct_author(self):
+        """auto_commit uses 'Auto Upgrade <auto@self-upgrade.local>' (per user)."""
+        from src.v3_auto_commit import AUTO_AUTHOR, AUTO_EMAIL
+        assert AUTO_AUTHOR == "Auto Upgrade"
+        assert AUTO_EMAIL == "auto@self-upgrade.local"
+
+    def test_improve_help_includes_auto_commit(self):
+        """improve --help should expose --auto-commit."""
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        r = CliRunner().invoke(cli, ["improve", "--help"])
+        assert r.exit_code == 0
+        assert "--auto-commit" in r.output
+
+    def test_daily_loop_help_includes_auto_commit(self):
+        """daily-loop --help should expose --auto-commit."""
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        r = CliRunner().invoke(cli, ["daily-loop", "--help"])
+        assert r.exit_code == 0
+        assert "--auto-commit" in r.output
+
+    def test_improve_no_auto_commit_default(self):
+        """--no-auto-commit is the default (per 奥卡姆 + user control)."""
+        from self_upgrade.__main__ import cli
+        from click.testing import CliRunner
+        r = CliRunner().invoke(cli, ["improve", "--help"])
+        # Default should be False (no auto-commit)
+        assert "default: no" in r.output.lower() or "default: False" in r.output

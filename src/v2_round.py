@@ -383,12 +383,17 @@ def run_one_round_with_harness(
             last_round = r.value
 
     if last_round is None:
-        return RoundResult(
-            decision="NO_PATCH",
-            target_module=target_module,
-            elapsed_s=time.time() - t0,
-            error="harness produced no result",
-        )
+            # P18 fallback: harness produced no result (all attempts failed
+            # before any RoundResult returned).  Return NO_PATCH with paper=None
+            # (paper is required field but None is OK for fallback).  Per P9
+            # hard rule: this is a real failure, not LLM-judged.
+            return RoundResult(
+                decision="NO_PATCH",
+                paper=None,
+                target_module=target_module,
+                elapsed_s=time.time() - t0,
+                error="harness produced no result",
+            )
 
     # Annotate with harness metadata
     last_round.elapsed_s = time.time() - t0
