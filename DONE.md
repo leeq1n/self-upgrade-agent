@@ -533,3 +533,39 @@ Verified:
 
 NOT in this commit:
   - v3.0.2 think-execute harness (next)
+
+
+## v3.0.2 step 2.1 — Thinker abstract base (commit `pending`)
+
+Per LITERATURE: planning is the bottleneck (Self-Harness 40→62%,
+Lilian Weng "harness as important as model").
+
+Per user 2026-07-10: 分治, 测通小功能再联合.  This is the
+smallest unit of the harness: planning only.
+
+- [x] **`src/v4_thinker.py`** (~165 LOC, NEW):
+  - `Step(name, args)` dataclass + `Plan = List[Step]`
+  - `Thinker` abstract base (subclasses implement `plan()`)
+  - `MockThinker`: deterministic parser (no LLM) for tests
+  - `JsonThinker`: lazy-imports `v2_agent._chat` for real LLM
+    with fail-OPEN fallback
+- [x] **`tests/test_v4_thinker.py`** (~210 LOC, 24 tests):
+  - Step (4), AbstractThinker (2), MockThinker (7),
+    JsonThinkerParseSteps (6), JsonThinkerWithMockedLLM (3),
+    JointWithLiterature (2)
+
+Verified:
+  - 24/24 unit tests (0.19s)
+  - Full suite: 551 PASS + 6 skip + 0 fail (was 527; +24)
+
+Design choices:
+  - P9 hard rule: dataclass with `default_factory=dict`
+  - P17: fail-OPEN on LLM errors (5 fallback paths)
+  - P19: `Step.to_dict()` for persistence
+  - P10: Mock + Real paths (separation)
+  - LITERATURE: planning is the bottleneck
+
+NOT in this commit:
+  - step 2.2: `src/v4_executor.py` (Executor abstract)
+  - step 2.3: `src/v4_loop.py` (Think → Execute → Observe)
+  - step 2.4: joint test (end-to-end with mock)
