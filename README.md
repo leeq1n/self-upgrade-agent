@@ -79,8 +79,7 @@
 ├── benchmarks/tasks.json   # 21 个 benchmark 任务（6 类别）
 ├── tests/                   # 78+ 测试
 ├── upgrades/                # 运行时产出（candidates/backups/manifest）
-├── config.yaml              # 配置
-└── run.py                   # CLI 入口
+└── config.yaml              # 配置
 ```
 
 ## 统一入口 (v1.8.0)

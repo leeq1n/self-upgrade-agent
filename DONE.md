@@ -797,3 +797,43 @@ need more data).
 User should run:
   python -m self_upgrade improve-harness --count 5
   # 5 consecutive rounds, prints summary
+
+
+## v3.0.2 follow-up #4 — 奥卡姆 cleanup, root-dir artifacts
+
+Per user 2026-07-10: '看看项目首页, 好像有几个文件是这类功能?
+要么就是旧的版本删漏了? 根据奥卡姆剃刀原则处理一下'.
+
+Investigation (per P7 奥卡姆 + P14 docs current):
+
+Truly unused (no test imports, no doc references, 0 uses):
+- IDEA.md (raw user vision, never referenced)
+- run_5rounds_day6.py (v1.8.x Day 6 script, 0 references)
+- run.py (v1.8.x main entry, only comments reference it;
+  the unified CLI 'self_upgrade' replaced it; no code imports)
+
+Still referenced (kept, can't safely delete):
+- collect_papers.py (test_v181_features + README)
+- run_1round.py (test_run_1round.py)
+- run_3rounds_manual.py (test_run_1round.py)
+- run_stable.py (test_run_stable.py)
+- PROJECT_BRIEF.md (README + .hermes/plans)
+- ISSUES.md (README + .hermes/plans)
+
+This commit (1 commit, 奥卡姆, no split):
+
+1. git rm:
+   - IDEA.md
+   - run_5rounds_day6.py
+   - run.py
+2. README.md: removed 'run.py' from file tree
+3. DONE.md records
+
+Verified:
+  - Smoke test: 610 PASS + 6 skip + 0 fail (no regression)
+  - v3+v4+cli family: 33/33 PASS
+  - 1 commit, no split
+  - Working tree clean before commit
+
+Per LITERATURE: Signal-to-Fix Loop — finding dead code, removing
+it, testing = a real signal-to-fix iteration.
