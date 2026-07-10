@@ -4,9 +4,8 @@ status: "summary"
 ---
 
 # PRINCIPLES — Working principles (portable)
-L0: The 21 working principles (P1-P21) of this project, with concrete sub-rules for P20.
+L0: The 23 working principles (P1-P23) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here.
 Last P20-verified: 2026-07-10
-L0: Root principles (奥卡姆 + workflow + test-pyramid + doc-structure) → L1 (P1-P23) → L2 (实操).
 
 > Distilled from working on this project (2026-07-08 session).
 > These are project-agnostic — copy them to any future project.
@@ -121,7 +120,7 @@ Failure mode P20 guards against:
 | R4 | `EXTENSIONS.md` must be ≤ 500 bytes AND contain only a table (no prose paragraphs before/after). | The pointer file becomes a narrative — now the agent reads it to "understand" instead of to "look up". |
 | R5 | Every `docs/*.md` file ≤ 7KB is "self-contained summary".  Every file > 7KB must have a `*_DETAIL.md` companion whose name starts with the summary's filename minus `.md`. | A long doc that doesn't split — agent reads 12KB to get the 2KB it needed. |
 | R6 | `_DETAIL.md` companions must be referenced (linked) from their summary file.  A `_DETAIL.md` with no inbound link is an "orphan detail" and must be deleted or referenced. | Dead file that future agents trip over. |
-| R7 | Principles (P-n) are defined ONLY in `PRINCIPLES.md` (this file).  Any other `docs/*.md` may REFERENCE a P-n but must NOT redefine it.  Redefinition is a hard violation. | Drift: parent says P7 is X, child says P7 is Y — system collapses. |
+| R7 | Principles (P-n) are defined in EITHER `PRINCIPLES.md` (summary, brief) OR `PRINCIPLES_DETAIL.md` (full text), per the P11 split in commit `f753ec3`.  Any other `docs/*.md` may REFERENCE a P-n but must NOT redefine it.  Redefinition is a hard violation.  **Exception**: meta-rules (P22, P23) live in `_DETAIL.md` because their full text is in the same file as the P-n list. | Drift: parent says P7 is X, child says P7 is Y — system collapses. |
 | R8 | Cross-project links use relative paths (`../other-project/...`).  Absolute paths or `https://` (except for external sources) are not allowed in `docs/`. | A doc breaks when the project is moved or cloned. |
 | R9 | Every `docs/*.md` must begin with a single-line `L0:` frontmatter (≤ 120 chars) describing what the file is, in plain language.  This line is the L0 layer; the rest is L1+. | Doc with no L0 = not findable by the L0-only reader. |
 | R10 | Every `docs/*.md` should end with a `Last P20-verified: YYYY-MM-DD` line, updated whenever the doc is meaningfully changed. | Stale doc — the L0/L1/L2 contract was true on date X but may have rotted. |
@@ -163,7 +162,9 @@ Rules:
 This is the formal statement of the philosophy behind
 `docs/EXTENSIONS.md` (parent) and `docs/PHILOSOPHY.md` (children).
 
-- Done tasks: [../../DONE.md](../../DONE.md)
+**P22 + P23 (meta-rules)** are listed in the L0 axiom table above
+and the L1 children column.  See `PRINCIPLES_DETAIL.md` for full
+text.  R12 in P20.细则 governs child-project sync.
 
 ## L2: 实操 (per P-n)
 
@@ -171,3 +172,5 @@ Each P-n has a 1-line "实操" describing how to actually follow the
 principle.  See [PRINCIPLES_DETAIL.md](PRINCIPLES_DETAIL.md) for the
 full list.  L2 is the third layer of progressive disclosure
 (L0 = root axioms, L1 = principles, L2 = how to follow).
+
+- Done tasks: [../../DONE.md](../../DONE.md)
