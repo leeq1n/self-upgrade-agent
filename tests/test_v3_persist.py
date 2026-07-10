@@ -230,3 +230,84 @@ class TestDefaultPaths:
 
     def test_default_decisions_path(self):
         assert DEFAULT_DECISIONS_PATH.endswith("judge_decisions.jsonl")
+
+class TestV3SequentialChain:
+    """Per P24 (Sequential chain test): Stage A's disk output is Stage B's input.
+
+    Pattern (4 stages, per P3 + P19 + P24):
+    - Unit (Stage A): test read_papers + save_summaries separately
+    - Chain (A -> B): save to disk, read from disk, continue (no mock of disk)
+    - Joint: all stages wired with mock LLM
+    - Integration: real LLM (user runs --auto-commit)
+
+    Per user 2026-07-11 '小功能测通以后将输出作为下一个小功能的
+    输入测': we test the disk boundary, not just the function.
+    """
+    def test_chain_read_papers_to_select_best(self, tmp_path):
+        """Stage A: read_papers() + save_summaries() (mock).
+        Stage B: read_summaries() + select_best_mock() + save_decision().
+        Disk boundary tested (tmp_path)."""
+        import json
+        from src.v3_persist import save_summaries, read_summaries, save_decision, read_decisions
+        from src.v3_judge import select_best_mock
+        from src.v3_multipaper import PaperSummary
+
+        # Stage A: save mock summaries (simulates read_papers)
+        summaries_path = str(tmp_path / "summaries.jsonl")
+        decisions_path = str(tmp_path / "decisions.jsonl")
+
+        s1 = PaperSummary(paper_arxiv_id="2310.02170", title="A",
+                          idea="a", viewpoint="a", plan="a")
+        s2 = PaperSummary(paper_arxiv_id="2312.02566", title="B",
+                          idea="b", viewpoint="b", plan="b")
+        save_summaries([s1, s2], path=summaries_path)
+
+        # Verify disk write
+        with open(summaries_path) as f:
+            lines = [json.loads(line) for line in f]
+        assert len(lines) == 2
+        assert lines[0]["paper_arxiv_id"] == "2310.02170"
+
+        # Stage B: read from disk (chain boundary)
+        loaded = read_summaries(path=summaries_path)
+        assert len(loaded) == 2
+
+        # Continue chain: select_best_mock uses real disk-loaded data
+        winner = select_best_mock(loaded)
+        assert winner.paper_arxiv_id in ("2310.02170", "2312.02566")
+
+        save_decision(winner, loaded, source="mock", path=decisions_path)
+
+        # Stage C: read_decisions (verify downstream stage can read)
+        decisions = read_decisions(path=decisions_path)
+        assert len(decisions) == 1
+        assert decisions[0].winner_arxiv_id == winner.paper_arxiv_id
+        assert decisions[0].source == "mock"
+
+    def test_chain_paper_summary_roundtrip(self, tmp_path):
+        """save_summaries -> read_summaries roundtrip preserves fields."""
+        from src.v3_persist import save_summaries, read_summaries
+        from src.v3_multipaper import PaperSummary
+
+        s1 = PaperSummary(paper_arxiv_id="2310.02170", title="DyLAN",
+                          idea="Dynamic LLM agent network", viewpoint="use",
+                          plan="v3", section="sec1")
+        s2 = PaperSummary(paper_arxiv_id="2312.02566", title="Harness",
+                          idea="Self-harness iterative", viewpoint="use",
+                          plan="v3")
+        path = str(tmp_path / "chain.jsonl")
+
+        save_summaries([s1, s2], path=path)
+        loaded = read_summaries(path=path)
+
+        assert len(loaded) == 2
+        assert loaded[0].paper_arxiv_id == "2310.02170"
+        assert loaded[0].idea == "Dynamic LLM agent network"
+        assert loaded[1].title == "Harness"
+
+    def test_chain_handles_missing_files(self, tmp_path):
+        """Empty / missing disk files -> empty list (graceful, per P19)."""
+        from src.v3_persist import read_summaries, read_decisions
+        missing_path = str(tmp_path / "missing.jsonl")
+        assert read_summaries(path=missing_path) == []
+        assert read_decisions(path=missing_path) == []

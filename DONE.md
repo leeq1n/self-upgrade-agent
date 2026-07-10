@@ -510,3 +510,83 @@ This commit (1 commit, 奥卡姆, additive, no split):
   4. P23: doc-first, no script
   5. P7 奥卡姆: 1 commit, additive (no behavior change for non-auto-commit)
   6. P17 honest: bug fix in v2_round.py was pre-existing, not from this work
+
+
+## v3.1.0 follow-up — P24 (Sequential chain test) + 3 chain tests
+
+Per user 2026-07-11 '小功能测通合并测, 需要补充: 小功能测通
+以后将输出作为下一个小功能的输入测, 都测通了合并测'.
+
+This commit (1 commit, 奥卡姆, additive + 1 principle):
+
+### 1. New principle: P24 (Sequential chain test)
+
+  Extends P3 单元→联合→集成 to 4 stages:
+  - Unit (Stage A): test A() alone with mock external
+  - **Chain (A → B)**: A() → save to disk → read from disk → B().
+    No mock of disk; use tmp_path.  Verify intermediate shape.
+  - Joint (A + B + C wired): all stages with mock external
+  - Integration (real run): no mocks
+
+  Find commonality (per P22):
+  - P3 单元→联合→集成: extended
+  - P19 data flow observability: chain test verifies intermediate
+  - P7 奥卡姆: one new test class, no framework
+
+### 2. New tests: tests/test_v3_persist.py + 3 chain tests
+  - test_chain_read_papers_to_select_best: A → save → B
+  - test_chain_paper_summary_roundtrip: save → read preserves fields
+  - test_chain_handles_missing_files: graceful empty list (P19)
+
+### 3. Verified:
+  - 19/19 in test_v3_persist.py (was 16; +3 chain tests)
+  - P24 principle documented in PRINCIPLES.md
+  - Per P23 doc-first: no hermes-verify script
+  - 1 commit, no split
+
+### Honest (per P17) — IMPORTANT context for user:
+
+After this commit, full suite has 12 pre-existing failures:
+  - tests/test_core_agent.py: 9 failures (ImportError: cannot
+    import 'plan_task' from 'core.planner.py')
+  - tests/test_patchgen.py: 1 failure
+  - tests/test_pipeline_harness_integration.py: 1 failure
+  - tests/auto/test_planner_harness.py: 8 failures
+
+**Root cause**: Two auto-commits (78fb12e and 1238c09) from
+user's `--auto-commit` runs today modified core/planner.py:
+  - LLM replaced `plan_task()` with `plan_regression_tests()`
+    and `plan_harness_test()` (harness-engineering paper win)
+  - 16/16 in test_v2_round.py passed → auto-commit OK
+  - But old tests (test_core_agent.py, test_planner_harness.py,
+    test_pipeline_harness_integration.py) import the OLD
+    `plan_task` → ImportError
+
+**This is exactly the risk user warned about** ('区分开自动
+更新和手动更新'): auto-commit applied a LLM change that broke
+dependent tests.  Auto-commit worked correctly per design
+(passes target test_path), but didn't run full suite.
+
+**Decision (per user, options)**:
+  A. Revert core/planner.py to last good (HEAD~2 = before
+     auto-commit 78fb12e). Discards LLM real work but restores
+     stability.
+  B. Update tests/test_core_agent.py etc. to import new
+     functions (plan_regression_tests, plan_harness_test).
+     Keeps LLM work, requires test updates.
+  C. Add full-suite gate to --auto-commit (don't commit if
+     full suite fails). Prevents future occurrences.
+  D. Leave as-is (LLM auto-commit in place, tests fail, user
+     investigates).
+
+**Recommendation**: A + C combined (revert + add gate).
+Or just B (update tests, keep LLM work).  Per P17 老实说,
+this is a real choice — user decides.
+
+Per 你的 workflow (P22):
+  1. P22: check state (working tree, LLM auto-commit side effects)
+  2. P22: write plan (1 commit for P24, separate decision on LLM)
+  3. P22: update docs (P24 + this DONE entry)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: 1 commit, additive
+  6. P17 honest: explicit user-decision on LLM side effect

@@ -166,6 +166,41 @@ This is the formal statement of the philosophy behind
 and the L1 children column.  See `PRINCIPLES_DETAIL.md` for full
 text.  R12 in P20.细则 governs child-project sync.
 
+### P24. Sequential chain test (output → input)
+When implementing a pipeline of small features (A → B → C), test
+each stage individually AND test the chain by **passing Stage A's
+disk output as Stage B's input**.  Don't mock the disk boundary;
+use real disk + tmp_path fixture.
+
+Pattern (4 stages, extends P3 单元→联合→集成):
+1. **Unit** (Stage A): test A() alone with mock external (LLM, network).
+2. **Chain** (A → B): A() → save to disk → read from disk → B().
+   No mock of disk; use `tmp_path` fixture.  Verify intermediate
+   output is correct shape.
+3. **Joint** (A + B + C wired): all stages in one test, mock
+   external only at boundaries (LLM).
+4. **Integration** (real run): no mocks, real LLM, real disk.
+
+Why (per P19 data flow observability): intermediate outputs are
+already persisted to disk.  Tests should verify that the
+persistence is **readable + correct shape** for downstream stages.
+A unit test only verifies Stage A's return value; it doesn't catch
+"wrong file path", "wrong JSON format", "stale data from previous
+run".
+
+Rationale (per user 2026-07-11): '小功能测通以后将输出作为下一
+个小功能的输入测, 都测通了合并测'.  Same idea as integration
+testing — test the **boundary**, not just the function.
+
+Find commonality (per P22):
+- P3 单元→联合→集成: extended to 4 stages
+- P19 data flow observability: chain test verifies intermediate
+- P7 奥卡姆: chain test is **one new test class**, not new framework
+
+**实操 (L2)**: per new pipeline feature, write 1 unit + 1 chain
+test before the joint test.  Chain test uses `tmp_path` for disk
+isolation.  Per Test + Doc roots.
+
 ## L2: 实操 (per P-n)
 
 Each P-n has a 1-line "实操" describing how to actually follow the
