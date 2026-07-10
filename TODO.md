@@ -1,4 +1,4 @@
-# TODO — Pending Tasks
+# TODO —
 
 Each task is a checkbox.  To claim: change `[ ]` to `[x]` and move
 the line into DONE.md.  Keep this list SHORT and CURRENT; older
@@ -6,212 +6,69 @@ completed work lives in DONE.md.
 
 > Convention: `- [ ]` = not started, `- [x]` = done, `- [/]` = in progress.
 
-## High priority (next 1-2 sessions)
+## Completed (history, see DONE.md for details)
 
-- [x] **Failure → regression test pipeline** — DONE in v2.3
-  (commit `0dc68cb`).  Every NO_PATCH / APPLY_FAILED / REVERTED
-  outcome is logged to `upgrades/failures.jsonl`.  See
-  [src/failures.py](src/failures.py) and
-  [tests/test_v2_failures.py](tests/test_v2_failures.py).
-  The replay mechanism is implemented (`replay_one`) but no
-  automatic replay loop yet — that's a future v2.3.x addition.
+- [x] **Failure → regression test pipeline** — v2.3 (commit `0dc68cb`)
+- [x] **Automatic replay of failure log** — v2.3.1 (commit `216f7e0`)
+- [x] **Unified CLI** — v2.4.0 (commit `2442d09`)
+- [x] **Gitignore cleanup** — v2.4.1 (commit `a5d3029`)
+- [x] **Multi-paper reading** — v3.0.0 (commit `da3ba26`)
+- [x] **Multi-paper selection** — v3.0.1 (4 sub-steps, 4 stage gates)
+- [x] **Hotfix timeout bump** — v3.0.1 (commit `be0072c`)
+- [x] **Progress markers** — v3.0.1 (commit `eb70e90`)
+- [x] **Replay default = inspect** — v3.0.2 step 1 (commit `3d74ba8`)
 
-- [x] **Automatic replay of failure log** — DONE in v2.3.1
-  (commit `216f7e0`).  See `replay_all()` in [src/failures.py](src/failures.py)
-  and `replay_all_failures()` driver in [src/v2_round.py](src/v2_round.py).
-  The P18 loop is now closed: log on failure + replay the log.
+## In progress (current 1-2 sessions)
 
-- [ ] **5 consecutive KEPT rounds** — run run_one_round 5 times in a row
-  with the same paper (FIXED_PAPER=DyLAN).  Goal: prove the self-improving
-  loop is stable, not just one-shot lucky.  User to run (requires real
-  LLM time).
+### v3.0.2 — think-execute harness (LITERATURE: Self-Harness, Lilian Weng)
 
-- [x] **Run replay_all_failures() on the real `upgrades/failures.jsonl`**
-  — DONE in v2.3.2 (commit `9ea2b5e`).  See
-  `python -m self_upgrade replay` (unified CLI).  Reported
-  now_passes=4, still_fails=18 from the existing log.
+Per user feedback 2026-07-10: '分治, 多次将功能分块, 直到足够小,
+每个功能测通了再联合起来测, 继续你认为正确的方向, 中间记得
+记录, 还有一开始那些关于 agent 的知识也要灵活运用'.
 
-- [ ] **Run 5 consecutive KEPT rounds** (still pending real LLM
-  data).  The first 3 rounds in v2.3.2 showed: 1 KEPT, 2 NO_PATCH.
-  Pattern: LLM temperature is non-zero; sometimes valid patch,
-  sometimes bad parse.  Loop is working; need either more rounds
-  or a prompt fix.  Use: `python -m self_upgrade test-scale 5`.
+- [/] **step 1** — replay default = inspect (fast, no LLM)
+      DONE in `3d74ba8` + `1b044ae`.  Verifier 16/16 PASS.
+      `python -m self_upgrade replay` now < 1s (was 5+ min).
+- [ ] **step 2.1** — `src/v4_thinker.py` (Thinker 抽象, plan API)
+      5 tests.  ~80 LOC.  LLM-as-deep-thinker.
+- [ ] **step 2.2** — `src/v4_executor.py` (Executor 抽象, tool dispatch)
+      5 tests.  ~80 LOC.  Tool calls.
+- [ ] **step 2.3** — `src/v4_loop.py` (Think → Execute → Observe)
+      5 tests.  ~60 LOC.  Loop controller.
+- [ ] **step 2.4** — joint test (LLM mock + thinker + executor)
+      3 tests.  ~50 LOC.  End-to-end mock.
 
-## v2.4.0 — CLI consolidation (current commit)
+## Backlog (NOT in current session, recorded per user principle)
 
-- [x] **Unified CLI** — `python -m self_upgrade` is the single
-  entry point.  Replaces:
-    - `python -m self_upgrade` (v1.8.x unified CLI, backed up
-      in __main__.v18_backup.py)
-    - `scripts/run_5_rounds.py` (v2.3.2)
-    - `scripts/run_replay.py` (v2.3.2)
-    - `scripts/_self_check_run_replay.py` (v2.3.2)
-    - `scripts/start_llama_servers.sh` (v1.8.x, deleted)
-  Subcommands: `improve`, `replay`, `test-scale N`.  Click-based.
+Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功能时,
+可以作为 TODO 记录下来, 这时候要整理文档'.
 
-- [x] **Deleted obsolete tests** — removed test_unified_cli.py
-  (v1.8.x), test_gc.py (v1.8.x gc subcommand), test_audit_cli.py
-  (v1.8.x audit subcommand).  Replaced test_start_llama_servers
-  and test_gc_command with v2.x equivalents.
+### Cleanup (低风险, 1 commit each)
 
-- [x] **Updated test_v181_features.py** — replaced
-  test_gc_command_supports_memory_policy_flag and
-  test_start_llama_servers_script_exists with
-  test_cli_has_three_subcommands and test_no_legacy_scripts_directory.
+- [ ] 删 v1.8.x deprecated modules (11 个)
+      `src/pipeline_lg.py`, `src/react.py`, `src/mcp_client.py`,
+      `src/memory_server.py`, `src/langchain_bridge.py`, etc.
+- [ ] 删 `self_upgrade/__main__.v18_backup.py` (469 行, 没用)
+- [ ] 更新 LITERATURE.md (新加 11 papers 待 better notes)
 
-- [x] **Added tests/test_v2_cli.py** (9 tests) — Click group
-  structure, subcommand help, lazy import speed.
+### User-side (你跑)
 
-## Medium priority (v3.x features)
+- [ ] 5 consecutive multi-paper rounds stability test
+      CLI: `python -m self_upgrade test-scale 5`
+- [ ] `python -m self_upgrade replay --live` (慢, 真 LLM, debug only)
+- [ ] 真 `improve-multi` 跑 5+ 次,看 KEPT/NO_PATCH ratio
 
-- [ ] **Multi-paper reading** — read 5+ more papers on agent self-improvement,
-  innovation extraction, multi-agent selectors.  Goal: inform v3.0 design
-  for multi-paper selection.  Update [docs/LITERATURE.md](docs/LITERATURE.md).
+### Future (v3.1+ or v4+)
 
-- [ ] **Think-execute harness** for LLM-as-deep-thinker (per user
-  2026-07-08).  Uses strong model for planning, light model for
-  execution.
+- [ ] 真实 daily loop (cron job)
+- [ ] A/B benchmark (新 patch vs 旧)
+- [ ] bootloader 风格 atomic 切换 (你 vision 起点)
 
-- [ ] **Multi-paper selection** — extend FIXED_PAPER (single paper) to a
-  paper pool + LLM-driven selection.  Per user: "规划属于思考, 查询和
-  更新记忆属于执行".
+## Lesson (per P19 + LITERATURE)
 
-- [ ] **Skip-execute-on-decision** optimization — think layer can
-  short-circuit execute to save tokens.  Per user: "放在更后面做实验
-  验证".  OPTIONAL / experimental.
-
-- [ ] **Decision logging** — persist RoundResult to a database for
-  audit + analysis.  Schema defined already (RoundResult dataclass).
-
-## Cleanup (奥卡姆)
-
-- [ ] **Delete deprecated `src/pipeline_lg.py` and 7 sibling files**
-  once v2 is verified stable.  Listed in [PROJECT_STATE_DETAIL.md §Deprecated](docs/PROJECT_STATE_DETAIL.md#deprecated-modules).
-
-- [ ] **Run real end-to-end with new shorter prompt** — verify the
-  prompt-as-interface refactor (commit `19ebf8b`) didn't break real
-  LLM output.  User to run.
-
-## TODO references
-
-For the full paper notes, see [docs/LITERATURE.md](docs/LITERATURE.md)
-and [docs/LITERATURE_DETAIL.md](docs/LITERATURE_DETAIL.md).
-
-For the project's working principles (not task-specific), see
-[docs/PRINCIPLES.md](docs/PRINCIPLES.md).
-
-- [postsyntax]: production failures → regression test pattern.
-  https://postsyntax.substack.com/p/the-agent-improvement-loop-turning
-- [user-2026-07-08]: Multi-paper reading + think-execute + multi-paper
-  selection are deferred until fixed-paper loop is verified end-to-end.
-- [user-2026-07-08-docs]: docs should be "摘要+引用" pattern, not
-  long-form essays.  See [docs/INDEX.md](docs/INDEX.md) for navigation.
-- [user-2026-07-08-project-knowledge]: knowledge from papers belongs
-  in the project (LITERATURE.md), not in agent memory.  Future agents
-  should read LITERATURE_DETAIL.md to learn what we already know.
-- [user-2026-07-08-principles]: working principles (整理→思考→行动,
-  单元→联合→集成, 摘要+引用, etc.) are extracted into PRINCIPLES.md
-  so they survive across projects.
-
-## v2.4.1 — Gitignore cleanup (current commit)
-
-- [x] **Removed upgrades/* runtime artifacts from git** —
-  20 files (JSONL, .db, .json) were accidentally committed
-  via `git add -A` in v2.4.0.  This commit:
-    - `git rm --cached -r upgrades/` (files still on disk)
-    - Added `upgrades/*` catch-all to `.gitignore`
-    - 1 commit, 21 files (1 modify + 20 delete)
-
-Lesson (per P17 honest reporting): `git add -A` is too
-permissive.  Future commits should use `git add <file>` or
-`git add -u`.
-
-Status: working tree fully clean.
-
-
-## v3.0.0 — Multi-paper reading (current commit)
-
-- [x] **`src/v3_multipaper.py`** (~150 LOC, NEW): read_papers(),
-  PaperSummary dataclass, parse_literature_catalog().  Reads
-  11 papers from `docs/LITERATURE_DETAIL.md` and returns
-  structured summaries (idea + viewpoint + plan).
-- [x] **`tests/test_v3_multipaper.py`** (17 tests, NEW):
-  PaperSummary, _infer_arxiv_id, parse_literature_catalog,
-  read_papers, paper_count.  All PASS.
-- [x] **No LLM calls** — deterministic parsing only.  This
-  avoids the LLM-temperature noise that has plagued v2.x
-  (per LITERATURE: "Self-Refine in code gen frequently
-  regresses").  LLM-as-judge is the next commit (v3.0.1).
-
-Verified:
-  - Unit tests: 17 PASS (new test_v3_multipaper.py)
-  - Full suite: 466 PASS + 6 skip + 0 fail (was 449; +17 net)
-  - Real catalog parses: 11 papers extracted with arxiv_id,
-    title, idea, viewpoint, plan
-
-Next (separate commits, per small-step workflow):
-  - v3.0.1 step 1.1 — judge mock (DETERMINISTIC).  DONE in 6158559.
-  - v3.0.1 step 1.2 — judge real (LLM call, mock fallback).  DONE in 3073015.
-  - v3.0.1 step 1.3 — persist intermediate results.  DONE in 2dce2a7.
-    Includes save_summaries, save_decision.  Per user insight
-    'if functions execute sequentially, persist prior output'.
-  - v3.0.1 step 1.4 — wire into v2_round.  DONE in 17647ab.
-    Adds run_one_round_multi() + improve-multi CLI subcommand.
-    CLI now has 4 subcommands: improve, improve-multi, replay, test-scale.
-
-
-## Next (分治 + 记录 + 灵活运用) — per user 2026-07-10
-
-User: '分治, 多次将功能分块, 直到足够小, 每个功能测通了再
-联合起来测, 继续你认为正确的方向, 中间记得记录, 还有
-一开始那些关于 agent 的知识也要灵活运用'.
-
-- [ ] **修 replay (--mock default)** — 你跑会卡 5+ min, 真问题
-  - step 1.1: replay --mock = show log summary (fast)
-  - step 1.2: replay --live = 真 replay (slow, opt-in)
-  - step 1.3: tests + stage gate
-- [ ] **v3.0.2 — think-execute harness** (experimental, LITERATURE
-      Self-Harness / Harness Engineering / Nate Berkopec 方向)
-  - step 2.1: `src/v4_thinker.py` (Thinker 抽象, plan API), 5 tests
-  - step 2.2: `src/v4_executor.py` (Executor 抽象, tool dispatch), 5 tests
-  - step 2.3: `src/v4_loop.py` (Think → Execute → Observe), 5 tests
-  - step 2.4: joint test (LLM mock), 3 tests
-- [ ] **5 round stability test** (你跑: `python -m self_upgrade test-scale 5`)
-- [ ] **删 v1.8.x deprecated modules** (cleanup, 1 commit)
-- [ ] **更新 LITERATURE.md** (新加 11 papers 待 better notes)
-
-## Lesson from this session
-
-- Signal-to-Fix Loop: telemetry → signal → fix → deploy
-  我们 = progress markers (signal) → next commit (fix) → user run (deploy)
-- SkillOpt: skills as external state = upgrades/judge_*.jsonl 是 truth
-
-
-## v3.0.1 — COMPLETE (all 4 steps)
-
-Multi-paper selection is now fully integrated:
-  - 11 papers read from docs/LITERATURE_DETAIL.md
-  - Judge picks best (LLM or mock fallback per P17)
-  - Summaries + decisions persisted (P19)
-  - run_one_round_multi() delegates to existing run_one_round()
-  - User can run: python -m self_upgrade improve-multi
-
-NOT yet done:
-  - Real LLM call in user environment (needs user run with .env)
-  - 5 consecutive multi-paper rounds (stability test, user)
-  - v3.0.2 — think-execute harness (you said experimental)
-  - v3.0.2 — think-execute harness for LLM (你 said experimental)
-
-## Principle P19 — Data flow observability (NEW)
-
-Per user insight 2026-07-09: 'if functions execute sequentially,
-persist prior output as next function's input'.  Applied to
-v3.0.1 step 1.3 (save_summaries + save_decision).  Future
-pipelines should follow this pattern.  See PRINCIPLES.md.
-
-Bug discovered during dev:
-  - Regex greedy/non-greedy pitfall: `\*\*(Why.*?use)\*\*`
-    fails to match `**Why we DON'T use it directly**` because
-    non-greedy .*? stops at the FIRST 'use' and can't backtrack
-    to satisfy the trailing **.  Fix: `[^*]*` between the
-    keyword and the closing **.
+- Signal-to-Fix Loop (Droid 2026): telemetry → signal → fix → deploy
+  我们 = progress markers (signal) → commit (fix) → user run (deploy)
+- SkillOpt (Microsoft 2026): skills as external state
+  我们 = failures.jsonl / judge_*.jsonl 作为 truth
+- P19 data flow observability: persist intermediate results
+  step 1.3 (save_summaries + save_decision) 已实现
