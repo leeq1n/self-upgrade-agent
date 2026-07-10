@@ -128,4 +128,27 @@ test.  Production-grade systems are built on this rule.
 - LLM choice: [MODEL_STRATEGY.md](MODEL_STRATEGY.md)
 - Literature: [LITERATURE.md](LITERATURE.md)
 - Pending tasks: [../../TODO.md](../../TODO.md)
+
+
+## Data Flow (P19)
+
+**P19: Data flow observability**
+
+When functions execute sequentially (A → B → C), persist A's
+output to disk so B can read it without re-running A.  This:
+  - Makes the data flow observable (`cat upgrades/foo.jsonl`)
+  - Lets us replay a step without redoing prior steps
+  - Lets us debug which input led to which output
+  - Survives crashes (we can pick up where we left off)
+
+Per user insight 2026-07-09: '如果有几个功能是顺序执行,
+你可以先把前面的输出存下来, 作为下一个功能的输入'.
+
+Concrete pattern in v3.0.1:
+  - `read_papers()` -> `save_summaries()` (JSONL overwrite)
+  - `read_summaries()` -> `select_best()` -> `save_decision()` (JSONL append)
+
+Format: JSONL (one record per line).  Append-only for events,
+single-snapshot for state.
+
 - Done tasks: [../../DONE.md](../../DONE.md)

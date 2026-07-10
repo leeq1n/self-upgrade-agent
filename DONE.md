@@ -341,3 +341,46 @@ Verified:
 NOT in this commit (future steps):
   - v3.0.1 step 1.3: joint test (e2e with mocked LLM)
   - v3.0.1 step 1.4: wire into v2_round
+
+
+## v3.0.1 step 1.3 — Persist intermediate results (commit `pending`)
+
+Per user insight 2026-07-09: '如果有几个功能是顺序执行,
+你可以先把前面的输出存下来, 作为下一个功能的输入'.
+
+Step 1.1 (mock) + step 1.2 (real LLM) worked in isolation.
+Step 1.3 makes the data flow EXPLICIT.
+
+- [x] **`src/v3_persist.py`** (~170 LOC, NEW):
+  - `save_summaries(summaries, path)` -> str  (overwrites)
+  - `read_summaries(path)` -> List[PaperSummary]  (skips corrupt)
+  - `save_decision(winner, inputs, source, path)` -> str  (appends)
+  - `read_decisions(path)` -> List[DecisionRecord]  (skips corrupt)
+  - `DecisionRecord` dataclass (timestamp + winner + source)
+  - Default paths in `upgrades/` (gitignored runtime state)
+
+- [x] **`tests/test_v3_persist.py`** (~270 LOC, 16 tests):
+  - SummariesRoundtrip (7), DecisionsRoundtrip (5),
+    JointWithMultiPaper (2), DefaultPaths (2)
+
+Verified:
+  - 16 PASS in 0.43s
+  - Full suite: 509 PASS + 6 skip + 0 fail (was 493; +16)
+  - 15/15 hermes-verify PASS
+  - Joint e2e: read_papers (11) -> save -> load -> select_best
+    (mock fallback) -> save decision works end-to-end
+
+Design choices:
+  - JSONL append-only for decisions (per P18 pattern)
+  - JSONL single-snapshot for summaries (overwrite, not append)
+  - Skip corrupt lines (graceful degradation)
+  - Default paths in `upgrades/` (gitignored)
+  - `DecisionRecord.source` field: mock | llm | fallback
+    (observability: WHY was a decision made)
+
+NOT in this commit:
+  - v3.0.1 step 1.4: wire into v2_round
+
+New principle (P19): Data flow observability — sequential
+functions should persist intermediate outputs for debugging,
+replay, and observability.
