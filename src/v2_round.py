@@ -37,6 +37,18 @@ from src.v3_judge import select_best
 from src.v3_persist import save_summaries, save_decision
 
 
+def _stage(name: str, start: float) -> None:
+    """Print a progress marker with elapsed time, flushed immediately.
+
+    Per user feedback 2026-07-10: '长时间不知道运行状态'.
+    Each stage in the round prints its name + elapsed since round start.
+    This makes the LLM call (typically 100-130s) visible as progress
+    rather than silent waiting.
+    """
+    elapsed = time.time() - start
+    print(f"  [{elapsed:5.1f}s] {name}", flush=True)
+
+
 @dataclass
 class RoundResult:
     decision: str            # "KEPT" | "REVERTED" | "NO_PATCH" | "APPLY_FAILED"
@@ -145,7 +157,9 @@ def run_one_round(
     t0 = time.time()
 
     # 1. Generate patch
+    _stage("Generating patch (LLM call)...", t0)
     patch = improve(paper, target_module=target_module, config=config)
+    _stage(f"  patch: {patch is not None}", t0)
 
     if patch is None:
         result = RoundResult(
@@ -159,8 +173,10 @@ def run_one_round(
         return result
 
     # 2. Apply
+    _stage("Applying patch to disk...", t0)
     apply_result = apply_patch(patch, target_module=target_module,
                                 run_harness_after=False)
+    _stage(f"  apply status: {apply_result.status}", t0)
     if apply_result.status != "APPLIED":
         # apply already reverted; cleanup any snapshot it left
         cleanup_snapshot(apply_result.snapshot_path)
@@ -178,7 +194,9 @@ def run_one_round(
 
     # 3. Run project tests (default = just the round test file; user
     # can pass test_path="tests/" for full suite)
+    _stage(f"Running tests ({test_path})...", t0)
     passed, failed, rc, stderr = run_project_tests(project_root, test_path=test_path)
+    _stage(f"  tests: {passed} passed, {failed} failed (rc={rc})", t0)
     tests_ok = (rc == 0) and (failed == 0)
 
     # 4. Decide
@@ -264,6 +282,7 @@ def run_one_round_multi(
     project_root = project_root or os.getcwd()
     config = config or LLMConfig.from_env()
     t0 = time.time()
+    _stage("Reading catalog...", t0)
 
     # 1. Read all papers from the catalog
     summaries = read_papers()
@@ -278,15 +297,20 @@ def run_one_round_multi(
             elapsed_s=time.time() - t0,
             error="no papers in catalog",
         )
+    _stage(f"  loaded {len(summaries)} papers", t0)
 
     # 2. Persist summaries (per P19)
+    _stage("Persisting summaries...", t0)
     save_summaries(summaries)
 
     # 3. Select best (mock fallback if llm_config is None)
-    winner = select_best(summaries, config=llm_config)
     source = "llm" if llm_config is not None else "mock"
+    _stage(f"Selecting best paper ({source} judge)...", t0)
+    winner = select_best(summaries, config=llm_config)
+    _stage(f"  winner: {winner.paper_arxiv_id}", t0)
 
     # 4. Persist decision
+    _stage("Persisting decision...", t0)
     save_decision(winner, summaries, source=source)
 
     # 5. Convert to Paper for v2_agent.improve()

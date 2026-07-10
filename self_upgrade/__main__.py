@@ -151,7 +151,10 @@ def improve_multi(obj, target, test_path, no_judge_llm):
     from src.llm import LLMConfig
     config = LLMConfig.from_env() if obj["mock"] is False else None
     llm_config = config if no_judge_llm else None
-    click.echo(f"Reading papers from catalog...")
+    # NOTE: v2_round.run_one_round_multi() now emits per-stage
+    # progress markers (Reading catalog... -> Selecting best ->
+    # Generating patch -> Applying -> Running tests).  We no
+    # longer print a banner here so we don't double up.
     r = run_one_round_multi(
         target_module=target,
         config=config,
