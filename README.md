@@ -1,5 +1,9 @@
 # Self-Upgrade Agent
 
+> **Before any `docs/*.md` change**, run `python scripts/check_docs.py`
+> and include "P20 verify: 10/10 PASS" in your commit message.
+> See `docs/PRINCIPLES.md` P20.细则 for the contract.
+
 通过搜索最新论文 → 生成代码补丁 → 真实 benchmark 对比 → 自动部署来**自主改进自身源代码**的 AI Agent。
 
 > **v1.6.0** — ISS-013/012 修复完成（filter 真正用 LLM；benchmark dataclass 兼容）；`--unlock-keys` 命令；ModelScope 网关稳定性 ISS-014 文档化。v1.5.0 commit 97aa0a1 留下真实端到端 promote 历史证据。

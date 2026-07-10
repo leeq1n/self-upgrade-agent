@@ -27,13 +27,12 @@ to detail only as needed.
 5. [LITERATURE.md](LITERATURE.md) — 5 min
 6. [PRINCIPLES.md](PRINCIPLES.md) — 3 min (general, not project-specific)
 7. [MODEL_STRATEGY.md](MODEL_STRATEGY.md) — 3 min
-8. [OBSERVATIONS.md](OBSERVATIONS.md) — real-run data (5-round, KEPT ratio) — 3 min
-9. [../TODO.md](../TODO.md) to see pending work — 2 min
-10. [EXTENSIONS.md](EXTENSIONS.md) — only if you're curious about
-   cross-project ideas (knowledge graph, future X2+, etc.); skip
-   if you just need to ship the next TODO — 0-5 min
+8. [../TODO.md](../TODO.md) to see pending work — 2 min
 
-Total: 35-40 min to full orientation.
+Total: 35 min to full orientation.
+
+## Conditional loads (read ONLY if relevant)
+
 These are **stealth docs** (per P20): they have no summary, only
 a pointer.  Read them only when your task matches the trigger.
 
