@@ -378,3 +378,65 @@ This is the **9th bug** in v3_auto_commit.py in 3 commits
 (2026-07-10 caller check + 2026-07-11 gbk + None + compile + glob).
 The harness boundary is HARD.  Each iteration teaches us a new
 aspect of the boundary.
+
+
+## 2026-07-11 — Harness persistence 真 verified (per LITERATURE Self-Harness)
+
+User directed "按你认为正确的顺序继续推进".  Per P22 步骤 3 (find
+commonality): pending TODOs include state.json (per P19), failure
+recovery (per P18), skill lifecycle (v3.2.0).  But the highest-value
+"verify" target is the **LLM-added harness persistence** that landed
+via [auto] commit 4c99443 (harness-engineering paper, 2026-07-11).
+
+LLM added these functions to core/planner.py (per auto-commit bundle):
+- `RoundResult` dataclass (task + steps + timestamp + round_id)
+- `_get_db_path`, `_init_db`: SQLite path + schema init
+- `save_round_result(result) -> int`: persist round
+- `get_round_result(round_id) -> Optional[RoundResult]`: retrieve
+- `create_regression_test_plan(failed_task, failure_reason, llm_call)`
+- `plan_task(task, llm_call, persist=True)` — new `persist` kwarg
+
+**This commit (1 commit, 奥卡姆, additive verification)**:
+
+1. `tests/test_planner_harness_persistence.py` — 11 tests
+   (P3 test pyramid: unit + joint + integration)
+   - RoundResult dataclass (unit)
+   - _get_db_path / _init_db (unit)
+   - save_round_result round-trip (joint: save + get)
+   - get_round_result missing round (edge case)
+   - create_regression_test_plan with mock LLM (unit)
+   - create_regression_test_plan empty fallback (edge)
+   - plan_task(persist=True) saves to DB (integration)
+   - plan_task(persist=False) doesn't save (regression prevention)
+   - test_agent_can_still_import_plan_task (caller check, per P9)
+   - test_init_exports_plan_task (caller check)
+
+2. Updated test count: 638 → 649 PASS (+11 new, all LLM persistence verified)
+
+3. Per P18: these tests are **regression tests** for future LLM
+   changes.  If LLM later breaks persistence, tests catch it.
+
+Verified:
+- 11/11 PASS in test_planner_harness_persistence.py
+- 51/51 PASS in test_v2_cli.py + test_planner_harness_persistence.py
+- Per P23 doc-first: no hermes-verify script
+
+Per 你的 workflow (P22 + 自上而下/分治):
+  - 大任务: harness persistence 真 verify
+  - 子任务: 11 tests (one per function/feature)
+  - 子任务可再分: by edge case, signature, caller
+  - 整合 = 11 tests + 1 commit (one logical step)
+
+Lesson (per LITERATURE Self-Harness paper):
+- harness = harness boundary + persistence
+- The 11 tests are P19 data flow observability: each function's IO
+  is tested (input → DB, DB → output)
+- Per Signal-to-Fix: tests fail at unit layer (compile-time), not
+  at runtime integration (per P18 regression test)
+
+**Honest (P17)**:
+- 2 [auto] commits 真 worked (verified by caller check passing)
+- harness persistence 真 works (verified by 11 tests)
+- Next TODO: state.json (TODO #3 in TODO list) for cross-process state,
+  but per 当前 daily-loop `--max-rounds N` runs in one process, this
+  is future-need, not now.

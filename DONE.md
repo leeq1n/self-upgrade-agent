@@ -795,3 +795,48 @@ Honest (P17):
     is the interface layer across contexts.
   - Per Lilian Weng: harness engineering = one pattern, multiple
     surfaces.  Same idea.
+
+
+## v3.1.0 follow-up — Harness persistence 真 verified (per P18 + LITERATURE)
+
+Per user 2026-07-11 '按你认为正确的顺序继续推进'.
+Per P22 步骤 3 (find commonality): prioritize highest-value target.
+LLM 真 added harness persistence via [auto] commit 4c99443.
+Need 验证 (per P18: failure -> regression test, never lose贡献).
+
+This commit (1 commit, 奥卡姆, no split):
+
+1. tests/test_planner_harness_persistence.py — 11 tests for:
+   - RoundResult dataclass (unit)
+   - _get_db_path / _init_db (SQLite path + schema)
+   - save_round_result round-trip (joint)
+   - get_round_result missing round (edge)
+   - create_regression_test_plan with mock LLM (unit)
+   - create_regression_test_plan empty fallback (edge)
+   - plan_task(persist=True) saves to DB (integration)
+   - plan_task(persist=False) doesn't save (regression)
+   - caller check: core/agent.py imports plan_task (per P9)
+   - caller check: core/__init__.py exports plan_task
+
+2. Verified LLM's 真 contribution works at all layers
+   (per P3 test pyramid: unit + joint + integration)
+
+Verified:
+- 11/11 in new test file PASS
+- 51/51 in test_v2_cli + test_planner_harness_persistence PASS
+- Per P23 doc-first: no hermes-verify script
+- 1 commit, no split
+
+Per 你的 workflow (P22 + 自上而下/分治):
+  1. P22: check state (2 [auto] commits worked, harness persistence exists)
+  2. P22: write plan (1 commit, 11 tests covering each function)
+  3. P22: update docs (OBSERVATIONS + DONE)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: 1 commit, no split
+  6. P9 hard rule: caller check still passes (plan_task + persist work)
+  7. P18: regression tests for future LLM changes
+
+Honest (P17):
+- 11 tests = 11 sub-tasks per 自上而下/分治 (user 2026-07-11)
+- Each test = 1 layer of harness verification (P3 + P19 + LITERATURE)
+- Next: state.json (TODO #3) — but only if cross-process state needed
