@@ -840,3 +840,46 @@ Honest (P17):
 - 11 tests = 11 sub-tasks per 自上而下/分治 (user 2026-07-11)
 - Each test = 1 layer of harness verification (P3 + P19 + LITERATURE)
 - Next: state.json (TODO #3) — but only if cross-process state needed
+
+
+## v3.1.0 follow-up — Skill metadata lifecycle (per LITERATURE SkillOpt)
+
+Per user 2026-07-11 '按你认为正确的方向继续推进'.  Per P22 步骤 3:
+highest-value is filling the gap between [auto] commits and
+reusable skills.  Per LITERATURE SkillOpt paper: skills have
+lifecycle tracked via metadata.
+
+This commit (1 commit, 奥卡姆, 1 logical step in skill framework):
+
+1. src/v3_auto_commit.py — write_skill_meta() + auto_commit() hook
+2. tests/test_v2_cli.py — TestV3AutoCommitSkillMeta (4 tests)
+3. docs/SKILLS.md (NEW) — L0 framework + lifecycle states
+4. docs/INDEX.md — SKILLS.md as stealth doc (per P20)
+5. docs/LITERATURE_DETAIL.md — SkillOpt paper entry
+6. .gitignore — skill metadata runtime (already covered by upgrades/*)
+
+Verified:
+- 44/44 test_v2_cli.py PASS (was 40, +4)
+- Per P23 doc-first: no hermes-verify script
+- Per P7 奥卡姆: 1 commit, no split
+
+Per 你的 workflow (P22 + 自上而下/分治):
+  1. P22: check state (2 [auto] 真 work, no meta tracking)
+  2. P22: write plan (1 commit: meta + 4 tests + SKILLS.md + INDEX + LITERATURE)
+  3. P22: update docs (OBSERVATIONS + DONE)
+  4. P23: doc-first (SKILLS.md exists BEFORE future impl)
+  5. P7 奥卡姆: 1 commit, no split
+  6. P9 hard rule: caller check passed (no caller changes)
+  7. P18: regression tests added (4 new tests)
+  8. P14: docs stay current (LITERATURE_DETAIL.md + INDEX.md updated)
+  9. P20: SKILLS.md is L0 + L1 spec, future per-skill in L2
+
+Honest (P17):
+- Smallest possible push toward skill lifecycle
+- Future impl in v3.2.0 = promote_skill(), apply, archive
+- Each future impl = separate commit (per P4 + 奥卡姆)
+
+Next (per TODO backlog):
+- promote_skill() implementation (separate commit, future)
+- Run daily-loop 真验证 with skill meta
+- state.json + failure recovery (lower priority)

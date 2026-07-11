@@ -16,6 +16,7 @@ not runtime).
 """
 import os
 import time
+import json
 import subprocess
 from pathlib import Path
 
@@ -122,6 +123,47 @@ def write_patch_bundle(target_module):
     return bundle_path
 
 
+def write_skill_meta(target_module, paper_id, tests_passed, bundle_path, commit_hash):
+    """Write skill metadata alongside the patch bundle.
+
+    Per LITERATURE SkillOpt paper: skills have lifecycle
+    (candidate → active → archived) tracked via metadata.
+
+    Per P14 docs stay current + P19 data flow observability:
+    each auto-commit produces a paired .meta.json for future
+    skill lifecycle management (discovery, apply, review,
+    retain/drop).
+
+    Returns path to meta file, or "" on failure.
+    """
+    if not commit_hash:
+        return ""
+    if not bundle_path:
+        # Fall back to deriving from commit_hash
+        bundle_path = f"{BUNDLE_DIR}/{time.strftime('%Y-%m-%d')}-{commit_hash[:8]}.patch"
+    # Meta file lives next to bundle with same stem, .meta.json suffix
+    meta_path = bundle_path.rstrip(".patch") + ".meta.json"
+    meta = {
+        "commit_hash": commit_hash,
+        "target_module": target_module,
+        "paper_id": paper_id or "unknown",
+        "tests_passed": tests_passed,
+        "bundle_path": bundle_path,
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        # Per SkillOpt paper lifecycle:
+        "status": "candidate",
+        "applied_count": 0,
+        "success_count": 0,
+    }
+    try:
+        Path(os.path.dirname(meta_path) or ".").mkdir(parents=True, exist_ok=True)
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=2, ensure_ascii=False)
+        return meta_path
+    except Exception:
+        return ""
+
+
 def auto_commit(target_module, paper_id="", tests_passed=0, bundle_path=""):
     """Commit KEPT patch with auto author + [auto] prefix.
 
@@ -173,4 +215,18 @@ def auto_commit(target_module, paper_id="", tests_passed=0, bundle_path=""):
 
     # Get commit hash
     rc, out, _ = _run_git(["rev-parse", "HEAD"])
-    return out.strip() if rc == 0 else ""
+    commit_hash = out.strip() if rc == 0 else ""
+
+    # Per LITERATURE SkillOpt paper: write skill metadata alongside bundle
+    if commit_hash:
+        meta_path = write_skill_meta(
+            target_module=target_module,
+            paper_id=paper_id,
+            tests_passed=tests_passed,
+            bundle_path=bundle_path,
+            commit_hash=commit_hash,
+        )
+        if meta_path:
+            print(f"  [auto-commit] skill meta: {meta_path}")
+
+    return commit_hash

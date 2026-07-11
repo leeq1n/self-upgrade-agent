@@ -440,3 +440,64 @@ Lesson (per LITERATURE Self-Harness paper):
 - Next TODO: state.json (TODO #3 in TODO list) for cross-process state,
   but per 当前 daily-loop `--max-rounds N` runs in one process, this
   is future-need, not now.
+
+
+## 2026-07-11 — Skill metadata lifecycle (per LITERATURE SkillOpt paper)
+
+User directed "按你认为正确的方向继续推进".  Per P22 步骤 3 (find
+commonality): prioritize highest-value target.  We had:
+- 2 [auto] KEPT 真 commits (LLM 真 contributions)
+- 4 patch bundles in `upgrades/auto-patches/`
+- But NO metadata tracking which patches are reusable
+
+**Per LITERATURE SkillOpt paper**: skills = auto-discovered LLM
+patches with lifecycle (candidate → active → archived).  Missing
+piece was metadata.  This commit adds that.
+
+This commit (1 commit, 奥卡姆, additive + 1 logical step):
+
+1. `src/v3_auto_commit.py` — new `write_skill_meta(target_module,
+   paper_id, tests_passed, bundle_path, commit_hash)` writes a
+   `.meta.json` next to each `.patch` bundle.  Called automatically
+   at end of `auto_commit()`.
+
+2. tests/test_v2_cli.py — new `TestV3AutoCommitSkillMeta` (4 tests,
+   per P3 unit pyramid):
+   - test_write_skill_meta_creates_file
+   - test_write_skill_meta_handles_missing_bundle_path
+   - test_write_skill_meta_returns_empty_without_commit
+   - test_write_skill_meta_unicode_safe
+
+3. docs/SKILLS.md (NEW) — skill framework L0 spec:
+   - Discovery (auto-pipeline overview)
+   - Lifecycle (candidate/active/archived state machine)
+   - Apply (per SkillOpt paper)
+   - Review (planned)
+   - Current state (per this commit)
+   - Forward-looking (planned for v3.2.0)
+
+4. docs/INDEX.md — SKILLS.md added as **stealth doc** (only load
+   if relevant, per P20 R5)
+
+5. docs/LITERATURE_DETAIL.md — SkillOpt paper entry (cross-link)
+
+Verified:
+- 44/44 in test_v2_cli.py PASS (was 40, +4)
+- Per P23 doc-first: no hermes-verify script
+- Per P7 奥卡姆: 1 commit, no split
+
+Per 你的 workflow (P22 + 自上而下/分治):
+  - 大任务: skill lifecycle v3.2.0
+  - 子任务 (1 step): metadata + L0 spec
+  - 子子任务: future impl (promote_skill, apply, archive)
+  - 各 sub-task 各 commit (per P4)
+
+Lesson (per LITERATURE SkillOpt + Nate Berkopec):
+- Interface layer between patches and reuse
+- Doc-first (per P23) = spec then impl
+- Each sub-task is its own commit (per P4 + 奥卡姆)
+
+Honest (P17):
+- 2 existing [auto] commits did NOT have meta.json (pre-this feature)
+- Future commits will (向后兼容, 历史 bundles 留 as-is)
+- Next step = promote_skill() implementation (separate commit)

@@ -242,3 +242,29 @@ We have NOT yet read:
 
 When you read these, add them here with the same TL;DR +
 applicability analysis.  Don't design without them.
+
+
+## SkillOpt paper (skill lifecycle)
+
+When the LLM agent makes enough successful patches (auto-commit
+KEPT, tests pass), the patches become **reusable skills**.  SkillOpt
+paper proposes:
+- candidate → active → archived lifecycle
+- promote on: applied_count ≥ threshold AND success_rate ≥ 0.6
+- archive on: success_rate < 0.3 over last N applies
+
+In our context (commit 747d96e / 96ae18e):
+- Each auto-commit writes `upgrades/auto-patches/<date>-<hash>.meta.json`
+- Meta contains: `commit_hash, target_module, paper_id, tests_passed,
+  bundle_path, timestamp, status, applied_count, success_count`
+- Lifecycle state machine lives in `docs/SKILLS.md`
+- Future: `promote_skill()` scans candidates, applies promotion rules
+
+Per P23 (doc > script): skill framework exists as doc-first
+specification.  Implementation is per-skill metadata initially,
+full lifecycle in v3.2.0.
+
+See:
+- [docs/SKILLS.md](SKILLS.md) — L0 + L1 framework
+- [src/v3_auto_commit.py `write_skill_meta`](../src/v3_auto_commit.py) — implementation
+- [tests/test_v2_cli.py `TestV3AutoCommitSkillMeta`](../tests/test_v2_cli.py) — regression tests

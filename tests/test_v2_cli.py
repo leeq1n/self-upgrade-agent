@@ -643,3 +643,78 @@ class TestV3AutoCommitCallerCheck:
                                  paper_id="x", tests_passed=16,
                                  bundle_path="/tmp/test.patch")
         assert result == ""  # skip
+
+
+class TestV3AutoCommitSkillMeta:
+    """Per LITERATURE SkillOpt paper: skill metadata lifecycle.
+
+    Each auto-commit should produce a paired .meta.json so future
+    skill management (discover/apply/review/retain) can track stats.
+    """
+    def test_write_skill_meta_creates_file(self, tmp_path):
+        """write_skill_meta creates a JSON file with required fields."""
+        from src.v3_auto_commit import write_skill_meta
+        bundle = str(tmp_path / "2026-07-11-abc12345.patch")
+        meta = write_skill_meta(
+            target_module="core/planner.py",
+            paper_id="harness-engineering",
+            tests_passed=16,
+            bundle_path=bundle,
+            commit_hash="abc12345abc12345abc12345abc12345",
+        )
+        assert meta  # path returned
+        assert os.path.exists(meta)
+        assert meta.endswith(".meta.json")
+        import json
+        data = json.loads(open(meta, encoding="utf-8").read())
+        assert data["commit_hash"] == "abc12345abc12345abc12345abc12345"
+        assert data["target_module"] == "core/planner.py"
+        assert data["paper_id"] == "harness-engineering"
+        assert data["tests_passed"] == 16
+        assert data["status"] == "candidate"
+        assert data["applied_count"] == 0
+        assert data["success_count"] == 0
+
+    def test_write_skill_meta_handles_missing_bundle_path(self, tmp_path, monkeypatch):
+        """write_skill_meta derives bundle_path from commit_hash if empty."""
+        from src.v3_auto_commit import write_skill_meta, BUNDLE_DIR
+        # monkey-patch cwd so relative paths resolve
+        monkeypatch.chdir(tmp_path)
+        meta = write_skill_meta(
+            target_module="core/planner.py",
+            paper_id="p",
+            tests_passed=10,
+            bundle_path="",  # empty
+            commit_hash="deadbeefdeadbeefdeadbeefdeadbeef",
+        )
+        assert meta
+        # Meta should be created under tmp_path via relative path
+        assert os.path.exists(meta)
+
+    def test_write_skill_meta_returns_empty_without_commit(self):
+        """write_skill_meta returns "" if commit_hash empty."""
+        from src.v3_auto_commit import write_skill_meta
+        result = write_skill_meta(
+            target_module="x",
+            paper_id="y",
+            tests_passed=0,
+            bundle_path="/tmp/p.patch",
+            commit_hash="",
+        )
+        assert result == ""
+
+    def test_write_skill_meta_unicode_safe(self, tmp_path):
+        """write_skill_meta handles Unicode in module/paper names."""
+        from src.v3_auto_commit import write_skill_meta
+        bundle = str(tmp_path / "2026-07-11-test.patch")
+        meta = write_skill_meta(
+            target_module="core/test.py",
+            paper_id="paper-中文-test",
+            tests_passed=5,
+            bundle_path=bundle,
+            commit_hash="12345678123456781234567812345678",
+        )
+        assert os.path.exists(meta)
+        import json
+        data = json.loads(open(meta, encoding="utf-8").read())
+        assert data["paper_id"] == "paper-中文-test"

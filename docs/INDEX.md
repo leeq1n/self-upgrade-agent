@@ -42,6 +42,10 @@ a pointer.  Read them only when your task matches the trigger.
   work that crosses project boundaries (e.g. starting a new
   repo, integrating with another tool, or wondering "is there
   an X for Y?")
+- [SKILLS.md](SKILLS.md) — only if planning to add skill
+  lifecycle (v3.2.0), to inspect auto-commit skill metadata,
+  or to understand SkillOpt paper's candidate/active/archived
+  lifecycle in our context.
 
 If a section is unclear or you need full rationale, follow the
 links — each summary points to its `_DETAIL.md` companion.
