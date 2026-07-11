@@ -114,26 +114,41 @@ def create_regression_test_plan(failed_task: str, failure_reason: str, llm_call:
     return steps
 
 
-def plan_task(task: str, llm_call: Callable, persist: bool = True) -> List[str]:
-    """Decompose a task into ordered steps, optionally persisting the result."""
+def plan_task(task: str, llm_call: Callable, context: Optional[dict] = None) -> RoundResult:
+    """Decompose a goal into executable steps using LLM.
+    
+    Args:
+        task: The high-level task to decompose.
+        llm_call: LLM callable that takes a prompt and returns text.
+        context: Optional context dict with additional information.
+        
+    Returns:
+        RoundResult containing the decomposed steps.
+    """
+    context_str = json.dumps(context) if context else ""
     prompt = (
-        f"Break this task into 3-5 numbered steps. Reply only with the steps:\n{task}"
+        f"Decompose this task into executable steps.\n"
+        f"Task: {task}\n"
+        f"Context: {context_str}\n"
+        f"Return a JSON list of step strings."
     )
-    result = llm_call(prompt)
-    steps = []
-    for line in result.split("\n"):
-        line = line.strip()
-        if line and (line[0].isdigit() or line.startswith("- ")):
-            steps.append(line)
-    if not steps:
-        steps = [f"Do: {task}"]
     
-    if persist:
-        round_result = RoundResult(
-            task=task,
-            steps=steps,
-            timestamp=datetime.now().isoformat()
-        )
-        save_round_result(round_result)
+    try:
+        response = llm_call(prompt)
+        steps = json.loads(response)
+        if not isinstance(steps, list):
+            steps = [steps]
+    except (json.JSONDecodeError, Exception):
+        # Fallback: treat entire response as single step
+        steps = [response]
     
-    return steps
+    result = RoundResult(
+        task=task,
+        steps=steps,
+        timestamp=datetime.utcnow().isoformat()
+    )
+    
+    round_id = save_round_result(result)
+    result.round_id = round_id
+    
+    return result
