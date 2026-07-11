@@ -86,6 +86,34 @@ def get_round_result(round_id: int) -> Optional[RoundResult]:
     return None
 
 
+def create_regression_test_plan(failed_task: str, failure_reason: str, llm_call: Callable) -> List[str]:
+    """Create a regression test plan from a failed task.
+    
+    Args:
+        failed_task: The original task that failed.
+        failure_reason: Description of why the task failed.
+        llm_call: LLM callable for generating test plan.
+        
+    Returns:
+        List of steps defining the regression test.
+    """
+    prompt = (
+        f"Create a regression test plan for this failed task.\n"
+        f"Task: {failed_task}\n"
+        f"Failure reason: {failure_reason}\n"
+        f"Generate 3-5 numbered steps to prevent this failure in the future:\n"
+    )
+    result = llm_call(prompt)
+    steps = []
+    for line in result.split("\n"):
+        line = line.strip()
+        if line and (line[0].isdigit() or line.startswith("- ")):
+            steps.append(line)
+    if not steps:
+        steps = [f"Verify: {failed_task}"]
+    return steps
+
+
 def plan_task(task: str, llm_call: Callable, persist: bool = True) -> List[str]:
     """Decompose a task into ordered steps, optionally persisting the result."""
     prompt = (
@@ -104,9 +132,8 @@ def plan_task(task: str, llm_call: Callable, persist: bool = True) -> List[str]:
         round_result = RoundResult(
             task=task,
             steps=steps,
-            timestamp=datetime.utcnow().isoformat()
+            timestamp=datetime.now().isoformat()
         )
-        round_id = save_round_result(round_result)
-        print(f"Persisted round {round_id} to database")
+        save_round_result(round_result)
     
     return steps
