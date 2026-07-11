@@ -1329,3 +1329,31 @@ This commit:
 
 Per LITERATURE Signal-to-Fix: cross-platform + dry-run safety net.
 Per P9 hard rule: dry_run=True default.
+
+
+## v4.0.0 — Failure escalation (sub-task 3/3) — v4.0.0 MVP COMPLETE
+
+Per user 2026-07-11 '继续推进' (18th push).
+Per 自上而下/分治 + 你 '不要给那么多选项' = push v4.0.0 sub-task 3.
+
+Per 你 vision 2026-07-08:
+- True autonomous, but with visibility
+- Failures must surface (per LITERATURE Signal-to-Fix)
+
+Per 自上而下/分治:
+- Big: SA v4.0.0 cron execution
+- Sub-task 1 done (cron logic)
+- Sub-task 2 done (OS integration)
+- Sub-task 3 done (failure escalation) — **MVP COMPLETE (3/3)**
+
+This commit:
+- src/failure_escalation.py (~225 lines)
+  - compute_backoff_seconds (exponential)
+  - FailureTracker class (track + alert + persist)
+- tests/test_failure_escalation.py (14 tests)
+- 203/203 combined tests PASS
+
+Per Nate Berkopec: exponential backoff prevents cascade.
+Per P9: atomic write for state persistence.
+Per P19: state persistence for observability.
+Per LITERATURE Signal-to-Fix: failures must surface.
