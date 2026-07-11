@@ -1268,3 +1268,28 @@ Honest (P17):
 - CLI fully wired
 - Backward compatible (--no-ab default)
 - 真 autonomous KEPT/REJECT = MVP COMPLETE
+
+
+## v4.0.0 — Cron scheduler (sub-task 1/3)
+
+Per user 2026-07-11 '继续推进' (15th push).
+Per 自上而下/分治 + 你 '不要给那么多选项' = push v4.0.0 cron execution.
+
+Per 你 vision 2026-07-08 '希望这个项目之后可以自己独立运行':
+- True autonomous deployment via cron
+
+Per 自上而下/分治:
+- Big: SA v4.0.0 cron execution
+- Sub-task 1 done (this): cron logic + CLI
+- Sub-task 2-3 pending: OS cron integration + escalation
+
+This commit:
+- src/cron_scheduler.py (~155 lines)
+  - parse_cron / seconds_until_next / should_run_now
+  - schedule_loop (cron + daily_loop_persisted)
+- tests/test_cron_scheduler.py (15 tests)
+- 177/179 combined (2 pre-existing failures noted, not this commit)
+
+Per LITERATURE: minimal, 奥卡姆.
+Per P18: 1 bug fix (load_state import path).
+Per 你 '排除bug': pre-existing issues transparently noted.
