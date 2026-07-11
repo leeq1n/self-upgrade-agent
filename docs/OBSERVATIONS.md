@@ -626,3 +626,37 @@ Per 自上而下/分治:
 Per P21 cross-project: KG project owns graph; SA project owns source data.
 Per P7 奥卡姆: 1 commit, no split, 2 bug fixes per P18.
 Per P23 doc-first: SEED.md + SEED_DETAIL.md spec existed; impl followed.
+
+
+## 2026-07-11 — KG sub-task C (arbiter state machine) 真 working
+
+Per user 2026-07-11 '继续推进, 结束时用一句话告诉我下一步'
++ 自上而下/分治 (user meta-principle):
+
+KG project commit `5bda31f`:
+- src/kg_arbiter.py (~165 lines)
+- tests/test_kg_arbiter.py (14 tests, total 31 now)
+- 3 bug fixes per P18 (equal count, _evidence_ts, transition logic)
+
+Per SEED_DETAIL.md §4 state machine:
+- unresolved -> user-taste (terminal, user decision)
+- unresolved -> confirmed | falsified (3+3 evidence + 6mo window)
+- unresolved -> stale (untouched >6mo, kept down-weighted)
+
+Per SEED.md core insight (user 2026-07-10):
+- 'truth is direction N pieces of evidence currently point to'
+- 'mark both sides, not pick one' (LLM-Wiki philosophy)
+- equal supporting/opposing -> no transition (per spec)
+
+Per 自上而下/分治 progress:
+- Sub-task A done (data)
+- Sub-task B done (reasoning)
+- Sub-task C done (arbiter) <- this commit
+- Sub-task D pending (paper nodes + 4 edges)
+
+Verified:
+- 31/31 tests PASS (14 arbiter + 10 reason + 8 seed)
+- Real SA data: arbiter applies cleanly
+
+Per P21 cross-project: KG owns graph, SA owns source.
+Per P7 奥卡姆: 1 commit, no split, 3 bug fixes.
