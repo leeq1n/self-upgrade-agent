@@ -556,3 +556,33 @@ Honest (P17):
   (graph can answer Q1/Q2/Q3)
 - Cross-link per P21 means: KG work happens in KG project;
   this project (self-upgrade-agent) only consumes/lists
+
+
+## 2026-07-11 — KG Q1 sub-task A (per SEED.md)
+
+Per user 2026-07-11 '按计划继续推进' (KG那条 was triggered).
+Per P22 步骤 3 + 自上而下/分治 (user meta-principle):
+- Big task: KG answers SEED.md 3 acceptance questions
+- Sub-task A (this commit, KG project): load judge_decisions.jsonl
+  as fact nodes, plus minimal query API for Q1
+
+KG project commit `251e822`:
+- src/kg_seed.py (~150 lines) — load + seed + query_last_5_rounds
+- tests/test_kg_seed.py (8 tests, 100% PASS)
+- Integration test reads real SA data: 685+ distinct decisions loaded
+
+Per SEED.md MVP:
+- 3 node types (fact, reasoning, paper) — this = fact nodes only
+- 4 edge types (causal, inductive, counter_example, dual) — future
+- Arbiter state machine — future
+- 3-factor activation score — future
+
+Per LITERATURE Signal-to-Fix:
+- Failed-fast at earliest layer (data load)
+- This sub-task unlocks SEED.md Q1 query
+- Future sub-tasks = reasoning layer + paper nodes + arbiter
+
+Per P21 cross-project:
+- KG project reads from SA project's upgrades/
+- No data duplication
+- KG project owns the graph; SA project owns source data
