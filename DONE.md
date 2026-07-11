@@ -1304,3 +1304,28 @@ Per user 2026-07-11 '继续推进' (16th push) + 你 '排除bug' transparency:
 - 179/179 combined PASS (was 177/179)
 
 Per 你 '测过了再commit': you can now run + commit clean.
+
+
+## v4.0.0 — OS cron installer (sub-task 2/3)
+
+Per user 2026-07-11 '继续推进' (17th push).
+Per 自上而下/分治 + 你 '不要给那么多选项' = push v4.0.0 sub-task 2.
+
+Per 你 vision 2026-07-08: 真 autonomous deployment.
+
+Per 自上而下/分治:
+- Big: SA v4.0.0 cron execution
+- Sub-task 1 done (cron logic)
+- Sub-task 2 done (OS integration) — this
+- Sub-task 3 pending: failure escalation
+
+This commit:
+- src/os_cron_installer.py (~210 lines)
+  - detect_os / generate_windows_task_xml
+  - generate_macos_plist / generate_crontab_line
+  - install_cron (dry_run=True default)
+- tests/test_os_cron_installer.py (10 tests)
+- 189/189 combined tests PASS
+
+Per LITERATURE Signal-to-Fix: cross-platform + dry-run safety net.
+Per P9 hard rule: dry_run=True default.

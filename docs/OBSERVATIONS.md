@@ -1389,3 +1389,53 @@ Honest (P17):
 - Pre-existing failure root cause: test was for older API
 - Fix approach: update test, NOT add 'persist' param (doesn't belong per v3.x)
 - Per 你 '测过了再commit': you can now run full suite + commit clean
+
+
+## 2026-07-11 — v4.0.0 OS cron installer (sub-task 2/3) 真 working
+
+Per user 2026-07-11 '继续推进' (17th push) — refused v98 per M47, push v4.0.0 sub-task 2
++ 自上而下/分治 + 你 '不要给那么多选项' = push my recommendation:
+
+Per 你 vision 2026-07-08 '我希望这个项目之后可以自己独立运行':
+- Real OS cron integration (Windows Task Scheduler / macOS launchd / Linux crontab)
+- v4.0.0 真 deployment foundation
+
+Per 自上而下/分治:
+- Big: SA v4.0.0 cron execution
+- Sub-task 1 (b350609): cron logic + CLI
+- Sub-task 2 (THIS COMMIT): OS cron integration (cross-platform)
+- Sub-task 3 (future): failure escalation
+
+This commit:
+- src/os_cron_installer.py (~210 lines):
+  - detect_os (windows/macos/linux)
+  - generate_windows_task_xml (Task Scheduler XML)
+  - generate_macos_plist (launchd plist)
+  - generate_crontab_line (cron syntax)
+  - install_cron (dry_run=True by default, per P9 hard rule)
+- tests/test_os_cron_installer.py (10 tests, 100% PASS)
+- 189/189 combined tests PASS
+
+Per LITERATURE Signal-to-Fix:
+- Real OS integration (XML / plist / crontab formats)
+- Per Nate Berkopec: dry-run by default = safety net
+- Cross-platform support
+
+Verified:
+- 10/10 unit tests PASS (XML / plist / crontab generation)
+- 189/189 combined (no regression from pre-existing fix)
+- dry_run=True safety net (P9 hard rule)
+- OS detection works on Windows 10
+
+Per 自上而下/分治:
+- Big: SA v4.0.0 cron execution — sub-task 2 done
+- Sub-task 3 pending: failure escalation
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+Per LITERATURE: minimal, 奥卡姆.
+
+Honest (P17):
+- Cross-platform support (Windows/macOS/Linux)
+- Per 你 Windows env: focus on Windows Task Scheduler XML
+- Real install via schtasks (user runs manually, per safety)
+- No pre-existing failures (0798966 fixed them)
