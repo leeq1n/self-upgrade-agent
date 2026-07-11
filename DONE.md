@@ -751,3 +751,47 @@ Honest (per P17):
   gbk, None, compile, glob).  Each iteration refines the harness
   boundary.  Per Signal-to-Fix Loop: this is normal — fail-fast
   surfaces bugs at compile time before they ship.
+
+
+## v3.1.0 follow-up — 自上而下/分治 meta-principle (1 commit, 奥卡姆)
+
+Per user 2026-07-11: "Mock 测试逻辑 = 自上而下做任务 = 分治思想子集.
+大问题 → 小问题 → 小问题答完 = 大问题答完. 子问题可再分. 大任务
+拆子任务, 整合后整理大任务完成. 大代码拆子代码块, 测通整合.
+
+按照有一条原则的思路, 这个你需要分层次写到文档里."
+
+This is a **meta-principle** that cross-cuts P3, P20, P22 (already
+exists implicitly).  Per 奥卡姆: do NOT add new P25, just make
+explicit.  Per P22 步骤 3: find commonality.
+
+This commit (1 commit, 奥卡姆, no split):
+
+1. P3 L2 (PRINCIPLES_DETAIL.md) — testing-context 分治 explicit
+2. P20 L2 — docs-context 分治 explicit + meta-principle quote
+3. P22 L2 — task-context 分治 explicit
+4. New "自上而下/分治 Cross-cutting" section after P23 — umbrella
+   note: ONE principle, FOUR contexts (testing/docs/task/code)
+5. INDEX.md — meta-principle cross-reference
+
+Verified:
+- 40/40 test_v2_cli.py PASS (no code change, doc-only)
+- Per P23 doc-first: no hermes-verify script
+- 1 commit, no split
+
+Per 你的 workflow (P22):
+  1. P22: check state (user gave meta-rule)
+  2. P22: write plan (1 commit, additive, doc-only)
+  3. P22: update docs (P3/P20/P22 L2 + new section + INDEX)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: don't add new P-n (P3/P20/P22 already cover it)
+  6. P9 hard rule: mechanical = test pass + doc size <=7KB
+
+Honest (P17):
+  - Meta-principle 自上而下/分治 already in P3/P20/P22.  New SECTION
+    makes explicit cross-reference.  This is the correct response to
+    user's "分层写到文档里" — surface the meta-rule, don't duplicate.
+  - Per LITERATURE Self-Harness: harness = interface.  Meta-principle
+    is the interface layer across contexts.
+  - Per Lilian Weng: harness engineering = one pattern, multiple
+    surfaces.  Same idea.

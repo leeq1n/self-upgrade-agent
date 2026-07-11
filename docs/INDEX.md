@@ -45,3 +45,15 @@ a pointer.  Read them only when your task matches the trigger.
 
 If a section is unclear or you need full rationale, follow the
 links — each summary points to its `_DETAIL.md` companion.
+
+
+---
+
+## 自上而下/分治 — Meta-principle cross-reference (per user 2026-07-11)
+
+Not a separate doc.  Cross-cuts: [P3](PRINCIPLES_DETAIL.md#p3) (testing),
+[P20](PRINCIPLES_DETAIL.md#p20) (docs), [P22](PRINCIPLES_DETAIL.md#p22) (task).
+See PRINCIPLES_DETAIL.md after P23 for the umbrella note.
+
+Per LITERATURE Self-Harness + Lilian Weng: same pattern, multiple
+surfaces.  When planning, ask "which context am I in?"
