@@ -46,6 +46,13 @@ Per user 2026-07-10: '我希望这个项目之后可以自己独立运行'.
       user 2026-07-10 '按你认为正确的思路整理文档').
       Now: all 17 docs have L0 header.  TODO: split
       DONE.md if > 7KB, archive CONSTRAINTS_DETAIL > 7KB.
+- [/] **step 6** — Knowledge graph integration (TODO那条).
+      Per user 2026-07-11 '按计划继续推进': seed project
+      `../knowledge-graph-seed` now has minimal `src/kg.py`
+      stub (per SEED.md, commit 4c79bbb).  Spec exists.
+      Next sub-tasks: SEED.md 3 acceptance questions (graph
+      can answer Q1/Q2/Q3).  See TODO_KNOWLEDGE_GRAPH.md +
+      SEED.md + SEED_DETAIL.md (in ../knowledge-graph-seed/).
 
 ## Backlog (NOT in current session, recorded per user principle)
 
@@ -76,8 +83,8 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
 - [ ] 真实 daily loop (cron job)
 - [ ] A/B benchmark (新 patch vs 旧)
 - [ ] bootloader 风格 atomic 切换 (你 vision 起点)
-- [ ] Skill registry (per LITERATURE: SkillOpt)
-- [ ] Knowledge graph (per docs/TODO_KNOWLEDGE_GRAPH.md, P1 status)
+- [/] Skill registry (per LITERATURE: SkillOpt) — step 1/3 done (metadata, commit `e65ba25`)
+- [/] Knowledge graph (per docs/TODO_KNOWLEDGE_GRAPH.md) — see in-progress step 6 above
 
 ## Lesson (per P19 + LITERATURE)
 

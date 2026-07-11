@@ -46,6 +46,13 @@ a pointer.  Read them only when your task matches the trigger.
   lifecycle (v3.2.0), to inspect auto-commit skill metadata,
   or to understand SkillOpt paper's candidate/active/archived
   lifecycle in our context.
+- Knowledge graph project: see `../knowledge-graph-seed/`.  Per
+  P21 (cross-project), this project links; SPEC + impl live in
+  the KG seed project.  Read [../knowledge-graph-seed/SEED.md](../knowledge-graph-seed/SEED.md)
+  before reading docs/TODO_KNOWLEDGE_GRAPH.md (which is the linker).
+  lifecycle (v3.2.0), to inspect auto-commit skill metadata,
+  or to understand SkillOpt paper's candidate/active/archived
+  lifecycle in our context.
 
 If a section is unclear or you need full rationale, follow the
 links — each summary points to its `_DETAIL.md` companion.

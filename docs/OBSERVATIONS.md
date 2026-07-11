@@ -501,3 +501,58 @@ Honest (P17):
 - 2 existing [auto] commits did NOT have meta.json (pre-this feature)
 - Future commits will (向后兼容, 历史 bundles 留 as-is)
 - Next step = promote_skill() implementation (separate commit)
+
+
+## 2026-07-11 — Knowledge graph integration triggered (TODO那条)
+
+User directed "全面分析一下项目状态, 隔壁已经写了一个sua知识图谱的
+项目, 后续是要按照TODO的那一条做的.  你按计划继续推进".
+
+Per P22 步骤 1 (check state):
+- Working tree clean
+- v3.1.0 daily-loop 真 working (3 [auto] KEPT sibling commits observed)
+- Skill metadata lifecycle step 1 done (commit e65ba25)
+- Tests: 638+11+4 = 653 PASS last verify
+
+Per P22 步骤 3 (find commonality) — TODO那条:
+- [ ] Knowledge graph (per docs/TODO_KNOWLEDGE_GRAPH.md, P1 status)
+- Existing 隔壁 project: ../knowledge-graph-seed/ (per M33 memory)
+- Trigger condition: v3.0.2 stage gate closes → ✅ done
+- User just pushed to start
+
+**Two commits made (one per project, 奥卡姆, per P21 cross-project)**:
+
+**Commit A: KG project minimal MVP stub**
+- Project: ../knowledge-graph-seed/
+- commit 4c79bbb: feat: minimal kg MVP stub (per SEED.md spec)
+- File: src/kg.py (36 lines, minimal main() per README spec)
+- Per LITERATURE Seed project: "first commit by a new agent
+  should be src/kg.py with minimal main() that prints 'kg MVP
+  not yet implemented' and exits 0"
+
+**Commit B: self-upgrade-agent cross-link (this project)**
+Per P21 (cross-project independence): link, not duplicate.
+- docs/TODO_KNOWLEDGE_GRAPH.md: status updated to "in progress"
+- TODO.md: step 6 added as in-progress ([/])
+- TODO.md "Future" section: KG + Skill registry marked [/] (one done)
+- docs/EXTENSIONS.md: KG project reference added (stealth doc)
+- docs/INDEX.md: KG project pointer added (conditional load)
+
+Per 自上而下/分治 (user 2026-07-11 meta-principle):
+- 大任务: KG integration = LITERATURE + self-upgrade + KG project
+- 子任务 A (this work): seed project reaches trigger + cross-link
+- 子子任务 (future): SEED.md 3 acceptance questions, node/edge types,
+  arbiter state machine, MCP interface
+
+Per P7 奥卡姆:
+- 1 commit per project, no split
+- Minimal impl, spec exists (per P23 doc-first)
+- L0/L1/L2 layers surfaced
+
+Honest (P17):
+- 隔壁 KG project 真的 "0 代码" 状态 → 现在变成 "stub + console script reachable"
+- Trigger 真 fired (per your vision + SEED.md spec)
+- Future sub-tasks per SEED.md 3 acceptance questions
+  (graph can answer Q1/Q2/Q3)
+- Cross-link per P21 means: KG work happens in KG project;
+  this project (self-upgrade-agent) only consumes/lists

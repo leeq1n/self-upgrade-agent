@@ -883,3 +883,44 @@ Next (per TODO backlog):
 - promote_skill() implementation (separate commit, future)
 - Run daily-loop 真验证 with skill meta
 - state.json + failure recovery (lower priority)
+
+
+## v3.1.0 follow-up — Knowledge graph integration triggered (TODO那条)
+
+Per user 2026-07-11 '全面分析 + 按计划继续推进'.
+Per P22 步骤 3 (find commonality): TODO那条 = KG integration.
+Per M33 memory: KG project at ../knowledge-graph-seed/.
+Per SEED.md README trigger: v3.0.2 stage gate closes ✅.
+
+Two commits (1 per project, 奥卡姆, per P21 cross-project):
+
+1. KG project (../knowledge-graph-seed/):
+   - commit 4c79bbb: minimal src/kg.py (per README "first commit")
+   - Console script 'kg' now reachable
+
+2. self-upgrade-agent (this project):
+   - docs/TODO_KNOWLEDGE_GRAPH.md: status updated to in-progress
+   - TODO.md: step 6 added as [/] (in progress)
+   - TODO.md "Future": KG + Skill registry marked [/]
+   - docs/EXTENSIONS.md: KG project reference
+   - docs/INDEX.md: KG project pointer (conditional load)
+
+Per P21 (cross-project independence): this project LINKS to KG,
+does not duplicate.  Per P23 (doc > script): spec exists in
+KG project (SEED.md + SEED_DETAIL.md), impl is minimal seed.
+
+Per 自上而下/分治 (user 2026-07-11):
+- 大任务: KG integration
+- 子任务 (this commit): trigger + cross-link
+- 子子任务 (future per SEED.md): 3 acceptance questions, node/edge,
+  arbiter, auto-grow, MCP interface
+
+Honest (P17):
+- KG project 0 代码 → 现 now stub + console script reachable
+- Trigger 真 fired (per your vision)
+- Cross-link means future KG work happens in KG project, not here
+
+Next (per TODO backlog + KG trigger):
+- KG seed project: SEED.md 3 acceptance questions (future sub-tasks)
+- self-upgrade-agent: 跑 daily-loop with KG as future consumer
+- Skill lifecycle promote_skill() (TODO #4 in pre-KG list)

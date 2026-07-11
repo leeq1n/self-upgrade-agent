@@ -3,7 +3,10 @@ Last P20-verified: 2026-07-10
 
 # TODO: Knowledge-as-Graph Refactor
 
-> **Status**: idea, awaiting user confirmation before implementation.
+> **Status**: in progress — seed project (../knowledge-graph-seed) has
+> minimal MVP stub (commit 4c79bbb, 2026-07-11).  Per user 2026-07-11
+> '按计划继续推进' (TODO那条).  Spec + skeleton done; full graph
+> impl per SEED.md acceptance questions is next sub-tasks.
 > **Origin**: 2026-07-02 conversation, after P0-1/P0-2 audit + commit.
 
 ## Why this exists
