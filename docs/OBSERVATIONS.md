@@ -660,3 +660,44 @@ Verified:
 
 Per P21 cross-project: KG owns graph, SA owns source.
 Per P7 奥卡姆: 1 commit, no split, 3 bug fixes.
+
+
+## 2026-07-11 — KG sub-task D (paper nodes + 4 edges) 真 working — MVP complete!
+
+Per user 2026-07-11 '继续推进任务' (6th push) + 自上而下/分治:
+
+KG project commit `b0f2cb0`:
+- src/kg_papers.py (~170 lines)
+- tests/test_kg_papers.py (15 tests, total 46)
+- 4 bug fixes per P18
+
+Per SEED.md MVP shape — ALL 4 SUB-TASKS DONE!
+- Sub-task A (data) — 251e822
+- Sub-task B (reasoning) — e1f7ce8
+- Sub-task C (arbiter) — 5bda31f
+- Sub-task D (paper + edges) — b0f2cb0 ← this commit
+
+Per SEED_DETAIL.md §2-3:
+- 3 node types: fact (A) + reasoning (B) + paper (D) ✓
+- 4 edge types: causal/inductive/counter_example/dual (D) ✓
+- arbiter state machine (C) ✓
+
+Verified with real SA data:
+- 15 paper nodes parsed from LITERATURE_DETAIL.md (per P21)
+- edges connect papers (typed connections)
+- 46/46 tests PASS
+
+Per LITERATURE Seed project spec:
+- Big task (KG answers 3 acceptance Q) — MVP shape complete
+- Future: activation scoring + auto-grow rules + Q1/Q2/Q3
+  specific query implementations
+
+Per 自上而下/分治:
+- 大任务: KG answers 3 acceptance Q
+- A+B+C+D done — 4/4 sub-tasks
+- Each = 1 commit, additive, 奥卡姆
+- Future sub-tasks: query implementations (Q1/Q2/Q3)
+
+Per P7 奥卡姆: 1 doc commit + 1 KG code commit.
+Per P21 cross-project: KG owns graph; SA owns source.
+Per LITERATURE MVP shape: complete, ready for Q1/Q2/Q3 impl.
