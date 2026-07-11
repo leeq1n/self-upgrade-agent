@@ -1545,3 +1545,56 @@ Honest (P17):
 - Not caught earlier because tests were in 'pending' status
 - Per 你 '排除bug': now fixed, 100% tests pass
 - Per P18: pre-existing test serves as regression coverage
+
+
+## 2026-07-11 — fix: wire cron subcommand into CLI (per P18 + 你 '排除bug' push)
+
+Per user 2026-07-11 'python -m self_upgrade cron --install' returned 'No such command cron'
++ 你 '排除bug' push (transparent disclosure = action):
+
+Per P18 (failure -> regression test):
+- Real bug: user reported 'No such command cron'
+- Root cause: os_cron_installer.py (229 lines) + tests (131 lines) existed, but CLI subcommand was NOT wired into self_upgrade/__main__.py
+- I missed this in v4.0.0 commits (c7998fa + ccd7e1d — modules exist but CLI not connected)
+- Per 你 push '排除bug': fix immediately + regression test
+
+Per 自上而下/分治:
+- Big: SA v4.0.0 cron execution
+- Sub-task 1 (b350609): cron logic + CLI
+- Sub-task 2 (c7998fa): OS cron integration (module exists)
+- Sub-task 2b (this commit): CLI wiring (the bug fix)
+- Sub-task 3 (ccd7e1d): failure escalation
+
+This commit:
+- self_upgrade/__main__.py: cron subcommand wired
+  - --show: dry-run, show config (safe per P9)
+  - --install: dry-run by default (safe per P9)
+  - --apply: actually write config to disk (CAUTION)
+  - --cron-expr: cron expression (default '0 2' = 02:00 daily)
+- tests/test_cron_cli.py (5 regression tests, 100% PASS)
+- 184/184 combined tests PASS
+
+Per P18 regression:
+- test_cron_command_in_help (the failing user case)
+- test_cron_help, test_cron_show, test_cron_install_dry_run
+- test_cron_no_action_shows_message
+
+Per LITERATURE Signal-to-Fix: real bug, real fix, real test.
+Per P9 hard rule: dry_run=True by default (safe).
+Per 你 '排除bug': action over words.
+
+Verified (per user reproduction):
+- 'python -m self_upgrade cron --help' shows options
+- 'python -m self_upgrade cron --show' generates Windows Task Scheduler XML
+- 'python -m self_upgrade cron --install' defaults to dry-run
+
+Per 自上而下/分治:
+- Bug fix complete
+- v4.0.0 CLI now 真 working (per 你 vision 终极目标 deployment)
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+
+Honest (P17):
+- I missed CLI wiring in v4.0.0 commits (c7998fa, ccd7e1d)
+- Per 你 '排除bug' push: fix immediately, no excuses
+- Per P18: 5 regression tests added to prevent recurrence

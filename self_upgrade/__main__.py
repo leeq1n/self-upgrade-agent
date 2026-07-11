@@ -360,6 +360,44 @@ def daily_loop(obj, target, interval, max_rounds, multi, max_retries,
     sys.exit(0 if kept > 0 else 1)
 
 
+@cli.command(name="cron")
+@click.option("--install", "do_install", is_flag=True, default=False,
+              help="Generate OS cron config (dry-run by default per P9).")
+@click.option("--apply", "do_apply", is_flag=True, default=False,
+              help="Actually write config to disk (CAUTION: real install).")
+@click.option("--show", is_flag=True, default=False,
+              help="Show the generated OS cron config (dry-run, no install).")
+@click.option("--cron-expr", default="0 2",
+              help="Cron expression 'H M' (default: 0 2 = 02:00 daily).")
+@click.pass_obj
+def cron(obj, do_install, do_apply, show, cron_expr):
+    """v4.0.0 cron deployment (per 你 vision 2026-07-08).
+
+    Per 自上而下/分治 (user meta-principle):
+    - Big: SA v4.0.0 cron execution
+    - Sub-task 2 (c7998fa): OS cron integration
+
+    Per P9 hard rule: dry_run=True by default (safe).
+    """
+    from src.os_cron_installer import install_cron
+    if not (do_install or show):
+        click.echo("Use --show (dry-run) or --install --apply (real install). Try --help.")
+        return
+    dry_run = not do_apply
+    result = install_cron(cron_expr=cron_expr, dry_run=dry_run)
+    if show or dry_run:
+        click.echo(f"OS: {result.get('os')}")
+        click.echo(f"Config path: {result.get('config_path')}")
+        click.echo(f"Dry run: {result.get('dry_run')}")
+        click.echo("---")
+        click.echo(result.get('config_content', ''))
+        click.echo("---")
+        click.echo(f"To install, run: {result.get('install_command')}")
+    else:
+        click.echo(f"Installed: {result.get('config_path')}")
+        click.echo(f"Manual step: {result.get('install_command')}")
+
+
 def main():
     """Module entry point."""
     cli()

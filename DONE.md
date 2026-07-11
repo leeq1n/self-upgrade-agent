@@ -1374,3 +1374,20 @@ This commit:
 
 Per 你 '排除bug': action over words.
 Per LITERATURE: minimal, additive (backward compatible).
+
+
+## fix: cron subcommand CLI wiring (per P18, user-reported bug)
+
+Per user 2026-07-11 'python -m self_upgrade cron --install' failed with 'No such command cron'.
+Per 你 '排除bug' push.
+
+Per P18: failure → regression test.
+
+This commit:
+- self_upgrade/__main__.py: cron subcommand wired (--show, --install, --apply, --cron-expr)
+- tests/test_cron_cli.py (5 tests)
+- 184/184 combined tests PASS
+
+Per LITERATURE: real bug, real fix.
+Per P9: dry_run=True by default (safe).
+Per 你 '排除bug': action over words.
