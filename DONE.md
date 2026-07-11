@@ -924,3 +924,40 @@ Next (per TODO backlog + KG trigger):
 - KG seed project: SEED.md 3 acceptance questions (future sub-tasks)
 - self-upgrade-agent: 跑 daily-loop with KG as future consumer
 - Skill lifecycle promote_skill() (TODO #4 in pre-KG list)
+
+
+## v3.2.0 — Skill promotion (skill lifecycle step 2/3)
+
+Per user 2026-07-11 '继续推进任务, 直到遇到问题或者任务完成'.
+Per 自上而下/分治 (user meta-principle) + LITERATURE SkillOpt paper:
+
+This commit:
+- src/skill_promotion.py (~165 lines): 3-factor activation scoring,
+  promotion + archive logic, CLI for cycle execution
+- tests/test_skill_promotion.py (15 tests, all PASS)
+- 70/70 combined tests PASS (44 v2_cli + 15 promotion + 11 persistence)
+
+Per LITERATURE SkillOpt paper:
+- Skills = reusable patterns from LLM patches
+- Lifecycle: candidate -> active -> archived
+- 3-factor activation score (success_rate + recency + sample)
+- Promotion threshold: 0.7 (default)
+
+Per SKILLS.md spec:
+- Sub-task 1 (done): skill metadata writing
+- Sub-task 2 (this): skill promotion
+- Sub-task 3 (future): skill archive + retention
+
+Verified end-to-end:
+- 15/15 unit tests
+- Promotion cycle tested with synthetic skill metas
+- Real skill metas from upgrades/auto-patches/ (will use on next run)
+
+Per P7 奥卡姆: 1 commit, additive.
+Per P23 doc-first: SKILLS.md existed as spec.
+Per LITERATURE Signal-to-Fix: bulk apply at end of cycle.
+
+Honest (P17):
+- promotion is MVP (no auto-trigger yet)
+- future sub-task 3: hook into daily-loop for auto-promotion
+- future: visualize skill lifecycle in skill dashboard

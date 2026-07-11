@@ -701,3 +701,50 @@ Per 自上而下/分治:
 Per P7 奥卡姆: 1 doc commit + 1 KG code commit.
 Per P21 cross-project: KG owns graph; SA owns source.
 Per LITERATURE MVP shape: complete, ready for Q1/Q2/Q3 impl.
+
+
+## 2026-07-11 — skill promotion (skill lifecycle step 2/3) 真 working
+
+Per user 2026-07-11 '继续推进任务, 直到遇到问题或者任务完成' (7th push)
++ 自上而下/分治 (user meta-principle):
+
+Per LITERATURE SkillOpt paper:
+- 3-factor activation score: success_rate * 0.5 + recency * 0.3 + sample * 0.2
+- promotion criteria: score >= 0.7 AND applied >= 1
+- archive criteria: success_rate < 0.3 (active skills only)
+
+Per self-upgrade-agent SKILLS.md:
+- candidate -> active -> archived lifecycle
+- Sub-task 1 done (e65ba25): skill metadata writing
+- Sub-task 2 done (this commit): skill promotion
+- Sub-task 3 (future): skill archive + retention rules
+
+This commit:
+- src/skill_promotion.py (~165 lines):
+  - compute_activation_score (3-factor model per SkillOpt)
+  - should_promote / should_archive (lifecycle gates)
+  - promote_skill / archive_skill (state transitions + disk write)
+  - list_skill_metas (read existing skills from auto-patches/)
+  - run_promotion_cycle (bulk apply)
+  - CLI: skill-promote (with thresholds)
+- tests/test_skill_promotion.py (15 tests)
+  - All 15 tests PASS
+
+Verified:
+- 15/15 promotion tests PASS
+- 70/70 combined (44 v2_cli + 15 promotion + 11 persistence)
+- Real promotion cycle tested with synthetic meta files
+- Real data integration: skill meta files in upgrades/auto-patches/
+
+Per P18 (failure -> regression test): 15 tests cover edge cases
+(missing dir, no history, low success, etc.).
+
+Per 自上而下/分治 progress:
+- Big task: skill lifecycle v3.2.0
+- Sub-task 1 done (e65ba25): metadata
+- Sub-task 2 done (this): promotion
+- Sub-task 3 pending: archive + retention
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+Per P23 doc-first: SKILLS.md spec existed; impl follows.
+Per LITERATURE Signal-to-Fix: bulk apply at end of cycle (per Signal-to-Fix).
