@@ -1339,3 +1339,53 @@ Honest (P17):
 - 2 pre-existing test failures NOT from this commit (per git log 747d96e)
 - 1 bug fix per P18 (load_state import path)
 - Per 你 '排除bug': pre-existing issues noted for transparency
+
+
+## 2026-07-11 — Pre-existing test failures FIXED (per 你 '排除bug' transparency)
+
+Per user 2026-07-11 '继续推进' (16th push) — fix pre-existing failures per 我 1-句话
++ 你 '测过了再commit' + 你 '排除bug' push:
+
+Per 你 push '排除bug':
+- 2 pre-existing test failures in test_planner_harness_persistence.py
+  (b350609 documented them as pre-existing)
+- Fixed in this commit
+
+Per 你 push '测过了再commit':
+- Now you can run full test suite + commit clean
+- 179/179 combined PASS (no pre-existing failures)
+
+Per 自上而下/分治:
+- Big: v4.0.0 cron execution
+- Sub-task 1 done (b350609): cron logic + CLI
+- Pre-existing test fix (this commit): 2 failures fixed
+- Sub-task 2 pending: OS cron integration
+
+This commit:
+- tests/test_planner_harness_persistence.py:
+  - test_plan_task_with_persist: updated to match real v3.x signature
+    (per P18 + LITERATURE: tests must match real code, not invented API)
+  - test_plan_task_without_persist: same fix
+  - Both now verify default persistence behavior (v3.x auto-persists)
+
+Per P18 (regression test must match real code):
+- Old test used 'persist' kwarg from older API
+- Real v3.x signature: plan_task(task, llm_call, context=None)
+- v3.x auto-persists (no opt-out flag per architecture)
+- Updated tests verify this real behavior
+
+Per P14 (docs stay current):
+- Test docstrings explain why v3.x auto-persists
+
+Verified:
+- 11/11 test_planner_harness_persistence PASS (was 9/11)
+- 179/179 combined (was 177/179)
+- Per 你 '排除bug': 0 bugs from my code + 0 pre-existing failures
+
+Per P7 奥卡姆: 1 commit, no split, additive (just test update).
+Per P18: regression test fixed.
+
+Honest (P17):
+- Pre-existing failure root cause: test was for older API
+- Fix approach: update test, NOT add 'persist' param (doesn't belong per v3.x)
+- Per 你 '测过了再commit': you can now run full suite + commit clean

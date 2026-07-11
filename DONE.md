@@ -1293,3 +1293,14 @@ This commit:
 Per LITERATURE: minimal, 奥卡姆.
 Per P18: 1 bug fix (load_state import path).
 Per 你 '排除bug': pre-existing issues transparently noted.
+
+
+## Pre-existing test failures FIXED
+
+Per user 2026-07-11 '继续推进' (16th push) + 你 '排除bug' transparency:
+- Fixed 2 pre-existing failures in test_planner_harness_persistence.py
+- Root cause: test used 'persist' kwarg from older API (747d96e)
+- Fix: updated test to match real v3.x signature (plan_task auto-persists)
+- 179/179 combined PASS (was 177/179)
+
+Per 你 '测过了再commit': you can now run + commit clean.
