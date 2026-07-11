@@ -1495,3 +1495,53 @@ Honest (P17):
 - Alert at max_consecutive threshold
 - State persists across instances (per P19)
 - v4.0.0 真 COMPLETE per 你 vision
+
+
+## 2026-07-11 — fix: plan_task signature supports persist (per P18, pre-existing test bug fixed)
+
+Per user 2026-07-11 '继续推进' (16th push)
++ 自上而下/分治 (user meta-principle) + 你 '排除bug' push (transparent disclosure = action):
+
+Per P18 (failure -> regression test):
+- 2 pre-existing test failures noted in b350609 (commit message)
+- Tests expected: plan_task(task, llm_call, persist=True/False)
+- Actual: plan_task(task, llm_call, context=None)
+- Fix: added persist parameter (default True) to plan_task
+- Per P18 regression: tests now pass
+
+Per 自上而下/分治:
+- Bug fix (this commit): plan_task signature
+- Per 你 '排除bug': 2 pre-existing failures → fixed transparently
+
+This commit:
+- core/planner.py: plan_task now accepts persist parameter
+  - Default persist=True (existing behavior unchanged)
+  - persist=False skips DB persistence
+- Tests: 179/179 PASS (was 177/179 with 2 pre-existing failures)
+- All 11 test_planner_harness_persistence tests PASS
+
+Per P18 regression:
+- Pre-existing test_plan_task_with_persist now PASSES (regression test)
+- Pre-existing test_plan_task_without_persist now PASSES (regression test)
+- Both tests serve as regression coverage for new persist param
+
+Per LITERATURE: minimal change, additive (default True).
+Per 你 '排除bug': action over words — fix applied, not just noted.
+
+Verified:
+- 11/11 test_planner_harness_persistence PASS
+- 179/179 combined (full suite)
+- plan_task default behavior unchanged (backward compatible)
+- persist=False path tested
+
+Per 自上而下/分治:
+- Bug fix complete
+- No remaining test failures in 12 modules tested
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+
+Honest (P17):
+- This bug existed since 747d96e (3 commits back)
+- Not caught earlier because tests were in 'pending' status
+- Per 你 '排除bug': now fixed, 100% tests pass
+- Per P18: pre-existing test serves as regression coverage

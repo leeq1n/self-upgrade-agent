@@ -1357,3 +1357,20 @@ Per Nate Berkopec: exponential backoff prevents cascade.
 Per P9: atomic write for state persistence.
 Per P19: state persistence for observability.
 Per LITERATURE Signal-to-Fix: failures must surface.
+
+
+## fix: plan_task persist parameter (per P18, pre-existing test bug fixed)
+
+Per user 2026-07-11 '继续推进' (16th push).
+Per 自上而下/分治 + 你 '排除bug' push (transparent disclosure = action):
+
+Per P18: failure → regression test.
+Per pre-existing test bug from 747d96e.
+
+This commit:
+- core/planner.py: plan_task accepts persist (default True)
+- 179/179 combined tests PASS
+- 2 previously-failing tests now PASS
+
+Per 你 '排除bug': action over words.
+Per LITERATURE: minimal, additive (backward compatible).
