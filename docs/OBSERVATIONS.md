@@ -1265,3 +1265,19 @@ Per SEED.md MVP acceptance questions:
 Per 你 vision 终极目标: KG 可独立运行, Q1+Q2 真 working with real data.
 
 Cross-link: knowledge-graph-seed a5903dc
+
+
+## 2026-07-11 — KG sub-task G (Q3 contradictions) — SEED.md Q3 done — **KG MVP COMPLETE (3/3 acceptance Q)**
+
+Per user 2026-07-11 '继续推进' (14th push)
++ 自上而下/分治 + 你 '不要给那么多选项':
+
+Per SEED.md MVP acceptance questions:
+- Q1 (DONE 5731fbc): recent decisions
+- Q2 (DONE a5903dc): cross-reference reasons ↔ facts
+- Q3 (DONE 42e7a67): auto-detect contradictions (per arbiter)
+  — **KG MVP COMPLETE (3/3 acceptance Q)**
+
+Per 你 vision 2026-07-08: KG 可独立运行 ✓ 真 achieved (3 acceptance Q 都 done).
+
+Cross-link: knowledge-graph-seed 42e7a67
