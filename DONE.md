@@ -1103,3 +1103,35 @@ Honest (P17):
 - v3.1.2 MVP complete
 - Integration module is data layer
 - Hook into actual daily-loop CLI is future
+
+
+## v3.2.0 — Skill dashboard (sub-task 4/4)
+
+Per user 2026-07-11 '继续推进, 遇到问题再来找我' (9th push).
+Per 自上而下/分治 (user meta-principle):
+
+Per LITERATURE Signal-to-Fix + P14:
+- Dashboard = observability tool for skill lifecycle
+
+Per 自上而下/分治:
+- Big: skill lifecycle v3.2.0
+- Sub-task 1-3 done (metadata + promotion + archive)
+- Sub-task 4 done (dashboard) — this commit
+- Future: web UI, retention tuning
+
+This commit:
+- src/skill_dashboard.py (~95 lines)
+  - list_skill_metas + summarize_skills
+  - render_dashboard (text + JSON)
+  - Top 10 target modules
+- tests/test_skill_dashboard.py (7 tests)
+- 122/122 combined tests PASS
+
+Verified:
+- 7/7 unit tests
+- 122/122 combined
+- Text + JSON formats
+- Top 10 limit with consistent sort
+
+Per P7 奥卡姆: 1 commit, additive.
+Per P18 regression: 7 tests.

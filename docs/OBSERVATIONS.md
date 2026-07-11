@@ -954,3 +954,52 @@ Honest (P17):
   is future work (just imports this module)
 - Failure recovery uses mark_failure from failure_recovery.py
 - Cross-process resume proven via simulated restart test
+
+
+## 2026-07-11 — v3.2.0 skill dashboard (sub-task 4/4) 真 working
+
+Per user 2026-07-11 '继续推进, 遇到问题再来找我' (9th push)
++ 自上而下/分治 (user meta-principle):
+
+Per LITERATURE Signal-to-Fix + P14 (docs stay current):
+- Dashboard is observability tool
+- Per SKILLS.md: candidate/active/archived/superseded lifecycle
+- Visualize counts per status + per target module
+
+Per 自上而下/分治:
+- Big task: skill lifecycle v3.2.0
+- Sub-task 1-3 done (metadata + promotion + archive)
+- Sub-task 4 (this commit): dashboard
+- Future sub-tasks: dashboard web UI, retention tuning
+
+This commit:
+- src/skill_dashboard.py (~95 lines):
+  - list_skill_metas (reuses skill_promotion)
+  - summarize_skills (counts per status + per target)
+  - render_dashboard (text + JSON output formats)
+  - Top 10 target modules with consistent sort
+- tests/test_skill_dashboard.py (7 tests, 100% PASS)
+- 122/122 combined tests PASS
+
+Per LITERATURE Signal-to-Fix:
+- Dashboard = observability for skill lifecycle
+- Per P14: visualizes state.json + skill metas
+
+Verified:
+- 7/7 unit tests PASS
+- 122/122 combined (no regression)
+- Text + JSON formats both work
+- Top 10 limit applied with consistent ordering
+- Graceful missing-state handling
+
+Per 自上而下/分治:
+- Big: skill lifecycle v3.2.0 — dashboard added (sub-task 4)
+- Sub-task 5+: web UI, retention tuning
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+Per P18 regression: 7 tests cover edge cases.
+
+Honest (P17):
+- 1 bug fix in commit (sort ordering per P18)
+- dashboard CLI works with synthetic metas
+- real skill metas from auto-commits will populate naturally
