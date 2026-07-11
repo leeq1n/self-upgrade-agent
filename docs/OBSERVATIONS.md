@@ -586,3 +586,43 @@ Per P21 cross-project:
 - KG project reads from SA project's upgrades/
 - No data duplication
 - KG project owns the graph; SA project owns source data
+
+
+## 2026-07-11 — KG sub-task B (reasoning layer) 真 working
+
+Per user 2026-07-11 '按你认为正确 + 按计划继续推进' (5th push).
+Per LITERATURE Seed project + 自上而下/分治 (user meta-principle):
+
+KG project commit `e1f7ce8`:
+- src/kg_reason.py (~170 lines)
+- tests/test_kg_reason.py (10 tests, 17 total now)
+- Bug fix in src/kg_seed.py (output_path str/Path mix)
+- Removed stale .gitkeep files
+
+Verified with real SA data:
+- Sub-task A loads 686 fact nodes
+- Sub-task B derives 10 reasoning nodes (winner_frequency +
+  recent_window)
+- Each reasoning has arbiter='unresolved' (per SEED.md initial
+  state machine value)
+
+Per SEED.md 'why did we do X?' criterion:
+- now answered from reasoning layer (typed chain through facts)
+- 'what's the current state of X?' also answered (winner_frequency)
+
+Per LITERATURE LLM-Wiki philosophy (user 2026-07-10):
+- 'when two reasonings conflict, mark both sides'
+- arbiter='unresolved' signal: not yet decided
+- future sub-task C: state transitions (user-taste/confirmed/etc)
+
+Per 自上而下/分治:
+- Big: KG answers 3 acceptance questions
+- Sub-task A done (data)
+- Sub-task B done (reasoning) ← this commit
+- Sub-task C pending (arbiter state machine)
+- Sub-task D pending (paper nodes + edges)
+- each = 1 commit
+
+Per P21 cross-project: KG project owns graph; SA project owns source data.
+Per P7 奥卡姆: 1 commit, no split, 2 bug fixes per P18.
+Per P23 doc-first: SEED.md + SEED_DETAIL.md spec existed; impl followed.
