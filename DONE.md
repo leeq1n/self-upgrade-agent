@@ -1201,3 +1201,39 @@ Honest (P17):
 - 1 bug fix per P18 (load_state import path)
 - Per 你 vision: 真 autonomous KEPT/REJECT decision
 - Sub-task 3 = statistical significance
+
+
+## v3.3.0 — Statistical significance (sub-task 3/3, MVP COMPLETE)
+
+Per user 2026-07-11 '继续推进' (11th push).
+Per 自上而下/分治 + LITERATURE Signal-to-Fix + 你 vision 终极目标:
+
+Per 你 vision:
+- 真 autonomous KEPT/REJECT with confidence
+- Statistical confidence, not gut-feel
+
+Per LITERATURE Signal-to-Fix:
+- Multiple runs for variance
+- Welch's t-test (unequal variance)
+- Conservative p-value approximation (no scipy dep)
+
+Per 自上而下/分治:
+- Big: v3.3.0 A/B benchmark
+- Sub-task 1 done (core logic)
+- Sub-task 2 done (integration)
+- Sub-task 3 done (statistical significance) — **MVP COMPLETE (3/3)**
+
+This commit:
+- src/statistical_significance.py (~165 lines)
+  - run_multiple / compute_stats
+  - welch_t_test / _approx_two_tail_p
+  - decide_with_significance
+- tests/test_statistical_significance.py (17 tests)
+- 160/160 combined tests PASS
+
+Per P18: 17 tests, 2 bug fixes.
+
+Honest (P17):
+- v3.3.0 MVP COMPLETE per 你 vision
+- Statistical confidence in decisions
+- p-value approximation conservative (not scipy-exact)
