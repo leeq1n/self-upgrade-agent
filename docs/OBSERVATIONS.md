@@ -790,3 +790,55 @@ Verified:
 Per P7 奥卡姆: 1 commit, no split, additive.
 Per P23 doc-first: SKILLS.md spec existed; impl follows.
 Per P18 regression tests: 10 new tests cover edge cases.
+
+
+## 2026-07-11 — v3.1.2 state.json persistence (per P19) 真 working
+
+Per user 2026-07-11 '好, 继续推进' (8th push)
++ 自上而下/分治 (user meta-principle):
+
+Per P19 (Data flow observability):
+- Persist intermediate results for cross-round observability
+- daily-loop state across rounds + restarts
+
+Per 你 vision (2026-07-10 '我希望这个项目之后可以自己独立运行'):
+- Cross-process state (between daily-loop runs)
+- Failure recovery: re-start from last persisted state
+- Audit trail: which rounds ran, what happened
+
+Per 自上而下/分治 (user meta-principle):
+- Big task: v3.1.2 daily-loop persistence
+- Sub-task 1 (this commit): state.json persistence
+- Sub-task 2 (future): failure recovery on top
+- Sub-task 3 (future): integration with daily-loop
+
+This commit:
+- src/state_persistence.py (~155 lines):
+  - atomic_write_json (per P9 + ISS-003 lesson: tmp + os.replace)
+  - load_state / save_state (with graceful missing/invalid handling)
+  - update_round: persist round data with persisted_at
+  - get_last_round / get_round / get_all_rounds (queries)
+  - init_state: schema + meta initialization
+  - CLI: show state.json summary
+- tests/test_state_persistence.py (14 tests, 100% PASS)
+- 94/94 combined tests PASS
+
+Per P9 hard rule: atomic write (per ISS-003 file lock lesson)
+Per P18 regression: 14 tests cover edge cases (missing file,
+  invalid JSON, concurrent updates, etc.)
+Per LITERATURE Signal-to-Fix: persist at end of round
+
+Verified:
+- 14/14 unit tests PASS
+- 94/94 combined tests PASS (no regression)
+- Atomic write prevents torn reads (per P9)
+- Schema version + meta support (per P14 docs stay current)
+
+Per 自上而下/分治 progress:
+- Big: v3.1.2 daily-loop persistence
+- Sub-task 1 done (state.json, this commit)
+- Sub-task 2 pending: failure recovery
+- Sub-task 3 pending: integration with daily-loop
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+Per P23 doc-first: P19 spec existed; impl follows.

@@ -1000,3 +1000,39 @@ Verified end-to-end:
 Per P7 奥卡姆: 1 commit, additive.
 Per P23 doc-first: SKILLS.md existed as spec.
 Per P18 regression tests: 10 new tests cover edge cases.
+
+
+## v3.1.2 — State persistence (sub-task 1/3, per P19)
+
+Per user 2026-07-11 '好, 继续推进' (8th push).
+Per 自上而下/分治 + P19 (data flow observability):
+
+This commit:
+- src/state_persistence.py (~155 lines):
+  - atomic_write_json (P9 hard rule: tmp + os.replace)
+  - load_state / save_state (graceful missing/invalid handling)
+  - update_round (per-round persistence with persisted_at)
+  - get_last_round / get_round / get_all_rounds
+  - init_state (schema_version + meta)
+  - CLI: show state.json summary
+- tests/test_state_persistence.py (14 tests, all PASS)
+- 94/94 combined tests PASS
+
+Per 你 vision (autonomous agent):
+- Cross-process state (between daily-loop runs)
+- Foundation for failure recovery (sub-task 2)
+
+Per 自上而下/分治:
+- Big: v3.1.2 daily-loop persistence
+- Sub-task 1 done (state.json)
+- Sub-task 2 pending: failure recovery
+- Sub-task 3 pending: integration with daily-loop
+
+Per P7 奥卡姆: 1 commit, additive.
+Per P9 hard rule: atomic write (per ISS-003).
+Per P18 regression: 14 tests.
+
+Honest (P17):
+- state.json is data layer only; CLI for visualization exists
+- daily-loop integration = future sub-task
+- failure recovery = future sub-task on top of state.json
