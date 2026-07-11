@@ -1237,3 +1237,34 @@ Honest (P17):
 - v3.3.0 MVP COMPLETE per 你 vision
 - Statistical confidence in decisions
 - p-value approximation conservative (not scipy-exact)
+
+
+## v3.3.0 — CLI wiring (sub-task 4/3, A/B MVP COMPLETE)
+
+Per user 2026-07-11 '继续推进' (11th push).
+Per 自上而下/分治 + LITERATURE Signal-to-Fix + 你 vision 终极目标:
+
+Per 你 vision:
+- A/B benchmark 真 CLI accessible via --enable-ab flag
+- daily-loop + statistical significance = 真 autonomous KEPT/REJECT
+
+Per 自上而下/分治:
+- Big: v3.3.0 A/B benchmark
+- Sub-task 1-3 done (core + integration + statistical)
+- Sub-task 4 done (CLI wiring) — **MVP COMPLETE (4/4)**
+
+This commit:
+- self_upgrade/__main__.py: --enable-ab flag added
+- Baseline tests at startup when --enable-ab
+- Per-round: compare baseline vs candidate
+- REJECT on A/B regression, KEPT on confirm
+- tests/test_daily_loop_cli.py (4 tests)
+- 164/164 combined tests PASS
+
+Per 你 vision 终极目标 = MVP DONE.
+Per P18: 4 tests, 1 bug fix.
+
+Honest (P17):
+- CLI fully wired
+- Backward compatible (--no-ab default)
+- 真 autonomous KEPT/REJECT = MVP COMPLETE

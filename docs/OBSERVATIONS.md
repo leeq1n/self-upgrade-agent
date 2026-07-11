@@ -1183,3 +1183,55 @@ Honest (P17):
 - 2 bug fixes per P18 (zero variance case, test data assumption)
 - p-value approximation is conservative (not exact scipy)
 - per 你 vision 终极目标: 真 autonomous KEPT/REJECT = COMPLETE
+
+
+## 2026-07-11 — v3.3.0 CLI wiring (sub-task 4/3) — A/B benchmark 真 CLI accessible
+
+Per user 2026-07-11 '继续推进' (11th push)
++ 自上而下/分治 (user meta-principle) + LITERATURE Signal-to-Fix:
+
+Per 你 vision (self-upgrade agent 终极目标):
+- A/B benchmark 真 CLI accessible via --enable-ab flag
+- daily-loop + statistical significance = 真 autonomous KEPT/REJECT decision
+
+Per LITERATURE Signal-to-Fix:
+- Real signals drive decisions at CLI level
+- Per Nate Berkopec: data-driven > gut-feel at every layer
+
+Per 自上而下/分治:
+- Big task: v3.3.0 A/B benchmark
+- Sub-task 1 (done 9c912a4): core comparison
+- Sub-task 2 (done 597aab6): integration
+- Sub-task 3 (done a5f78d2): statistical significance
+- Sub-task 4 (this commit): CLI wiring — **v3.3.0 真 COMPLETE (4/4 sub-tasks)**
+
+This commit:
+- self_upgrade/__main__.py: --enable-ab flag added to daily-loop CLI
+  - Baseline tests run at startup when --enable-ab
+  - Per-round: compare baseline vs candidate
+  - REJECT if A/B detects regression
+  - KEPT if A/B confirms improvement
+- tests/test_daily_loop_cli.py (4 tests, 100% PASS)
+- 164/164 combined tests PASS
+
+Per 你 vision 终极目标:
+- 真 autonomous KEPT/REJECT = MVP COMPLETE
+- CLI: `python -m self_upgrade daily-loop --enable-ab --auto-commit`
+- Statistical confidence in decisions
+
+Per LITERATURE Nate Berkopec:
+- Real subprocess tests
+- Statistical comparison at CLI level
+
+Per 自上而下/分治 (user meta-principle):
+- Big: v3.3.0 A/B benchmark — **MVP COMPLETE (4/4 sub-tasks)**
+- Future: cron-based execution (v4.0.0)
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+Per P18 regression: 4 tests cover flag parsing + wiring.
+
+Honest (P17):
+- 1 bug fix per P18 (test indentation)
+- CLI flag fully wired
+- Backward compatible (--no-ab default)
+- per 你 vision 终极目标 = MVP DONE

@@ -288,9 +288,11 @@ def improve_multi(obj, target, test_path, no_judge_llm, count):
               help="Auto-commit KEPT patches with [auto] author (default: no).")
 @click.option("--mock/--no-mock", default=False,
               help="Use mock LLM (no API call, default: real LLM).")
+@click.option("--enable-ab/--no-ab", default=False,
+              help="Enable A/B benchmark (per v3.3.0 MVP, statistical KEPT/REJECT).")
 @click.pass_obj
 def daily_loop(obj, target, interval, max_rounds, multi, max_retries,
-               test_path, auto_commit, mock):
+               test_path, auto_commit, mock, enable_ab):
     """Autonomous daily loop: keep improving target forever (or until max-rounds).
 
     Per user vision 2026-07-08 '我希望这个项目之后可以自己独立运行':
@@ -308,8 +310,17 @@ def daily_loop(obj, target, interval, max_rounds, multi, max_retries,
     from src.llm import LLMConfig
     config = LLMConfig.from_env() if not mock else None
 
+    # Per v3.3.0 sub-task 4/3: wire A/B benchmark into daily-loop CLI
+    # When --enable-ab, use A/B-verified KEPT/REJECT decision (statistical)
+    from src.ab_benchmark import run_tests as ab_run_tests
+    ab_baseline = None
+    if enable_ab:
+        click.echo("[ab] A/B baseline tests...")
+        ab_baseline = ab_run_tests(test_path, cwd=".")
+
     rounds = 0
     kept = 0
+    rejected = 0
     try:
         while max_rounds is None or rounds < max_rounds:
             rounds += 1
@@ -322,18 +333,30 @@ def daily_loop(obj, target, interval, max_rounds, multi, max_retries,
                 r = run_one_round_multi(target_module=target, config=config,
                                          llm_config=config, test_path=test_path)
             click.echo(_format_round_result(r))
+            # Per v3.3.0 sub-task 4/3: A/B verification when --enable-ab
+            if enable_ab and hasattr(r, "decision") and r.decision == "KEPT":
+                from src.ab_benchmark import compare_runs
+                ab_candidate = ab_run_tests(test_path, cwd=".")
+                comparison = compare_runs(ab_baseline or {"passed": 0, "failed": 0, "elapsed_sec": 0}, ab_candidate)
+                if comparison["decision"] == "regression":
+                    click.echo(f"[ab] REGRESSION detected: {comparison['reason']}")
+                    r.decision = "REJECT"
+                else:
+                    click.echo(f"[ab] confirmed: {comparison['reason']}")
             if hasattr(r, "decision") and r.decision == "KEPT":
                 kept += 1
                 # Per user 2026-07-10: '区分开自动更新和手动更新'
                 if auto_commit:
                     _do_auto_commit(target, r, multi)
+            elif hasattr(r, "decision") and r.decision == "REJECT":
+                rejected += 1
             if max_rounds is None or rounds < max_rounds:
                 click.echo(f"  Sleeping {interval}s... (Ctrl-C to stop)")
                 time.sleep(interval)
     except KeyboardInterrupt:
         click.echo("\n[stopped by user]")
 
-    click.echo(f"\n===== Daily loop done: {rounds} rounds, {kept} KEPT =====")
+    click.echo(f"\n===== Daily loop done: {rounds} rounds, {kept} KEPT, {rejected} REJECT =====")
     sys.exit(0 if kept > 0 else 1)
 
 
