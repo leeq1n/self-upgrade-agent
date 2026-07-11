@@ -195,11 +195,25 @@ def install_cron(task_name="self-upgrade-daily", cron_expr="0 2",
         return {"os": os_type, "error": "unsupported OS"}
     if not dry_run:
         config_path.write_text(config_content, encoding="utf-8")
+    # Per P18 + 你 '排除bug' push: when dry_run=False, actually execute
+    # the install command (register with OS scheduler).
+    install_result = None
+    if not dry_run:
+        import subprocess
+        try:
+            install_result = subprocess.run(
+                install_cmd, shell=True, capture_output=True,
+                text=True, timeout=30,
+            )
+        except (subprocess.TimeoutExpired, OSError) as e:
+            install_result = {"error": str(e)}
     return {
         "os": os_type,
         "config_path": str(config_path),
         "config_content": config_content,
         "install_command": install_cmd,
+        "install_result": (vars(install_result) if hasattr(install_result, "returncode")
+                          else install_result),
         "dry_run": dry_run,
     }
 

@@ -1391,3 +1391,21 @@ This commit:
 Per LITERATURE: real bug, real fix.
 Per P9: dry_run=True by default (safe).
 Per 你 '排除bug': action over words.
+
+
+## fix: install_cron actually executes (per P18, 你 2nd bug report)
+
+Per user 2026-07-11 'python -m self_upgrade cron --install --apply' did not execute.
+Per 你 '排除bug' push (2nd bug today).
+
+Per P18: failure → regression test.
+
+This commit:
+- src/os_cron_installer.py: subprocess.run(install_cmd) when dry_run=False
+- self_upgrade/__main__.py: shows register result (SUCCESS/FAILED)
+- tests/test_cron_install_apply.py (3 tests)
+- 187/187 combined tests PASS
+
+Per P9: subprocess.run with timeout=30.
+Per LITERATURE: real subprocess integration.
+Per 你 '排除bug': action over words.

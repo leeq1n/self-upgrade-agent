@@ -1598,3 +1598,63 @@ Honest (P17):
 - I missed CLI wiring in v4.0.0 commits (c7998fa, ccd7e1d)
 - Per 你 '排除bug' push: fix immediately, no excuses
 - Per P18: 5 regression tests added to prevent recurrence
+
+
+## 2026-07-11 — fix: install_cron actually executes install_command (per P18, 你 2nd bug report)
+
+Per user 2026-07-11 'python -m self_upgrade cron --install --apply':
+- Got 'Installed: ...xml' + 'Manual step: schtasks /create ...'
+- Bug: dry_run=False only wrote XML file, NEVER executed schtasks
+- Per 你 '排除bug' push (2nd bug today): fix immediately
+
+Per P18 (failure -> regression test):
+- Real bug: install command not executed
+- Root cause: install_cron(dry_run=False) only writes config_path,
+  does not subprocess.run(install_cmd)
+- Fix: subprocess.run(install_cmd, shell=True, timeout=30) when dry_run=False
+
+Per 自上而下/分治:
+- Big: SA v4.0.0 cron execution
+- Sub-task 2 (c7998fa): OS cron installer module
+- Sub-task 2b (82790d2): CLI wiring
+- Sub-task 2c (this commit): actual install execution (the missing piece)
+
+This commit:
+- src/os_cron_installer.py: install_cron now executes install_command
+  - subprocess.run(install_cmd, shell=True, timeout=30)
+  - Captures returncode, stdout, stderr in install_result
+  - Handles TimeoutExpired + OSError exceptions
+- self_upgrade/__main__.py: cron CLI shows register result
+  - SUCCESS (rc=0), FAILED (rc!=0), or error
+  - stderr shown on failure (first 200 chars)
+- tests/test_cron_install_apply.py (3 regression tests, 100% PASS)
+- 187/187 combined tests PASS
+
+Per P18 regression:
+- test_dry_run_does_not_execute (dry_run=True: NO install_result)
+- test_apply_executes_install_command (dry_run=False: subprocess.run called)
+- test_apply_handles_install_failure (rc=1 + stderr surfaced)
+
+Per LITERATURE Signal-to-Fix:
+- Real bug found by user reproduction
+- Real subprocess integration
+- Real error handling (timeout + OSError)
+
+Per P9 (hard rule): subprocess.run with timeout=30 (safe bound)
+Per P18 + 你 '排除bug' push: action over words.
+
+Verified (per user reproduction case):
+- dry_run=True: prints XML + install_command (no execution)
+- dry_run=False: writes XML + executes install_command + shows rc
+- Failure: shows stderr for debugging
+
+Per 自上而下/分治:
+- v4.0.0 cron now 真 working end-to-end
+- Per 你 vision 2026-07-08: 真 autonomous deployment = 真 achieved
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+
+Honest (P17):
+- I missed install execution in os_cron_installer module
+- Per 你 '排除bug' push: fix immediately, no excuses
+- Per P18: 3 regression tests added

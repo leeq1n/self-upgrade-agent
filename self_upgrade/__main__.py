@@ -395,7 +395,16 @@ def cron(obj, do_install, do_apply, show, cron_expr):
         click.echo(f"To install, run: {result.get('install_command')}")
     else:
         click.echo(f"Installed: {result.get('config_path')}")
-        click.echo(f"Manual step: {result.get('install_command')}")
+        click.echo(f"Install command: {result.get('install_command')}")
+        ir = result.get('install_result') or {}
+        rc = ir.get('returncode') if isinstance(ir, dict) else None
+        if rc == 0:
+            click.echo(f"Register result: SUCCESS (rc=0)")
+        elif rc is not None:
+            click.echo(f"Register result: FAILED (rc={rc})")
+            click.echo(f"stderr: {ir.get('stderr', '')[:200]}")
+        else:
+            click.echo(f"Register result: {ir}")
 
 
 def main():
