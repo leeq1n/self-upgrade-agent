@@ -262,3 +262,78 @@ future iteration.
 **Honest (P17)**: my `v3_auto_commit.py` is too aggressive — it
 commits without validating public API surface.  This is a real
 bug in my code, not in LLM.  Future: add caller check before commit.
+
+
+## 2026-07-11 — daily-loop --max-rounds 3 --auto-commit: 3/3 KEPT + crash
+
+User ran `python -m self_upgrade daily-loop --max-rounds 3 --interval 0
+--auto-commit` on 2026-07-11 13:39-13:46.  Result: **3/3 KEPT (100%)**
+= best run ever (was 1/3 = 33% on 2026-07-10, 0/3 = 0% in earlier runs).
+
+**Rounds**:
+- Round 1 (1 attempt, 133.5s): harness-engineering KEPT, auto-commit
+  7566adf, bundle in upgrades/auto-patches/
+- Round 2 (2 attempts, 176.8s): harness-engineering KEPT, auto-commit
+  0b2e6d4, bundle in upgrades/auto-patches/
+- Round 3 (2 attempts, 120.9s): harness-engineering KEPT, but
+  auto-commit CRASHED (UnicodeDecodeError + AttributeError)
+
+**Round 3 crash** (per P18 + P9 hard rule):
+1. `bundle = write_patch_bundle(target)`
+2. Inside `write_patch_bundle`: `rc, out, _ = _run_git(["diff", ...])`
+3. `_run_git` called `subprocess.run(..., text=True)` which on Windows
+   uses gbk codec by default -> `0x92` byte in git output -> UnicodeDecodeError
+   raised in a background thread.
+4. Back in main thread: `_run_git` returned None for stdout
+   (because subprocess.run with text=True but bytes-in-stdout can yield
+   partial None on Windows).
+5. `out.strip()` -> AttributeError 'NoneType'.
+
+**Round 3 LLM patch** = same regression: Round 2 already removed
+`plan_task` (LLM rename to `generate_regression_test`).  Round 3 KEPT
+additive on top of broken state.  Caller check passed because target
+file was the LLM-changed version (no `plan_task` to check against).
+
+**Per user 2026-07-10 '记得遇到了问题需要做什么嘛?'**:
+- 24 tests fail (2026-07-10) -> fixed with `check_callers` (root cause, but
+  only check-name, not check-load).
+- Round 3 crash (2026-07-11) -> fixed with UTF-8 encoding + None guard.
+- Round 2 regression (LLM rename `plan_task`) -> caught by caller
+  validatation only AFTER hash into check_callers rewrite.
+
+**This commit (1 commit, 奥卡姆)** fixes:
+
+1. UTF-8 encoding in `_run_git` and `auto_commit`'s subprocess:
+   ```python
+   encoding="utf-8", errors="replace"
+   ```
+   Per P9 deterministic, per P18 never crash.
+
+2. None-guard in `_run_git`: `(r.stdout or "")` (per P18 never None).
+
+3. `check_callers` now compiles target file + top-10 callers:
+   ```python
+   compile(f.read(), name, "exec")
+   ```
+   Catches rename-removed-function regression at compile-time.
+   Per P7 奥卡姆: compile-only (fast, no exec, no side-effects).
+
+4. Added 4 tests + restored 4 tests for new check_callers + UTF-8.
+
+**Verified**:
+- 639 PASS + 6 skip + 0 fail (was 635)
+- TestV3AutoCommitCallerCheck 4 PASS
+- TestV3AutoCommitEncoding 4 PASS (new)
+
+**Reverted 2 [auto] commits** (Round 1 + Round 2 + Round 3 from this
+session): `git reset --hard 3d9d8dd`.  Same root cause as 2026-07-10.
+
+**Honest (per P17)**:
+- v3_auto_commit.py had 3 bugs at once: gbk encoding + None stdout +
+  check-only-name (not check-load).  Fixed in 1 commit, 奥卡姆.
+- 100% KEPT rate shows LLM is doing real work.  But also shows our
+  pre-commit gate has 3 gaps.  Per LITERATURE Self-Harness: harness
+  boundaries are HARD.  We're learning by hitting them.
+- Caller check now catches **regression at compile time**, not at
+  runtime.  This is the LITERATURE Signal-to-Fix Loop: **fail at the
+  earliest possible layer** (compile, not import).

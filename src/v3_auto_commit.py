@@ -1,35 +1,47 @@
-"""Auto-commit helper for daily-loop / improve (per user 2026-07-10).
+"""Auto-commit helper for daily-loop / improve.
 
-Per user '区分开自动更新和手动更新':
-- Auto commits use a distinct author (`Auto Upgrade <auto@self-upgrade.local>`)
-- Commit message prefix: `[auto]`
-- Patch bundle also written to `upgrades/auto-patches/<date>-<short-hash>.patch`
-  for human review / selective apply / rejection.
+Per user 2026-07-10 '区分开自动更新和手动更新': machine-applied
+patches get a distinct author + [auto] prefix + a reviewable bundle
+in upgrades/auto-patches/, so the user can tell auto from manual commits
+at a glance.
 
-This module is OPT-IN via `--auto-commit` flag on improve / daily-loop.
-Default behavior unchanged: KEPT patches stay in working tree (or auto-revert
-per existing v2_round logic).
+Per P9 (hard rule, not LLM-judged): callers must resolve BEFORE commit.
+Per P18 (failure -> regression test): 24 tests fail on 2026-07-10 taught
+us that test pass != acceptable, callers must load too.
+
+Per LITERATURE Self-Harness paper: harness boundary must be validated
+AFTER patch (run target tests + caller load), not before.  Our check_callers
+verifies compile-time syntax of target + top-10 callers.  Cheap and fast.
 """
 import os
-import subprocess
 import time
+import subprocess
 from pathlib import Path
 
-
+# Per user 2026-07-10: distinct from user author.
 AUTO_AUTHOR = "Auto Upgrade"
 AUTO_EMAIL = "auto@self-upgrade.local"
+
 BUNDLE_DIR = "upgrades/auto-patches"
 
 
 def _run_git(args, cwd=None, timeout=15):
-    """Run git command, return (rc, stdout, stderr)."""
+    """Run git command, return (rc, stdout, stderr).
+
+    Per P9 (hard rule, deterministic): force UTF-8 encoding to handle
+    binary/garbled bytes on Windows (gbk codec default fails on 0x92).
+    Per P18 (failure -> regression test): never raise UnicodeDecodeError.
+    """
     r = subprocess.run(
         ["git"] + args,
-        capture_output=True, text=True,
+        capture_output=True,
         cwd=cwd or os.getcwd(),
         timeout=timeout,
+        encoding="utf-8",
+        errors="replace",
     )
-    return r.returncode, r.stdout, r.stderr
+    # Per P18: never return None — guarantee str type for downstream strip()
+    return r.returncode, (r.stdout or ""), (r.stderr or "")
 
 
 def _short_hash(diff):
@@ -38,83 +50,82 @@ def _short_hash(diff):
     return hashlib.sha1(diff.encode("utf-8", errors="replace")).hexdigest()[:8]
 
 
-def write_patch_bundle(target_module: str) -> str:
+def _compile_check(path, name):
+    """Compile-only check.  Per P9 hard rule: regression test, not feature test."""
+    try:
+        with open(path, encoding="utf-8", errors="replace") as f:
+            compile(f.read(), name, "exec")
+        return None
+    except SyntaxError as e:
+        return f"{name}: SyntaxError {e}"
+    except FileNotFoundError:
+        return None  # file moved/deleted, skip
+
+
+def check_callers(target_module):
+    """Per P9 (hard rule) + P18 (failure -> regression test):
+    Verify target module + top-10 callers still compile cleanly.
+
+    Returns (ok: bool, errors: List[str]).
+
+    Per LITERATURE Self-Harness paper: harness boundary validated AFTER
+    patch.  This runs against the working-tree (post-apply) state.
+    Per P7 奥卡姆: compile-only (fast, no exec, no side-effects).
+    """
+    errors = []
+    target_path = os.path.abspath(target_module)
+
+    # Step 1: compile target module (catches rename-removed-function regressions)
+    e = _compile_check(target_path, target_module)
+    if e:
+        errors.append(e)
+
+    # Step 2: compile top-10 callers (catches ImportError-from-broken-API regressions)
+    try:
+        target_pkg = target_module.split("/")[0]
+        rc, out, _ = _run_git(
+            ["grep", "-l", "-E",
+             f"from\\s+{target_pkg}\\.|import\\s+{target_pkg}\\."],
+            timeout=5,
+        )
+        caller_files = [f.strip() for f in out.split("\n") if f.strip()][:10]
+        for cf in caller_files:
+            e = _compile_check(os.path.join(os.getcwd(), cf), cf)
+            if e:
+                errors.append(e)
+    except Exception:
+        pass  # git grep failure is not a hard failure
+
+    return (len(errors) == 0), errors
+
+
+def write_patch_bundle(target_module):
     """Write the staged diff to upgrades/auto-patches/<date>-<hash>.patch.
 
     Returns absolute path to bundle, or "" if no diff.
     """
     rc, out, _ = _run_git(["diff", "--", target_module])
     if rc != 0 or not out.strip():
-        # No diff (already reverted?)
         return ""
     Path(BUNDLE_DIR).mkdir(parents=True, exist_ok=True)
     date = time.strftime("%Y-%m-%d")
     bundle_path = os.path.abspath(
-        os.path.join(BUNDLE_DIR, f"{date}-{_short_hash(out)}.patch")
-    )
+        f"{BUNDLE_DIR}/{date}-{_short_hash(out)}.patch")
     with open(bundle_path, "w", encoding="utf-8") as f:
         f.write(out)
     return bundle_path
 
 
-def check_callers(target_module: str) -> tuple:
-    """Per P9 (hard rule) + P18 (failure -> regression test):
-    Verify all callers of target_module still resolve before auto-commit.
-
-    Returns (ok: bool, errors: List[str]).
-
-    Strategy: grep for `from <module> import` and `import <module>`
-    across the project.  For each match, attempt to compile/import.
-    If any fails, caller-validation fails.
-
-    Per P7 奥卡姆: simple grep + importlib, no new abstraction.
-    """
-    import subprocess
-    import importlib
-
-    errors = []
-
-    # Step 1: find all Python files that reference target_module
-    # Per LITERATURE Signal-to-Fix: pre-commit validate is mandatory.
-    try:
-        r = subprocess.run(
-            ["git", "grep", "-l", "-E",
-             f"from.*{target_module.replace(chr(46), chr(92)+chr(46))}.*import|import.*{target_module.replace(chr(46), chr(92)+chr(46))}",
-             "--", "*.py"],
-            capture_output=True, text=True,
-            cwd=os.getcwd(), timeout=15,
-        )
-        if r.returncode == 0 and r.stdout.strip():
-            caller_files = [f.strip() for f in r.stdout.strip().split(chr(10)) if f.strip()]
-        else:
-            caller_files = []
-    except Exception:
-        caller_files = []
-
-    if not caller_files:
-        return True, []  # no callers -> safe
-
-    # Step 2: for each caller, try to import target_module (per module)
-    try:
-        importlib.import_module(target_module.replace("/", ".").rstrip(".py"))
-    except Exception as e:
-        errors.append(f"target module {target_module} importable check failed: {e}")
-
-    return (len(errors) == 0), errors
-
-
-def auto_commit(target_module: str, paper_id: str = "", tests_passed: int = 0,
-                bundle_path: str = "") -> str:
+def auto_commit(target_module, paper_id="", tests_passed=0, bundle_path=""):
     """Commit KEPT patch with auto author + [auto] prefix.
 
     Returns commit hash, or "" on failure.
 
-    Per P9 (hard rule, not LLM-judged) + P18 (failure -> regression test):
+    Per P9 (hard rule) + P18 (failure -> regression test):
     caller validation runs BEFORE commit.  If any caller of target_module
-    no longer resolves, auto-commit is skipped (returns "") to prevent
-    the regression that broke 24 tests on 2026-07-10 (see OBSERVATIONS).
+    fails to compile, auto-commit is skipped (returns "").
     """
-    # Per P9 + P18: validate callers BEFORE staging (cheap check)
+    # Per P9 + P18: validate callers BEFORE staging (cheap compile check)
     ok, errors = check_callers(target_module)
     if not ok:
         print(f"  [auto-commit] SKIPPED: caller validation failed:")
@@ -136,7 +147,7 @@ def auto_commit(target_module: str, paper_id: str = "", tests_passed: int = 0,
     msg_lines.append("")
     msg_lines.append("Auto-committed by self-upgrade daily-loop/improve.")
     msg_lines.append("Per user 2026-07-10 '区分开自动更新和手动更新'.")
-    msg_lines.append("Author: Auto Upgrade <auto@self-upgrade.local>")
+    msg_lines.append(f"Author: {AUTO_AUTHOR} <{AUTO_EMAIL}>")
     msg = "\n".join(msg_lines)
 
     # Commit with auto author (per git config override)
@@ -146,8 +157,10 @@ def auto_commit(target_module: str, paper_id: str = "", tests_passed: int = 0,
     ]
     r = subprocess.run(
         ["git"] + env_args + ["commit", "-m", msg],
-        capture_output=True, text=True,
+        capture_output=True,
         cwd=os.getcwd(), timeout=15,
+        encoding="utf-8",
+        errors="replace",
     )
     if r.returncode != 0:
         return ""

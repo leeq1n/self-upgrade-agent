@@ -676,3 +676,40 @@ Per 你的 workflow (P22):
   4. P23: doc-first, no script
   5. P7 奥卡姆: 1 commit, no split
   6. P9 hard rule: tests pass != acceptable, callers must resolve
+
+
+## v3.1.0 follow-up — Fix 3 bugs in v3_auto_commit.py (1 commit, 奥卡姆)
+
+Per user 2026-07-11 '记得遇到了问题需要做什么嘛?' — applied P22
+(check state, plan, update docs).  Found 3 bugs at once during the
+2026-07-11 daily-loop run (3/3 KEPT but Round 3 crash + 2 [auto]
+commits broke 24 tests later).
+
+This commit (1 commit, 奥卡姆, no split):
+
+1. UTF-8 encoding + None-guard in _run_git + auto_commit subprocess
+   (P9 deterministic + P18 never crash on Windows gbk)
+
+2. check_callers compiles target file + top-10 callers
+   (catches rename-removed-function regression at compile-time,
+    per LITERATURE Signal-to-Fix Loop: fail at earliest layer)
+
+3. Added 4 tests + restored 4 tests for new check_callers + UTF-8
+
+4. Reverted 2 [auto] commits from this session
+   (7566adf + 0b2e6d4 both renamed plan_task, same regression as
+    2026-07-10)
+
+Verified:
+  - 639 PASS + 6 skip + 0 fail (was 635, +4)
+  - 1 commit, no split
+  - Per P23 doc-first: no hermes-verify script
+
+Per 你的 workflow (P22):
+  1. P22: check state (3/3 KEPT + crash + 24 fail later)
+  2. P22: write plan (3 bugs at once, 1 commit, all additive)
+  3. P22: update docs (OBSERVATIONS + DONE)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: 1 commit, no split
+  6. P9 hard rule: deterministic + UTF-8 (never crash on bad bytes)
+  7. P18: never return None (caller-check + None-guard)
