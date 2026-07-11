@@ -1235,3 +1235,18 @@ Honest (P17):
 - CLI flag fully wired
 - Backward compatible (--no-ab default)
 - per 你 vision 终极目标 = MVP DONE
+
+
+## 2026-07-11 — KG sub-task E (Q1 query) — SEED.md Q1 done
+
+Per user 2026-07-11 '继续推进' (12th push) — first push after real LLM test
++ 自上而下/分治 (user meta-principle):
+
+Per SEED.md MVP acceptance questions:
+- Q1: Show last N rounds + decisions + winners (DONE — 5731fbc)
+- Q2: Cross-reference facts/reasonings (pending)
+- Q3: Auto-detect contradictions (pending, per arbiter)
+
+Per 你 vision 终极目标: KG 可独立运行, Q1 真 working with 773 real entries.
+
+Cross-link: knowledge-graph-seed 5731fbc
