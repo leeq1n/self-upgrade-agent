@@ -1135,3 +1135,37 @@ Verified:
 
 Per P7 奥卡姆: 1 commit, additive.
 Per P18 regression: 7 tests.
+
+
+## v3.3.0 — A/B benchmark (sub-task 1/3, core comparison logic)
+
+Per user 2026-07-11 '继续推进' (10th push).
+Per 自上而下/分治 + LITERATURE Signal-to-Fix + 你 vision 终极目标:
+
+Per 你 vision:
+- 真能比较 patch vs baseline
+- 决定 KEPT/REJECT based on data
+
+Per LITERATURE Signal-to-Fix:
+- Signals = test pass count, latency, error rate
+- Compare baseline vs candidate
+- Data-driven decisions
+
+Per 自上而下/分治:
+- Big: v3.3.0 A/B benchmark
+- Sub-task 1 done (this): core comparison logic
+- Sub-task 2 pending: integration with daily-loop
+- Sub-task 3 pending: statistical significance
+
+This commit:
+- src/ab_benchmark.py (~150 lines)
+- tests/test_ab_benchmark.py (12 tests)
+- 134/134 combined tests PASS
+
+Per P9 hard rule + ISS-003: UTF-8, atomic, timeout.
+Per P18 regression: 12 tests.
+
+Honest (P17):
+- A/B framework in place
+- compare_runs logic working
+- integration into daily-loop is next sub-task

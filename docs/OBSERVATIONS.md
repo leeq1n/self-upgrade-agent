@@ -1003,3 +1003,64 @@ Honest (P17):
 - 1 bug fix in commit (sort ordering per P18)
 - dashboard CLI works with synthetic metas
 - real skill metas from auto-commits will populate naturally
+
+
+## 2026-07-11 — v3.3.0 A/B benchmark (sub-task 1/3) 真 working
+
+Per user 2026-07-11 '继续推进' (10th push)
++ 自上而下/分治 (user meta-principle) + LITERATURE Signal-to-Fix:
+
+Per 你 vision (self-upgrade agent 终极目标):
+- 真能比较 patch vs baseline
+- 决定 KEPT/REJECT based on data
+
+Per LITERATURE Signal-to-Fix:
+- Signals = test pass count, latency, error rate
+- Compare baseline vs candidate patch
+- Data-driven decisions
+
+Per 自上而下/分治 (user meta-principle):
+- Big task: v3.3.0 A/B benchmark
+- Sub-task 1 (this commit): core comparison logic
+- Sub-task 2 (future): integration with daily-loop (auto-decide)
+- Sub-task 3 (future): statistical significance testing
+
+This commit:
+- src/ab_benchmark.py (~150 lines):
+  - run_tests (subprocess + UTF-8 per P9 + ISS-003)
+  - _extract_count (parse pytest output)
+  - compare_runs (decision logic)
+  - benchmark (orchestration)
+  - CLI: ab-benchmark
+- tests/test_ab_benchmark.py (12 tests, 100% PASS)
+- 134/134 combined tests PASS
+
+Per P9 hard rule + ISS-003 lesson:
+- UTF-8 encoding
+- atomic operations
+- timeout handling
+
+Per LITERATURE Signal-to-Fix decision logic:
+- candidate_better: more passes
+- regression: fewer passes OR more failures
+- tie: same metrics
+
+Verified:
+- 12/12 unit tests PASS (with mocks + real subprocess)
+- 134/134 combined (no regression)
+- Real subprocess integration works (per P23: tests don't lie)
+- Timeout + error handling per Signal-to-Fix
+
+Per 自上而下/分治:
+- Big: v3.3.0 A/B benchmark
+- Sub-task 1 done (this commit)
+- Sub-task 2 pending: integration with daily-loop
+- Sub-task 3 pending: statistical significance
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+Per P18 regression: 12 tests cover edge cases.
+
+Honest (P17):
+- A/B framework in place (compare_runs logic)
+- Sub-task 2 = wire into daily-loop for auto-decide
+- Sub-task 3 = statistical significance (multiple runs + t-test)
