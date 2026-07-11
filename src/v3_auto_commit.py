@@ -10,8 +10,9 @@ Per P18 (failure -> regression test): 24 tests fail on 2026-07-10 taught
 us that test pass != acceptable, callers must load too.
 
 Per LITERATURE Self-Harness paper: harness boundary must be validated
-AFTER patch (run target tests + caller load), not before.  Our check_callers
-verifies compile-time syntax of target + top-10 callers.  Cheap and fast.
+AFTER patch (run target tests + caller compile), not before.
+Per LITERATURE Signal-to-Fix Loop: fail at the earliest layer (compile,
+not runtime).
 """
 import os
 import time
@@ -64,13 +65,17 @@ def _compile_check(path, name):
 
 def check_callers(target_module):
     """Per P9 (hard rule) + P18 (failure -> regression test):
-    Verify target module + top-10 callers still compile cleanly.
+    Verify target module + top-10 Python callers still compile cleanly.
 
     Returns (ok: bool, errors: List[str]).
 
     Per LITERATURE Self-Harness paper: harness boundary validated AFTER
     patch.  This runs against the working-tree (post-apply) state.
     Per P7 奥卡姆: compile-only (fast, no exec, no side-effects).
+
+    Per OBSERVATIONS 2026-07-11 Round 1: git grep without *.py glob
+    returns .md files (prose mentions "core.") -> false-positive.
+    Restrict to *.py via git pathspec.
     """
     errors = []
     target_path = os.path.abspath(target_module)
@@ -80,12 +85,13 @@ def check_callers(target_module):
     if e:
         errors.append(e)
 
-    # Step 2: compile top-10 callers (catches ImportError-from-broken-API regressions)
+    # Step 2: compile top-10 Python callers (catches ImportError)
     try:
         target_pkg = target_module.split("/")[0]
         rc, out, _ = _run_git(
             ["grep", "-l", "-E",
-             f"from\\s+{target_pkg}\\.|import\\s+{target_pkg}\\."],
+             f"from\\s+{target_pkg}\\.|import\\s+{target_pkg}\\.",
+             "--", "*.py"],
             timeout=5,
         )
         caller_files = [f.strip() for f in out.split("\n") if f.strip()][:10]

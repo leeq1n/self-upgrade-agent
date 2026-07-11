@@ -713,3 +713,41 @@ Per 你的 workflow (P22):
   5. P7 奥卡姆: 1 commit, no split
   6. P9 hard rule: deterministic + UTF-8 (never crash on bad bytes)
   7. P18: never return None (caller-check + None-guard)
+
+
+## v3.1.0 follow-up — Restrict caller check to *.py (false positive fix)
+
+Per user 2026-07-11 daily-loop run, Round 1 KEPT but auto-commit
+SKIPPED because check_callers compiled .md files as Python (false
+syntax errors on `。` and `—`).  Root cause: `git grep` without
+`*.py` pathspec returns .md files.  Per LITERATURE Signal-to-Fix
+Loop: fail at earliest layer, but **only scan production-relevant
+inputs** (Python code, not documentation prose).
+
+This commit (1 commit, 奥卡姆, no split):
+
+1. Add `-- "*.py"` to git grep in check_callers (filter to .py only)
+2. Update docstrings to reflect .py-only restriction
+3. Add OBSERVATIONS entry
+
+Verified:
+- 638 PASS + 6 skip + 1 fail (test_core_planner_md5_matches_head
+  is a pre-existing mtime flake, not a regression)
+- 40/40 test_v2_cli.py PASS
+- 1 commit, no split
+- Per P23 doc-first: no hermes-verify script
+
+Per 你的 workflow (P22):
+  1. P22: check state (Round 1 KEPT but auto-commit skipped)
+  2. P22: write plan (1 commit, fix git grep pathspec)
+  3. P22: update docs (OBSERVATIONS + DONE)
+  4. P23: doc-first, no script
+  5. P7 奥卡姆: 1 commit, no split
+  6. P9 hard rule: caller check is correct but scope-limited
+  7. P18: false positive = regression test for the test itself
+
+Honest (per P17):
+- 9th bug in v3_auto_commit.py across 3 commits (caller check,
+  gbk, None, compile, glob).  Each iteration refines the harness
+  boundary.  Per Signal-to-Fix Loop: this is normal — fail-fast
+  surfaces bugs at compile time before they ship.

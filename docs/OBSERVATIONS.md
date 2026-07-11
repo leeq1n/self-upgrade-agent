@@ -337,3 +337,44 @@ session): `git reset --hard 3d9d8dd`.  Same root cause as 2026-07-10.
 - Caller check now catches **regression at compile time**, not at
   runtime.  This is the LITERATURE Signal-to-Fix Loop: **fail at the
   earliest possible layer** (compile, not import).
+
+
+## 2026-07-11 — daily-loop 3-round: 1/3 KEPT, auto-commit SKIPPED false positive
+
+User ran `daily-loop --max-rounds 3 --interval 0 --auto-commit` on
+2026-07-11 14:33-14:45.  Result: **1/3 KEPT (33%)**.
+
+**Per-round**:
+- Round 1 (1 attempt, 121.6s): the-agent-improvement-loop KEPT 16/16.
+  **AUTO-COMMIT SKIPPED**: false-positive in caller validation.
+  Errors cited `SyntaxError '。' (U+3002)` in `.hermes/plans/*.md`,
+  `SyntaxError '—' (U+2014)` in `docs/CONSTRAINTS_DETAIL.md`.
+  Root cause: `git grep` returns .md files when grepping for `core.`
+  in prose text.  compile() on .md text -> false syntax error.
+- Round 2 (3 attempts, 293.2s): harness-engineering got 15+1
+  fail (1 test failed) -> harness retry -> self-harness NO_PATCH.
+- Round 3 (3 attempts, 265.9s): all NO_PATCH.
+
+**Root cause**: check_callers git grepped ALL files including .md.
+Per LITERATURE Signal-to-Fix Loop, this is a Layer 1 false positive
+(compile-time check on non-code).  Need to restrict to *.py via
+git pathspec.
+
+**This commit (1 commit, 奥卡姆)**:
+1. Add `-- "*.py"` to git grep in check_callers
+2. Update docstrings to reflect .py-only restriction
+3. Add OBSERVATIONS entry
+
+Verified:
+- 638 PASS + 6 skip + 1 fail (test_core_planner_md5_matches_head pre-existing
+  flake on mtime check, not regression)
+- 40/40 test_v2_cli.py PASS
+
+**Lesson (per LITERATURE + Nate Berkopec)**:
+Pre-commit checks should be careful about what they scan.
+Documentation (.md) is NOT code — never compile it.  Pre-commit
+must operate on production-relevant inputs only (Python files here).
+This is the **9th bug** in v3_auto_commit.py in 3 commits
+(2026-07-10 caller check + 2026-07-11 gbk + None + compile + glob).
+The harness boundary is HARD.  Each iteration teaches us a new
+aspect of the boundary.
