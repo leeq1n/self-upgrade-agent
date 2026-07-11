@@ -28,6 +28,9 @@ from src.skill_promotion import (
     promote_skill,
     archive_skill,
     run_promotion_cycle,
+    should_supersede,
+    supersede_skill,
+    retention_cleanup,
 )
 
 
@@ -206,3 +209,123 @@ class TestSkillPromotion:
         assert saved["status"] == "active"
         saved2 = json.loads((tmp_path / "s1.meta.json").read_text(encoding="utf-8"))
         assert saved2["status"] == "archived"
+
+
+class TestSkillSupersede:
+    """Per SKILLS.md: archive if superseded by newer skill on same target."""
+
+    def test_should_supersede_same_target_newer(self):
+        """Same target + newer timestamp -> supersede."""
+        old = {"target_module": "core/planner.py", "promoted_at": 100.0, "id": "old"}
+        new = {"target_module": "core/planner.py", "promoted_at": 200.0, "id": "new"}
+        assert should_supersede(old, new) is True
+
+    def test_should_supersede_different_target(self):
+        """Different target modules -> no supersede."""
+        old = {"target_module": "core/planner.py", "promoted_at": 100.0}
+        new = {"target_module": "core/agent.py", "promoted_at": 200.0}
+        assert should_supersede(old, new) is False
+
+    def test_should_supersede_older_new(self):
+        """Newer is older -> no supersede (don't replace with older)."""
+        old = {"target_module": "core/planner.py", "promoted_at": 200.0}
+        new = {"target_module": "core/planner.py", "promoted_at": 100.0}
+        assert should_supersede(old, new) is False
+
+    def test_should_supersede_missing_args(self):
+        """Missing args -> False (no crash)."""
+        assert should_supersede(None, {}) is False
+        assert should_supersede({}, None) is False
+
+    def test_supersede_skill_updates_status(self, tmp_path):
+        """supersede_skill: active -> superseded, writes to disk."""
+        old_path = tmp_path / "old.meta.json"
+        old = {
+            "status": "active",
+            "target_module": "core/planner.py",
+            "promoted_at": 100.0,
+            "id": "old-id",
+        }
+        old_path.write_text(json.dumps(old), encoding="utf-8")
+        new = {
+            "target_module": "core/planner.py",
+            "promoted_at": 200.0,
+            "id": "new-id",
+        }
+        result = supersede_skill(old_path, old, new)
+        assert result is True
+        assert old["status"] == "superseded"
+        assert old["superseded_by"] == "new-id"
+        assert "superseded_at" in old
+        # Verify file
+        saved = json.loads(old_path.read_text(encoding="utf-8"))
+        assert saved["status"] == "superseded"
+
+
+class TestSkillRetention:
+    """Per SKILLS.md: retention rules (auto-cleanup of dead skills)."""
+
+    def test_retention_cleanup_old_archived_deleted(self, tmp_path):
+        """Old archived skill -> deleted."""
+        old_ts = time.time() - 100 * 86400  # 100 days ago
+        meta = {
+            "status": "archived",
+            "archived_at": old_ts,
+            "id": "old",
+        }
+        path = tmp_path / "old.meta.json"
+        path.write_text(json.dumps(meta), encoding="utf-8")
+        result = retention_cleanup(tmp_path, archive_max_days=90)
+        assert result["deleted"] == 1
+        assert not path.exists()
+
+    def test_retention_cleanup_recent_archived_kept(self, tmp_path):
+        """Recent archived skill -> kept (within window)."""
+        recent_ts = time.time() - 30 * 86400  # 30 days ago
+        meta = {
+            "status": "archived",
+            "archived_at": recent_ts,
+            "id": "recent",
+        }
+        path = tmp_path / "recent.meta.json"
+        path.write_text(json.dumps(meta), encoding="utf-8")
+        result = retention_cleanup(tmp_path, archive_max_days=90)
+        assert result["kept"] == 1
+        assert path.exists()
+
+    def test_retention_cleanup_active_skill_kept(self, tmp_path):
+        """Active skill -> kept (regardless of age)."""
+        old_ts = time.time() - 365 * 86400
+        meta = {
+            "status": "active",
+            "promoted_at": old_ts,
+            "id": "active",
+        }
+        path = tmp_path / "active.meta.json"
+        path.write_text(json.dumps(meta), encoding="utf-8")
+        result = retention_cleanup(tmp_path, archive_max_days=90)
+        assert result["kept"] == 1
+        assert path.exists()
+
+    def test_retention_cleanup_candidate_skill_kept(self, tmp_path):
+        """Candidate skill -> kept (not eligible for cleanup)."""
+        meta = {"status": "candidate", "id": "new"}
+        path = tmp_path / "new.meta.json"
+        path.write_text(json.dumps(meta), encoding="utf-8")
+        result = retention_cleanup(tmp_path, archive_max_days=90)
+        assert result["kept"] == 1
+        assert path.exists()
+
+    def test_retention_cleanup_superseded_old_deleted(self, tmp_path):
+        """Old superseded skill -> deleted (treated same as archived)."""
+        old_ts = time.time() - 100 * 86400
+        meta = {
+            "status": "superseded",
+            "superseded_at": old_ts,
+            "id": "sup",
+        }
+        path = tmp_path / "sup.meta.json"
+        path.write_text(json.dumps(meta), encoding="utf-8")
+        result = retention_cleanup(tmp_path, archive_max_days=90)
+        assert result["deleted"] == 1
+        assert not path.exists()

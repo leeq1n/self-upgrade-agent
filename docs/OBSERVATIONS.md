@@ -748,3 +748,45 @@ Per 自上而下/分治 progress:
 Per P7 奥卡姆: 1 commit, no split, additive.
 Per P23 doc-first: SKILLS.md spec existed; impl follows.
 Per LITERATURE Signal-to-Fix: bulk apply at end of cycle (per Signal-to-Fix).
+
+
+## 2026-07-11 — Skill lifecycle sub-task 3/3 (archive + retention) 真 working — SKILL LIFECYCLE COMPLETE!
+
+Per user 2026-07-11 '继续推进任务, 直到遇到问题或者任务完成' (7th push)
++ 自上而下/分治 (user meta-principle):
+
+Per SKILLS.md spec (skill lifecycle v3.2.0):
+- Sub-task 1 (done e65ba25): skill metadata writing
+- Sub-task 2 (done 678b2ef): skill promotion
+- Sub-task 3 (this commit): skill archive + retention — LIFECYCLE COMPLETE!
+
+This commit:
+- Extended src/skill_promotion.py with:
+  - should_supersede (per SKILLS.md: archive if superseded)
+  - supersede_skill (mark old skill superseded, write to disk)
+  - retention_cleanup (auto-delete archived/superseded > 90 days)
+- tests/test_skill_promotion.py: 10 new tests (TestSkillSupersede +
+  TestSkillRetention)
+- 80/80 combined tests PASS (44 v2_cli + 25 promotion + 11 persistence)
+
+Per LITERATURE Signal-to-Fix:
+- Fail-fast at state transitions (tested edge cases)
+- Bulk apply at end (retention_cleanup walks all metas)
+
+Per SKILLS.md:
+- archive if superseded by newer skill on same target
+- retention: don't keep dead skills > 90 days (auto-cleanup)
+
+Per 自上而下/分治:
+- Big task: skill lifecycle v3.2.0 — **MVP COMPLETE (3/3 sub-tasks)**
+- Future: hook into daily-loop for auto-promotion + auto-supersede
+- Future: visualize skill lifecycle in skill dashboard
+
+Verified:
+- 25/25 promotion tests PASS (10 new + 15 old)
+- 80/80 combined tests PASS
+- Real retention cleanup tested with synthetic metas (old/recent/active/candidate)
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+Per P23 doc-first: SKILLS.md spec existed; impl follows.
+Per P18 regression tests: 10 new tests cover edge cases.

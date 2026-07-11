@@ -198,3 +198,61 @@ def main():
 if __name__ == "__main__":
     import sys
     sys.exit(main())
+
+def should_supersede(old_meta, new_meta):
+    """Check if new_meta supersedes old_meta (per SKILLS.md).
+
+    Per SKILLS.md: 'archive if superseded by newer skill on same target'.
+    Returns True if both target same module AND new_meta is newer.
+    """
+    if not old_meta or not new_meta:
+        return False
+    if old_meta.get("target_module") != new_meta.get("target_module"):
+        return False
+    old_ts = old_meta.get("promoted_at", old_meta.get("timestamp", 0))
+    new_ts = new_meta.get("promoted_at", new_meta.get("timestamp", 0))
+    return new_ts > old_ts
+
+
+def supersede_skill(old_meta_path, old_meta, new_meta):
+    """Mark old skill as superseded (active -> superseded).
+
+    Per SKILLS.md: 'archive if superseded by newer skill on same target'.
+    """
+    if not should_supersede(old_meta, new_meta):
+        return False
+    old_meta["status"] = "superseded"
+    old_meta["superseded_at"] = time.time()
+    old_meta["superseded_by"] = new_meta.get("id", "unknown")
+    _save_meta(old_meta_path, old_meta)
+    return True
+
+
+def retention_cleanup(upgrades_dir=None, archive_max_days=90, now_ts=None):
+    """Auto-delete superseded/archived skills older than threshold.
+
+    Per SKILLS.md: retention rule (don't keep dead skills forever).
+    Returns dict with cleanup counts.
+    """
+    if now_ts is None:
+        now_ts = time.time()
+    metas = list_skill_metas(upgrades_dir)
+    deleted = 0
+    kept = 0
+    for path, meta in metas:
+        status = meta.get("status")
+        if status not in ("archived", "superseded"):
+            kept += 1
+            continue
+        # Use archived_at / superseded_at if present, else promoted_at
+        decision_ts = meta.get("archived_at") or meta.get("superseded_at")                       or meta.get("promoted_at") or meta.get("timestamp")
+        if decision_ts is None:
+            kept += 1
+            continue
+        age_days = (now_ts - decision_ts) / 86400
+        if age_days > archive_max_days:
+            path.unlink()
+            deleted += 1
+        else:
+            kept += 1
+    return {"deleted": deleted, "kept": kept, "total": len(metas)}

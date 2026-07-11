@@ -961,3 +961,42 @@ Honest (P17):
 - promotion is MVP (no auto-trigger yet)
 - future sub-task 3: hook into daily-loop for auto-promotion
 - future: visualize skill lifecycle in skill dashboard
+
+
+## v3.2.0 — Skill lifecycle COMPLETE (sub-task 3/3: archive + retention)
+
+Per user 2026-07-11 '继续推进任务, 直到遇到问题或者任务完成' (7th push).
+Per 自上而下/分治 (user meta-principle) + LITERATURE SkillOpt paper:
+
+Per SKILLS.md spec (skill lifecycle v3.2.0):
+- Sub-task 1 (done e65ba25): skill metadata writing
+- Sub-task 2 (done 678b2ef): skill promotion
+- Sub-task 3 (this commit): skill archive + retention — **LIFECYCLE COMPLETE**
+
+This commit:
+- Extended src/skill_promotion.py with:
+  - should_supersede: check if newer skill on same target
+  - supersede_skill: mark old active -> superseded
+  - retention_cleanup: auto-delete archived/superseded > 90 days
+- tests/test_skill_promotion.py: 10 new tests (TestSkillSupersede +
+  TestSkillRetention classes)
+- 80/80 combined tests PASS
+
+Per LITERATURE SkillOpt paper:
+- Full lifecycle: candidate -> active -> archived -> superseded
+- Retention: don't keep dead skills forever
+- Per SKILLS.md spec
+
+Per 自上而下/分治 (user meta-principle):
+- Big task: skill lifecycle v3.2.0 — **MVP COMPLETE (3/3 sub-tasks)**
+- Each sub-task = 1 commit, 奥卡姆
+- Future: hook into daily-loop, visualize lifecycle
+
+Verified end-to-end:
+- 25/25 promotion tests
+- 80/80 combined tests
+- Real retention cleanup tested with edge cases
+
+Per P7 奥卡姆: 1 commit, additive.
+Per P23 doc-first: SKILLS.md existed as spec.
+Per P18 regression tests: 10 new tests cover edge cases.
