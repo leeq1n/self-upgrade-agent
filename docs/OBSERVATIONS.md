@@ -1064,3 +1064,60 @@ Honest (P17):
 - A/B framework in place (compare_runs logic)
 - Sub-task 2 = wire into daily-loop for auto-decide
 - Sub-task 3 = statistical significance (multiple runs + t-test)
+
+
+## 2026-07-11 — v3.3.0 A/B integration (sub-task 2/3) 真 working
+
+Per user 2026-07-11 '继续推进' (10th push)
++ 自上而下/分治 (user meta-principle) + LITERATURE Signal-to-Fix:
+
+Per 你 vision (self-upgrade agent 终极目标):
+- 自动 KEPT/REJECT based on A/B data
+- daily-loop uses compare_runs logic
+
+Per LITERATURE Signal-to-Fix:
+- Real signals drive decisions (not heuristics)
+- Per Nate Berkopec: data-driven > gut-feel
+
+Per 自上而下/分治:
+- Big task: v3.3.0 A/B benchmark
+- Sub-task 1 (done 9c912a4): core comparison logic
+- Sub-task 2 (this commit): integration with daily-loop
+- Sub-task 3 (future): statistical significance
+
+This commit:
+- src/ab_integration.py (~145 lines):
+  - decide_round (per-round A/B verification)
+  - daily_loop_with_ab (combines v3.1.2 + v3.3.0)
+  - Auto-detect regressions (KEPT -> REJECT)
+  - Auto-confirm KEPT (A/B same/better)
+  - CLI: show integration status
+- tests/test_ab_integration.py (9 tests, 100% PASS)
+- 143/143 combined tests PASS
+
+Per P18 (failure -> regression test):
+- Regression detected test (KEPT becomes REJECT)
+- Failure caught test (exceptions become failures)
+- A/B disabled test (enable_ab=False skips)
+- Real subprocess mocks
+
+Verified:
+- 9/9 integration tests PASS
+- 143/143 combined (no regression)
+- Auto-detect regression working (per 你 vision)
+- A/B-disabled mode working
+
+Per 自上而下/分治:
+- Big: v3.3.0 A/B benchmark
+- Sub-task 1 done (core logic)
+- Sub-task 2 done (integration)
+- Sub-task 3 pending: statistical significance
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+Per P18 regression: 9 tests cover edge cases.
+
+Honest (P17):
+- 1 bug fix per P18 (load_state import path)
+- daily_loop_with_ab combines v3.1.2 (persistence) + v3.3.0 (A/B)
+- Per 你 vision: 真 autonomous KEPT/REJECT decision
+- Sub-task 3 = statistical significance (multiple runs + t-test)

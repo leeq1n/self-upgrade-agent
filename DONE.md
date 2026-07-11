@@ -1169,3 +1169,35 @@ Honest (P17):
 - A/B framework in place
 - compare_runs logic working
 - integration into daily-loop is next sub-task
+
+
+## v3.3.0 — A/B integration with daily-loop (sub-task 2/3)
+
+Per user 2026-07-11 '继续推进' (10th push).
+Per 自上而下/分治 + LITERATURE Signal-to-Fix + 你 vision 终极目标:
+
+Per 你 vision:
+- 自动 KEPT/REJECT decision based on A/B data
+
+Per LITERATURE Signal-to-Fix:
+- Real signals drive decisions (not heuristics)
+
+Per 自上而下/分治:
+- Big: v3.3.0 A/B benchmark
+- Sub-task 1 done (core logic)
+- Sub-task 2 done (integration, this)
+- Sub-task 3 pending: statistical significance
+
+This commit:
+- src/ab_integration.py (~145 lines)
+  - decide_round (per-round A/B verification)
+  - daily_loop_with_ab (v3.1.2 + v3.3.0 integration)
+- tests/test_ab_integration.py (9 tests)
+- 143/143 combined tests PASS
+
+Per P18 regression: 9 tests.
+
+Honest (P17):
+- 1 bug fix per P18 (load_state import path)
+- Per 你 vision: 真 autonomous KEPT/REJECT decision
+- Sub-task 3 = statistical significance
