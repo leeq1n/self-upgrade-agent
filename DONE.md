@@ -1067,3 +1067,39 @@ Per 自上而下/分治:
 
 Per P7 奥卡姆: 1 commit, additive.
 Per P18 regression: 12 tests cover edge cases.
+
+
+## v3.1.2 — Daily-loop integration (sub-task 3/3, v3.1.2 MVP COMPLETE)
+
+Per user 2026-07-11 '继续推进, 遇到问题再来找我' (9th push).
+Per 自上而下/分治 (user meta-principle):
+
+Per 你 vision (autonomous agent):
+- Cross-process state + failure recovery + integration
+- Real autonomy foundation
+
+Per 自上而下/分治:
+- Big: v3.1.2 daily-loop persistence
+- Sub-task 1 done (state.json)
+- Sub-task 2 done (failure recovery)
+- Sub-task 3 done (integration) — **MVP COMPLETE**
+
+This commit:
+- src/daily_loop_integration.py (~115 lines)
+- tests/test_daily_loop_integration.py (9 tests)
+- 115/115 combined tests PASS
+
+Verified:
+- Resume works across simulated restarts
+- Auto-mark exceptions as failures
+- Bulk loop with persistence tested
+- Idempotent init preserves data
+
+Per P7 奥卡姆: 1 commit, additive.
+Per P19 + failure_recovery spec.
+Per P18 regression: 9 tests.
+
+Honest (P17):
+- v3.1.2 MVP complete
+- Integration module is data layer
+- Hook into actual daily-loop CLI is future
