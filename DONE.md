@@ -1036,3 +1036,34 @@ Honest (P17):
 - state.json is data layer only; CLI for visualization exists
 - daily-loop integration = future sub-task
 - failure recovery = future sub-task on top of state.json
+
+
+## v3.1.2 — Failure recovery (sub-task 2/3, per Nate Berkopec backoff)
+
+Per user 2026-07-11 '好, 继续推进' (8th push).
+Per 自上而下/分治 (user meta-principle) + LITERATURE Nate Berkopec:
+
+This commit:
+- src/failure_recovery.py (~155 lines):
+  - compute_backoff_delay (exponential + jitter)
+  - should_retry (max attempts gate)
+  - mark_failure (per P19: persist to state.json)
+  - get_failure_count / get_all_failures
+  - attempt_recovery (bulk recovery loop)
+  - CLI: show recovery stats
+- tests/test_failure_recovery.py (12 tests, all PASS)
+- 106/106 combined tests PASS
+
+Per Nate Berkopec (LITERATURE):
+- Exponential backoff prevents thundering herd
+- Jitter avoids synchronized retries
+- Max delay cap (5 min default)
+
+Per 自上而下/分治:
+- Big: v3.1.2 daily-loop persistence
+- Sub-task 1 done (state.json)
+- Sub-task 2 done (failure recovery)
+- Sub-task 3 pending: integration with daily-loop
+
+Per P7 奥卡姆: 1 commit, additive.
+Per P18 regression: 12 tests cover edge cases.

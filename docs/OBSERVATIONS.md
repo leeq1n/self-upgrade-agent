@@ -842,3 +842,59 @@ Per 自上而下/分治 progress:
 
 Per P7 奥卡姆: 1 commit, no split, additive.
 Per P23 doc-first: P19 spec existed; impl follows.
+
+
+## 2026-07-11 — v3.1.2 failure recovery (sub-task 2/3) 真 working
+
+Per user 2026-07-11 '好, 继续推进' (8th push)
++ 自上而下/分治 (user meta-principle):
+
+Per 你 vision (autonomous agent):
+- Cross-process recovery: re-start from last persisted state
+- No manual intervention when daily-loop crashes
+
+Per P18 (failure -> regression test):
+- Test crash scenarios, restart scenarios
+- Backoff strategy prevents thundering herd
+
+Per 自上而下/分治:
+- Big task: v3.1.2 daily-loop persistence
+- Sub-task 1 (done 33c6ead): state.json persistence
+- Sub-task 2 (this commit): failure recovery
+- Sub-task 3 (future): integration with daily-loop
+
+This commit:
+- src/failure_recovery.py (~155 lines):
+  - compute_backoff_delay (exponential + jitter per Nate Berkopec)
+  - should_retry (max attempts gate)
+  - mark_failure (per P19: persist failure to state.json)
+  - get_failure_count / get_all_failures (queries)
+  - attempt_recovery (bulk recovery loop)
+  - CLI: show recovery stats
+- tests/test_failure_recovery.py (12 tests, 100% PASS)
+- 106/106 combined tests PASS
+
+Per Nate Berkopec (LITERATURE):
+- Exponential backoff prevents thundering herd
+- Jitter avoids synchronized retries
+- Max delay cap (5 min default)
+
+Verified:
+- 12/12 unit tests PASS
+- 106/106 combined (no regression)
+- Deterministic backoff (jitter_seed for testing)
+- Graceful missing-state handling
+
+Per 自上而下/分治:
+- Big: v3.1.2 daily-loop persistence
+- Sub-task 1 done (state.json)
+- Sub-task 2 done (failure recovery, this)
+- Sub-task 3 pending: integration with daily-loop
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+Per P18 regression: 12 tests cover edge cases.
+
+Honest (P17):
+- failure recovery is data layer (mark_failure + backoff)
+- daily-loop integration = future sub-task 3/3
+- per 你 vision, true autonomy = sub-task 3/3 + cron
