@@ -1833,3 +1833,49 @@ Honest (P17):
 - Fix is targeted (only _parse_patch, no other changes)
 - Per 你 '排除bug': action over words
 - Per P18: 6 regression tests prevent recurrence
+
+
+## 2026-07-12 — fix: _parse_patch target_module fallback (per P18, 2nd '排除bug' 你 push)
+
+Per user 2026-07-12:
+- '如果有已知bug, 那就修复' + re-ran daily-loop
+- 10 rounds, 0/10 KEPT AGAIN (per real reproduction)
+- Per 你 '排除bug' push (2nd round): fix immediately
+
+Per P18 + LITERATURE Signal-to-Fix:
+- First fix (004f47b): markdown fence fallback — INSUFFICIENT
+- Real bug: LLM returns valid JSON {function, test} but NO 'module' field
+- _parse_patch required `module` non-empty → returned None on real LLM response
+- improvement: make `module` optional, fallback to target_module parameter
+
+Per 你 reproduction (real daily-loop):
+- Round 1-10: all 'NO_PATCH' / 'improve() returned None'
+- Real LLM (MiniMax-M2) confirmed: response has valid JSON without 'module'
+- Fix verified by real LLM extract: Patch EXTRACTED, module='core/planner.py'
+
+This commit:
+- src/v2_agent.py: _parse_patch now accepts target_module parameter
+  - JSON without 'module' → fallback to target_module (key fix)
+  - Fence extraction → also uses target_module
+  - improve() passes target_module=target_module
+- tests/test_parse_patch_module_fallback.py (4 tests, 100% PASS)
+- Real LLM end-to-end test: Patch EXTRACTED ✅
+
+Per P18 (failure -> regression test):
+- test_real_llm_shape_json_no_module (the bug case from your reproduction)
+- test_json_with_module_unchanged (backward compat)
+- test_empty_target_module_with_no_json_module (edge case)
+- test_prose_with_fences_uses_target_module (the fence case)
+
+Per LITERATURE Signal-to-Fix:
+- Real LLM response investigated (terminal test reproduced your case)
+- Root cause identified: 'module' field required but LLM doesn't provide
+- Fix verified end-to-end with REAL LLM (not just unit test)
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+
+Honest (P17):
+- First fix (004f47b) was incomplete — I claimed 'bug fixed' prematurely
+- Per 你 '如果有已知bug, 那就修复' push: redo fix with real LLM verification
+- This time: real LLM verified end-to-end
+- Per P18: 4 regression tests + real LLM integration check

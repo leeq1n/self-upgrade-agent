@@ -159,15 +159,18 @@ def _build_prompt(paper: Paper, target_module: str, similar: List[Dict]) -> str:
 # Parse + verify
 # --------------------------------------------------------------------- #
 
-def _parse_patch(response: str) -> Optional[Patch]:
+def _parse_patch(response: str, target_module: str = "") -> Optional[Patch]:
     """Lenient JSON parse — same logic as src/patchgen.py.
 
-    Per P18 + 你 '排除bug' push: improved tolerance for LLM responses
-    that ignore 'Return JSON' instruction and return prose + code fences.
+    Per P18 + 你 '排除bug' push: improved tolerance for LLM responses.
+    Real LLM (MiniMax-M2) returns valid JSON with {function, test} but NO
+    'module' field — this caused 0/10 KEPT before this fix.
+
     Strategy:
-      1. Try JSON parse (original)
-      2. Fallback: extract function from ```python ... ``` fence
-      3. Fallback: extract test from second ```python ... ``` fence
+      1. Try JSON parse (backward compatible when module present)
+      2. If JSON has function+test but missing module, fall back to
+         target_module parameter (per LITERATURE Signal-to-Fix)
+      3. Fallback: extract code from ```python ... ``` fences
     """
     text = response.strip()
     # Strip markdown fences
@@ -184,8 +187,8 @@ def _parse_patch(response: str) -> Optional[Patch]:
             data = json.loads(text[start:end + 1])
             fn = data.get("function", "")
             test = data.get("test", "")
-            module = data.get("module", "")
-            if "def " in fn and "def " in test and module:
+            module = data.get("module", "") or target_module  # 关键修复
+            if "def " in fn and "def " in test:
                 if len(fn.strip()) >= 5 and len(test.strip()) >= 5:
                     return Patch(function=fn, test=test, module=module)
         except json.JSONDecodeError:
@@ -201,7 +204,8 @@ def _parse_patch(response: str) -> Optional[Patch]:
         test_candidate = code_blocks[1].strip()
         if ("def " in fn_candidate and "def test_" in test_candidate
                 and len(fn_candidate) >= 5 and len(test_candidate) >= 5):
-            return Patch(function=fn_candidate, test=test_candidate, module="")
+            return Patch(function=fn_candidate, test=test_candidate,
+                         module=target_module)
     return None
 
 
@@ -312,8 +316,8 @@ def improve(
     if not response or not response.content:
         return None
 
-    # 4. Parse
-    patch = _parse_patch(response.content)
+    # 4. Parse (per P18 + 你 '排除bug' push 2nd round: pass target_module)
+    patch = _parse_patch(response.content, target_module=target_module)
     if patch is None:
         return None
 

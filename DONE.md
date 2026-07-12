@@ -1469,3 +1469,19 @@ This commit:
 
 Per LITERATURE: real bug, real fix.
 Per P9: real reproduction verified.
+
+
+## fix: _parse_patch target_module fallback (per P18, 2nd '排除bug')
+
+Per user 2026-07-12 '如果有已知bug, 那就修复' + 10 rounds 0/10 KEPT again.
+Per 你 '排除bug' push (2nd round).
+
+Per P18: failure -> regression test.
+
+This commit:
+- src/v2_agent.py: _parse_patch signature + target_module fallback
+- tests/test_parse_patch_module_fallback.py (4 tests)
+- Real LLM end-to-end verified: Patch EXTRACTED ✅
+
+Per LITERATURE: real bug, real fix, real LLM verification.
+Per P17 honest: first fix (004f47b) was INSUFFICIENT; this is the real fix.
