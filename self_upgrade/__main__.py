@@ -360,6 +360,30 @@ def daily_loop(obj, target, interval, max_rounds, multi, max_retries,
     sys.exit(0 if kept > 0 else 1)
 
 
+@cli.command(name="chat")
+@click.option("--system", default=None,
+              help="System prompt (default: 'You are a helpful assistant').")
+@click.option("--history-path", default=None,
+              help="Chat history file path (default: chat_history.json).")
+@click.option("--max-history", default=50, type=int,
+              help="Max history turns in context (default: 50).")
+@click.pass_obj
+def chat(obj, system, history_path, max_history):
+    """Interactive chat (per 你 vision '其他agent产品').
+
+    Per 自上而下/分治 (user meta-principle):
+    - Big: project as 'real agent product'
+    - Sub-task 1: multi-turn chat REPL with history
+
+    Per LITERATURE Signal-to-Fix: minimal, 奥卡姆.
+    Per P19: cross-session memory via history file.
+    """
+    from src.chat_repl import chat_repl
+    result = chat_repl(system=system, history_path=history_path,
+                        max_history=max_history)
+    sys.exit(0 if result["turns"] >= 0 else 1)
+
+
 @cli.command(name="cron")
 @click.option("--install", "do_install", is_flag=True, default=False,
               help="Generate OS cron config (dry-run by default per P9).")

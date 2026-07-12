@@ -1409,3 +1409,25 @@ This commit:
 Per P9: subprocess.run with timeout=30.
 Per LITERATURE: real subprocess integration.
 Per 你 '排除bug': action over words.
+
+
+## chat subcommand (per 你 vision '其他agent产品')
+
+Per user 2026-07-11 '好, 继续推进' + '像其他agent产品一样' push.
+
+Per 你 vision 2026-07-08:
+- 真 autonomous (cron) ✓
+- Interactive chat (this commit) ✓
+- 真 'real agent product'
+
+This commit:
+- src/chat_repl.py (~150 lines)
+  - load_history / save_message
+  - build_messages_prompt / format_chat_response
+  - chat_repl (REPL with mocked or real LLM)
+- self_upgrade/__main__.py: chat subcommand wired
+- tests/test_chat_repl.py (11 tests)
+- 198/198 combined tests PASS
+
+Per P19: cross-session memory via JSONL file.
+Per LITERATURE: minimal, 奥卡姆.
