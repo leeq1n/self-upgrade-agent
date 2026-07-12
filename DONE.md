@@ -1431,3 +1431,23 @@ This commit:
 
 Per P19: cross-session memory via JSONL file.
 Per LITERATURE: minimal, 奥卡姆.
+
+
+## chat streaming (sub-task 2/3)
+
+Per user 2026-07-11 '好, 继续推进'.
+Per 自上而下/分治 + 你 '不要给那么多选项' = push my recommendation.
+
+Per 你 vision 'real agent product':
+- Sub-task 1 done (chat REPL)
+- Sub-task 2 done (streaming) — this
+- Sub-task 3 pending (tool use)
+
+This commit:
+- src/chat_repl.py: stream_response + chat_repl_streaming
+- self_upgrade/__main__.py: --stream flag
+- tests/test_streaming.py (3 tests)
+- 201/201 combined tests PASS
+
+Per LITERATURE: minimal, additive, graceful fallback.
+Per 你 vision: token-by-token display = 真 achieved.

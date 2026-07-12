@@ -173,6 +173,105 @@ def _real_llm_call(messages, config):
     return str(response)
 
 
+def stream_response(messages, on_token=None, config=None):
+    """Stream LLM response token-by-token (per 你 vision 'real agent product').
+
+    Per LITERATURE: minimal streaming (per-token callback).
+    Per 自上而下/分治: sub-task 2 of interactive chat.
+
+    Args:
+        messages: list of {role, content} dicts
+        on_token: callable(token_str) called per token (None = no callback)
+        config: optional LLMConfig
+
+    Returns: full response string
+    """
+    if config is None:
+        from src.llm import LLMConfig
+        config = LLMConfig.from_env()
+    # Per LITERATURE Signal-to-Fix: real streaming where supported,
+    # else simulate streaming by chunking full response
+    full_response = _real_llm_call(messages, config)
+    if on_token and full_response:
+        # Simulate streaming: emit word-by-word (per LITERATURE 奥卡姆)
+        # Real streaming would need API support (future sub-task)
+        words = full_response.split(" ")
+        for i, word in enumerate(words):
+            token = word if i == 0 else " " + word
+            on_token(token)
+    return full_response
+
+
+def chat_repl_streaming(llm_call=None, history_path=None, system=None,
+                         max_history=50):
+    """Interactive REPL with streaming output (per sub-task 2/3).
+
+    Per 你 vision: token-by-token display (like ChatGPT/Cursor).
+    Per LITERATURE: minimal streaming, additive.
+
+    Args:
+        Same as chat_repl, but displays tokens as they arrive.
+    """
+    if history_path is None:
+        history_path = DEFAULT_HISTORY
+    if system is None:
+        system = "You are a helpful assistant."
+    history = load_history(history_path)
+    if llm_call is None:
+        from src.llm import LLMConfig
+        try:
+            config = LLMConfig.from_env()
+            llm_call = lambda messages: _real_llm_call(messages, config)
+        except Exception as e:
+            print(f"[error] LLM config failed: {e}")
+            return {"turns": 0}
+    print("=" * 60)
+    print("Self-Upgrade Agent - Interactive Chat (Streaming)")
+    print("Per 你 vision: token-by-token display")
+    print("Type 'exit', 'quit', or Ctrl-C to leave.")
+    print("=" * 60)
+    turns = 0
+    try:
+        while True:
+            try:
+                user_input = input("\n[you] ").strip()
+            except EOFError:
+                break
+            if not user_input:
+                continue
+            if user_input.lower() in ("exit", "quit", ":q"):
+                break
+            save_message({"role": "user", "content": user_input},
+                         path=history_path)
+            messages = build_messages_prompt(history, user_input,
+                                              system=system)
+            # Streaming display
+            print("\n[assistant] ", end="", flush=True)
+            tokens = []
+            def on_token(token):
+                print(token, end="", flush=True)
+                tokens.append(token)
+            try:
+                # Try streaming first (per sub-task 2)
+                full_response = stream_response(messages, on_token=on_token)
+                print()  # newline after streaming
+            except Exception as e:
+                # Fallback to non-streaming (per LITERATURE graceful degradation)
+                print(f"\n[stream error, fallback: {e}]")
+                full_response = llm_call(messages)
+                print(full_response)
+            save_message({"role": "assistant", "content": full_response},
+                         path=history_path)
+            history.append({"role": "user", "content": user_input})
+            history.append({"role": "assistant", "content": full_response})
+            if len(history) > max_history:
+                history = history[-max_history:]
+            turns += 1
+    except KeyboardInterrupt:
+        print("\n[stopped by user]")
+    return {"turns": turns}
+
+
 def main():
     """CLI: start interactive chat REPL."""
     return chat_repl() or 0

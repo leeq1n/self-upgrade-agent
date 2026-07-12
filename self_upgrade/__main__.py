@@ -367,20 +367,27 @@ def daily_loop(obj, target, interval, max_rounds, multi, max_retries,
               help="Chat history file path (default: chat_history.json).")
 @click.option("--max-history", default=50, type=int,
               help="Max history turns in context (default: 50).")
+@click.option("--stream/--no-stream", default=False,
+              help="Stream responses token-by-token (per sub-task 2).")
 @click.pass_obj
-def chat(obj, system, history_path, max_history):
+def chat(obj, system, history_path, max_history, stream):
     """Interactive chat (per 你 vision '其他agent产品').
 
     Per 自上而下/分治 (user meta-principle):
     - Big: project as 'real agent product'
     - Sub-task 1: multi-turn chat REPL with history
+    - Sub-task 2: streaming responses (per --stream flag)
 
     Per LITERATURE Signal-to-Fix: minimal, 奥卡姆.
     Per P19: cross-session memory via history file.
     """
-    from src.chat_repl import chat_repl
-    result = chat_repl(system=system, history_path=history_path,
-                        max_history=max_history)
+    from src.chat_repl import chat_repl, chat_repl_streaming
+    if stream:
+        result = chat_repl_streaming(system=system, history_path=history_path,
+                                       max_history=max_history)
+    else:
+        result = chat_repl(system=system, history_path=history_path,
+                            max_history=max_history)
     sys.exit(0 if result["turns"] >= 0 else 1)
 
 
