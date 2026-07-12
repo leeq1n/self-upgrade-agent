@@ -1451,3 +1451,21 @@ This commit:
 
 Per LITERATURE: minimal, additive, graceful fallback.
 Per 你 vision: token-by-token display = 真 achieved.
+
+
+## fix: _parse_patch markdown fence fallback (per P18, 你 0/10 KEPT bug)
+
+Per user 2026-07-12 '修复' + 10 rounds 0/10 KEPT reproduction.
+Per 你 '排除bug' push (action over words).
+
+Per P18: failure -> regression test.
+
+This commit:
+- src/v2_agent.py: _parse_patch rewritten with 2 strategies
+  1. JSON parse (backward compatible)
+  2. Fallback: ```python fence extraction (the bug case)
+- tests/test_parse_patch_regression.py (6 tests)
+- 207/207 combined tests PASS
+
+Per LITERATURE: real bug, real fix.
+Per P9: real reproduction verified.

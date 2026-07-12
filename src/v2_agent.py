@@ -160,7 +160,15 @@ def _build_prompt(paper: Paper, target_module: str, similar: List[Dict]) -> str:
 # --------------------------------------------------------------------- #
 
 def _parse_patch(response: str) -> Optional[Patch]:
-    """Lenient JSON parse — same logic as src/patchgen.py."""
+    """Lenient JSON parse — same logic as src/patchgen.py.
+
+    Per P18 + 你 '排除bug' push: improved tolerance for LLM responses
+    that ignore 'Return JSON' instruction and return prose + code fences.
+    Strategy:
+      1. Try JSON parse (original)
+      2. Fallback: extract function from ```python ... ``` fence
+      3. Fallback: extract test from second ```python ... ``` fence
+    """
     text = response.strip()
     # Strip markdown fences
     if text.startswith("```"):
@@ -168,26 +176,33 @@ def _parse_patch(response: str) -> Optional[Patch]:
         if text.startswith("json"):
             text = text[4:]
         text = text.strip()
-    # Find first balanced { ... }
+    # Strategy 1: JSON parse
     start = text.find("{")
     end = text.rfind("}")
-    if start < 0 or end <= start:
-        return None
-    try:
-        data = json.loads(text[start:end + 1])
-    except json.JSONDecodeError:
-        return None
-    fn = data.get("function", "")
-    test = data.get("test", "")
-    module = data.get("module", "")
-    # Structural checks: must contain 'def ' (function definition)
-    # and 'def test_' (test function) — lengths are unreliable across
-    # valid patches.  We just want to reject empty/garbage fields.
-    if "def " not in fn or "def " not in test or not module:
-        return None
-    if len(fn.strip()) < 5 or len(test.strip()) < 5:
-        return None
-    return Patch(function=fn, test=test, module=module)
+    if start >= 0 and end > start:
+        try:
+            data = json.loads(text[start:end + 1])
+            fn = data.get("function", "")
+            test = data.get("test", "")
+            module = data.get("module", "")
+            if "def " in fn and "def " in test and module:
+                if len(fn.strip()) >= 5 and len(test.strip()) >= 5:
+                    return Patch(function=fn, test=test, module=module)
+        except json.JSONDecodeError:
+            pass
+    # Strategy 2: extract code from ```python fences (per P18)
+    import re
+    code_blocks = re.findall(
+        r"```(?:python)?\s*\n(.*?)```",
+        text, re.DOTALL,
+    )
+    if len(code_blocks) >= 2:
+        fn_candidate = code_blocks[0].strip()
+        test_candidate = code_blocks[1].strip()
+        if ("def " in fn_candidate and "def test_" in test_candidate
+                and len(fn_candidate) >= 5 and len(test_candidate) >= 5):
+            return Patch(function=fn_candidate, test=test_candidate, module="")
+    return None
 
 
 _PRELUDE = """from typing import Callable, List, Dict, Any, Optional, Tuple, Set, Iterable, Iterator, Generator

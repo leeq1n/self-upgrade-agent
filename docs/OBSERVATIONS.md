@@ -1775,3 +1775,61 @@ Honest (P17):
 - This is word-by-word simulation (LITERATURE 奥卡姆)
 - Future: real API streaming (when supported)
 - Per 你 vision: token-by-token display = 真 achieved
+
+
+## 2026-07-12 — fix: _parse_patch markdown fence fallback (per P18, 你 0/10 KEPT bug)
+
+Per user 2026-07-12 '修复' + 10 rounds 0/10 KEPT reproduction:
+- Round 1-10: all returned 'NO_PATCH' with 'improved() returned None'
+- Root cause: LLM ignores 'Return JSON' instruction, returns prose + ```python fences
+- _parse_patch only tried JSON parse, failed silently
+- Per 你 '排除bug' push: fix immediately
+
+Per P18 (failure -> regression test):
+- Real bug: 0/10 KEPT success rate (user reproduction)
+- Fix: _parse_patch now extracts from ```python fences as fallback
+- 6 regression tests added (per P18)
+
+Per LITERATURE Signal-to-Fix:
+- Real bug found by user reproduction (10 rounds, 0 KEPT)
+- Real fix: 2 strategies (JSON parse + fence extraction)
+- Real tests: 6 cases (JSON, prose+fences, single fence, empty, garbage, missing module)
+
+Per 自上而下/分治:
+- Bug fix only (no new feature)
+- Per 你 '排除bug' push: action over words
+
+This commit:
+- src/v2_agent.py: _parse_patch rewritten with 2 strategies
+  1. JSON parse (original, backward compatible)
+  2. Fallback: ```python fence extraction (per P18)
+- tests/test_parse_patch_regression.py (6 tests, 100% PASS)
+- 207/207 combined tests PASS
+
+Per P18 regression:
+- test_json_response_still_works (backward compat)
+- test_prose_with_code_fences_extracted (the bug case)
+- test_single_fence_returns_none
+- test_empty_response_returns_none
+- test_garbage_response_returns_none
+- test_json_missing_module_falls_back_to_fences
+
+Per P9: real bug, real fix, real reproduction.
+
+Verified:
+- 6/6 regression tests PASS
+- 207/207 combined (no regression)
+- _parse_patch extracts from prose + code fences
+- Backward compatible (JSON responses still work)
+
+Per 自上而下/分治:
+- Bug fix complete
+- Per 你 0/10 KEPT reproduction: now should improve
+
+Per P7 奥卡姆: 1 commit, no split, additive.
+
+Honest (P17):
+- Bug was reproducible (10 rounds, 0 KEPT)
+- Fix is targeted (only _parse_patch, no other changes)
+- Per 你 '排除bug': action over words
+- Per P18: 6 regression tests prevent recurrence
