@@ -66,12 +66,16 @@ def foo(x):
         """_parse_patch: garbage -> None."""
         assert _parse_patch("blah blah no code") is None
 
-    def test_json_missing_module_falls_back_to_fences(self):
-        """_parse_patch: JSON without module falls back to fence extraction."""
-        # JSON parses but module="" triggers fallback
+    def test_json_no_module_returns_patch_with_empty_module(self):
+        """_parse_patch: JSON without module returns Patch (module=""),
+        caller (improve()) fills target_module via separate parameter.
+
+        Note: This test was updated per P18 after commit 0359908 — the
+        real fix uses target_module parameter (not fence fallback) when
+        JSON has function+test but no module.
+        """
         json_no_module = '{"function": "def foo(): pass", "test": "def test_foo(): pass"}'
-        # Without fences, should still return None (no fallback)
         result = _parse_patch(json_no_module)
-        # Actually, this falls through to fence extraction, finds nothing,
-        # returns None
-        assert result is None
+        # Now returns Patch with empty module (caller fills via target_module)
+        assert result is not None
+        assert result.module == ""
