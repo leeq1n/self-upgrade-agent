@@ -127,99 +127,37 @@ suffice.
 
 ### M-intent-parsing
 
-When user input is messy — multiple asks interleaved,
-self-corrections mid-sentence, terse fragments, mixed
-languages, contradictions — **first find the user's actual
-goal** (the "main contradiction", per Chinese 主要矛盾),
-**then plan backward from the goal**.  This is structurally
-identical to agent self-planning: identify the target, then
-derive the path.  The difference is that the target comes
-from parsing messy input, not from a clean task description.
+When user input is messy (multiple asks, scattered,
+contradicts itself), **first find the user's actual goal**
+(the "main contradiction", per 主要矛盾), then plan
+backward from the goal.  3 actions in order: extract goal →
+identify main contradiction → plan backward.
 
-Three actions, in order:
+Default to EXECUTE, not ask-again (per user 2026-07-10
+'trust you / next / go').
 
-1. **Extract the goal**: ignore phrasing, surface the
-   underlying intent.  The user may say "this and that and
-   also..."; the goal is one of those things, often the last
-   one.  State the goal in one sentence back to the user (or
-   to yourself if context-only).
-2. **Identify the main contradiction**: among multiple asks,
-   which one is the **central problem**?  The others are
-   either prerequisites, examples, or noise.  Per 抓主要
-   矛盾: do not enumerate all asks, rank them.
-3. **Plan backward**: from the goal, derive the steps needed.
-   Compare to user's stated steps; the user's path may be
-   incomplete or out-of-order.  Correct in your plan, but
-   only after confirming the goal.
-
-**Don't** apply this to clean task descriptions (overhead > value).
-
-**Anti-pattern**: don't ask the user to clarify before you
-have an interpretation.  State your interpretation + the
-inference steps, then ask only the question that remains
-ambiguous.  Per user 2026-07-10 'trust you / next / go →
-default EXECUTE, not ask again'.
+Full text (3 actions detail, anti-pattern, trust-trigger
+quote) lives in `docs/OPERATING_RULES_DETAIL.md` —
+load when implementing M-intent-parsing on messy input.
 
 ### M-learn
 
-After a decomposition **integration point** (i.e. all
-sub-tasks of a parent task complete — RECURSIVE_DECOMPOSITION
-5-step loop step 5), ask: did this task surface something
-that generalizes beyond itself?  If yes, capture it.
+After a decomposition **integration point** (all sub-tasks
+of a parent task complete — RECURSIVE_DECOMPOSITION 5-step
+loop step 5), ask: did this task surface something that
+generalizes beyond itself?  If yes, capture it.
 
-**Trigger is dual-track** (per M-add-then-reduce cycle):
-- **Structural** (always): at every parent-task INTEGRATE
-  point (RECURSIVE_DECOMPOSITION step 5).  Cheap and
-  default — runs the 3 sub-actions at minimal depth.
-- **Signal** (when signaled): context overflow risk, user
-  says "乱" / "compress" / "整理", doc drift detected
-  (> 2 files with Last P20-verified > 30 days), or
-  agent notices clutter.  Runs deeper — may catch
-  patterns the structural trigger would miss.
+Trigger is dual-track: structural (always at INTEGRATE) +
+signal (context overflow / 乱 / doc drift > 2 files).  3
+sub-actions in order: 总结归纳 → 类比外推 → 更新知识库.
 
-Both tracks run the same 3 sub-actions; only the depth
-differs.  Per M-add-then-reduce: leaf-end is NOT a
-trigger (that's M-task-summary's job; structural trigger
-fires at parent INTEGRATE only).
+**Per 奥卡姆 (P7)** — silent no-op (don't write "checked,
+nothing new"; every "checked" line is itself a P-n violation).
 
-Three sub-actions, in order:
-
-1. **总结归纳 (Summarize and generalize)**: from the leaf
-   summaries (or M-task-summary outputs), extract the
-   pattern.  What repeats?  What was the common shape across
-   the sub-tasks?
-2. **类比外推 (Analogical extrapolation)**: compare the
-   pattern to prior rules / skills / past failures.  Does it
-   match an existing principle (P-n)?  Does it extend one?
-   Or is it genuinely new?  Per RECURSIVE_QUALITY.md:
-   loop = decomposition + analogy + self-reference; this
-   step is the "analogy" arm.
-3. **更新知识库 (Update knowledge base)**: if the
-   generalization is real, update the appropriate artifact:
-   - New principle?  → propose in PRINCIPLES.md + PRINCIPLES_DETAIL.md
-   - New workflow rule?  → propose in OPERATING_RULES.md
-   - New tool quirk / env fact?  → memory tool
-   - New project-specific pattern?  → relevant docs/*.md
-   - None of the above (one-off)?  → DONE.md or discard
-
-**Per 奥卡姆 (P7) — no-op leaves no trace**: if the three
-sub-actions surface nothing generalizable, do nothing
-visible.  Don't write "checked, nothing new".  Silent
-no-op is the discipline — every "checked" line is itself
-a candidate P-n violation (writing work, not the work).
-
-**Relationship to other M-* rules**:
-- **M-task-summary**: leaf-end (1 task done).  M-learn:
-  integration-end (N sub-tasks done + parent re-evaluated).
-- **M-subtask-summary**: per-leaf commit message.  M-learn
-  reads M-subtask-summary outputs as input.
-- **M-context-snapshot**: before task switch.  M-learn is
-  AFTER integration, not before switch.
-
-**Anti-pattern**: don't trigger M-learn at every leaf
-end (that's M-task-summary's job).  Don't write a
-"checked, nothing new" line — silent no-op.  Don't update
-a doc unless the pattern is genuinely reusable (奥卡姆).
+Full text (dual-track triggers in detail, 3 sub-actions
+in detail, relationship to other M-* rules, anti-pattern)
+lives in `docs/OPERATING_RULES_DETAIL.md` — load when
+applying M-learn at an integration point.
 
 ### M-add-then-reduce
 

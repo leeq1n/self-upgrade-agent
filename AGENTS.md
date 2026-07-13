@@ -103,6 +103,11 @@ matches the trigger.  Default: don't load.
   7 M-* rules: M-task-summary, M-must-read, M-context-snapshot,
   M-subtask-summary, M-intent-parsing, M-learn,
   M-add-then-reduce.
+- `docs/OPERATING_RULES_DETAIL.md` — load when implementing
+  M-intent-parsing (full 3-action steps, anti-pattern) or
+  M-learn (full dual-track triggers, 3 sub-actions, M-rule
+  relationships).  Per P20 R5+R6: 7KB-summary / _DETAIL-split
+  pattern; this is the L2 detail companion.
 - `docs/SUMMARY_LIFECYCLE.md` — load when implementing a
   parent-level M-task-summary (M-task-summary child-summary
   destroy contract — pull, write, destroy in same commit).
