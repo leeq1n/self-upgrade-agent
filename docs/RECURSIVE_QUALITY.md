@@ -87,3 +87,55 @@ Round 2: failed_patch → reflection step → "why did this fail?"
 Per 自上而下/分治, 1 commit = design doc. Implementation = future.
 
 Per 你 "作为 TODO 价值" question: **YES, valuable TODO**.
+
+
+---
+
+## Appendix: 2024-2026 papers found (per 你 "搜资料" push)
+
+Per arXiv Semantic Scholar search (2026-07-12, query: "recursive self-improvement + reflection + decomposition"):
+
+### 1. "A Survey of Self-Evolving Agents: What, When, How, Where" (Gao et al. 2025)
+- arXiv preprint
+- **13 citations**, field-level survey
+- **Exact match to 你 idea**: "Recursive Self-Improvement" sub-section
+- **Key insight**: agents become "increasingly skilled at self-diagnosis and self-correction"
+- **Use for**: framework for what/when/how (matches 你 拆分 + 类比 + 自指)
+
+### 2. "Geometric Dynamics of Agentic Loops in LLMs" (Tacheny 2026)
+- arXiv preprint, January 2026
+- **Use for**: stability analysis of recursive loops
+  - Contractive dynamics (convergence toward stable attractors)
+  - Oscillatory dynamics (cycling among attractors)
+  - Exploratory dynamics (unbounded divergence)
+- **Key quote**: "iterative LLM dynamics are predictable and controllable"
+- **Direct evidence for 你 insight**: "loop本质上是问题拆解的能力"
+
+### 3. "Polaris: A Gödel Agent Framework for Small LMs" (Kakade 2026)
+- arXiv preprint, May 2026
+- **Recursive self-improvement**: modifies BOTH task policy + meta-level improvement logic
+- **Polaris 4-step cycle** (per arXiv sub-section §2.1):
+  1. Analysis (失败 mode 分析)
+  2. Strategy formation (类比过去成功策略)
+  3. Abstraction (提取 reusable lesson)
+  4. Minimal code patch repair (保守小补丁)
+- **Direct mapping to 你 3 concepts**: 拆分 (decomposition) + 类比 (analogy) + 自指 (self-reference on own improvement logic)
+- **Empirical evidence**: 7B model achieves "consistent gains" on MGSM/DROP/GPQA/LitBench
+- **Use for**: design pattern matching 你 idea 1:1
+
+### 4. "Agentic Large Language Models: A Survey" (Plaat 2025)
+- Journal of AI Research
+- **15 citations**
+- **Reflection taxonomy**: reasoning + action + interaction
+- **Self-reflection definition**: "external algorithm uses the LLM to assess its own predictions"
+- **Use for**: contextual framework (reflection is one of 3 categories)
+
+## Per 自上而下/分治 + 你 "搜资料, 不拍脑门" rule
+
+**Before this turn**: I cited Reflexion/Self-Refine/DyLAN but didn't search arXiv.
+
+**After this turn**: 4 major 2025-2026 papers cited, with concrete design patterns
++ empirical evidence (Polaris 7B).
+
+**Per LITERATURE convention**: add these to LITERATURE_DETAIL.md per
+project pattern (TL;DR + Why we use/don't + Key quote).

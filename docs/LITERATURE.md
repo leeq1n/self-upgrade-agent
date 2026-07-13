@@ -25,6 +25,10 @@ form in `LITERATURE_DETAIL.md`.
 | **The Agent Improvement Loop** (Substack 2026) | Production failure → regression test | **TOP PRIORITY** for next iteration |
 | **SkillOpt** (Microsoft 2026) | Skills as trainable external state | FUTURE: explore in v3.x |
 | **Factory Droid (signal-to-fix)** (2026) | Self-improvement in production | USE: telemetry → fix pattern |
+| **Self-Evolving Agents Survey** (Gao 2025) | First systematic survey of self-evolving agents | USE: taxonomy + 你 idea (Recursive Self-Improvement section) |
+| **Polaris: Gödel Agent Framework** (Kakade 2026) | Recursive self-improvement 4-step cycle | USE: 1:1 mapping to 你 idea (拆解+类比+自指) |
+| **Geometric Dynamics of Agentic Loops** (Tacheny 2026) | Loops have predictable dynamics | RESEARCH: stability analysis for self-improve loop |
+| **Agentic LLMs Survey** (Plaat 2025, JAI Research) | Reflection = transition to active agent | CONTEXT: field-level positioning |
 
 For the long form (full TL;DR, key quotes, applicability analysis), see
 [`LITERATURE_DETAIL.md`](LITERATURE_DETAIL.md).

@@ -268,3 +268,81 @@ See:
 - [docs/SKILLS.md](SKILLS.md) — L0 + L1 framework
 - [src/v3_auto_commit.py `write_skill_meta`](../src/v3_auto_commit.py) — implementation
 - [tests/test_v2_cli.py `TestV3AutoCommitSkillMeta`](../tests/test_v2_cli.py) — regression tests
+
+
+## Self-Evolving Agents Survey — Gao et al. 2025 (arXiv)
+
+**TL;DR**: First systematic survey of self-evolving agents, organized
+around "what, when, how, where to evolve" dimensions. Covers
+mechanisms (model/memory/tools/architecture), stages (intra/inter
+test-time), and design (rewards, feedback, multi-agent).
+
+**Why we use it**: Provides the field-level taxonomy for 你 idea
+("loop = decomposition + analogy + self-reference"). Sub-section
+"Recursive Self-Improvement" cites Qu et al. 2024 and frames the
+problem exactly as 你 did (agent improves own improvement logic).
+
+**Key evidence**: "agents become increasingly skilled at
+self-diagnosis and self-correction" (per recursive self-improvement
+section). 
+
+**Use for**: framework for our RECURSIVE_QUALITY.md design —
+especially sub-task 4 (self-reference step on improvement logic itself).
+
+---
+
+## Polaris: Gödel Agent Framework — Kakade et al. 2026 (arXiv, May)
+
+**TL;DR**: Gödel agent (self-referential) that performs policy repair
+via experience abstraction. 4-step cycle: analysis → strategy
+formation → abstraction → minimal code patch repair.
+
+**Why we use it**: **1:1 mapping to 你 idea**:
+1. Decomposition (你的 "拆分"): analysis step
+2. Analogy (你的 "类比"): strategy formation (uses past patterns)
+3. Self-reference (你的 "自指"): abstraction = distills failures
+   into reusable strategies
+
+**Key evidence**: "7B model equipped with Polaris achieves
+consistent gains over baseline" on 4 benchmarks (MGSM, DROP, GPQA,
+LitBench). Empirically validates recursive self-improvement at
+small scale.
+
+**Use for**: design pattern for our sub-task 1 (reflection step
+follows the same 4-step structure).
+
+---
+
+## Geometric Dynamics of Agentic Loops — Tacheny 2026 (arXiv, Jan)
+
+**TL;DR**: Agentic loops have predictable dynamics — contractive
+(converge to attractor), oscillatory (cycle), exploratory (diverge).
+Prompt design controls which regime.
+
+**Why we use it**: Stability analysis for our self-improve loop.
+Currently broken (0/10 KEPT) — possibly in exploratory regime.
+Need to design prompt for contractive regime.
+
+**Key evidence**: "iterative LLM dynamics are predictable and
+controllable" — same model, different prompts → different regimes.
+
+**Use for**: will inform future debugging when self-evolve loop
+fails repeatedly (need to check if in contractive or exploratory
+regime).
+
+---
+
+## Agentic LLMs Survey — Plaat et al. 2025 (JAI Research)
+
+**TL;DR**: Taxonomy of agentic LLMs around 3 axes: reason, act,
+interact. Reflection = reason axis.
+
+**Why we use it**: Field-level context. Reflection is a "transition
+from passive model to active agent" — aligns with 你 vision of
+真 agent product.
+
+**Key evidence**: "external algorithm uses the LLM to assess its
+own predictions, creates a new prompt" — matches our plan for
+sub-task 1 (reflection step).
+
+**Use for**: position our project in current literature landscape.
