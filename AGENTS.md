@@ -1,4 +1,5 @@
 # AGENTS — Operating Rules for AI Agents in This Project
+Last P20-verified: 2026-07-13
 
 > L0: AI agents entering this repo MUST read `docs/PRINCIPLES.md`
 > FIRST.  Treat each P-n as binding unless the user explicitly

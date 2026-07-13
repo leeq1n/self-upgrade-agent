@@ -1,4 +1,5 @@
 # Switch signals (M-context-snapshot when-to-snapshot heuristic)
+Last P20-verified: 2026-07-13
 
 > L0: When to take a session snapshot (M-context-snapshot
 > rule trigger).  Load when: ending a task, noticing context
@@ -76,3 +77,9 @@ content:
   proposal for snapshot/restore mechanism).
 - `docs/MEMORY_TOOLS.md` — when to use which memory tool
   (snapshots are 1 of several memory layers).
+- PRINCIPLES.md P11 (摘要+引用) — the principle that keeps
+  this doc focused on signals (other detail in OPERATING_RULES
+  + M-context-snapshot parent rule).
+- PRINCIPLES.md P22 (stuck→plan) — the principle that
+  motivates proactive snapshot (don't lose context when
+  switching mid-thought).

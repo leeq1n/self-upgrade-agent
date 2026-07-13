@@ -1,4 +1,5 @@
 # Summary lifecycle (M-task-summary child-summary destroy contract)
+Last P20-verified: 2026-07-13
 
 > L0: How parent tasks consume + destroy N child summaries
 > when M-task-summary fires.  Load when: parent task with

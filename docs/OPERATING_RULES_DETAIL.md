@@ -1,4 +1,5 @@
 # Operating rules DETAIL (M-intent-parsing + M-learn full text)
+Last P20-verified: 2026-07-13
 
 > L0: L2 detail of M-intent-parsing and M-learn rules.
 > Companion to `docs/OPERATING_RULES.md` (per P20 R5 +

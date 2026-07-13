@@ -1,4 +1,5 @@
 # Add-then-reduce cycle (M-add-then-reduce M-rule)
+Last P20-verified: 2026-07-13
 
 > L0: 2-phase task lifecycle — Add (gather) + Reduce
 > (consolidate).  Load when: planning a multi-leaf task,
