@@ -37,6 +37,62 @@ production write-ups, prior art).  Cite them in commit messages.
 exists, cite it.  If not, do `web_search` + add 1-line to
 LITERATURE.  Per Workflow + Test roots.
 
+**L2 detail (per user 2026-07-13 'search-the-search' meta-ask)**:
+
+When to trigger a search (the agent should auto-search, not wait
+for user to say "search"):
+
+1. **User asks "how does X work?" or "what is Y?"** — search first,
+   then answer.  Per LITERATURE Seed: "don't optimize the proxy,
+   optimize the thing" → search the *real* answer, not your prior.
+2. **Designing a new feature** — read 5+ sources on the design
+   space before settling on an approach.  Per LITERATURE SkillOpt
+   (2026-03): "the design space matters more than the choice".
+3. **User explicitly says "搜资料" / "look it up"** — search
+   immediately.  The user has authorized the search.
+4. **User asks a meta-question about search itself** (e.g. "when
+   to trigger search?", "how do we search?") — search the
+   *meta-question* (e.g. agent self-search patterns, Moltbook
+   2026 on hard vs soft constraints), then update this spec.
+   This is the **search-the-search** pattern: when asked about
+   search, agent searches the meta and updates this very doc.
+
+Where to search (per user query type):
+
+- **Academic / scientific** → `mcp__sciverse__semantic_search`
+  (citation-grade academic retrieval, fulltext snippets).
+- **General / latest** → `web_search` (broad, less rigorous).
+- **Local project context** → `search_files` (ripgrep inside repo)
+  or `mcp__llm_wiki__*` (knowledge graph across projects).
+- **Papers** → `mcp__zotero__*` (user's curated library).
+- **ArXiv preprints** → `mcp__arxiv__*` or web arxiv search.
+- **Doc extraction** → `web_extract` (URL → markdown).
+
+How to search (pattern):
+
+1. Read `LITERATURE.md` first (local prior art — fastest, no cost).
+2. If not found, `web_search` for breadth or `sciverse` for depth.
+3. Add 1-line summary to `LITERATURE.md` for future reuse.
+4. Cite the source in commit message.
+
+**Search results → spec update (per user 2026-07-13)**:
+
+When search reveals project-relevant new info, agent should NOT
+just consume the result — agent should also check whether the
+project's docs should be updated based on what was found.  E.g.:
+
+- Search reveals a new framework (e.g. "agents.md spec") → check
+  if `AGENTS.md` should reference it; if so, update.
+- Search reveals an obsolete pattern (e.g. "P5 should include
+  ad-hoc verify") → check if `PRINCIPLES.md` P5 reflects this.
+- Search reveals project-relevant new tool (e.g. "sciverse for
+  academic search") → check if `AGENTS.md` "Read first" lists it.
+
+This is the **search-then-update** contract: every search should
+leave the project docs slightly more current than before.  Per
+P14 (docs stay current) — search is one of the discovery
+mechanisms that triggers doc updates.
+
 ### P3. 单元 → 联合 → 集成
 Tests form a pyramid:
 - **Unit**: one mechanism in isolation (atomic, fast)
