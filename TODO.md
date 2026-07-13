@@ -113,6 +113,16 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
 - [ ] bootloader 风格 atomic 切换 (你 vision 起点)
 - [/] Skill registry (per LITERATURE: SkillOpt) — step 1/3 done (metadata, commit `e65ba25`)
 - [/] Knowledge graph (per docs/TODO_KNOWLEDGE_GRAPH.md) — see in-progress step 6 above
+- [ ] Session persistence (per docs/TODO_SESSION_PERSISTENCE.md) —
+      proposal written 2026-07-13 (commit pending).  M-context-
+      snapshot rule is mature (3 places); this doc captures
+      design for snapshot format + restore protocol + lifecycle.
+      Implementation deferred (proposal-only).
+- [ ] Knowledge lifecycle (per docs/TODO_KNOWLEDGE_LIFECYCLE.md) —
+      proposal NOT yet written.  Per user 2026-07-13 'knowledge
+      base grows, need priority marking' (KG priority scoring
+      + pruning + search bypass).  KG not in active state;
+      deferred until seed work resumes.
 
 ## Lesson (per P19 + LITERATURE)
 

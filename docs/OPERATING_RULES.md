@@ -86,8 +86,8 @@ to a `session_search`-able artifact (or to a brief note).
 On return, load the snapshot to restore context.  **Don't**
 try to keep all context in the live conversation — overflow
 silently breaks the agent.  Implementation details
-(snapshot format, restore mechanism) are TODO (see todo
-list, task 8).
+(snapshot format, restore mechanism) are in
+`docs/TODO_SESSION_PERSISTENCE.md` (proposal — t8).
 
 **Switch signals** (per user 2026-07-13): a "switch" is any
 of these, regardless of perceived size or duration:

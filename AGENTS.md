@@ -121,6 +121,10 @@ matches the trigger.  Default: don't load.
 - `docs/SWITCH_SIGNALS.md` — load when evaluating whether
   current context is a "switch" that needs M-context-snapshot
   (5 signal types, what goes in a snapshot, location).
+- `docs/TODO_SESSION_PERSISTENCE.md` — proposal for formal
+  snapshot/restore mechanism (format, location 2-tier,
+  restore protocol, lifecycle per M-add-then-reduce).
+  Implementation deferred (proposal-only).
 - `docs/ADD_THEN_REDUCE.md` — load when planning a multi-leaf
   task or applying M-learn (Add phase + Reduce phase, signal
   triggers, anti-patterns).
