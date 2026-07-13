@@ -120,10 +120,20 @@ sub-tasks of a parent task complete — RECURSIVE_DECOMPOSITION
 5-step loop step 5), ask: did this task surface something
 that generalizes beyond itself?  If yes, capture it.
 
-**Trigger is structural, not time-based**: fires at every
-parent-task integration point, NOT at every leaf-end (those
-use M-task-summary).  Leaf-level summary is reflection on
-"this task"; M-learn is reflection on "this class of tasks".
+**Trigger is dual-track** (per M-add-then-reduce cycle):
+- **Structural** (always): at every parent-task INTEGRATE
+  point (RECURSIVE_DECOMPOSITION step 5).  Cheap and
+  default — runs the 3 sub-actions at minimal depth.
+- **Signal** (when signaled): context overflow risk, user
+  says "乱" / "compress" / "整理", doc drift detected
+  (> 2 files with Last P20-verified > 30 days), or
+  agent notices clutter.  Runs deeper — may catch
+  patterns the structural trigger would miss.
+
+Both tracks run the same 3 sub-actions; only the depth
+differs.  Per M-add-then-reduce: leaf-end is NOT a
+trigger (that's M-task-summary's job; structural trigger
+fires at parent INTEGRATE only).
 
 Three sub-actions, in order:
 
@@ -210,7 +220,8 @@ message body (auditable, per P17).
 
 **Relationship to other M-* rules**:
 - **M-task-summary**: leaf reflection (always-on, no signal)
-- **M-learn**: the *mechanism* of reduce
+- **M-learn**: the *mechanism* of reduce; dual-track trigger
+  (structural always + signal when noticed); 3 sub-actions
 - **M-context-snapshot**: storage for add-phase
 - **M-add-then-reduce**: the *cycle* of which M-learn is
   the reduce arm and M-task-summary is the per-leaf pause
