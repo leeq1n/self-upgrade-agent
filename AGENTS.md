@@ -267,3 +267,16 @@ responsibility.  Document but don't fix unless asked.
 - `C:\Users\LQ\AppData\Local\Temp\hermes-snapshot-sua-onboarding-20260713.md`
   — session snapshot (recent commits, open todos, decisions).
   Load this on resume after context overflow.
+
+## Memory tools decision matrix (per 2026-07-13 research)
+
+Full decision matrix (when to use which memory tool, with cost
+analysis) lives at `docs/MEMORY_TOOLS.md` (per AGENTS.md 300-line
+cap; matrix would push AGENTS.md over cap).  Read this section
+only if you're unsure which tool to use; the matrix is
+designed for minimal-use.
+
+**Quick rule**: start a session by reading AGENTS.md (1 read).
+Then decide based on the matrix in `docs/MEMORY_TOOLS.md`
+whether to load PRINCIPLES, search_files, read_file,
+session_search, or write a Temp snapshot.  Default: don't.
