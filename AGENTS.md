@@ -97,8 +97,9 @@ matches the trigger.  Default: don't load.
   (multi-file, multi-project, multi-step).  5-step loop.
 - `docs/OPERATING_RULES.md` — load when ending task, switching
   task, unsure which tools to use, **or before declaring "all
-  pass"**.  5 M-* rules (M-task-summary, M-must-read,
-  M-context-snapshot, M-subtask-summary, M-self-audit).
+  pass"**, **or after encountering any new rule/pattern**.  6
+  M-* rules (M-task-summary, M-must-read, M-context-snapshot,
+  M-subtask-summary, M-self-audit, M-self-application).
 - `docs/COMMON_PITFALLS.md` — load when context-switching
   or about to start non-trivial work.  4 categories of clues
   fresh agents often miss.
@@ -110,6 +111,13 @@ matches the trigger.  Default: don't load.
 entered this project right now, could it read what it needs
 to do the task?"  Per M82: verify before claiming.  Per P17:
 never claim green when it is yellow.
+
+**After encountering any new rule or pattern**: apply
+M-self-application (from `docs/OPERATING_RULES.md`).  Ask
+"does this rule apply at 4 levels — to current task, to
+the rule itself, to memory / project structure, to my own
+operating behavior?"  This is the most common class of
+agent failure mode: knowing a rule but not self-applying it.
 
 ## See also (project docs, always-load if relevant)
 
