@@ -8,6 +8,12 @@ Last P20-verified: 2026-07-13
 > tasks, unsure which tools to use, processing messy user
 > input, at a decomposition integration point, or
 > when context feels cluttered.
+>
+> **Every task completion = automatic M-task-summary** (this
+> is the workflow's invariant, not a choice).  Multi-leaf
+> tasks additionally fire M-subtask-summary per leaf.
+> Per user 2026-07-13 '做完大任务记得自动写总结': the rule
+> fires on task-end, not on user request.
 
 ## When to use this
 
