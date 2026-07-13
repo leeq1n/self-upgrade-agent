@@ -3,10 +3,22 @@ Last P20-verified: 2026-07-13
 
 # TODO: Knowledge-as-Graph Refactor
 
-> **Status**: in progress — seed project (../knowledge-graph-seed) has
-> minimal MVP stub (commit 4c79bbb, 2026-07-11).  Per user 2026-07-11
-> '按计划继续推进' (TODO那条).  Spec + skeleton done; full graph
-> impl per SEED.md acceptance questions is next sub-tasks.
+> **Status**: DONE — seed project (../knowledge-graph-seed) has
+> MVP COMPLETE (Q1/Q2/Q3 answered, 75 tests pass, real SUA
+> data integrated, commit `d06f1ab` 2026-07-13).  Spec +
+> impl + tests done.
+>
+> **Future work** (not in this TODO, per P21 cross-project
+> independence):
+> - **Knowledge lifecycle** (priority scoring + pruning for
+>   ever-growing KG) — proposed in
+>   `docs/TODO_KNOWLEDGE_LIFECYCLE.md` (TODO, future).
+> - **Session snapshot/restore mechanism** — design in
+>   `docs/TODO_SESSION_PERSISTENCE.md` (TODO, future).
+>   M-context-snapshot rule is codified (per
+>   `docs/OPERATING_RULES.md`); implementation proposal not
+>   yet written.
+>
 > **Origin**: 2026-07-02 conversation, after P0-1/P0-2 audit + commit.
 
 ## Why this exists
