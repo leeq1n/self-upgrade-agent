@@ -1,12 +1,13 @@
 # Operating workflow rules (per user 2026-07-13)
 Last P20-verified: 2026-07-13
 
-> L0: 6 operating rules (M-task-summary, M-must-read,
+> L0: 7 operating rules (M-task-summary, M-must-read,
 > M-context-snapshot, M-subtask-summary, M-intent-parsing,
-> M-learn) for how agent should work, not what the work is.
-> Load when ending a task, switching tasks, unsure which
-> tools to use, processing messy user input, or at a
-> decomposition integration point.
+> M-learn, M-add-then-reduce) for how agent should work,
+> not what the work is.  Load when ending a task, switching
+> tasks, unsure which tools to use, processing messy user
+> input, at a decomposition integration point, or
+> when context feels cluttered.
 
 ## When to use this
 
@@ -19,6 +20,8 @@ Load this doc when:
   (M-intent-parsing).
 - At a decomposition integration point (all sub-tasks of a
   parent task complete; M-learn).
+- Context / docs / commit history feels cluttered, or
+  multiple docs drifted (M-add-then-reduce signal).
 
 ## What these rules are
 
@@ -29,11 +32,11 @@ PRINCIPLES_DETAIL.md (P-n full text).
 
 Per P23 (doc > script with nuance): "Don't write a script
 until doc rule has been broken 3+ times" — same applies to
-adding new P-n.  These 6 rules are workflow guidance, not
+adding new P-n.  These 7 rules are workflow guidance, not
 principles, so they live in OPERATING_RULES.md, not
 PRINCIPLES.md.
 
-## The 6 rules
+## The 7 rules
 
 ### M-task-summary
 
@@ -161,6 +164,57 @@ end (that's M-task-summary's job).  Don't write a
 "checked, nothing new" line — silent no-op.  Don't update
 a doc unless the pattern is genuinely reusable (奥卡姆).
 
+### M-add-then-reduce
+
+Tasks have a 2-phase lifecycle; the cycle repeats:
+
+- **Add (执行期)**: gather information, write code, push
+  commits, draft docs, add Temp snapshots.  Permitted to
+  be redundant during this phase — exploration needs
+  slack.  No premature compression.
+- **Reduce (整理期)**: compress, abstract, dedupe, destroy
+  intermediate state.  Only triggered by signal (see
+  below).  This is where M-learn's 3 sub-actions run.
+
+**Trigger for reduce (3 signal types)**:
+
+| Signal type | What triggers it | Who runs M-learn |
+|---|---|---|
+| Structural | parent-task INTEGRATE point (all sub-tasks done) | always |
+| Context | user says "乱" / "compress" / "整理"; or agent notices context overflow risk | when signaled |
+| Doc drift | > 2 files with Last P20-verified > 30 days, or M-self-audit flags multiple drifts | when signaled |
+
+**Why signal-triggered, not always-on**: premature
+compression kills nuance; "I'll reduce later" never
+happens.  Signal trigger balances both failure modes.
+
+**Add phase MUST end before reduce phase begins** — don't
+mix.  Mixing = partial reductions leaving inconsistencies
+(violates P11 摘要+引用).
+
+**Reduce phase actions** (per M-learn):
+1. Pull all relevant intermediate state (child summaries,
+   Temp snapshots, draft commits) into context
+2. Run M-learn's 3 sub-actions (总结归纳 + 类比外推 + 更新知识库)
+3. **Destroy intermediate state** — child summaries that
+   have been consumed go to git history / Temp cleanup /
+   `git rm` of intermediate files.  Destroy is a
+   *postcondition* of reduce, not an afterthought.
+
+**Don't** trigger reduce during add phase (premature).
+**Don't** skip reduce entirely (additive without reduce =
+doc bloat, per P13 + P14).  **Don't** silent-destroy —
+every destroy must be a `git rm` / `os.unlink()` in a
+commit, with the destroy action recorded in commit
+message body (auditable, per P17).
+
+**Relationship to other M-* rules**:
+- **M-task-summary**: leaf reflection (always-on, no signal)
+- **M-learn**: the *mechanism* of reduce
+- **M-context-snapshot**: storage for add-phase
+- **M-add-then-reduce**: the *cycle* of which M-learn is
+  the reduce arm and M-task-summary is the per-leaf pause
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
@@ -175,6 +229,9 @@ a doc unless the pattern is genuinely reusable (奥卡姆).
   identifying the goal (M-intent-parsing anti-pattern).
 - **Don't** write "M-learn checked, nothing new" — silent
   no-op is the discipline (奥卡姆; M-learn anti-pattern).
+- **Don't** silent-destroy intermediate state — every
+  destroy goes in a commit message (M-add-then-reduce
+  anti-pattern).
 
 ## See also
 
@@ -194,6 +251,10 @@ a doc unless the pattern is genuinely reusable (奥卡姆).
 - docs/RECURSIVE_QUALITY.md — "loop = decomposition +
   analogy + self-reference"; M-learn is the "analogy" arm
   applied to project memory.
+- PRINCIPLES.md P7 (奥卡姆) — supports M-add-then-reduce's
+  destroy step (奥卡姆 = no redundant storage).
+- PRINCIPLES.md P17 (honest reporting) — supports
+  M-add-then-reduce's auditable-destroy requirement.
 - docs/COMMON_PITFALLS.md — context-switching pitfalls
   (related but distinct from this doc).
 - docs/MEMORY_TOOLS.md — full decision matrix for memory
