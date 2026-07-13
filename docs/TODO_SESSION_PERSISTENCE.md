@@ -151,42 +151,22 @@ Lifecycle trigger:
 | M-add-then-reduce | Owns destroy step (Tier 1 snapshot → archive → destroy) |
 | M-self-audit | Audits snapshot mechanism (does it work? are snapshots discoverable?) |
 
-## Open questions (per M-self-application 4 levels)
+## Open questions
 
-1. **Format enforcement**: should snapshots have a strict
-   YAML frontmatter (machine-readable) or stay free-form
-   markdown (human-readable)?
-2. **Tier 1 vs Tier 2**: default to Tier 2 (in repo) for
-   all snapshots, or only when user signals "save
-   persistently"?
-3. **Snapshot count limit**: should there be a per-topic
-   cap (e.g. keep last 5 snapshots of "sua-onboarding")?
-4. **Cross-project sharing**: if user works on multiple
-   projects, do snapshots conflict by topic name?
-
-These are **deferred** — answer when first snapshot
-implementing this proposal is written.
+See `docs/TODO_SESSION_PERSISTENCE_DETAIL.md` §Open questions
+for the 4 deferred questions.
 
 ## Implementation steps (when ready)
 
-Per "1 commit = 1 logical feature":
-
-1. **Commit 1**: write this proposal doc + add reference
-   from `docs/OPERATING_RULES.md` M-context-snapshot 段
-   + `AGENTS.md` See-also
-2. **Commit 2 (later)**: implement Tier 1 snapshot format
-   (write_file helper script)
-3. **Commit 3 (later)**: implement Tier 2 archive step
-   (move to `.hermes/snapshots/`)
-4. **Commit 4 (later)**: implement restore protocol helper
-5. **Commit 5 (later)**: write first real snapshot using
-   the new format + verify restore works
-
-Per "P23 doc > script with nuance": 1-2 doc-only commits
-first, then scripts when design is stable.
+See `docs/TODO_SESSION_PERSISTENCE_DETAIL.md` §Implementation
+steps for the 5-commit roadmap.
 
 ## See also
 
+- `docs/TODO_SESSION_PERSISTENCE_DETAIL.md` — L2 detail
+  companion (per P20 R5 + R6: 7KB-summary / _DETAIL-split
+  pattern; holds open questions + implementation steps +
+  extra see-also references).
 - `docs/OPERATING_RULES.md` — M-context-snapshot rule
   (parent rule for this proposal).
 - `docs/SWITCH_SIGNALS.md` — 5 trigger signals for snapshot
@@ -195,11 +175,3 @@ first, then scripts when design is stable.
   destroy step fits).
 - PRINCIPLES.md P14 (docs stay current) — the principle
   that this proposal operationalizes.
-- `~/AppData/Local/Temp/hermes-snapshot-sua-onboarding-20260713.md`
-  — first snapshot created in this session (4.6KB, 103L).
-- `~/AppData/Local/Temp/hermes-snapshot-self-upgrade-agent-20260713.md`
-  — second snapshot created in this session (6.5KB, 153L,
-  written after NEW-3 sync).
-- `references/M_RULE_AUTHORING.md` (skill) — the 7-section
-  recipe + 3-condition gate; if a new M-rule emerges from
-  this proposal, it should follow the recipe.

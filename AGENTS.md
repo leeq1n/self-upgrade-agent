@@ -125,6 +125,11 @@ matches the trigger.  Default: don't load.
   snapshot/restore mechanism (format, location 2-tier,
   restore protocol, lifecycle per M-add-then-reduce).
   Implementation deferred (proposal-only).
+- `docs/TODO_SESSION_PERSISTENCE_DETAIL.md` — L2 detail
+  companion (per P20 R5 + R6: 7KB-summary / _DETAIL-split
+  pattern; holds open questions + implementation steps).
+  Load when: implementing the proposal or resolving the
+  questions.
 - `docs/TODO_KNOWLEDGE_LIFECYCLE.md` — proposal for KG
   priority scoring + 3-tier pruning + search bypass
   (composite priority score, active/stale/dead policy,
