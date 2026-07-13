@@ -152,3 +152,16 @@ def plan_task(task: str, llm_call: Callable, context: Optional[dict] = None) -> 
     result.round_id = round_id
     
     return result
+
+
+
+# --------------------------------------------------------------------- #
+# TODO (v5.0.0 — RECURSIVE QUALITY, per 你 idea 2026-07-12):
+# Per 你 '类比和自指' insight + LITERATURE (Reflexion, Self-Refine, DyLAN)
+# See docs/RECURSIVE_QUALITY.md for design.
+#
+# Sub-task 1: reflection step after NO_PATCH
+# Sub-task 2: analogy step using past reflections
+# Sub-task 3: decomposition step (big → small)
+# Sub-task 4: self-reference step (pass meta-context)
+# --------------------------------------------------------------------- #

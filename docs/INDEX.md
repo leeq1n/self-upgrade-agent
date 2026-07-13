@@ -68,3 +68,4 @@ See PRINCIPLES_DETAIL.md after P23 for the umbrella note.
 
 Per LITERATURE Self-Harness + Lilian Weng: same pattern, multiple
 surfaces.  When planning, ask "which context am I in?"
+- [Recursive Quality (TODO)](RECURSIVE_QUALITY.md) — 你 idea: loop = 拆解 + 类比 + 自指 + LITERATURE (Reflexion, Self-Refine, DyLAN)
