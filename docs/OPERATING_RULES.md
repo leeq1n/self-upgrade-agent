@@ -51,6 +51,38 @@ After every task completion, briefly state what went well
 should be updated based on what you learned; if yes, include
 the doc fix in the same task (per P14 docs-stay-current).
 
+**Child-summary destroy contract** (per user 2026-07-13):
+when M-task-summary completes for a parent task that has
+N child tasks, the summary commit MUST:
+
+1. **Pull** all N child summaries (from commit messages or
+   Temp snapshots) into context.  Without this step,
+   parent summary is incomplete (per P14).
+2. **Write** the parent's own summary (per the rule above).
+3. **Destroy** the N child summaries.  For in-commit-message
+   summaries: leave in commit history (permanent by git
+   design — destroy = "consumed, no longer needed in
+   working set").  For Temp snapshot summaries: `git rm` /
+   `os.unlink()` them in the same commit, with the destroy
+   action **recorded in commit message body** (auditable,
+   per P17).  Silent destroy = drift (violates P17).
+
+**Why explicit destroy, not GC**: silent deletion hides
+work (violates P17); GC may delete before parent consumes
+(race condition); explicit destroy makes the consume-then-
+delete cycle an auditable event.
+
+**奥卡姆 aligned**: keeping all summaries forever = doc
+bloat.  Child summaries are intermediate state, not
+knowledge.  Only parent summary (and grandparent + above)
+enters the knowledge base.
+
+**Code-task variant**: for code-bearing parent tasks,
+M-task-summary fires only AFTER joint / integration test
+passes (P5 测通).  Test gate is the precondition; destroy
+is the postcondition.  Both must hold for "task done" to
+be true.
+
 ### M-must-read
 
 For principles that are needed *every* session (e.g. P5 测通,
