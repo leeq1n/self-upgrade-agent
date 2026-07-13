@@ -78,6 +78,18 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
 - [ ] Delete `docs/USER_INSIGHTS_KNOWLEDGEGRAPH_20260710.md`
       (transient note, content now in PRINCIPLES / OBSERVATIONS).
       Will be done in docs cleanup commit.
+- [ ] **P19 + M-task-summary destroy contract cross-ref**
+      (per M-learn from 2026-07-13 batch): P19 says "persist
+      intermediate"; destroy contract says "destroy intermediate
+      after consume".  These are complementary (add-phase vs
+      reduce-phase), not contradictory.  Add 1-line cross-ref
+      in PRINCIPLES.md P19 实操 → OPERATING_RULES.md
+      M-task-summary destroy contract.
+- [ ] **OPERATING_RULES.md split candidate**: file is 310
+      lines (exceeds 300-line soft cap).  "Child-summary destroy
+      contract" sub-section is a candidate to move to dedicated
+      docs/SUMMARY_LIFECYCLE.md if file grows past 350 lines.
+      Defer until then.
 - [x] **Resolve orphan M-self-audit + M-self-application**
       cross-ref (per AGENTS.md "orphan-note" + commit `51638b1`):
       AGENTS.md referenced these as if they were full M-* rules
