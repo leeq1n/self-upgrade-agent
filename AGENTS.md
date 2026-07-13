@@ -96,12 +96,20 @@ matches the trigger.  Default: don't load.
 - `docs/RECURSIVE_DECOMPOSITION.md` — load when task is big
   (multi-file, multi-project, multi-step).  5-step loop.
 - `docs/OPERATING_RULES.md` — load when ending task, switching
-  task, or unsure which tools to use.  4 M-* rules.
+  task, unsure which tools to use, **or before declaring "all
+  pass"**.  5 M-* rules (M-task-summary, M-must-read,
+  M-context-snapshot, M-subtask-summary, M-self-audit).
 - `docs/COMMON_PITFALLS.md` — load when context-switching
   or about to start non-trivial work.  4 categories of clues
   fresh agents often miss.
 - `docs/MEMORY_TOOLS.md` — load when unsure which memory
   tool to use.  Decision matrix.
+
+**Before declaring any task "all pass"**: apply M-self-audit
+(from `docs/OPERATING_RULES.md`).  Ask: "If a new agent
+entered this project right now, could it read what it needs
+to do the task?"  Per M82: verify before claiming.  Per P17:
+never claim green when it is yellow.
 
 ## See also (project docs, always-load if relevant)
 
