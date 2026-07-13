@@ -78,13 +78,15 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
 - [ ] Delete `docs/USER_INSIGHTS_KNOWLEDGEGRAPH_20260710.md`
       (transient note, content now in PRINCIPLES / OBSERVATIONS).
       Will be done in docs cleanup commit.
-- [ ] **Resolve orphan M-self-audit + M-self-application**
+- [x] **Resolve orphan M-self-audit + M-self-application**
       cross-ref (per AGENTS.md "orphan-note" + commit `51638b1`):
-      AGENTS.md references these as if they were full M-* rules
-      in OPERATING_RULES.md, but OPERATING_RULES.md doesn't contain
-      them.  Two options: (a) promote to OPERATING_RULES.md as
-      8th + 9th M-* rules, or (b) remove from AGENTS.md and
-      inline reminders as plain prose.  Defer to a future batch.
+      AGENTS.md referenced these as if they were full M-* rules
+      in OPERATING_RULES.md, but OPERATING_RULES.md didn't contain
+      them.  **Resolved via inline-reminder pattern** (commit
+      final batch): AGENTS.md now describes both as inline
+      reminders (honest about not being full rules); 7-rule list
+      in OPERATING_RULES.md pointer updated to match actual
+      contents.  See git log for the commit.
 
 ### User-side (you run)
 
