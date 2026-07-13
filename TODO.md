@@ -1,5 +1,5 @@
 L0: Pending tasks — backlog of next-up features.  Done items live in DONE.md.
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 
 # TODO —
 
@@ -26,6 +26,13 @@ completed work lives in DONE.md.
       奥卡姆 cleanup x2, unified `improve` with flags).
       Commits `30bcb1b` + `4f475eb` + `ed239b4` + `bb69983` +
       `2b88a79` + `20e958d`.
+- [x] **Workflow-rules batch (8 commits, 2026-07-13)** — added
+      M-intent-parsing + M-learn + M-add-then-reduce +
+      RECURSIVE_DECOMPOSITION layer-N context flow + COMMON_PITFALLS
+      3-way table + AGENTS trigger surface + L0 invariant reminder.
+      See `git log 78e6b78..HEAD` for full hash list.  Drives
+      OPERATING_RULES.md to 7 rules; RECURSIVE_DECOMPOSITION.md to
+      6-step loop; COMMON_PITFALLS.md §4 to 3-way table.
 
 ## In progress (current 1-2 sessions)
 
@@ -71,6 +78,13 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
 - [ ] Delete `docs/USER_INSIGHTS_KNOWLEDGEGRAPH_20260710.md`
       (transient note, content now in PRINCIPLES / OBSERVATIONS).
       Will be done in docs cleanup commit.
+- [ ] **Resolve orphan M-self-audit + M-self-application**
+      cross-ref (per AGENTS.md "orphan-note" + commit `51638b1`):
+      AGENTS.md references these as if they were full M-* rules
+      in OPERATING_RULES.md, but OPERATING_RULES.md doesn't contain
+      them.  Two options: (a) promote to OPERATING_RULES.md as
+      8th + 9th M-* rules, or (b) remove from AGENTS.md and
+      inline reminders as plain prose.  Defer to a future batch.
 
 ### User-side (you run)
 
