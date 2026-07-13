@@ -167,6 +167,36 @@ fall back to step 1 (THINK) and re-decompose.
 Per P14 — if decomposition reveals a doc drift, fix the doc in
 the same task (not a separate one).
 
+## Operating workflow rules (per user 2026-07-13)
+
+These are operating rules, not P-n — they govern how an agent
+should *work*, not what the work *is*.  Keep them short; full
+context lives in PRINCIPLES.md.
+
+- **M-task-summary** — after every task completion, briefly
+  state what went well (and what could improve).  Decide
+  whether the project's docs should be updated based on what
+  you learned; if yes, include the doc fix in the same task
+  (per P14).
+- **M-must-read** — for principles that are needed *every*
+  session (e.g. P5 测通, P11 摘要+引用, P17 老实说, P22
+  stuck→plan), surface them in `AGENTS.md` "Hard rules"
+  above (already done).  **Do NOT** add to AGENTS.md the full
+  text of every P-n — that bloats context.  AGENTS.md is a
+  pointer to PRINCIPLES.md, not a copy (per P11).
+- **M-context-snapshot** — before switching tasks, capture
+  the current session's state to a `session_search`-able
+  artifact (or to a brief note).  On return, load the snapshot
+  to restore context.  **Don't** try to keep all context in
+  the live conversation — overflow silently breaks the
+  agent.  Implementation details (snapshot format, restore
+  mechanism) are TODO (see todo list, task 8).
+- **M-subtask-summary** — for multi-leaf tasks, each leaf
+  commit should include a 1-2 line summary in its commit
+  message body.  When the agent returns for the integration
+  step (5-step loop step 5), it should NOT need to re-read
+  every leaf's diff — the summaries suffice.
+
 ## See also
 
 - `docs/PRINCIPLES.md` — the principles themselves (P1-P24)
