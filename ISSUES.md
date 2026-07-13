@@ -1,5 +1,8 @@
 # Self-Upgrade Agent — Known Issues & Roadmap
 
+
+> L0: SUA known issues + open questions (project log).
+
 > **状态**：活跃 (v1.8.0-alpha)
 > **更新**：2026-07-06
 

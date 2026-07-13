@@ -1,5 +1,8 @@
 # REGRESSION NOTES (per P17 honest disclosure)
 
+
+> L0: SUA regression test notes — what was added, when, why.
+
 ## 2026-07-12 — _parse_patch + _run_harness chain (3 commits, 0/10 KEPT still)
 
 Per user re-test 2026-07-12 '怎么都没有成功过':

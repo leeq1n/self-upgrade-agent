@@ -1,5 +1,8 @@
 # Self-Upgrade Agent 项目简报
 
+
+> L0: SUA project brief — vision, scope, non-goals (1-page).
+
 **最后更新**：2026-07-06（v1.8.0 alpha — 真 harness + 8 节点 + skill 生命周期自动化 + 5 round live 1 kept）
 **当前版本**：v1.7.1 (git tag), v1.8.0 alpha (master 分支)
 **稳定 tag**：v1.7.1 — 2 轮 stress test 验证

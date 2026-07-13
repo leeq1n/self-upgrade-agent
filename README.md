@@ -1,5 +1,8 @@
 # Self-Upgrade Agent
 
+
+> L0: SUA project README — orientation, current state, recent commits.
+
 > **Before any `docs/*.md` change**, mentally check P20.细则 (R1-R12)
 > in `docs/PRINCIPLES.md`.  No mechanical script — doc-level
 > self-discipline.

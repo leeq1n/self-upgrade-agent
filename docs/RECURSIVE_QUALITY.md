@@ -1,5 +1,8 @@
 # RECURSIVE QUALITY IMPROVEMENT (per 你 idea)
 
+
+> L0: SUA recursive-quality TODO — meta-rule self-application.
+
 Per user 2026-07-12:
 > "loop本质上是问题拆解的能力，当目标确定的前提下，问题足够大，则拆解成多个小问题，loop就是把小问题重新看作大问题的能力，也就是**类比和自指**的能力，这个你看看有没有作为TODO的价值"
 
