@@ -1,6 +1,6 @@
 # Index — where to look
 L0: Project orientation map: 8-step reading order + conditional stealth loads.
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 P22 triggers when starting a big task: check state, write plan, update docs.
 P23 clarifies doc > script: doc first, script only after 3+ violations.
 

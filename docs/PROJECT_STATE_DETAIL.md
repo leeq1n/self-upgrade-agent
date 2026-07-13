@@ -1,5 +1,5 @@
 L0: Long-form project state — version history, test counts, vision.
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 
 ---
 description: "Detailed technical history of the project (long form)"

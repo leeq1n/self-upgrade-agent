@@ -5,7 +5,7 @@ status: "summary"
 
 # PRINCIPLES — Working principles (portable)
 L0: The 23 working principles (P1-P23) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here.
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 
 > Distilled from working on this project (2026-07-08 session).
 > These are project-agnostic — copy them to any future project.

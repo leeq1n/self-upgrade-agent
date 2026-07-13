@@ -1,5 +1,5 @@
 L0: Knowledge-as-graph refactor idea (per user 2026-07-10).  Now in separate project per P21.
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 
 # TODO: Knowledge-as-Graph Refactor
 

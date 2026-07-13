@@ -1,5 +1,5 @@
 L0: Empirical data from real LLM runs — KEPT ratios, latency, anomalies.
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 
 # Observations — empirical data from real LLM runs
 

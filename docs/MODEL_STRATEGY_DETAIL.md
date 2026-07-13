@@ -1,5 +1,5 @@
 L0: Long-form model strategy — model comparisons, latency, cost.
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 
 # Model Strategy & Deployment — v1.8.1
 

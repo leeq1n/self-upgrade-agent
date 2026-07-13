@@ -1,5 +1,5 @@
 L0: Per-P-n 实操 (L2 details) — how to actually follow each principle.  Main file is PRINCIPLES.md (L0+L1).
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 
 # PRINCIPLES_DETAIL — per-P-n 实操 (L2)
 

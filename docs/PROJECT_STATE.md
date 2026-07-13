@@ -1,5 +1,5 @@
 L0: Project state — goal, current version, next step (1-paragraph).
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 
 ---
 description: "Project goal, status, mistakes, constraints, next step"

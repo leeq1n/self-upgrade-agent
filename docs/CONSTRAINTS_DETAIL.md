@@ -1,5 +1,5 @@
 L0: Long-form detail of CONSTRAINTS.md — each constraint with full rationale.
-Last P20-verified: 2026-07-10
+Last P20-verified: 2026-07-13
 
 # Self-Upgrade Agent — System Constraints
 
