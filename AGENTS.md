@@ -97,9 +97,15 @@ matches the trigger.  Default: don't load.
   (multi-file, multi-project, multi-step).  5-step loop.
 - `docs/OPERATING_RULES.md` — load when ending task, switching
   task, unsure which tools to use, **or before declaring "all
-  pass"**, **or after encountering any new rule/pattern**.  6
-  M-* rules (M-task-summary, M-must-read, M-context-snapshot,
-  M-subtask-summary, M-self-audit, M-self-application).
+  pass"**, **or after encountering any new rule/pattern**, **or
+  when user input is messy**, **or at a decomposition
+  integration point**.  6 M-* rules: M-task-summary,
+  M-must-read, M-context-snapshot, M-subtask-summary,
+  M-intent-parsing, M-learn.  (M-self-audit + M-self-application
+  reminders below are described inline in AGENTS.md but are
+  not yet promoted to OPERATING_RULES.md — this is an
+  existing orphan cross-ref, pre-dating this batch.  Track
+  as separate TODO before adding the 7th M-* rule.)
 - `docs/COMMON_PITFALLS.md` — load when context-switching
   or about to start non-trivial work.  4 categories of clues
   fresh agents often miss.
