@@ -30,10 +30,16 @@ The LLM doesn't need to know this — the entity handles it.
 # v2_agent prompts (Paper -> Patch)
 # --------------------------------------------------------------------- #
 
-V2_GENERATE_PATCH = """You modify a Python module to add a new capability.
+V2_GENERATE_PATCH = """You write a self-contained, runnable Python function with an accompanying pytest-style test.
 
-Target: {target_module}
-Existing source:
+Rules:
+- The 'function' must be COMPLETE and self-contained: it must run without importing any project modules (use only stdlib + typing).
+- The 'test' must call the function with realistic, valid arguments (no extra kwargs the function doesn't accept).
+- Both must compile cleanly under Python 3.11 and pass when run together.
+- Use only 'def function_name(): ...' and 'def test_function_name(): ...'.
+
+Target module: {target_module}
+Existing function signature for reference:
 ```python
 {current_source}
 ```
@@ -44,9 +50,9 @@ Abstract: {abstract}
 Similar past papers:
 {similar}
 
-Return a JSON object: {{"function": "<def plan_task(...)>", "test": "<pytest-style test>", "module": "{target_module}"}}
+Return a JSON object: {{"function": "<complete self-contained def>", "test": "<def test_xxx(self-contained): ...>"}}
 
-JSON only, no fences, no commentary."""
+JSON only, no fences, no commentary, no import of project modules."""
 
 
 # --------------------------------------------------------------------- #
