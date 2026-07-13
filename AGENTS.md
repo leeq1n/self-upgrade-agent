@@ -205,3 +205,65 @@ context lives in PRINCIPLES.md.
 - `docs/PROJECT_STATE_DETAIL.md` — version history + vision
 - `docs/PRINCIPLES_DETAIL.md` — full text of each P-n
 - `docs/OBSERVATIONS.md` — empirical context from past runs
+
+## Common pitfalls for new agents (per 2026-07-13 review)
+
+These are the 4 categories of clue a fresh agent most often
+ignores.  Read this section *before* starting any non-trivial work.
+
+- **Open-work categories** — this project has 2 TODO items that
+  are *not* in this file: (a) **knowledge lifecycle** (priority
+  scoring + pruning for an ever-growing KG; user signal
+  2026-07-13); (b) **session snapshot/restore mechanism** (for
+  task-switching across context overflow; user signal 2026-07-13).
+  Both are explicit-future, not immediate.  Don't start them
+  without user prompt.
+- **Snapshot location convention** — per M-context-snapshot,
+  save session state to `C:\Users\LQ\AppData\Local\Temp\hermes-snapshot-<topic>-<date>.md`
+  (session_search-able by title).  NOT in repo unless user asks
+  (Temp gets cleared on session restart, so don't rely on
+  long-term).
+- **Session scope boundary** — this project's current session
+  scope is `SUA-side onboarding + knowledge-base architecture`
+  (8 commits since 2026-07-12, ending with `a37c33b`).  Don't
+  touch `self-upgrade-agent/src/*` or `tests/*` (sibling's code)
+  unless explicitly asked.  Don't touch `knowledge-graph-seed/`
+  (P21 cross-project independence) unless explicitly asked.
+- **M-task-summary vs M-subtask-summary** — M-task-summary is
+  for *the whole task* (after all leaves commit, a 1-paragraph
+  reflection on what went well).  M-subtask-summary is for
+  *each leaf commit* (a 1-2 line summary in the commit message
+  body).  Both are needed; do not skip either.  The integration
+  step (5-step loop step 5) relies on leaf summaries to avoid
+  re-reading every diff.
+
+## Pre-existing pytest failure context (per 2026-07-13)
+
+SUA has a pre-existing test failure in
+`auto/test_planner_harness.py::test_plan_task_returns_list_of_strings`
+(expects `list`, gets `RoundResult` from `core/planner.py`).
+This is **sibling's** return-type change, NOT introduced by
+this session's commits (verified via `git stash` in commit
+`f10c604`).  Per M-rules: sibling's code = sibling's
+responsibility.  Document but don't fix unless asked.
+
+## Open work categories (per 2026-07-13)
+
+- **Task 7 (TODO)**: SUA `docs/TODO_KNOWLEDGE_LIFECYCLE.md` —
+  proposal for KG priority scoring + pruning + search bypass.
+  User signaled: "knowledge base grows, need priority marking".
+  Future; no implementation yet.
+- **Task 8 (TODO)**: SUA `docs/TODO_SESSION_PERSISTENCE.md` —
+  proposal for session snapshot/restore mechanism design.
+  M-context-snapshot (above) is the rule; the *implementation*
+  (snapshot format, restore mechanism, cross-session search) is
+  task 8.  Future; no implementation yet.
+
+## See also (session-specific)
+
+- `C:\Users\LQ\AppData\Local\Temp\hermes-verify-sua-onboarding-20260713.py`
+  — ad-hoc verify script for the 8-commit onboarding batch
+  (30 checks; 30/30 PASS).
+- `C:\Users\LQ\AppData\Local\Temp\hermes-snapshot-sua-onboarding-20260713.md`
+  — session snapshot (recent commits, open todos, decisions).
+  Load this on resume after context overflow.
