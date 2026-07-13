@@ -33,7 +33,7 @@ without user prompt.
 
 See `docs/TODO_KNOWLEDGE_LIFECYCLE.md` and
 `docs/TODO_SESSION_PERSISTENCE.md` for full TODO proposals
-(when written).
+(both written 2026-07-13; implementation deferred).
 
 ### 2. Snapshot location convention
 
@@ -104,7 +104,7 @@ responsibility.  Document but don't fix unless asked.
 - **Task 7 (TODO)**: `docs/TODO_KNOWLEDGE_LIFECYCLE.md` —
   proposal for KG priority scoring + pruning + search bypass.
   User signaled: "knowledge base grows, need priority marking".
-  Future; no implementation yet.
+  Written 2026-07-13; implementation deferred (KG frozen).
 - **Task 8 (TODO)**: `docs/TODO_SESSION_PERSISTENCE.md` —
   proposal for session snapshot/restore mechanism design.
   M-context-snapshot (`docs/OPERATING_RULES.md`) is the rule;

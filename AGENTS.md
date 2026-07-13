@@ -125,6 +125,11 @@ matches the trigger.  Default: don't load.
   snapshot/restore mechanism (format, location 2-tier,
   restore protocol, lifecycle per M-add-then-reduce).
   Implementation deferred (proposal-only).
+- `docs/TODO_KNOWLEDGE_LIFECYCLE.md` — proposal for KG
+  priority scoring + 3-tier pruning + search bypass
+  (composite priority score, active/stale/dead policy,
+  top-N by priority at search).  Implementation
+  deferred (KG frozen; last activity 2026-07-13).
 - `docs/ADD_THEN_REDUCE.md` — load when planning a multi-leaf
   task or applying M-learn (Add phase + Reduce phase, signal
   triggers, anti-patterns).

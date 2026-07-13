@@ -119,10 +119,11 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
       design for snapshot format + restore protocol + lifecycle.
       Implementation deferred (proposal-only).
 - [ ] Knowledge lifecycle (per docs/TODO_KNOWLEDGE_LIFECYCLE.md) —
-      proposal NOT yet written.  Per user 2026-07-13 'knowledge
-      base grows, need priority marking' (KG priority scoring
-      + pruning + search bypass).  KG not in active state;
-      deferred until seed work resumes.
+      PROPOSAL WRITTEN 2026-07-13 (commit pending).  Design
+      covers: priority scoring (4-component composite),
+      3-tier pruning (active/stale/dead), search bypass
+      (top-N by priority).  Implementation deferred (KG
+      frozen; last activity 2026-07-13).
 
 ## Lesson (per P19 + LITERATURE)
 
