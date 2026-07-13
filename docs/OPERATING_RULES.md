@@ -54,35 +54,16 @@ the doc fix in the same task (per P14 docs-stay-current).
 
 **Child-summary destroy contract** (per user 2026-07-13):
 when M-task-summary completes for a parent task that has
-N child tasks, the summary commit MUST:
+N child tasks, the summary commit MUST pull N child
+summaries, write the parent summary, then destroy the
+N child summaries (auditable via commit message body,
+per P17).  Silent destroy = drift.
 
-1. **Pull** all N child summaries (from commit messages or
-   Temp snapshots) into context.  Without this step,
-   parent summary is incomplete (per P14).
-2. **Write** the parent's own summary (per the rule above).
-3. **Destroy** the N child summaries.  For in-commit-message
-   summaries: leave in commit history (permanent by git
-   design — destroy = "consumed, no longer needed in
-   working set").  For Temp snapshot summaries: `git rm` /
-   `os.unlink()` them in the same commit, with the destroy
-   action **recorded in commit message body** (auditable,
-   per P17).  Silent destroy = drift (violates P17).
-
-**Why explicit destroy, not GC**: silent deletion hides
-work (violates P17); GC may delete before parent consumes
-(race condition); explicit destroy makes the consume-then-
-delete cycle an auditable event.
-
-**奥卡姆 aligned**: keeping all summaries forever = doc
-bloat.  Child summaries are intermediate state, not
-knowledge.  Only parent summary (and grandparent + above)
-enters the knowledge base.
-
-**Code-task variant**: for code-bearing parent tasks,
-M-task-summary fires only AFTER joint / integration test
-passes (P5 测通).  Test gate is the precondition; destroy
-is the postcondition.  Both must hold for "task done" to
-be true.
+Full contract (3 steps, why explicit destroy, 奥卡姆
+alignment, code-task variant, relationship to M-subtask-
+summary + M-add-then-reduce) lives in
+`docs/SUMMARY_LIFECYCLE.md` — load when implementing a
+parent-level M-task-summary.
 
 ### M-must-read
 
@@ -115,6 +96,11 @@ of these, regardless of perceived size or duration:
 - A new task type appears (debugging → design → write → ...)
 - Agent itself is about to switch focus (delegate_task,
   process management, long sleep)
+
+Full heuristic (5 signals in detail, anti-patterns,
+what goes in a snapshot, location convention) lives in
+`docs/SWITCH_SIGNALS.md` — load when evaluating whether
+current context is a switch.
 
 **Don't** judge by perceived task size: a "small switch"
 can still lose critical in-flight state (open todos,
@@ -237,55 +223,13 @@ a doc unless the pattern is genuinely reusable (奥卡姆).
 
 ### M-add-then-reduce
 
-Tasks have a 2-phase lifecycle; the cycle repeats:
-
-- **Add (执行期)**: gather information, write code, push
-  commits, draft docs, add Temp snapshots.  Permitted to
-  be redundant during this phase — exploration needs
-  slack.  No premature compression.
-- **Reduce (整理期)**: compress, abstract, dedupe, destroy
-  intermediate state.  Only triggered by signal (see
-  below).  This is where M-learn's 3 sub-actions run.
-
-**Trigger for reduce (3 signal types)**:
-
-| Signal type | What triggers it | Who runs M-learn |
-|---|---|---|
-| Structural | parent-task INTEGRATE point (all sub-tasks done) | always |
-| Context | user says "乱" / "compress" / "整理"; or agent notices context overflow risk | when signaled |
-| Doc drift | > 2 files with Last P20-verified > 30 days, or M-self-audit flags multiple drifts | when signaled |
-
-**Why signal-triggered, not always-on**: premature
-compression kills nuance; "I'll reduce later" never
-happens.  Signal trigger balances both failure modes.
-
-**Add phase MUST end before reduce phase begins** — don't
-mix.  Mixing = partial reductions leaving inconsistencies
-(violates P11 摘要+引用).
-
-**Reduce phase actions** (per M-learn):
-1. Pull all relevant intermediate state (child summaries,
-   Temp snapshots, draft commits) into context
-2. Run M-learn's 3 sub-actions (总结归纳 + 类比外推 + 更新知识库)
-3. **Destroy intermediate state** — child summaries that
-   have been consumed go to git history / Temp cleanup /
-   `git rm` of intermediate files.  Destroy is a
-   *postcondition* of reduce, not an afterthought.
-
-**Don't** trigger reduce during add phase (premature).
-**Don't** skip reduce entirely (additive without reduce =
-doc bloat, per P13 + P14).  **Don't** silent-destroy —
-every destroy must be a `git rm` / `os.unlink()` in a
-commit, with the destroy action recorded in commit
-message body (auditable, per P17).
-
-**Relationship to other M-* rules**:
-- **M-task-summary**: leaf reflection (always-on, no signal)
-- **M-learn**: the *mechanism* of reduce; dual-track trigger
-  (structural always + signal when noticed); 3 sub-actions
-- **M-context-snapshot**: storage for add-phase
-- **M-add-then-reduce**: the *cycle* of which M-learn is
-  the reduce arm and M-task-summary is the per-leaf pause
+Tasks have a 2-phase lifecycle; the cycle repeats: Add
+(gather / write / push) + Reduce (consolidate / dedupe /
+destroy).  Full rule (trigger table, why signal-triggered,
+add-then-reduce sequence, reduce phase actions, anti-patterns,
+relationship to other M-* rules) lives in
+`docs/ADD_THEN_REDUCE.md` — load when planning a multi-
+leaf task or applying M-learn.
 
 ## Anti-patterns (what NOT to do)
 

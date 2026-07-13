@@ -103,6 +103,15 @@ matches the trigger.  Default: don't load.
   7 M-* rules: M-task-summary, M-must-read, M-context-snapshot,
   M-subtask-summary, M-intent-parsing, M-learn,
   M-add-then-reduce.
+- `docs/SUMMARY_LIFECYCLE.md` — load when implementing a
+  parent-level M-task-summary (M-task-summary child-summary
+  destroy contract — pull, write, destroy in same commit).
+- `docs/SWITCH_SIGNALS.md` — load when evaluating whether
+  current context is a "switch" that needs M-context-snapshot
+  (5 signal types, what goes in a snapshot, location).
+- `docs/ADD_THEN_REDUCE.md` — load when planning a multi-leaf
+  task or applying M-learn (Add phase + Reduce phase, signal
+  triggers, anti-patterns).
 - `docs/COMMON_PITFALLS.md` — load when context-switching
   or about to start non-trivial work.  4 categories of clues
   fresh agents often miss.
