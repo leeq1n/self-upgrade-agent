@@ -1,11 +1,12 @@
 # Operating workflow rules (per user 2026-07-13)
 Last P20-verified: 2026-07-13
 
-> L0: 5 operating rules (M-task-summary, M-must-read,
-> M-context-snapshot, M-subtask-summary, M-intent-parsing)
-> for how agent should work, not what the work is.  Load
-> when ending a task, switching tasks, unsure which tools
-> to use, or processing messy user input.
+> L0: 6 operating rules (M-task-summary, M-must-read,
+> M-context-snapshot, M-subtask-summary, M-intent-parsing,
+> M-learn) for how agent should work, not what the work is.
+> Load when ending a task, switching tasks, unsure which
+> tools to use, processing messy user input, or at a
+> decomposition integration point.
 
 ## When to use this
 
@@ -16,6 +17,8 @@ Load this doc when:
 - Mid multi-leaf task and need to summarize (M-subtask-summary).
 - User input is messy / scattered / mixes multiple asks
   (M-intent-parsing).
+- At a decomposition integration point (all sub-tasks of a
+  parent task complete; M-learn).
 
 ## What these rules are
 
@@ -26,11 +29,11 @@ PRINCIPLES_DETAIL.md (P-n full text).
 
 Per P23 (doc > script with nuance): "Don't write a script
 until doc rule has been broken 3+ times" — same applies to
-adding new P-n.  These 5 rules are workflow guidance, not
+adding new P-n.  These 6 rules are workflow guidance, not
 principles, so they live in OPERATING_RULES.md, not
 PRINCIPLES.md.
 
-## The 5 rules
+## The 6 rules
 
 ### M-task-summary
 
@@ -107,6 +110,57 @@ inference steps, then ask only the question that remains
 ambiguous.  Per user 2026-07-10 'trust you / next / go →
 default EXECUTE, not ask again'.
 
+### M-learn
+
+After a decomposition **integration point** (i.e. all
+sub-tasks of a parent task complete — RECURSIVE_DECOMPOSITION
+5-step loop step 5), ask: did this task surface something
+that generalizes beyond itself?  If yes, capture it.
+
+**Trigger is structural, not time-based**: fires at every
+parent-task integration point, NOT at every leaf-end (those
+use M-task-summary).  Leaf-level summary is reflection on
+"this task"; M-learn is reflection on "this class of tasks".
+
+Three sub-actions, in order:
+
+1. **总结归纳 (Summarize and generalize)**: from the leaf
+   summaries (or M-task-summary outputs), extract the
+   pattern.  What repeats?  What was the common shape across
+   the sub-tasks?
+2. **类比外推 (Analogical extrapolation)**: compare the
+   pattern to prior rules / skills / past failures.  Does it
+   match an existing principle (P-n)?  Does it extend one?
+   Or is it genuinely new?  Per RECURSIVE_QUALITY.md:
+   loop = decomposition + analogy + self-reference; this
+   step is the "analogy" arm.
+3. **更新知识库 (Update knowledge base)**: if the
+   generalization is real, update the appropriate artifact:
+   - New principle?  → propose in PRINCIPLES.md + PRINCIPLES_DETAIL.md
+   - New workflow rule?  → propose in OPERATING_RULES.md
+   - New tool quirk / env fact?  → memory tool
+   - New project-specific pattern?  → relevant docs/*.md
+   - None of the above (one-off)?  → DONE.md or discard
+
+**Per 奥卡姆 (P7) — no-op leaves no trace**: if the three
+sub-actions surface nothing generalizable, do nothing
+visible.  Don't write "checked, nothing new".  Silent
+no-op is the discipline — every "checked" line is itself
+a candidate P-n violation (writing work, not the work).
+
+**Relationship to other M-* rules**:
+- **M-task-summary**: leaf-end (1 task done).  M-learn:
+  integration-end (N sub-tasks done + parent re-evaluated).
+- **M-subtask-summary**: per-leaf commit message.  M-learn
+  reads M-subtask-summary outputs as input.
+- **M-context-snapshot**: before task switch.  M-learn is
+  AFTER integration, not before switch.
+
+**Anti-pattern**: don't trigger M-learn at every leaf
+end (that's M-task-summary's job).  Don't write a
+"checked, nothing new" line — silent no-op.  Don't update
+a doc unless the pattern is genuinely reusable (奥卡姆).
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
@@ -119,6 +173,8 @@ default EXECUTE, not ask again'.
   (integration step will need to re-read every diff).
 - **Don't** enumerate every ask in messy user input before
   identifying the goal (M-intent-parsing anti-pattern).
+- **Don't** write "M-learn checked, nothing new" — silent
+  no-op is the discipline (奥卡姆; M-learn anti-pattern).
 
 ## See also
 
@@ -131,7 +187,15 @@ default EXECUTE, not ask again'.
   M-task-summary operationalizes.
 - PRINCIPLES.md P17 (honest reporting) — the principle that
   M-task-summary's "what could improve" enforces.
+- PRINCIPLES.md P22 (stuck→plan) — meta-rule M-learn's
+  recursive-decomposition trigger lives in step 5.
+- docs/RECURSIVE_DECOMPOSITION.md — 5-step loop; step 5 is
+  M-learn's structural trigger.
+- docs/RECURSIVE_QUALITY.md — "loop = decomposition +
+  analogy + self-reference"; M-learn is the "analogy" arm
+  applied to project memory.
 - docs/COMMON_PITFALLS.md — context-switching pitfalls
   (related but distinct from this doc).
 - docs/MEMORY_TOOLS.md — full decision matrix for memory
-  tools.
+  tools (M-learn's "update knowledge base" sub-action uses
+  this matrix).
