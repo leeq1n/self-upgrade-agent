@@ -1,9 +1,11 @@
 # Operating workflow rules (per user 2026-07-13)
+Last P20-verified: 2026-07-13
 
-> L0: 4 operating rules (M-task-summary, M-must-read,
-> M-context-snapshot, M-subtask-summary) for how agent should
-> work, not what the work is.  Load when ending a task,
-> switching tasks, or unsure which tools to use.
+> L0: 5 operating rules (M-task-summary, M-must-read,
+> M-context-snapshot, M-subtask-summary, M-intent-parsing)
+> for how agent should work, not what the work is.  Load
+> when ending a task, switching tasks, unsure which tools
+> to use, or processing messy user input.
 
 ## When to use this
 
@@ -12,6 +14,8 @@ Load this doc when:
 - Switching tasks (M-context-snapshot).
 - Unsure which docs to read first (M-must-read).
 - Mid multi-leaf task and need to summarize (M-subtask-summary).
+- User input is messy / scattered / mixes multiple asks
+  (M-intent-parsing).
 
 ## What these rules are
 
@@ -22,11 +26,11 @@ PRINCIPLES_DETAIL.md (P-n full text).
 
 Per P23 (doc > script with nuance): "Don't write a script
 until doc rule has been broken 3+ times" — same applies to
-adding new P-n.  These 4 rules are workflow guidance, not
+adding new P-n.  These 5 rules are workflow guidance, not
 principles, so they live in OPERATING_RULES.md, not
 PRINCIPLES.md.
 
-## The 4 rules
+## The 5 rules
 
 ### M-task-summary
 
@@ -68,6 +72,41 @@ returns for the integration step (5-step loop step 5), it
 should NOT need to re-read every leaf's diff — the summaries
 suffice.
 
+### M-intent-parsing
+
+When user input is messy — multiple asks interleaved,
+self-corrections mid-sentence, terse fragments, mixed
+languages, contradictions — **first find the user's actual
+goal** (the "main contradiction", per Chinese 主要矛盾),
+**then plan backward from the goal**.  This is structurally
+identical to agent self-planning: identify the target, then
+derive the path.  The difference is that the target comes
+from parsing messy input, not from a clean task description.
+
+Three actions, in order:
+
+1. **Extract the goal**: ignore phrasing, surface the
+   underlying intent.  The user may say "this and that and
+   also..."; the goal is one of those things, often the last
+   one.  State the goal in one sentence back to the user (or
+   to yourself if context-only).
+2. **Identify the main contradiction**: among multiple asks,
+   which one is the **central problem**?  The others are
+   either prerequisites, examples, or noise.  Per 抓主要
+   矛盾: do not enumerate all asks, rank them.
+3. **Plan backward**: from the goal, derive the steps needed.
+   Compare to user's stated steps; the user's path may be
+   incomplete or out-of-order.  Correct in your plan, but
+   only after confirming the goal.
+
+**Don't** apply this to clean task descriptions (overhead > value).
+
+**Anti-pattern**: don't ask the user to clarify before you
+have an interpretation.  State your interpretation + the
+inference steps, then ask only the question that remains
+ambiguous.  Per user 2026-07-10 'trust you / next / go →
+default EXECUTE, not ask again'.
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
@@ -78,6 +117,8 @@ suffice.
   (silent overflow risk).
 - **Don't** skip M-subtask-summary in multi-leaf tasks
   (integration step will need to re-read every diff).
+- **Don't** enumerate every ask in messy user input before
+  identifying the goal (M-intent-parsing anti-pattern).
 
 ## See also
 
