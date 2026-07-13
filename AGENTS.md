@@ -101,14 +101,20 @@ matches the trigger.  Default: don't load.
   pass"**, **or after encountering any new rule/pattern**, **or
   when user input is messy**, **or at a decomposition
   integration point**, **or when context feels cluttered**.
-  7 M-* rules: M-task-summary, M-must-read, M-context-snapshot,
+  9 M-* rules: M-task-summary, M-must-read, M-context-snapshot,
   M-subtask-summary, M-intent-parsing, M-learn,
-  M-add-then-reduce.
+  M-add-then-reduce, M-self-audit, M-self-application.
 - `docs/OPERATING_RULES_DETAIL.md` — load when implementing
   M-intent-parsing (full 3-action steps, anti-pattern) or
   M-learn (full dual-track triggers, 3 sub-actions, M-rule
   relationships).  Per P20 R5+R6: 7KB-summary / _DETAIL-split
   pattern; this is the L2 detail companion.
+- `docs/M_SELF_AUDIT.md` — load before "all pass" or after
+  big doc changes (fresh-agent discoverability check; 4
+  triggers, 6-step audit checklist, anti-patterns).
+- `docs/M_SELF_APPLICATION.md` — load when encountering any
+  new rule or pattern, or when debugging "rule didn't apply"
+  (4 levels: object / rule itself / memory / self behavior).
 - `docs/SUMMARY_LIFECYCLE.md` — load when implementing a
   parent-level M-task-summary (M-task-summary child-summary
   destroy contract — pull, write, destroy in same commit).
@@ -125,19 +131,18 @@ matches the trigger.  Default: don't load.
   tool to use.  Decision matrix.
 
 **Before declaring any task "all pass"**: apply M-self-audit
-(inline reminder — not yet a full rule in OPERATING_RULES.md).
-Ask: "If a new agent entered this project right now, could
-it read what it needs to do the task?"  Per M82: verify
-before claiming.  Per P17: never claim green when it is
-yellow.
+(from `docs/M_SELF_AUDIT.md`).  Ask: "If a new agent
+entered this project right now, could it read what it needs
+to do the task?"  Per M82: verify before claiming.  Per P17:
+never claim green when it is yellow.
 
 **After encountering any new rule or pattern**: apply
-M-self-application (inline reminder — not yet a full rule
-in OPERATING_RULES.md).  Ask "does this rule apply at 4
-levels — to current task, to the rule itself, to memory /
-project structure, to my own operating behavior?"  This is
-the most common class of agent failure mode: knowing a
-rule but not self-applying it.
+M-self-application (from `docs/M_SELF_APPLICATION.md`).
+Ask "does this rule apply at 4 levels — to current task,
+to the rule itself, to memory / project structure, to my
+own operating behavior?"  This is the most common class
+of agent failure mode: knowing a rule but not self-applying
+it.
 
 ## See also (project docs, always-load if relevant)
 

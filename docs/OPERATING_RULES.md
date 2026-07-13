@@ -1,13 +1,14 @@
 # Operating workflow rules (per user 2026-07-13)
 Last P20-verified: 2026-07-13
 
-> L0: 7 operating rules (M-task-summary, M-must-read,
-> M-context-snapshot, M-subtask-summary, M-intent-parsing,
-> M-learn, M-add-then-reduce) for how agent should work,
-> not what the work is.  Load when ending a task, switching
-> tasks (even briefly), unsure which tools to use, processing
-> messy user input, at a decomposition integration point,
-> or when context feels cluttered.
+|> L0: 9 operating rules (M-task-summary, M-must-read,
+|> M-context-snapshot, M-subtask-summary, M-intent-parsing,
+|> M-learn, M-add-then-reduce, **M-self-audit, M-self-
+|> application**) for how agent should work, not what the
+|> work is.  Load when ending a task, switching tasks (even
+|> briefly), unsure which tools to use, processing messy
+|> user input, at a decomposition integration point, before
+|> declaring "all pass", or when encountering any new rule.
 >
 > **Every task completion = automatic M-task-summary** (this
 > is the workflow's invariant, not a choice).  Multi-leaf
@@ -29,6 +30,10 @@ Load this doc when:
   parent task complete; M-learn).
 - Context / docs / commit history feels cluttered, or
   multiple docs drifted (M-add-then-reduce signal).
+- Before declaring "all pass" (M-self-audit) — fresh-
+  agent discoverability check.
+- Encountering any new rule or pattern (M-self-application)
+  — apply at 4 levels (task, rule itself, memory, self).
 
 ## What these rules are
 
@@ -43,7 +48,7 @@ adding new P-n.  These 7 rules are workflow guidance, not
 principles, so they live in OPERATING_RULES.md, not
 PRINCIPLES.md.
 
-## The 7 rules
+## The 9 rules
 
 ### M-task-summary
 
@@ -168,6 +173,44 @@ add-then-reduce sequence, reduce phase actions, anti-patterns,
 relationship to other M-* rules) lives in
 `docs/ADD_THEN_REDUCE.md` — load when planning a multi-
 leaf task or applying M-learn.
+
+### M-self-audit
+
+Frequently ask yourself: "If a new agent entered this
+project right now, could it read what it needs to do the
+task?"  Triggers: before declaring "all pass" (per M-task-
+summary invariant), after adding new doc/section (is it
+discoverable from L0?), or after adding 4th section to
+AGENTS.md (am I bloating past 300-line cap?).
+
+Audit checklist: new-agent simulation, ALL docs L0
+audit, AGENTS.md read-order references all docs, conditional
+vs always-on split, cap check, targeted verify (M82).
+
+Full rule (when-to-apply, question, 6-step checklist,
+anti-patterns, relationship to other M-rules) lives in
+`docs/M_SELF_AUDIT.md` — load before "all pass" or after
+big doc changes.
+
+### M-self-application
+
+When you encounter a rule or pattern, apply it at 4 levels:
+(1) to current task, (2) to the rule itself (meta), (3) to
+memory / project structure (organizational), (4) to your
+own operating behavior (self).  If you find a class of
+cases where the rule applies but you didn't apply it,
+that's a "self-application gap" — surface and fix.
+
+Bootstrap exception: M-self-application does NOT apply to
+itself (infinite recursion).  Per honest reporting (P17):
+60-70% reduction realistic, not 100% (LLM training data may
+lack self-referential examples).
+
+Full rule (4 levels detail, examples of self-application
+gaps caught in this project, bootstrap exception, caveat,
+anti-patterns, relationship to other M-rules) lives in
+`docs/M_SELF_APPLICATION.md` — load when encountering any
+new rule or pattern, or when debugging "rule didn't apply".
 
 ## Anti-patterns (what NOT to do)
 
