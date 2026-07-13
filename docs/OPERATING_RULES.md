@@ -5,9 +5,9 @@ Last P20-verified: 2026-07-13
 > M-context-snapshot, M-subtask-summary, M-intent-parsing,
 > M-learn, M-add-then-reduce) for how agent should work,
 > not what the work is.  Load when ending a task, switching
-> tasks, unsure which tools to use, processing messy user
-> input, at a decomposition integration point, or
-> when context feels cluttered.
+> tasks (even briefly), unsure which tools to use, processing
+> messy user input, at a decomposition integration point,
+> or when context feels cluttered.
 >
 > **Every task completion = automatic M-task-summary** (this
 > is the workflow's invariant, not a choice).  Multi-leaf
@@ -19,7 +19,8 @@ Last P20-verified: 2026-07-13
 
 Load this doc when:
 - Ending a task (M-task-summary).
-- Switching tasks (M-context-snapshot).
+- Switching tasks (M-context-snapshot) — even briefly,
+  even if the switched-away task is small.
 - Unsure which docs to read first (M-must-read).
 - Mid multi-leaf task and need to summarize (M-subtask-summary).
 - User input is messy / scattered / mixes multiple asks
@@ -102,7 +103,29 @@ silently breaks the agent.  Implementation details
 (snapshot format, restore mechanism) are TODO (see todo
 list, task 8).
 
-Snapshot location convention:
+**Switch signals** (per user 2026-07-13): a "switch" is any
+of these, regardless of perceived size or duration:
+- User says "switch to X" / "let's do something else" /
+  mentions a different topic
+- User's message arrives after a long pause (context may
+  have rotated out)
+- Agent notices context overflow risk (file reads in this
+  session > 50, multiple M-task-summary points, or
+  conversation > N turns without a summary)
+- A new task type appears (debugging → design → write → ...)
+- Agent itself is about to switch focus (delegate_task,
+  process management, long sleep)
+
+**Don't** judge by perceived task size: a "small switch"
+can still lose critical in-flight state (open todos,
+uncommitted snapshots, mid-iteration assumptions).
+Snapshot cost is low; recovery from missing snapshot is
+high.
+
+**Snapshot trigger is automatic, not user-requested**.
+User should not have to remind agent to snapshot.
+
+**Snapshot location convention**:
 `C:\Users\LQ\AppData\Local\Temp\hermes-snapshot-<topic>-<date>.md`
 (session_search-able by title).  NOT in repo unless user
 asks (Temp gets cleared on session restart, so don't rely
@@ -281,6 +304,10 @@ message body (auditable, per P17).
 - **Don't** silent-destroy intermediate state — every
   destroy goes in a commit message (M-add-then-reduce
   anti-pattern).
+- **Don't** skip M-context-snapshot because "the switch is
+  brief / task is small" — small switches lose critical
+  in-flight state (M-context-snapshot anti-pattern;
+  per user 2026-07-13).
 
 ## See also
 
