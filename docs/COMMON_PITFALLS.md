@@ -1,4 +1,5 @@
 # Common pitfalls for new agents (per 2026-07-13 review)
+Last P20-verified: 2026-07-13
 
 > L0: 4 categories of clue fresh agents most often miss.
 > Load when context-switching, starting non-trivial work, or
@@ -57,19 +58,36 @@ plus this doc + AGENTS.md rewrite).
 - `../knowledge-graph-seed/` (P21 cross-project independence)
   unless explicitly asked.
 
-### 4. M-task-summary vs M-subtask-summary
+### 4. M-task-summary vs M-subtask-summary vs M-learn
 
-These are two distinct rules (per
-`docs/OPERATING_RULES.md`):
+These are three distinct rules (per
+`docs/OPERATING_RULES.md`); they fire at different points
+and on different scales.  Don't conflate.
 
-- **M-task-summary**: for *the whole task* (after all leaves
-  commit, a 1-paragraph reflection on what went well).
-- **M-subtask-summary**: for *each leaf commit* (a 1-2 line
-  summary in the commit message body).
+| Rule | When | What |
+|---|---|---|
+| **M-task-summary** | After every task completion (leaf or 1-step) | 1-paragraph reflection: what went well, what could improve, did docs need updating? |
+| **M-subtask-summary** | Per leaf commit (inside multi-leaf task) | 1-2 line summary in commit message body.  Feeds the parent task's INTEGRATE step. |
+| **M-learn** | At a parent-task INTEGRATE point (all sub-tasks done) | 3 sub-actions: 总结归纳 + 类比外推 + 更新知识库.  Silent no-op per 奥卡姆 if nothing generalizes. |
 
-Both are needed; do not skip either.  The integration step
-(5-step loop step 5) relies on leaf summaries to avoid
-re-reading every diff.
+**Common confusion** (per recent sessions):
+- Treating M-task-summary as M-learn → update docs for
+  every leaf task → doc bloat.  M-task-summary asks "did
+  the docs drift?"; M-learn asks "did this surface a new
+  pattern that generalizes?".
+- Skipping M-subtask-summary → parent INTEGRATE must
+  re-read every diff → O(code) instead of O(summaries)
+  (per RECURSIVE_DECOMPOSITION.md "Context flow across
+  recursion layers").
+- Treating M-learn like M-context-snapshot (writing
+  "checked, nothing new" lines) → doc bloat.  M-learn's
+  silent no-op is the discipline.
+
+All three are needed; do not skip any.  The integration
+step (5-step loop step 5) relies on leaf summaries to
+avoid re-reading every diff; the leaf reflection
+relies on M-task-summary; the project's memory quality
+relies on M-learn firing correctly.
 
 ## Pre-existing pytest failure context
 
@@ -96,9 +114,10 @@ responsibility.  Document but don't fix unless asked.
 
 ## See also
 
-- `docs/OPERATING_RULES.md` — M-* rules (M-task-summary,
-  M-must-read, M-context-snapshot, M-subtask-summary).
+- `docs/OPERATING_RULES.md` — full text of all 6 M-* rules
+  (M-task-summary, M-must-read, M-context-snapshot,
+  M-subtask-summary, M-intent-parsing, M-learn).
 - `docs/MEMORY_TOOLS.md` — full decision matrix for memory
   tools.
 - `docs/RECURSIVE_DECOMPOSITION.md` — 5-step loop for big
-  tasks.
+  tasks (M-learn's trigger is step 5).
