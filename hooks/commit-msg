@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# commit-msg hook: enforce that commit message references at least one
+# P-n (P1-P24) from docs/PRINCIPLES.md.  Per AGENTS.md "Commit
+# message contract".
+#
+# TEMPLATE — install with: cp hooks/commit-msg .git/hooks/commit-msg
+#                    then: chmod +x .git/hooks/commit-msg
+#
+# This file is the TEMPLATE for .git/hooks/commit-msg (not auto-installed).
+# Installed at .git/hooks/commit-msg (auto-run by git on every commit
+# AFTER the user supplies a message but BEFORE the commit lands).
+#
+# This is a HARD constraint.  Per Moltbook 2026 (Zerhoudi et al.),
+# hard constraints produce immediate behavioral shifts; soft guidance
+# is ignored.  Without this hook, agents may commit without citing
+# any principle, defeating PRINCIPLES.md's purpose.
+#
+# The hook receives $1 = path to the commit message file.  Unlike
+# pre-commit, this file is GUARANTEED to contain the actual message
+# the user just supplied.
+
+set -e
+
+COMMIT_MSG_FILE="${1:-}"
+if [ -z "$COMMIT_MSG_FILE" ] || [ ! -f "$COMMIT_MSG_FILE" ]; then
+    echo "ERROR: commit-msg hook called without a message file" >&2
+    exit 1
+fi
+
+MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Look for a P<n> reference (P1-P24 inclusive).
+if ! echo "$MSG" | grep -qE 'P([0-9]|1[0-9]|2[0-4])'; then
+    cat >&2 <<'EOF'
+ERROR: commit message must reference at least one P-n (P1-P24).
+
+  Per AGENTS.md 'Commit message contract' and docs/PRINCIPLES.md,
+  every commit must cite the principle that motivated the change.
+
+  Examples of valid messages:
+    "docs: clarify interlock (P14, P17)"
+    "feat(kg): add kg_arbiter (P9)"
+    "chore: add AGENTS.md (P14, P17)"
+
+  Allowed P-n values: P1 P2 P3 P4 P5 P6 P7 P8 P9 P10 P11 P12
+                     P13 P14 P15 P16 P17 P18 P19 P20 P21 P22
+                     P23 P24
+
+  To skip this check (NOT recommended), pass --no-verify.
+EOF
+    exit 1
+fi
+
+exit 0
