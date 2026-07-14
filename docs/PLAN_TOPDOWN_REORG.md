@@ -29,13 +29,47 @@
 | Recursive 类比 to whole project | Project-level audit | 50 | ✅ done |
 | **(NEW) 新agent hermes-independent** | **MCP tools L0 doc** | **51** | **✅ done (graph view in SUA)** |
 | **(NEW) 项目 self-organization 自动化** | **SELF_ORG principle (P27 candidate)** | **52** | **✅ done (P27 lives in PRINCIPLES.md)** |
-| **(NEW) 知识组织 architecture** | **图/树 + 平铺式 model** | **53** | **⏳ next** |
-| **(NEW) skill-v2 项目 skeleton** | **Create `hermes-root/agent-onboarding-v2/`** | **54** | ⏳ after 53 |
-| **(NEW) skill-v2 initial content** | **SKILL.md + references/** | 55 | ⏳ after 54 |
-| **(NEW) EXTENSIONS.md X2 update** | **X2 = skill-v2 (in hermes-root, not Hermes global)** | 56 | ⏳ after 55 |
-| **(NEW) SUA → skill cross-ref** | **SUA docs link to skill references** | 57 | ⏳ after 56 |
+| **(NEW) 知识组织 architecture** | **图/树 + 平铺式 model** | **53** | **✅ done** |
+| **(NEW) Converter design (revised)** | **graph → flat on-demand converter** | **54** | **⏳ next** |
+| **(NEW) Converter implementation** | **`graph_to_skill.py` MVP** | **55** | ⏳ after 54 |
+| **(NEW) First skill export** | **Test run with agent-onboarding** | **56** | ⏳ after 55 |
+| **(NEW) EXTENSIONS.md X2 update** | **X2 = converter output, not Hermes global** | **57** | ⏳ after 56 |
 | 50a-50e (DONE/PRINCIPLES cap fixes) | Doc fixes (per c50 audit) | 50a-50e | ⏳ pending user |
 | 47a-d (P-n merge) | Apply 4 merge candidates | 47a-d | ⏳ pending user |
+
+## Revised architecture (per user insight 2026-07-14 final)
+
+**Per user "图谱→平铺式转换工具"**: not 2
+separate projects, but **graph + on-demand
+converter** that generates the flat skill on demand.
+
+### Components
+
+1. **SUA (this project)** = single source of truth
+   - `docs/` = knowledge graph
+   - `.hermes/scripts/graph_to_skill.py` = converter
+
+2. **Skill output** = generated (NOT maintained)
+   - `SKILL.md` + `references/` = per export
+   - Per-project (different target = different export)
+
+3. **Cross-ref via EXTENSIONS.md**
+   - X2 = "use converter to generate skill" (not
+     "Hermes global skill")
+
+### Obsolete (per c53 plan, superseded by c54)
+
+- ❌ Create `hermes-root/agent-onboarding-v2/`
+  (was c53 commit 54)
+- ❌ Initial SKILL.md + references/ in skill-v2
+  (was c53 commit 55)
+- ❌ Manual sync between SUA graph + skill-v2 flat
+
+### New (per c54 revised plan)
+
+- ✅ Converter script in SUA (commit 55)
+- ✅ On-demand export (commit 56)
+- ✅ EXTENSIONS.md X2 update (commit 57)
 
 ## 2-project architecture (per user clarification 2026-07-14)
 
