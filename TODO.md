@@ -46,6 +46,59 @@ completed work lives in DONE.md.
       See `git log 78e6b78..c296cef` for full hash list.
       Drives OPERATING_RULES.md from 4 to 9 rules (canonical
       7 + meta 2).
+- [x] **Orphan-reference cleanup batch (7 commits, 2026-07-13/14)**
+      — 5 follow-up items identified by user audit "对比你
+      最后一个版本的文档和现在的文档，看看现在是否在正确
+      的路上".  Sub-batches:
+      - 1-5 (commits 95097fb, c2266ee, 90cbecf, 79eb741,
+        a343373, a66b789): unify cross-skill references to
+        "agent-onboarding skill, references/..." format +
+        fix misattributed M_SELF_AUDIT line 23 + update
+        workflow-rules batch entry (8 → 20) + mark
+        60-70% claim unverified + remove stale TODO +
+        slim M-self-audit inline段 to pointer
+      - 6-7 (commits c414821 + parent verification):
+        M-task-summary per SUMMARY_LIFECYCLE contract
+      See `git log c414821~1..c414821` for the batch.
+      Fixed: 4 doc drift issues + 1 misattribution + 1
+      stale TODO + 1 inline duplication.
+- [x] **EXTENSIONS.md X2 consolidation (4 commits, 2026-07-14)**
+      — register X2 = agent-onboarding skill in
+      `docs/EXTENSIONS.md` (per P21 cross-project independence);
+      consolidate 5 scattered cross-skill references to
+      EXTENSIONS.md X2 pointer.  Sub-batches:
+      - 1 (commit 31ea3ce): X2 entry + Status "active" +
+        location uses text reference (per R8)
+      - 2 (commit 3b711af): inline 1-sentence AGENTS.md cap
+        rationale in M_SELF_AUDIT.md line 23 + remove
+        1 weak ref
+      - 3 (commit bfeb185): consolidate 4 weak refs in
+        M_SELF_APPLICATION.md / TODO_KNOWLEDGE_LIFECYCLE.md /
+        TODO_SESSION_PERSISTENCE.md / TODO_SESSION_PERSISTENCE_DETAIL.md
+      - 4 (commit e7a0c1f + parent verification):
+        M-task-summary per SUMMARY_LIFECYCLE contract
+      After: 0 scattered "agent-onboarding skill" refs;
+      all cross-project pointers go through EXTENSIONS.md X2.
+- [x] **Switch action protocol batch (2 commits, 2026-07-14)**
+      — codify what to do when a switch signal fires.
+      Triggered by user audit: "有的时候我在你子任务之间
+      插入一个新任务，你好像把这个新任务直接作为子任务
+      了" (real failure: 2026-07-13 session merged switch
+      task into existing batch, leaving workflow-rules
+      batch without its own parent verification).
+      Sub-batches:
+      - 1 (commit 05312d2): SWITCH_SIGNALS.md append
+        "Switch action protocol" 段 (3-case decision tree
+        + 3 anti-patterns + real-failure-case citation) +
+        AGENTS.md add 1-sentence per-message-load trigger
+      - 2 (commit b6adb74 + parent verification):
+        M-task-summary per SUMMARY_LIFECYCLE contract +
+        explicit fresh-agent simulation audit (per user
+        TODO "对整个文档问一下新agent是否会按照我们想的
+        规范自己行为")
+      See `git log b6adb74~1..b6adb74` for the batch.
+      Drives: SWITCH_SIGNALS.md 86 → 138 lines; AGENTS.md
+      "Read first" pattern extended for switch signals.
 
 ## In progress (current 1-2 sessions)
 
@@ -81,6 +134,16 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
 
 ### Cleanup (low risk, 1 commit each, optional)
 
+- [ ] **AGENTS.md Read-first promotion for SWITCH_SIGNALS.md**
+      (per commit b6adb74 follow-up #4): the per-message
+      load trigger added in commit 05312d2 is sufficient
+      for now, but SWITCH_SIGNALS.md is becoming a
+      "must-consult-before-each-response" doc.  Consider
+      promoting to "Read first" with size justification,
+      OR add a meta-trigger in the "always-load" pointer
+      list.  Defer until signal triggered (e.g.
+      SWITCH_SIGNALS.md > 300 lines, or fresh-agent
+      simulation fails without promotion).
 - [ ] 删 6 个 v1.8.x files still referenced by tests + docs
       (`run_1round.py`, `run_3rounds_manual.py`, `run_stable.py`,
       `collect_papers.py`, `PROJECT_BRIEF.md`, `ISSUES.md`).
