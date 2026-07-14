@@ -2,7 +2,7 @@ L0: Per-P-n 实操 (L2 details) — how to actually follow each principle.  Main
 Last P20-verified: 2026-07-13
 
 # PRINCIPLES_DETAIL — per-P-n 实操 (L2)
-> L0: Full text of P1-P25 principles.  Companion to PRINCIPLES.md.  Load when: need rationale.
+> L0: Full text of P1-P26 principles (P1-P21 + P22/P23 + P24-P26 cross-refs).  Companion to PRINCIPLES.md.  Load when: need rationale.
 
 This file holds the L2 实操 details for each P-n principle.  The main
 `docs/PRINCIPLES.md` holds L0 (4 root axioms) + L1 (the 23 principles).
@@ -19,8 +19,6 @@ Per P11 摘要+引用: main = summary, detail = reference.
 Each L1 principle (P-n) has a 1-line "实操" — how to actually
 follow the principle.  The实操 references its root axiom (L0)
 and any sibling L1 principles.  Per P7 奥卡姆: keep short.
-
-## Workflow principles
 
 ### P1. 整理 → 思考 → 行动
 Clean the workspace first, then think, then act.  Don't think while
@@ -128,57 +126,6 @@ yourself before commit.  Don't assume "if it parses, it works".
 
 **实操 (L2)**: if user gave a real cmd, run it (or a smoke-test
 mock) and include the output in commit.  Per Test root.
-
-### P22. Stuck → plan + update docs (meta-rule)
-When a big task starts and thinking is fuzzy, **stop and look at
-project state** (working tree, recent commits, current docs, test
-status), then **write a plan down** before continuing.
-
-Three actions, in order:
-1. **Check state**: `git status`, `git log --oneline -10`, list
-   `docs/`, count tests, identify which docs are stale (per P14).
-2. **Write plan**: goal, current state, next steps, risk.  Not
-   "thinking out loud" — a written plan is reviewable, mutable,
-   and survives the next context window.
-3. **Update docs**: for any new meta-rule discovered, find which
-   existing principle (P1-P21) is most related.  Look for
-   **commonalities** (P22 + P1 share "先思考再行动").  Add
-   cross-references rather than redefining.  Per P20 progressive
-   disclosure: L0 summary, L1 detail, L2 deep — pick the right
-   layer.  Per P7 奥卡姆: don't duplicate; reference.
-
-This rule applies recursively: when planning the docs update,
-itself trigger P22 ("which doc layer? which existing rule?").
-
-**实操 (L2)**: when stuck, write 3 lines (state, plan, risk) to
-chat before continuing.  Update PRINCIPLES.md as needed.  Per
-Workflow + Doc roots.
-
-### P23. Doc > script, with nuance
-Per user 2026-07-10 '不需脚本, 文档就能规范 agent 行为':
-**a well-written doc IS the contract**.  Don't write a script
-to mechanically enforce a doc rule until the doc rule has been
-broken 3+ times (per P7 奥卡姆 — earn the script).
-
-Nuance: script is **allowed** (not banned), but only after the
-doc has been clearly stated AND violated enough times to justify
-the maintenance cost.  Pattern: doc-first → violations → script.
-**Script is the SECOND step, never the first.**
-
-Related: P20 progressive disclosure (doc structure) and
-`scripts/check_docs.py` was deleted in 9d75533 because the doc
-contract (P20.细则 R1-R12) was still being internalized — too
-early for mechanical enforcement.  Re-introduce only when
-violations become a real cost.
-
-This rule clarifies the original "doc > script" 哲学:
-"doc > script" means "doc first, script after — not script never".
-
-**实操 (L2)**: when tempted to write a check script, first write
-or update the doc rule, run for a few cycles, then decide if the
-script is needed.  Per Doc + 奥卡姆 roots.
-
-## Design principles
 
 ### P7. 奥卡姆剃刀
 Don't add rules until you have 3 concrete failures that demand
@@ -295,3 +242,72 @@ KEPT patches come in two flavors:
 - Default behavior (no `--auto-commit`): KEPT files stay in working
   tree (or auto-revert per existing logic).  User stays in control.
 
+### P22. Stuck → plan + update docs (meta-rule)
+When a big task starts and thinking is fuzzy, **stop and look at
+project state** (working tree, recent commits, current docs, test
+status), then **write a plan down** before continuing.
+
+Three actions, in order:
+1. **Check state**: `git status`, `git log --oneline -10`, list
+   `docs/`, count tests, identify which docs are stale (per P14).
+2. **Write plan**: goal, current state, next steps, risk.  Not
+   "thinking out loud" — a written plan is reviewable, mutable,
+   and survives the next context window.
+3. **Update docs**: for any new meta-rule discovered, find which
+   existing principle (P1-P21) is most related.  Look for
+   **commonalities** (P22 + P1 share "先思考再行动").  Add
+   cross-references rather than redefining.  Per P20 progressive
+   disclosure: L0 summary, L1 detail, L2 deep — pick the right
+   layer.  Per P7 奥卡姆: don't duplicate; reference.
+
+This rule applies recursively: when planning the docs update,
+itself trigger P22 ("which doc layer? which existing rule?").
+
+**实操 (L2)**: when stuck, write 3 lines (state, plan, risk) to
+chat before continuing.  Update PRINCIPLES.md as needed.  Per
+Workflow + Doc roots.
+
+### P23. Doc > script, with nuance
+Per user 2026-07-10 '不需脚本, 文档就能规范 agent 行为':
+**a well-written doc IS the contract**.  Don't write a script
+to mechanically enforce a doc rule until the doc rule has been
+broken 3+ times (per P7 奥卡姆 — earn the script).
+
+Nuance: script is **allowed** (not banned), but only after the
+doc has been clearly stated AND violated enough times to justify
+the maintenance cost.  Pattern: doc-first → violations → script.
+**Script is the SECOND step, never the first.**
+
+Related: P20 progressive disclosure (doc structure) and
+`scripts/check_docs.py` was deleted in 9d75533 because the doc
+contract (P20.细则 R1-R12) was still being internalized — too
+early for mechanical enforcement.  Re-introduce only when
+violations become a real cost.
+
+This rule clarifies the original "doc > script" 哲学:
+"doc > script" means "doc first, script after — not script never".
+
+**实操 (L2)**: when tempted to write a check script, first write
+or update the doc rule, run for a few cycles, then decide if the
+script is needed.  Per Doc + 奥卡姆 roots.
+
+
+
+---
+
+**Note (per commit 42, 2026-07-14)**: P-n sections
+reordered from insertion-order (P1-P6, then P22-P23,
+then P7-P18) to numerical order (P1-P18, P22, P23).
+This eliminates the entropy caused by mixed-order
+listing (per user meta-rule 2026-07-14: "原则顺序
+不是一成不变的。如果原则顺序会导致熵增，那应该
+整理顺序，使项目整洁，这样能方便新agent的阅读").
+
+P19 (data flow observability), P20 (progressive
+disclosure), P20.细则 (R1-R12), P21 (independent
+projects), P24 (sequential chain test), P25
+(principle modification discipline), P26 (user-
+acceptance fresh-agent check) are defined in
+`docs/PRINCIPLES.md` per R7.  Cross-refs from this
+file (where applicable) should be added in future
+commits.
