@@ -20,8 +20,9 @@ Apply M-self-audit at multiple points:
   discoverable from L0 (AGENTS.md, INDEX.md, skill's
   decision table)?  Or is it buried?
 - **After adding a 4th section to AGENTS.md** (per
-  `references/RECURSIVE_DECOMPOSITION.md` step 2): am I
-  bloating AGENTS.md past its 300-line cap?  Should I
+  agent-onboarding skill, `references/M_RULE_AUTHORING.md`
+  Pitfall 1 — "rule sprawl kills AGENTS.md discoverability"):
+  am I bloating AGENTS.md past its 300-line cap?  Should I
   extract to a dedicated doc instead?
 - **Before saying "all pass" / "complete"**: did I trace
   what a fresh agent would do with the current state?  Or
