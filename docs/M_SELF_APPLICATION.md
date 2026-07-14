@@ -56,9 +56,11 @@ every **other** rule, not to M-self-application itself.
 Adding this rule is **necessary but not sufficient**.
 LLM training data may not have enough self-referential
 examples for robust self-application.  Realistic reduction:
-**60-70% of gaps**, not 100% elimination.  For higher
-coverage, see "See also" (outer-loop wrapper, multi-shot
-examples, fine-tuning on self-referential data).
+**60-70% of gaps**, not 100% elimination.  **(Unverified
+empirical claim — no source citation found in LITERATURE.
+Treat as a working heuristic, not a measured value.)**
+For higher coverage, see "See also" (outer-loop wrapper,
+multi-shot examples, fine-tuning on self-referential data).
 
 ## Anti-patterns (what NOT to do)
 
