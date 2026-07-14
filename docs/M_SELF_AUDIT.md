@@ -20,10 +20,11 @@ Apply M-self-audit at multiple points:
   discoverable from L0 (AGENTS.md, INDEX.md, skill's
   decision table)?  Or is it buried?
 - **After adding a 4th section to AGENTS.md** (per
-  agent-onboarding skill, `references/M_RULE_AUTHORING.md`
-  Pitfall 1 — "rule sprawl kills AGENTS.md discoverability"):
-  am I bloating AGENTS.md past its 300-line cap?  Should I
-  extract to a dedicated doc instead?
+  EXTENSIONS.md X2 agent-onboarding skill, M_RULE_AUTHORING
+  Pitfall 1: "AGENTS.md has a 300-line soft cap; beyond
+  ~10 M-* rules the enumeration alone consumes significant
+  AGENTS.md budget"): am I bloating AGENTS.md past its
+  300-line cap?  Should I extract to a dedicated doc instead?
 - **Before saying "all pass" / "complete"**: did I trace
   what a fresh agent would do with the current state?  Or
   did I just verify my own work?
@@ -91,10 +92,6 @@ current + M-add-then-reduce's "fix in same task" rule).
   (INTEGRATE) is when M-self-audit is most valuable.
 - `docs/COMMON_PITFALLS.md` — 4 categories of fresh-agent
   misses (M-self-audit's audit checklist covers these).
-- agent-onboarding skill, `references/M_RULE_AUTHORING.md`
-  (skill) — 7-section recipe for adding M-rules
-  (M-self-audit's 3-condition gate determines when this
-  recipe is invoked).
 - PRINCIPLES.md P17 (老实说) — the principle that M-self-
   audit's "verify before claiming" enforces.
 - PRINCIPLES.md P14 (docs stay current) — the principle
