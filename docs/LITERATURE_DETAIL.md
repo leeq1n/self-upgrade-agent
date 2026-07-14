@@ -7,6 +7,7 @@ status: "reference"
 ---
 
 # LITERATURE_DETAIL — paper notes
+> L0: Full text of past research citations.  Companion to LITERATURE.md.  Load when: need full citation.
 
 > Read [LITERATURE.md](LITERATURE.md) first for the table summary.
 > This file expands each paper with full TL;DR, key quotes, and

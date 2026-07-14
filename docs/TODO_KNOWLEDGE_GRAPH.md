@@ -2,6 +2,7 @@ L0: Knowledge-as-graph refactor idea (per user 2026-07-10).  Now in separate pro
 Last P20-verified: 2026-07-13
 
 # TODO: Knowledge-as-Graph Refactor
+> L0: Knowledge graph integration TODO.  Load when: planning KG work.
 
 > **Status**: DONE — seed project (../knowledge-graph-seed) has
 > MVP COMPLETE (Q1/Q2/Q3 answered, 75 tests pass, real SUA

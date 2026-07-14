@@ -1,4 +1,5 @@
 # REGRESSION NOTES (per P17 honest disclosure)
+Last P20-verified: 2026-07-13
 
 
 > L0: SUA regression test notes — what was added, when, why.

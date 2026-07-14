@@ -2,6 +2,7 @@ L0: Long-form model strategy — model comparisons, latency, cost.
 Last P20-verified: 2026-07-13
 
 # Model Strategy & Deployment — v1.8.1
+> L0: Full text of model strategy.  Companion to MODEL_STRATEGY.md.
 
 > Complete guide to local model deployment for self-upgrade-agent.
 > Updated 2026-07-07 after Qwen-AgentWorld discovery + dual-server setup.

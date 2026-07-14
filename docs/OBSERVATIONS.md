@@ -2,6 +2,7 @@ L0: Empirical data from real LLM runs — KEPT ratios, latency, anomalies.
 Last P20-verified: 2026-07-13
 
 # Observations — empirical data from real LLM runs
+> L0: Empirical observations from past runs.  Load when: debugging or wanting real-world context.
 
 > **Status**: empirical notes.  Per P17 honest reporting: data
 > here may be partial / biased.  Don't draw strong conclusions

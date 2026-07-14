@@ -7,6 +7,7 @@ status: "reference"
 ---
 
 # USER_INSIGHTS_DETAIL — verbatim quotes
+> L0: Full user insights.  Companion to USER_INSIGHTS.md.  Load when: need detailed context.
 
 > Read [USER_INSIGHTS.md](USER_INSIGHTS.md) first for the summary.
 > This file preserves the verbatim quotes that drove each insight

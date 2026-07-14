@@ -3,6 +3,7 @@ Per LITERATURE SkillOpt paper + user 2026-07-11 push next.
 Last P20-verified: 2026-07-11
 
 # Skills
+> L0: Skills registered for this project.  Load when: looking for available skills.
 
 Reusable patterns discovered from auto-committed LLM patches.  Per
 [LITERATURE_DETAIL.md SkillOpt entry](LITERATURE_DETAIL.md#skillopt-paper)

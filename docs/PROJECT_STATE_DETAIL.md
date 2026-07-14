@@ -7,6 +7,7 @@ status: "reference"
 ---
 
 # PROJECT_STATE_DETAIL — long form
+> L0: Full project state history.  Companion to PROJECT_STATE.md.
 
 > Detail file.  Read [PROJECT_STATE.md](PROJECT_STATE.md) first
 > (it's the 1-paragraph summary).  This file expands each section.

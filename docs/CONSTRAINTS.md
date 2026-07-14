@@ -7,6 +7,7 @@ status: "summary"
 ---
 
 # CONSTRAINTS — brief
+> L0: Hard constraints (C-n) that must not be violated.  Load when: choosing architecture or validating design.
 
 These are invariants derived from real failures during v1.5.0 →
 v1.7.2 development.  The system can behave however it wants as

@@ -1,4 +1,5 @@
 # Memory tools decision matrix (per 2026-07-13 research)
+Last P20-verified: 2026-07-13
 
 > L0: Reference doc for which memory tool to use when.  Designed
 > to be loaded on-demand, not always-in-context (per AGENTS.md

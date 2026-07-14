@@ -7,6 +7,7 @@ status: "summary"
 ---
 
 # LITERATURE — brief
+> L0: Past research citations.  Load when: designing a feature and want to check prior art.
 
 Papers read so far and how they constrain our design.  Each entry
 includes TL;DR, what we use / don't use, and link to the long

@@ -8,6 +8,7 @@ last_updated: "2026-07-10 (v3.0.2 OVERALL COMPLETE)"
 ---
 
 # PROJECT_STATE — brief
+> L0: Current project state (1-paragraph).  Load when: need snapshot of current goal/version/next step.
 
 **Goal (1 sentence)**: a self-improving agent that reads papers,
 modifies its own code in `core/planner.py`, verifies via the project

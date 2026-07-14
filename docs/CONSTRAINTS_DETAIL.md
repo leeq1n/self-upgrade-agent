@@ -2,6 +2,7 @@ L0: Long-form detail of CONSTRAINTS.md — each constraint with full rationale.
 Last P20-verified: 2026-07-13
 
 # Self-Upgrade Agent — System Constraints
+> L0: Full text of C-n constraints.  Companion to CONSTRAINTS.md.  Load when: need rationale or full text.
 
 > **What MUST hold**, derived from real failures observed during
 > v1.5.0 → v1.7.2 development.  These are *invariants* — the

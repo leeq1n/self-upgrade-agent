@@ -7,6 +7,7 @@ status: "summary"
 ---
 
 # USER_INSIGHTS — brief
+> L0: User's preferences + working style.  Load when: calibrating responses to user.
 
 User's original goal (paraphrased): a self-improving agent that
 reads papers, modifies code, validates via harness, keeps

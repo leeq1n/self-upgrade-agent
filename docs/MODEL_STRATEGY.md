@@ -7,6 +7,7 @@ status: "summary"
 ---
 
 # MODEL_STRATEGY — brief
+> L0: Model selection + prompt strategy.  Load when: choosing LLM or prompt approach.
 
 **Current**: minimax M2 (cloud API, no quota issues).
 `LLM_BASE_URL=https://api.minimaxi.com/anthropic`, model `MiniMax-M2`.
