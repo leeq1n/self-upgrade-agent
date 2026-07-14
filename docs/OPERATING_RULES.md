@@ -183,11 +183,7 @@ summary invariant), after adding new doc/section (is it
 discoverable from L0?), or after adding 4th section to
 AGENTS.md (am I bloating past 300-line cap?).
 
-Audit checklist: new-agent simulation, ALL docs L0
-audit, AGENTS.md read-order references all docs, conditional
-vs always-on split, cap check, targeted verify (M82).
-
-Full rule (when-to-apply, question, 6-step checklist,
+Full rule (when-to-apply, 6-step audit checklist,
 anti-patterns, relationship to other M-rules) lives in
 `docs/M_SELF_AUDIT.md` — load before "all pass" or after
 big doc changes.
