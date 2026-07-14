@@ -1,5 +1,5 @@
 # Switch signals (M-context-snapshot when-to-snapshot heuristic)
-Last P20-verified: 2026-07-13
+Last P20-verified: 2026-07-14
 
 > L0: When to take a session snapshot (M-context-snapshot
 > rule trigger).  Load when: ending a task, noticing context
