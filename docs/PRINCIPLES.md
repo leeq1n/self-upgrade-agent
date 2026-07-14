@@ -4,7 +4,7 @@ status: "summary"
 ---
 
 # PRINCIPLES — Working principles (portable)
-L0: The 25 working principles (P1-P25) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P24 + P25 (also meta-rules) here.
+> L0: The 26 working principles (P1-P26) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P24 + P25 + P26 (also meta-rules) here.
 Last P20-verified: 2026-07-13
 
 > Distilled from working on this project (2026-07-08 session).
@@ -286,6 +286,98 @@ only if explicitly justified in commit message.
   codification process).
 - AGENTS.md "Read FULLY before modifying" pointer.
 
+### P26. User-acceptance must include fresh-agent discoverability check (per user recurring meta-rule, 2026-07-14)
+
+Per user 2026-07-14 recurring instruction (cited
+"many times"): "在给用户验收这个agent规则的项目
+的时候，需要判断新agent是否能获取它应该知道的
+东西".
+
+This rule formalizes M-self-audit step 2 ("new-agent
+simulation") as a **first-class P-n**, because:
+1. User-recurring check is more authoritative than
+   agent-derived codification (per M_RULE_AUTHORING:
+   user-provided rules bypass 3-condition gate).
+2. The check applies regardless of agent (P-n test:
+   "what should be true at handoff?") — not just
+   "how should the agent behave" (M-* test).
+3. Without explicit P-n, future agents may
+   de-prioritize the check as "just an audit step".
+
+**Trigger**: when delivering work to user for
+acceptance (e.g. "all pass" / "ready for review" /
+"this batch is done"), AND when ending a session
+that may be resumed by a different agent.
+
+**Action**: before claiming "ready for user acceptance":
+
+1. **Self-pose the fresh-agent simulation**: pick a
+   hypothetical agent that has zero context about
+   this session (no memory, no recent commits read,
+   no informal context).  What would they see?
+
+2. **Check discoverability for each claim of
+   completion**: for each "done" / "complete" /
+   "fixed" / "added" assertion in the batch, can a
+   fresh agent find the evidence?
+   - Files: are they in expected locations?
+   - Docs: are they up-to-date (R10)?
+   - Cross-refs: do they resolve (R8)?
+   - Tests: do they pass?
+
+3. **Apply M-self-audit step 2 explicitly**: read
+   `docs/M_SELF_AUDIT.md` step 2 and run the
+   "could new agent" prompt.
+
+4. **Document the verification**: in commit message
+   body (parent verification) or session summary,
+   state the fresh-agent simulation result.
+
+**Anti-patterns**:
+
+- Claim "all pass" or "ready for user" without
+  fresh-agent simulation → silent gap on user
+  side.
+- Treat M-self-audit step 2 as optional
+  ("just an audit step") → it is a P-n.
+- Only simulate your own memory of the work
+  ("I remember doing X, so X is done") → this is
+  NOT fresh-agent simulation.
+- Skip the check for "obvious" tasks → the
+  obvious ones are where gaps hide.
+
+**实操 (L2)**:
+
+Per M-self-audit 6-step checklist, step 2 is
+"new-agent simulation".  P26 makes this **mandatory**
+at user-acceptance time, not optional.  Per R11
+("before commit, mentally check R1-R10"), the
+fresh-agent check is a meta-check on top of R11:
+not "is the doc structured right?" but "could
+a fresh agent find what they need to verify
+the structure?".
+
+**Self-application**:
+
+P26 applies to itself: when modifying P26, the
+fresh-agent check must pass (can a fresh agent
+discover the new check?).  Per P25 6-step
+procedure (the sibling meta-principle about
+principle modification).
+
+**See also**:
+
+- `docs/M_SELF_AUDIT.md` step 2 (the operational
+  checklist this rule formalizes).
+- `docs/PRINCIPLES.md` "P-n vs M-* boundary"段
+  (P25 explains why P26 is P-n not M-*).
+- AGENTS.md "Hard rules"段 (P26 candidate for
+  inclusion in top-6 invariant list, depending
+  on user preference).
+- `docs/OPERATING_RULES.md` "User-provided meta-
+  rules → codify to doc"段 (the M-* rule about
+  codification that this P-n extends).
+
 ## P-n vs M-* boundary (clarification per user 2026-07-14)
 
 When proposing a new rule, decide which category it
@@ -340,6 +432,15 @@ exists but was missed in the original (commit 5263030):
     `docs/OPERATING_RULES.md` M-*段 in commit f6c796d,
     but **mis-classified** — should be P25 per
     this 3rd case).
+  - **P26 candidate**: "user-acceptance must include
+    fresh-agent discoverability check" (was
+    M-self-audit step 2 in `docs/M_SELF_AUDIT.md`,
+    user-recurring meta-rule, lifted by commit 39).
+    Reason: the rule is **about what should be true
+    at user-acceptance time** (not just "how the
+    agent should behave when auditing") — i.e. it's
+    a principle about the **handoff state**, not
+    about audit procedure.
 
   **Test for meta-principle about principles**:
   Ask "does this rule describe how principles
