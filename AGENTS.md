@@ -117,9 +117,11 @@ matches the trigger.  Default: don't load.
   M-learn (full dual-track triggers, 3 sub-actions, M-rule
   relationships).  Per P20 R5+R6: 7KB-summary / _DETAIL-split
   pattern; this is the L2 detail companion.
-- `docs/M_SELF_AUDIT.md` — load before "all pass" or after
-  big doc changes (fresh-agent discoverability check; 4
-  triggers, 6-step audit checklist, anti-patterns).
+- `docs/M_SELF_AUDIT.md` — load before "all pass", before
+  any Edit/Write on a previously-read file (per step 6
+  "verify-before-edit"), or after big doc changes
+  (fresh-agent discoverability check; 4 triggers,
+  6-step audit checklist, anti-patterns).
 - `docs/M_SELF_APPLICATION.md` — load when encountering any
   new rule or pattern, or when debugging "rule didn't apply"
   (4 levels: object / rule itself / memory / self behavior).

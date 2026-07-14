@@ -187,10 +187,12 @@ summary invariant), after adding new doc/section (is it
 discoverable from L0?), or after adding 4th section to
 AGENTS.md (am I bloating past 300-line cap?).
 
-Full rule (when-to-apply, 6-step audit checklist,
-anti-patterns, relationship to other M-rules) lives in
-`docs/M_SELF_AUDIT.md` — load before "all pass" or after
-big doc changes.
+Full rule (when-to-apply, 6-step audit checklist
+including step 6 "verify-before-edit" — see
+`docs/M_SELF_AUDIT.md` for detail) lives in
+`docs/M_SELF_AUDIT.md` — load before "all pass",
+before any Edit/Write on a previously-read file
+(per step 6), or after big doc changes.
 
 ### M-self-application
 

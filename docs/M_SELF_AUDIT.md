@@ -56,9 +56,49 @@ current + M-add-then-reduce's "fix in same task" rule).
 5. **Cap check**: AGENTS.md ≤ 300 lines, SKILL.md ≤ 100 lines.
    If over, extract to dedicated docs (per M_RULE_AUTHORING
    "split pattern").
-6. **Run targeted verify before commit** (per M82
-   test-gate-before-commit).  Don't claim "all pass" without
-   `git status` + `git diff --stat` + file content check.
+6. **Verify-before-edit** (per user 2026-07-14 +
+   Claude Code "read before edit" pattern, lightweight
+   adaptation; uses project's existing R10 marker):
+   before any Edit / Write on a file you have read
+   previously in this session, **read the file's
+   Last P20-verified marker** (per R10 / P10) and
+   compare to your memory of when you last read it.
+   If you can't recall, or your memory is from BEFORE
+   the marker, **re-read the full file** before
+   editing.  After successful edit, bump the file's
+   Last P20-verified to today's date (and the new
+   commit hash if you're committing in the same turn).
+
+   **Rationale**: agents can hold stale state in
+   memory after context compactions; the file's
+   marker is the cross-session truth.  This rule
+   applies at the audit-checkpoint, not at every
+   tool call — the trigger is "before Edit/Write
+   on a previously-read file" (per M-add-then-reduce
+   signal-trigger design; not per-tool-call).
+
+   **Anti-patterns**:
+   - Trust "I remember this file" without
+     checking the marker first.
+   - Skip the check for "small edits" — small
+     edits on stale state are the most common
+     cause of silently overwritten changes.
+   - Update the marker without actually editing
+     the file (marker must be true).
+
+   **Caveats** (per P17 honest reporting):
+   - Date-only marker has same-day granularity.
+     Future: extend to "date + commit hash" via
+     separate commit.
+   - "Memory" is implicit; long sessions may
+     have rotated context.  Safe default: if you
+     can't recall, re-read.
+   - This rule applies at audit-checkpoint
+     (before "all pass" / before commit), not
+     automatically at every tool call.  For
+     per-tool-call verification, see Claude
+     Code's "Read before Edit" hook (out of
+     scope here).
 
 ## Anti-patterns (what NOT to do)
 
