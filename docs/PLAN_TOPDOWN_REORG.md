@@ -3,7 +3,8 @@
 > L0: Roadmap derived from user meta-critique 2026-07-14
 > ("递进 + 类比 + 自顶向下 + 奥卡姆").  Per P22 stuck→plan
 > + user "规划后续任务，规划顺序，然后推进".
-> Last P20-verified: 2026-07-14
+> Last P20-verified: 2026-07-14 (extended with commit 51-53
+> per user meta-rule "新agent 不依赖hermes也能学到知识")
 
 ## Insights foundation (per user meta-critique, 2026-07-14)
 
@@ -12,85 +13,119 @@
 3. **自顶向下**: 原则和项目 都应是 top-down
 4. **整理 = 类比联想 + 归纳 + 排序**: 3-step sequence
 5. **奥卡姆 罪魁祸首**: 26 P-n 太多 + 混乱 → 违反 P7
+6. **(NEW 2026-07-14) 新agent 不依赖 hermes 也能学**: MCP
+   tools, workflow patterns, project conventions should
+   be in project docs, not just hermes runtime
 
-## Per-insight derived tasks
+## Per-insight derived tasks (updated per commit 51+)
 
-| Insight | Task | Commit | Priority |
+| Insight | Task | Commit | Status |
 |---|---|---|---|
-| 自顶向下 | PRINCIPLES.md full section reorg | 45 | high |
-| 类比 mechanism | PRINCIPLES_DETAIL.md cross-ref to family table | 46 | high |
-| 奥卡姆 | P-n merge eval (P5+P6, P3+P24) | 47 | medium (needs user confirm) |
-| 渐进式披露 self-app | Self-audit: do principle docs self-exemplify P20? | 48 | medium |
-| 任务规划顺序 | Parent verification for batch 42-48 | 49 | required by SUMMARY_LIFECYCLE |
-| Recursive 类比 to whole project | Apply 类比 + 自顶向下 to whole project | 50 | medium (big scope) |
+| 自顶向下 | PRINCIPLES.md reorg | 45 | ✅ done |
+| 类比 mechanism | PRINCIPLES_DETAIL.md cross-ref | 46 | ✅ done |
+| 奥卡姆 | P-n merge eval (P5+P6, P3+P24) | 47 | ✅ done (proposal, 47a-d pending user) |
+| 渐进式披露 self-app | Self-audit | 48 | ✅ done |
+| 任务规划顺序 | Parent verification | 49 | ✅ done |
+| Recursive 类比 to whole project | Project-level audit | 50 | ✅ done |
+| **(NEW) 新agent hermes-independent** | **MCP tools L0 doc** | **51** | **⏳ next** |
+| **(NEW) 操作知识 in project** | **Workflow patterns L0 doc** (session_search, snapshot, plan artifacts) | **52** | ⏳ after 51 |
+| **(NEW) Discovery + cross-ref** | **Update AGENTS.md with new doc pointers** | **53** | ⏳ after 52 |
+| 50a-50e (DONE/PRINCIPLES cap fixes) | Doc fixes (per c50 audit) | 50a-50e | ⏳ pending user |
+| 47a-d (P-n merge) | Apply 4 merge candidates | 47a-d | ⏳ pending user |
 
-## Task execution order (dependency graph)
+## New task sequence (commits 51-53) per user meta-rule
 
 ```
-45 (PRINCIPLES.md reorg) ← independent
+51 (MCP tools L0 doc) ← independent
   ↓
-46 (PRINCIPLES_DETAIL cross-ref) ← depends on 45 (same family framework)
+52 (Workflow patterns L0 doc) ← depends on 51 (same L0 doc pattern)
   ↓
-47 (P-n merge eval) ← depends on 46 (need full picture)
+53 (AGENTS.md update) ← depends on 51 + 52 (cross-ref integration)
   ↓
-48 (self-audit) ← depends on 47 (post-merge state)
-  ↓
-49 (parent verification) ← depends on 48 (consume child summaries)
-  ↓
-50 (project-level audit) ← depends on 49 (post-batch state)
+54 (parent verification for batch 51-53) ← SUMMARY_LIFECYCLE
 ```
 
-**Sequential dependency** — each commit consumes
-previous.  Parallel only safe between 45 and 46 if
-split scope (e.g. 45 = reorg sections, 46 = cross-ref).
+**Why this matters** (per user "新agent 不依赖hermes
+也能学到知识"): currently MCP tools + workflow patterns
+are **hermes-runtime-only knowledge** — they live in
+the agent's runtime context, not in the project.  A
+fresh agent that joins the project without hermes
+context (rare but possible) cannot discover these.
+After commits 51-53, these are in `docs/` and
+discoverable via `AGENTS.md` "Read first".
+
+## Why not execute 50a-50e first?
+
+Per user meta-rule "新agent 不依赖hermes": MCP tools
+gap is **highest leverage** because:
+- 50a-50e: fix internal doc structure (DONE, PRINCIPLES
+  cap violations) — affects existing readers
+- 51-53: add hermes-independent knowledge — affects
+  future readers (including new agents)
+
+Per P7 奥卡姆 + "选哪个最优": 51-53 enables future
+work to be hermes-independent.  50a-50e is maintenance
+of existing structure.  51-53 has higher forward
+value.
+
+## Per-insight derived tasks (commits 45-50, completed)
+
+| Insight | Task | Commit | Status |
+|---|---|---|---|
+| 自顶向下 | PRINCIPLES.md reorg | 45 | ✅ done |
+| 类比 mechanism | PRINCIPLES_DETAIL.md cross-ref | 46 | ✅ done |
+| 奥卡姆 | P-n merge eval | 47 | ✅ done (proposal) |
+| 渐进式披露 self-app | Self-audit | 48 | ✅ done |
+| 任务规划顺序 | Parent verification | 49 | ✅ done |
+| Recursive 类比 | Project-level audit | 50 | ✅ done |
+
+## Per task-planning-order meta-rule
+
+Per user "如果发现任务对其他任务可能有影响，就重新
+计划整理一下" (2026-07-14 follow-up): the addition
+of commits 51-53 is a **plan iteration** triggered
+by the discovery that MCP tools knowledge is
+**hermes-runtime-only**, affecting:
+- All future agent behavior (can't discover tools)
+- All future commits (agent uses tools)
+
+This is a "task affects other tasks" trigger per
+your meta-rule, hence plan iteration.
 
 ## Per P25 step 7 self-application
 
-Each future commit will re-apply:
-- **类比**: principle P-n in commit must fit 1 of 5
-  essence families
-- **自顶向下**: commit should have clear L0 (what
-  this commit does) → L1 (why) → L2 (how)
-- **奥卡姆**: don't add new P-n in this batch (use
-  existing); only re-organize existing
-- **P22 step 3**: explicitly synthesize commonalities
+Each commit (51-53) will:
+- Re-apply class framework (5-family)
+- Apply P20 progressive disclosure to new docs
+- Apply P26 fresh-agent simulation
+- Apply P11 + P13 cross-ref + no orphan
 
 ## Per P7 奥卡姆 — task scope caution
 
-Per user "条数多而且混乱，不符合奥卡姆 罪魁祸首":
-- Don't add new P-n in this batch
-- Don't expand doc structure beyond what's needed
-- Re-organize + cross-ref = minimal scope
-- Merge eval (commit 47) = user-confirmation
-  required before changing P-n count
-
-## Estimated batch size
-
-- Commits 45-49 = batch 1 (5 commits, focused on
-  principle doc reorganization + eval)
-- Commit 50 = batch 2 (project-level audit, separate
-  scope)
-- Total: 6 commits planned
-- Per "1 个 1 个来" — execute one at a time, no
-  batch commitment
+- Don't add unnecessary structure
+- 1 commit = 1 logical feature
+- Don't merge 51-53 with 50a-50e (different scope)
+- Don't create tools L0 doc that duplicates
+  hermes-runtime knowledge
 
 ## Risk register
 
-- **Risk 1**: P-n merge (commit 47) breaks references
-  in OPERATING_RULES.md / AGENTS.md / hooks
-  - **Mitigation**: per P25 step 5 impact analysis
-    before any P-n number change
-- **Risk 2**: PRINCIPLES.md full reorg (commit 45)
-  causes massive diff, hard to review
-  - **Mitigation**: split into 45a (P19 reorder) +
-    45b (section ordering) — but per "1 个 1 个来"
-    this is already 2 commits
-- **Risk 3**: User disagrees with planned direction
-  - **Mitigation**: pause after commit 45 (visible
-    diff) for user review before commit 46+
+- **Risk 1**: MCP tools list may go stale as
+  hermes evolves.  **Mitigation**: tools list
+  documents "as of 2026-07-14" + Last P20-verified
+  marker.
+- **Risk 2**: Workflow patterns L0 doc may overlap
+  with OPERATING_RULES.md.  **Mitigation**: per
+  P11 摘要+引用, L0 doc points to OPERATING_RULES
+  for full detail.
+- **Risk 3**: AGENTS.md update (53) may break
+  existing "Read first" list.  **Mitigation**:
+  add new docs as "Read conditionally" not in
+  default "Read first" (per R3 conditional loads).
 
 ## See also
 
-- commit 44 (this insight is derived from)
-- docs/PRINCIPLES.md 类比联想段 (the framework)
-- docs/PRINCIPLES_DETAIL.md 共性归纳段 (the DETAIL side)
+- commit 44 (insight foundation)
+- commit 50 (project-level audit, found MCP gap)
+- docs/PRINCIPLES.md class framework (5 families)
+- docs/PRINCIPLES_DETAIL.md synthesis (cross-ref)
