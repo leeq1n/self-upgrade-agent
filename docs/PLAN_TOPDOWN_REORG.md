@@ -27,9 +27,12 @@
 | 渐进式披露 self-app | Self-audit | 48 | ✅ done |
 | 任务规划顺序 | Parent verification | 49 | ✅ done |
 | Recursive 类比 to whole project | Project-level audit | 50 | ✅ done |
-| **(NEW) 新agent hermes-independent** | **MCP tools L0 doc** | **51** | **⏳ next** |
-| **(NEW) 操作知识 in project** | **Workflow patterns L0 doc** (session_search, snapshot, plan artifacts) | **52** | ⏳ after 51 |
-| **(NEW) Discovery + cross-ref** | **Update AGENTS.md with new doc pointers** | **53** | ⏳ after 52 |
+| **(NEW) 新agent hermes-independent** | **MCP tools L0 doc** | **51** | **✅ done** |
+| **(NEW) 项目 self-organization 自动化** | **SELF_ORG principle** (no human needed for top-down) | **52** | **⏳ next** |
+| **(NEW) P25 step 7 trigger codification** | Extend M-self-audit with step 7 auto-trigger | 53 | ⏳ after 52 |
+| **(NEW) P-n redundancy self-eval** | Periodic trigger codification | 54 | ⏳ after 53 |
+| **(NEW) Doc structure self-audit** | Periodic trigger codification | 55 | ⏳ after 54 |
+| **(NEW) AGENTS.md update** | Integrate all new triggers | 56 | ⏳ after 55 |
 | 50a-50e (DONE/PRINCIPLES cap fixes) | Doc fixes (per c50 audit) | 50a-50e | ⏳ pending user |
 | 47a-d (P-n merge) | Apply 4 merge candidates | 47a-d | ⏳ pending user |
 
