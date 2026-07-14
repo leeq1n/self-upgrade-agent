@@ -17,6 +17,9 @@ Last P20-verified: 2026-07-13
    step (1-paragraph snapshot).
 4. `docs/PRINCIPLES_DETAIL.md` — full text of each P-n (L2
    detail).  Read when you need the rationale behind a rule.
+5. `docs/SWITCH_SIGNALS.md` — switch signals + action
+   protocol (consulted before every user-message response;
+   see conditional load below for trigger reminder).
 
 ## Hard rules (top 6 from PRINCIPLES.md, binding)
 
