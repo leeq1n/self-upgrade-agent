@@ -20,6 +20,11 @@ Last P20-verified: 2026-07-13
 5. `docs/SWITCH_SIGNALS.md` — switch signals + action
    protocol (consulted before every user-message response;
    see conditional load below for trigger reminder).
+6. `docs/HOW_TO_READ_GRAPH.md` — read pattern for new
+   agents (per c57, the 3-step pattern: L0 → L1 → L2,
+   with cross-ref traversal rules + 5 essence families
+   + 7-check self-org).  Read when entering the project
+   or when stuck on graph traversal.
 
 ## Hard rules (top 6 from PRINCIPLES.md, binding)
 
