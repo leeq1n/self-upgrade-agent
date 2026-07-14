@@ -201,6 +201,60 @@ Find commonality (per P22):
 test before the joint test.  Chain test uses `tmp_path` for disk
 isolation.  Per Test + Doc roots.
 
+### P-n vs M-* boundary (clarification per user 2026-07-14)
+
+When proposing a new rule, decide which category it
+belongs to BEFORE drafting (per M-intent-parsing
+"过原则再判断"):
+
+| Category | Question it answers | When to use | Examples |
+|---|---|---|---|
+| **P-n** (principle) | "What should be true?" | Atomic, stable, applies to all projects.  Cited in commit messages.  Needs `commit-msg` hook allow-list update. | P5 测通 / P7 奥卡姆 / P11 摘要+引用 / P14 docs current / P17 老实说 / P22 stuck→plan / P23 doc>script |
+| **M-*** (workflow) | "How should the agent behave?" | Behavioral, agent-self-management, project-specific extensions of the meta-rules. | M-task-summary / M-must-read / M-context-snapshot / M-subtask-summary / M-intent-parsing / M-learn / M-add-then-reduce / M-self-audit / M-self-application |
+
+**Decision rule** (per M-add-then-reduce signal-trigger):
+
+- If the rule describes **agent behavior** (e.g.
+  "before X, do Y" / "after W, capture Z") → **M-***.
+- If the rule describes **principle that should
+  hold regardless of agent** (e.g. "tests must
+  pass before commit" / "奥卡姆 applies to
+  docs") → **P-n**.
+
+**Why this matters** (per user 2026-07-14):
+
+M-self-audit 6-step audit checklist (e.g. step 6
+"verify-before-edit") is a **workflow rule** because
+it describes agent behavior, not a principle.  Putting
+it in PRINCIPLES.md (as a new P25) would have been
+**mis-categorization** — the rule is HOW to behave,
+not WHAT should be true.  The actual fix: extend
+M-self-audit step 6 (in `docs/M_SELF_AUDIT.md`),
+not add a new P-n.
+
+**Anti-patterns**:
+
+- **Don't promote a workflow rule to P-n** just
+  because it's important.  Importance ≠ atomicity.
+- **Don't demote a principle to M-*** just because
+  it's hard to express as a workflow.  Principles
+  can be meta (P22, P23 are meta-principles about
+  process).
+- **Don't add a new P-n to bypass M-self-audit's
+  3-condition gate** for M-rules.  The gate exists
+  precisely to keep workflow rules at the right
+  level (per agent-onboarding skill
+  `references/M_RULE_AUTHORING.md` 3-condition gate).
+
+**See also**:
+
+- `docs/OPERATING_RULES.md` — the 9 M-* rules and
+  their canonical brief form.
+- `docs/M_SELF_AUDIT.md` — audit checklist that
+  checks both P-n adherence and M-* behavior.
+- `docs/EXTENSIONS.md` X2 — cross-project M-rule
+  source (where canonical 9 M-rules live).
+
 ## L2: 实操 (per P-n)
 
 Each P-n has a 1-line "实操" describing how to actually follow the
