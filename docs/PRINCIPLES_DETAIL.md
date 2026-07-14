@@ -57,7 +57,7 @@ project's 哲学?", check:
    redefine? (per P22 step 3 — find commonalities)
 
 **Why this section exists** (per user audit 2026-07-14,
-commit 43): "原则中有共性的是否汇总到一起了？读了
+commit 43): "原则中有共性的是否汇总到一起？读了
 这项目的 agent 有归纳总结的能力吗".  Without this
 synthesis, fresh agents read 20 sequential P-n without
 seeing the 4 root categories that bind them.  P22 step 3
@@ -68,6 +68,38 @@ that gap (per P25 step 7 post-modify re-apply check).
 Per P20 progressive disclosure: this is the **L0 layer**
 of PRINCIPLES_DETAIL.md — read this first, then jump to
 specific P-n sections as needed.
+
+**Cross-reference to PRINCIPLES.md 类比联想段** (per
+commit 46, 2026-07-14):  PRINCIPLES.md has a **5
+essence families** table (operational grouping, distinct
+from the 4 categorical root axioms above).  The 5
+essence families are:
+
+| Family (operational) | P-n | Maps to root axiom(s) above |
+|---|---|---|
+| Plan-then-act | P1, P2, P4, P15, P22 | Workflow |
+| Verify-don't-guess | P3, P5, P6, P16, P18, P19, P24 | Workflow + Test (P5/P6 dual) |
+| Capture-in-writing | P10, P11, P12, P14, P17, P20, P21 | Doc |
+| Minimum-viable | P7, P8, P9, P13 | 奥卡姆 |
+| Meta-rules | P22, P23, P25, P26 | spans all 4 |
+
+The 4 root axioms (this段) are **categorical** — they
+answer "what abstract category does this P-n descend
+from?".  The 5 essence families (PRINCIPLES.md) are
+**operational** — they answer "what does the agent
+actually do when following this P-n?".  Both views are
+needed (per P20 progressive disclosure: categorical
+L0 + operational L1).  See PRINCIPLES.md 类比联想段
+for the operational details and per-family rationale.
+
+**Difference vs P-n placement**: P24 (Sequential chain
+test) is **in the 5 essence families** but **NOT in the
+4 root axiom table above** — this is because P24 is
+**operational** (when to write a chain test) more than
+**categorical** (which axiom it descends from — could
+be Test or Workflow).  Per c44 奥卡姆 implication段:
+P24 may be a candidate for merge with P3 (test pyramid)
+in commit 47+ evaluation.
 
 ### P1. 整理 → 思考 → 行动
 Clean the workspace first, then think, then act.  Don't think while
