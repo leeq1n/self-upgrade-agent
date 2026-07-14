@@ -236,9 +236,6 @@ new rule or pattern, or when debugging "rule didn't apply".
 
 ## See also
 
-- AGENTS.md "Operating workflow rules"段 will be removed in
-  a follow-up commit (it should be a 1-line pointer, not the
-  full text).
 - PRINCIPLES.md P11 (摘要+引用) — the principle that keeps
   AGENTS.md short.
 - PRINCIPLES.md P14 (docs stay current) — the principle that
