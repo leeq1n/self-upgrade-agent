@@ -134,7 +134,7 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
 
 ### Cleanup (low risk, 1 commit each, optional)
 
-- [ ] **AGENTS.md Read-first promotion for SWITCH_SIGNALS.md**
+- [x] **AGENTS.md Read-first promotion for SWITCH_SIGNALS.md**
       (per commit b6adb74 follow-up #4): the per-message
       load trigger added in commit 05312d2 is sufficient
       for now, but SWITCH_SIGNALS.md is becoming a
@@ -151,9 +151,10 @@ Per user 2026-07-10: '你认为有必要, 例如我说的内容属于附加功�
       (`IDEA.md`, `run.py`, `run_5rounds_day6.py`).
 - [ ] Update LITERATURE.md with better notes on 11 papers
       (per user 2026-07-10 "灵活运用 agent 知识").
-- [ ] Delete `docs/USER_INSIGHTS_KNOWLEDGEGRAPH_20260710.md`
+- [x] Delete `docs/USER_INSIGHTS_KNOWLEDGEGRAPH_20260710.md`
       (transient note, content now in PRINCIPLES / OBSERVATIONS).
-      Will be done in docs cleanup commit.
+      **Done in prior session (file no longer exists); TODO
+      entry mark [x] per P14 docs-stay-current.**
 - [ ] **P19 + M-task-summary destroy contract cross-ref**
       (per M-learn from 2026-07-13 batch): P19 says "persist
       intermediate"; destroy contract says "destroy intermediate
