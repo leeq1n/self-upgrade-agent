@@ -19,11 +19,9 @@ when to destroy) is implicit.
 
 ## Current state (per audit)
 
-- **M-context-snapshot rule**: CODIFIED in 3 places:
-  1. agent-onboarding skill, `references/OPERATING_RULES.md`
-     (M-context-snapshot 段)
-  2. `docs/OPERATING_RULES.md` (project, M-context-snapshot 段)
-  3. `AGENTS.md` See-also (pointer to `docs/SWITCH_SIGNALS.md`
+- **M-context-snapshot rule**: CODIFIED in 2 places:
+  1. `docs/OPERATING_RULES.md` (project, M-context-snapshot 段)
+  2. `AGENTS.md` See-also (pointer to `docs/SWITCH_SIGNALS.md`
      + `docs/OPERATING_RULES.md`)
 
 - **Snapshot files**: created ad-hoc in

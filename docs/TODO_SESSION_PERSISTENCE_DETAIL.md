@@ -62,7 +62,6 @@ first, then scripts when design is stable.
 - `~/AppData/Local/Temp/hermes-snapshot-self-upgrade-agent-20260713.md`
   — second snapshot created in this session (6.5KB, 153L,
   written after NEW-3 sync).
-- agent-onboarding skill, `references/M_RULE_AUTHORING.md`
-  (skill) — 7-section recipe for adding M-* rules (apply
-  the 3-condition gate before adding any new rule).
+- `docs/EXTENSIONS.md` X2 — for cross-project skill source
+  registration (canonical M-* rule family location).
   this proposal, it should follow the recipe.
