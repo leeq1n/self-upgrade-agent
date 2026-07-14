@@ -4,7 +4,7 @@ Last P20-verified: 2026-07-13
 ---
 description: "Project goal, status, mistakes, constraints, next step"
 status: "summary"
-last_updated: "2026-07-14 (post-doc-cleanup, 31 commits this session)"
+last_updated: "2026-07-14 (35 commits: doc cleanup + P25 lift + final audit)"
 ---
 
 # PROJECT_STATE — brief
@@ -38,10 +38,31 @@ Key changes:
 - Lessons learned + follow-up propagation (commits 264c4cd..7802611)
 - Principle modification discipline (commit f6c796d)
 
-**Note**: 30 of 31 commits were docs-only; no code
-changes this session.  Project functionality unchanged.
+**Note**: all 35 commits this session were docs-only;
+no code changes.  Project functionality unchanged.
 
-## Current status (v3.0.2 OVERALL COMPLETE, doc cleanup 2026-07-14)
+## P25 lift batch (commits 6c6cb6c..6ca8b3a)
+
+3 commits lifting "P-n / M-* modification discipline"
+to a first-class P-n (P25) + extending the P-n vs
+M-* boundary段 with a 3rd case ("meta-principles
+about principles").  Fixes a mis-classification
+introduced in commit f6c796d.
+
+Key changes:
+- **PRINCIPLES.md**: new `### P25. Principle modification
+  discipline` 段 (canonical location); boundary段
+  extended with 3rd case + test question
+- **AGENTS.md**: 4 places updated P1-P24 → P1-P25
+- **hooks/commit-msg**: regex updated to `P([0-9]|1[0-9]|2[0-5])`
+- **PRINCIPLES_DETAIL.md + MEMORY_TOOLS.md**: L0 lines updated
+
+**Note**: installed hook at `.git/hooks/commit-msg`
+still has P1-P24.  User must `cp hooks/commit-msg
+.git/hooks/commit-msg && chmod +x` for hook to
+accept P25-only citations.
+
+## Current status (v3.0.2 OVERALL COMPLETE, doc cleanup + P25 lift 2026-07-14)
 
 Per LITERATURE (Self-Harness 40→62%, Lilian Weng "harness as
 important as model"), v3.0.2 implements a think-execute harness:
