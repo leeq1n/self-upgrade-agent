@@ -105,5 +105,5 @@ X = "I need a subagent for independent work"
 
 - AGENTS.md — onboarding contract (L0 line + read-order +
   hard rules + decision pointer to this doc).
-- PRINCIPLES.md — P-n list (P1-P24).  P11 (摘要+引用)
+- PRINCIPLES.md — P-n list (P1-P25).  P11 (摘要+引用)
   is the rule that keeps AGENTS.md short.

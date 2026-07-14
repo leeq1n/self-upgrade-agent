@@ -4,7 +4,7 @@ status: "summary"
 ---
 
 # PRINCIPLES — Working principles (portable)
-L0: The 23 working principles (P1-P23) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here.
+L0: The 25 working principles (P1-P25) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P24 + P25 (also meta-rules) here.
 Last P20-verified: 2026-07-13
 
 > Distilled from working on this project (2026-07-08 session).
@@ -213,7 +213,7 @@ Find commonality (per P22):
 test before the joint test.  Chain test uses `tmp_path` for disk
 isolation.  Per Test + Doc roots.
 
-### P-n / M-* modification discipline (per user 2026-07-14)
+### P25. Principle modification discipline (per user 2026-07-14, lifted from commit f6c796d by commit 33)
 
 Modifying principles (P-n) or operating rules (M-*) is
 **higher risk than editing other docs** because:
@@ -245,9 +245,12 @@ Modifying principles (P-n) or operating rules (M-*) is
    anti-patterns, rationale.  Per P11 (摘要+引用) +
    M-self-application 4-level.
 
-5. **Impact analysis** (per commit 5263030 P-n vs M-*
-   boundary 段): which existing rules reference the
+5. **Impact analysis** (per P-n vs M-* boundary 段
+   below): which existing rules reference the
    modified rule?  Are cross-refs still valid?
+   Is the new rule a P-n or M-* per the 3-case
+   test (P-n about work / M-* about agent behavior /
+   P-n about principles themselves)?
 
 6. **Commit with detailed trace**: cite the P-n
    modified, cite the user message that motivated
@@ -264,11 +267,24 @@ Modifying principles (P-n) or operating rules (M-*) is
 **Self-application** (per M-self-application 4-level):
 
 - This procedure applies to ITSELF: modifying THIS
-  段 requires reading it first + impact analysis +
+  P25 requires reading it first + impact analysis +
   extended commit message.
 - Per M-self-application 4-level level 2: rule-itself
-  audit.  Future modification of this 段 must follow
+  audit.  Future modification of this P25 must follow
   this same procedure.
+
+**实操 (L2)**: per principle / M-* rule modification,
+follow the 6-step procedure in order.  Skip any step
+only if explicitly justified in commit message.
+
+**See also**:
+
+- `docs/PRINCIPLES.md` "P-n vs M-* boundary"段 (the
+  3-case classification test).
+- `docs/OPERATING_RULES.md` "User-provided meta-rules
+  → codify to doc"段 (related M-* rule about
+  codification process).
+- AGENTS.md "Read FULLY before modifying" pointer.
 
 ## P-n vs M-* boundary (clarification per user 2026-07-14)
 
@@ -300,6 +316,41 @@ it in PRINCIPLES.md (as a new P25) would have been
 not WHAT should be true.  The actual fix: extend
 M-self-audit step 6 (in `docs/M_SELF_AUDIT.md`),
 not add a new P-n.
+
+**3rd case — meta-principles about principles**
+(per commit 33 follow-up audit, 2026-07-14):
+
+The boundary table above has 2 cases.  A 3rd case
+exists but was missed in the original (commit 5263030):
+
+- **Meta-principle about principles**: a rule that
+  describes **how principles themselves should
+  behave**, not how the agent behaves.  This is
+  different from a workflow rule (about agent
+  behavior) and from a normal principle (about
+  the work).
+
+  Examples:
+  - P22 (stuck→plan): meta-principle about how
+    problem-solving should proceed.
+  - P23 (doc>script with nuance): meta-principle
+    about how tool choice should be made.
+  - **P25 candidate**: "principle modification
+    discipline" (committed as
+    `docs/OPERATING_RULES.md` M-*段 in commit f6c796d,
+    but **mis-classified** — should be P25 per
+    this 3rd case).
+
+  **Test for meta-principle about principles**:
+  Ask "does this rule describe how principles
+  themselves should behave, OR how the agent should
+  behave when modifying principles?"  If the former
+  → P-n.  If the latter → M-*.
+
+  **Implication for commit f6c796d**: the段
+  "P-n / M-* modification discipline" should be
+  in PRINCIPLES.md as P25, not in OPERATING_RULES.md
+  as M-*.  See commit 33 follow-up.
 
 **Anti-patterns**:
 
