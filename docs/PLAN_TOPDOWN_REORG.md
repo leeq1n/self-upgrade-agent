@@ -30,46 +30,52 @@
 | **(NEW) 新agent hermes-independent** | **MCP tools L0 doc** | **51** | **✅ done (graph view in SUA)** |
 | **(NEW) 项目 self-organization 自动化** | **SELF_ORG principle (P27 candidate)** | **52** | **✅ done (P27 lives in PRINCIPLES.md)** |
 | **(NEW) 知识组织 architecture** | **图/树 + 平铺式 model** | **53** | **✅ done** |
-| **(NEW) Converter design (revised)** | **graph → flat on-demand converter** | **54** | **⏳ next** |
-| **(NEW) Converter implementation** | **`graph_to_skill.py` MVP** | **55** | ⏳ after 54 |
-| **(NEW) First skill export** | **Test run with agent-onboarding** | **56** | ⏳ after 55 |
-| **(NEW) EXTENSIONS.md X2 update** | **X2 = converter output, not Hermes global** | **57** | ⏳ after 56 |
+| **(NEW) Converter design (premature)** | **graph + converter (premature)** | **54** | **✅ done (superseded)** |
+| **(NEW) Honest re-analysis** | **5 options + A recommended** | **55** | **✅ done (superseded)** |
+| **(NEW) Reflection + decision (Option E)** | **6 options + 6 principles + Option E wins** | **56** | **✅ done** |
+| **(NEW) Read pattern doc (Option E)** | **`docs/HOW_TO_READ_GRAPH.md`** | **57** | **⏳ next (this commit)** |
+| **(NEW) AGENTS.md link** | **Add HOW_TO_READ_GRAPH.md to "Read first"** | 58 | ⏳ after 57 |
+| **(NEW) Parent verification** | **SUMMARY_LIFECYCLE for batch 51-57** | 59 | ⏳ after 58 |
 | 50a-50e (DONE/PRINCIPLES cap fixes) | Doc fixes (per c50 audit) | 50a-50e | ⏳ pending user |
 | 47a-d (P-n merge) | Apply 4 merge candidates | 47a-d | ⏳ pending user |
 
-## Revised architecture (per user insight 2026-07-14 final)
+## Final architecture (per c56 decision)
 
-**Per user "图谱→平铺式转换工具"**: not 2
-separate projects, but **graph + on-demand
-converter** that generates the flat skill on demand.
+**Per 6-principle analysis (c56)**: Option E (read
+pattern doc) is the only 0-fail option.  All tool
+options (A, B, C, D) violate P7 + P23 (need 3+
+failures first).
 
 ### Components
 
 1. **SUA (this project)** = single source of truth
    - `docs/` = knowledge graph
-   - `.hermes/scripts/graph_to_skill.py` = converter
+   - `docs/HOW_TO_READ_GRAPH.md` = read pattern
+     (the "transformation" is in the reader)
 
-2. **Skill output** = generated (NOT maintained)
-   - `SKILL.md` + `references/` = per export
-   - Per-project (different target = different export)
+2. **No tool** (per P7 + P23 — tool not earned)
+   - Future: if 3+ failures observed, consider
+     Option A (pandoc + Python) or B (AGENTS.md
+     auto-gen)
 
-3. **Cross-ref via EXTENSIONS.md**
-   - X2 = "use converter to generate skill" (not
-     "Hermes global skill")
+3. **No separate skill-v2 project** (per c53
+   superseded by c54)
+   - Skill = generated output (when needed)
+   - HOW_TO_READ_GRAPH.md IS the entry point
+     for new agents reading SUA
 
-### Obsolete (per c53 plan, superseded by c54)
+### Obsolete (per c56)
 
-- ❌ Create `hermes-root/agent-onboarding-v2/`
-  (was c53 commit 54)
-- ❌ Initial SKILL.md + references/ in skill-v2
-  (was c53 commit 55)
-- ❌ Manual sync between SUA graph + skill-v2 flat
+- ❌ graph_to_skill.py converter (c55 Option A)
+- ❌ Pure Python script (c55 Option B)
+- ❌ llm-wiki MCP backend (c55 Option D)
+- ❌ Skill-v2 separate project (c53 plan)
 
-### New (per c54 revised plan)
+### New (per c56 decision)
 
-- ✅ Converter script in SUA (commit 55)
-- ✅ On-demand export (commit 56)
-- ✅ EXTENSIONS.md X2 update (commit 57)
+- ✅ Read pattern doc (commit 57 = this commit)
+- ✅ AGENTS.md link (commit 58)
+- ✅ Parent verification (commit 59)
 
 ## 2-project architecture (per user clarification 2026-07-14)
 
