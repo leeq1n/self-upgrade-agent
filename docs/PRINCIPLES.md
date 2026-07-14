@@ -5,6 +5,7 @@ status: "summary"
 
 # PRINCIPLES — Working principles (portable)
 > L0: The 26 working principles (P1-P26) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P24 + P25 + P26 (also meta-rules) here.
+> See `docs/PRINCIPLES_DETAIL.md` "Root axioms"段 (L0 categorical synthesis) + "Cross-reference to PRINCIPLES.md 类比联想段" (L1 operational mirror) for bidirectional context.
 Last P20-verified: 2026-07-13
 
 > Distilled from working on this project (2026-07-08 session).
