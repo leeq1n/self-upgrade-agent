@@ -101,6 +101,11 @@ matches the trigger.  Default: don't load.
   pass"**, **or after encountering any new rule/pattern**, **or
   when user input is messy**, **or at a decomposition
   integration point**, **or when context feels cluttered**.
+  Also load **at the start of every user message** to check
+  whether the message is a switch (per
+  `docs/SWITCH_SIGNALS.md` "Switch action protocol");
+  switching without loading is the most common fresh-agent
+  miss.
   9 M-* rules: M-task-summary, M-must-read, M-context-snapshot,
   M-subtask-summary, M-intent-parsing, M-learn,
   M-add-then-reduce, M-self-audit, M-self-application.

@@ -83,3 +83,57 @@ content:
 - PRINCIPLES.md P22 (stuck→plan) — the principle that
   motivates proactive snapshot (don't lose context when
   switching mid-thought).
+
+## Switch action protocol (per user 2026-07-13)
+
+When a switch signal fires (any of the 5 above), the
+agent MUST take ONE of these actions.  No silent merges;
+no "do nothing".
+
+**Decision tree**:
+
+1. **Same-topic refinement** (user clarifies or adds detail
+   to current task): M-context-snapshot only — capture
+   state to Temp (`hermes-snapshot-<topic>-<date>.md`),
+   then continue current batch.  No parent verification,
+   no batch close.
+
+2. **New topic / clear boundary** (user explicitly shifts
+   focus or starts a different task type):
+   - Close current batch: fire M-task-summary → write
+     parent verification commit (per
+     `docs/SUMMARY_LIFECYCLE.md`).
+   - M-context-snapshot: capture pre-switch state to Temp.
+   - Begin new batch with its own child commits.
+
+3. **Tiny insertion** ("对了" / "补充一句" / 1-2 sentence
+   rule clarification): inline action — apply the
+   clarification immediately.  Snapshot only if it
+   changes the current batch's context in a way future
+   steps need to know about.
+
+**Anti-patterns**:
+
+- **Don't merge switch task into current batch.** This
+  bloats the parent's child-summary list and breaks
+  M-task-summary's destroy contract (the parent wasn't
+  the actual parent of the merged work).
+- **Don't ignore switch signals.** Even small insertions
+  must be classified (refinement / new topic / tiny) —
+  silent "this looks small enough to ignore" leads to
+  lost state.
+- **Don't fire M-task-summary for 1-commit insertions**
+  unless it's actually a new task boundary.  Parent
+  verification commits are git history — keep them
+  reserved for actual batch boundaries.
+
+**Why this matters (real failure case)**:
+
+2026-07-13 session: user said "对了，刚刚我在你任务中间
+切换了个其他任务" (switch signal) during the workflow-rules
+batch.  Agent merged the new task (orphan-reference cleanup)
+into the existing batch instead of closing + starting new.
+Result: workflow-rules batch ended up with no parent
+verification of its own; the orphan-cleanup batch's parent
+verification retroactively covered it.  This protocol
+codifies the fix.
