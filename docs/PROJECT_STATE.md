@@ -4,7 +4,7 @@ Last P20-verified: 2026-07-13
 ---
 description: "Project goal, status, mistakes, constraints, next step"
 status: "summary"
-last_updated: "2026-07-10 (v3.0.2 OVERALL COMPLETE)"
+last_updated: "2026-07-14 (post-doc-cleanup, 31 commits this session)"
 ---
 
 # PROJECT_STATE — brief
@@ -20,7 +20,28 @@ minimax LLM API.
 because the user modified `core/planner.py` directly (LLM Round 5
 KEPT, commit `20e958d`) — user decides keep/revert.
 
-## Current status (v3.0.2 OVERALL COMPLETE)
+## Doc cleanup session 2026-07-14 (commits 95097fb..f6c796d)
+
+31 commits across 8 batches addressing doc drift +
+extending workflow rules.  Per M-task-summary parent
+verification, the latest batch is documented in
+`git log 7802611..HEAD~1` (or by message body
+search "batch verification").
+
+Key changes:
+- Orphan-reference cleanup (commits 95097fb..c414821)
+- EXTENSIONS.md X2 consolidation (commits 31ea3ce..e7a0c1f)
+- Switch action protocol (commits 05312d2..b6adb74)
+- Follow-ups cleanup (commits 0c59e4f..aa2710f)
+- Verify-before-edit rule (commits 0a4240a..c8efd26)
+- Follow-ups + design filtering (commits 99596e9..6d30895)
+- Lessons learned + follow-up propagation (commits 264c4cd..7802611)
+- Principle modification discipline (commit f6c796d)
+
+**Note**: 30 of 31 commits were docs-only; no code
+changes this session.  Project functionality unchanged.
+
+## Current status (v3.0.2 OVERALL COMPLETE, doc cleanup 2026-07-14)
 
 Per LITERATURE (Self-Harness 40→62%, Lilian Weng "harness as
 important as model"), v3.0.2 implements a think-execute harness:
