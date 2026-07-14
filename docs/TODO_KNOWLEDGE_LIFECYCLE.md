@@ -155,6 +155,8 @@ must pass tests before commit.
   that "doc drift" extends to "node drift" in this domain.
 - `~/AppData/Local/Temp/hermes-snapshot-sua-onboarding-20260713.md`
   — first snapshot (mentions KG frozen state).
-- `references/M_RULE_AUTHORING.md` (skill) — the 7-section
-  recipe + 3-condition gate; if a new M-rule emerges from
+- agent-onboarding skill, `references/M_RULE_AUTHORING.md`
+  (skill) — the 7-section recipe for adding M-* rules
+  (per M_RULE_AUTHORING cross-reference; 9 pitfalls
+  including dual-trigger and child-summary-destroy).
   this proposal, it should follow the recipe.

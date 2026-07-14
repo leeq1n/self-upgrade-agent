@@ -90,9 +90,10 @@ current + M-add-then-reduce's "fix in same task" rule).
   (INTEGRATE) is when M-self-audit is most valuable.
 - `docs/COMMON_PITFALLS.md` — 4 categories of fresh-agent
   misses (M-self-audit's audit checklist covers these).
-- `references/M_RULE_AUTHORING.md` (skill) — 7-section
-  recipe for adding M-rules (M-self-audit's 3-condition
-  gate determines when this recipe is invoked).
+- agent-onboarding skill, `references/M_RULE_AUTHORING.md`
+  (skill) — 7-section recipe for adding M-rules
+  (M-self-audit's 3-condition gate determines when this
+  recipe is invoked).
 - PRINCIPLES.md P17 (老实说) — the principle that M-self-
   audit's "verify before claiming" enforces.
 - PRINCIPLES.md P14 (docs stay current) — the principle

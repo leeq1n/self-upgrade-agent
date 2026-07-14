@@ -94,7 +94,7 @@ examples, fine-tuning on self-referential data).
   "self-reference" arm.
 - `docs/COMMON_PITFALLS.md` — fresh-agent miss categories
   (one of which is exactly the self-application gap).
-- `references/2026-07-13-m-rule-extension-pattern.md`
+- agent-onboarding skill, `references/M_RULE_AUTHORING.md`
   (skill) — M-rule authorship can apply M-self-application
   to itself (the recipe is reusable across projects).
 - PRINCIPLES.md P11 (摘要+引用) — the principle that

@@ -20,7 +20,7 @@ when to destroy) is implicit.
 ## Current state (per audit)
 
 - **M-context-snapshot rule**: CODIFIED in 3 places:
-  1. `~/AppData/Local/hermes/skills/agent-onboarding/references/OPERATING_RULES.md`
+  1. agent-onboarding skill, `references/OPERATING_RULES.md`
      (M-context-snapshot 段)
   2. `docs/OPERATING_RULES.md` (project, M-context-snapshot 段)
   3. `AGENTS.md` See-also (pointer to `docs/SWITCH_SIGNALS.md`
