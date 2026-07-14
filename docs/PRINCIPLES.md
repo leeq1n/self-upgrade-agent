@@ -213,7 +213,64 @@ Find commonality (per P22):
 test before the joint test.  Chain test uses `tmp_path` for disk
 isolation.  Per Test + Doc roots.
 
-### P-n vs M-* boundary (clarification per user 2026-07-14)
+### P-n / M-* modification discipline (per user 2026-07-14)
+
+Modifying principles (P-n) or operating rules (M-*) is
+**higher risk than editing other docs** because:
+
+- All future agents will read and apply the modified rule.
+- A wrong P-n propagates as silent system drift.
+- A contradiction with existing rules breaks the
+  M-self-audit 6-step checks.
+
+**Required procedure** (per user "修改原则的时候需要
+先阅读原则，这里的修改需要非常谨慎，这条感觉也需
+要你记到原则里"):
+
+1. **Read first**: load PRINCIPLES.md + the specific
+   doc containing the M-* rule to be modified.  Read
+   FULL text (not skim).  Same as M-must-read but for
+   doc modification.
+
+2. **Identify root axiom**: which of the 4 root axioms
+   (奥卡姆 / Workflow / Test / Doc) does the change
+   descend from?  Per the L0 table at the top of this
+   doc.
+
+3. **Verify no duplication**: check that no existing
+   P-n or M-* covers the proposed change.  If similar
+   rule exists, extend it; don't create parallel rules.
+
+4. **Draft with all 4 elements**: trigger, action,
+   anti-patterns, rationale.  Per P11 (摘要+引用) +
+   M-self-application 4-level.
+
+5. **Impact analysis** (per commit 5263030 P-n vs M-*
+   boundary 段): which existing rules reference the
+   modified rule?  Are cross-refs still valid?
+
+6. **Commit with detailed trace**: cite the P-n
+   modified, cite the user message that motivated
+   the change, list cross-refs to update.
+
+**Anti-patterns**:
+
+- Modify P-n without reading all existing P-n first.
+- Create parallel rules instead of extending existing.
+- Skip "root axiom" check — orphans the rule.
+- Cite the change as "fix typo" or "minor update" —
+  principle modification is always significant.
+
+**Self-application** (per M-self-application 4-level):
+
+- This procedure applies to ITSELF: modifying THIS
+  段 requires reading it first + impact analysis +
+  extended commit message.
+- Per M-self-application 4-level level 2: rule-itself
+  audit.  Future modification of this 段 must follow
+  this same procedure.
+
+## P-n vs M-* boundary (clarification per user 2026-07-14)
 
 When proposing a new rule, decide which category it
 belongs to BEFORE drafting (per M-intent-parsing

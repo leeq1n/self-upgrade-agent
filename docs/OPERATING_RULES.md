@@ -208,6 +208,63 @@ itself (infinite recursion).  Per honest reporting (P17):
 60-70% reduction realistic, not 100% (LLM training data may
 lack self-referential examples).
 
+### User-provided meta-rules → codify to doc (per user 2026-07-14)
+
+When user provides a meta-rule (a rule about how agent
+should work, often phrased as "if you don't X, you'll
+Y"), agent MUST codify it to a doc — **not just
+"remember" it implicitly**.
+
+**Rationale**: per user "你不说我会忽略" — agent's
+implicit memory is volatile; cross-session agents
+won't have user's last-message context.  Only doc
+codification persists.  Per M-self-application 4-level
+level 4 (own operating behavior): user meta-rules
+without codification = silent gap.
+
+**Trigger** (any of these user phrases):
+
+- "我觉得应该..." / "我做..." (a working principle)
+- "下次..." / "从现在开始..." (forward-looking rule)
+- "应该记住..." / "记到..." (explicit codification
+  request)
+- "X 时应该 Y" / "如果 Z 怎么办" (rule statement)
+
+**Action**:
+
+1. Read relevant existing rule (per "P-n / M-*
+   modification discipline" 段 in PRINCIPLES.md).
+2. Determine M-* vs P-n (per P-n vs M-* boundary
+   in PRINCIPLES.md, codified in commit 5263030).
+3. Draft the rule 段, including:
+   - Trigger condition (when this fires)
+   - Action (what to do)
+   - Anti-patterns (what NOT to do)
+   - Rationale (per P17 — why this rule)
+4. Commit with detailed message: cite P-n / M-*,
+   trace user message as source, acknowledge
+   impact on future agents.
+
+**Anti-patterns**:
+
+- **"I'll remember this"** — implicit memory is not
+  durable.  ALWAYS codify to doc.
+- Codify without reading existing rules — risk
+  duplication, contradiction, or breaking
+  M-self-audit 6-step checks.
+- Skip commit message P-n / M-* citation — others
+  won't know which rule was modified.
+
+**Self-application** (per M-self-application 4-level):
+
+- Level 2 (rule itself): this rule itself is a
+  user-provided meta-rule.  Apply recursively?  No —
+  bootstrap exception (M-self-application does NOT
+  apply to itself, by definition).
+- Level 4 (own operating behavior): next time user
+  gives a meta-rule, this 段 triggers the codification
+  action.
+
 Full rule (4 levels detail, examples of self-application
 gaps caught in this project, bootstrap exception, caveat,
 anti-patterns, relationship to other M-rules) lives in

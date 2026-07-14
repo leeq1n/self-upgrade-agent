@@ -173,6 +173,8 @@ it.
 These are project-wide pointers; load if your task type matches.
 
 - `docs/PRINCIPLES.md` — the principles themselves (P1-P24).
+  **Read FULLY before modifying any P-n / M-* rule** (per
+  "P-n / M-* modification discipline" 段).
 - `docs/INDEX.md` — orientation map.
 - `docs/PROJECT_STATE.md` — current state (1-paragraph).
 - `docs/PROJECT_STATE_DETAIL.md` — version history + vision.
