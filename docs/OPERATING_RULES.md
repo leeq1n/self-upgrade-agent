@@ -105,7 +105,11 @@ of these, regardless of perceived size or duration:
 Full heuristic (5 signals in detail, anti-patterns,
 what goes in a snapshot, location convention) lives in
 `docs/SWITCH_SIGNALS.md` — load when evaluating whether
-current context is a switch.
+current context is a switch.  **Action when a signal
+fires** (decision tree: same-topic refinement vs new
+topic vs tiny insertion) lives in SWITCH_SIGNALS.md
+"Switch action protocol" 段 — load that段 BEFORE
+responding to the message.
 
 **Don't** judge by perceived task size: a "small switch"
 can still lose critical in-flight state (open todos,
