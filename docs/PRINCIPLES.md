@@ -65,6 +65,18 @@ single-snapshot for state.
 **实操 (L2)**: per sequential function chain, write `save_X()` +
 `read_X()` to `upgrades/X.jsonl`.  Per Test + Doc roots.
 
+**Cross-ref to OPERATING_RULES.md M-task-summary
+destroy contract**: P19 says "persist intermediate
+state"; the destroy contract says "destroy
+intermediate state after parent consumes it".
+These are **complementary, not contradictory** —
+P19 = add-phase (persist for replay/debug);
+destroy contract = reduce-phase (clean up
+consumed intermediates).  For batch / multi-leaf
+tasks, see `docs/SUMMARY_LIFECYCLE.md` and the
+"Child-summary destroy contract" sub-section in
+`docs/OPERATING_RULES.md` M-task-summary段.
+
 ## Meta principles
 
 ### P20. 渐进式披露 (progressive disclosure)
