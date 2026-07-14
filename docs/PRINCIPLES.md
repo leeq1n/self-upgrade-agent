@@ -256,6 +256,47 @@ Modifying principles (P-n) or operating rules (M-*) is
    modified, cite the user message that motivated
    the change, list cross-refs to update.
 
+7. **Post-modify re-apply new rules check**
+   (per user meta-rule 2026-07-14, codified in
+   commit 41): after the commit lands, re-apply
+   **every newly-cited or newly-modified rule**
+   from the batch to the **work-state of the
+   batch itself** (not just to the future).
+   This is the explicit self-referential step.
+
+   Why: per user "修改原则后需要在新规则的情
+   况下检查，这点你应该已经学到原则并且顺利
+   运用".  Per P26 step 4: "Document the
+   verification".  Without this step, a P-n
+   modification can pass all 6 procedural steps
+   yet still leave the work-state invisible to
+   fresh agents.
+
+   Mechanism (per P26 fresh-agent simulation):
+
+   a. For each **newly added or modified P-n or
+      M-*** in the batch: simulate a fresh agent
+      running that rule against the work just
+      committed.
+
+   b. If simulation reveals a gap (e.g. cross-
+      ref missing, doc not findable, test not
+      passing) — fix in the same commit (or in
+      a follow-up commit if gap requires new
+      logical feature).
+
+   c. If simulation passes — explicitly state
+      "fresh-agent simulation passed" in the
+      commit message body (this is P26 step 4
+      "document the verification").
+
+   This step is **distinct from** step 6
+   ("commit with detailed trace"): step 6
+   traces the **procedural correctness** of
+   the modification; step 7 verifies the
+   **work-state discoverability** after the
+   modification.
+
 **Anti-patterns**:
 
 - Modify P-n without reading all existing P-n first.
@@ -263,6 +304,14 @@ Modifying principles (P-n) or operating rules (M-*) is
 - Skip "root axiom" check — orphans the rule.
 - Cite the change as "fix typo" or "minor update" —
   principle modification is always significant.
+- **Skip step 7 (post-modify re-apply new rules
+  check)**: the rule lands, but fresh agents
+  can't discover the work.  This is the failure
+  mode P26 was designed to catch.
+- **Treat step 7 as optional**: it is not.
+  P26 makes fresh-agent simulation **mandatory**
+  at user-acceptance time.  Step 7 makes it
+  mandatory at P-n modification time too.
 
 **Self-application** (per M-self-application 4-level):
 
@@ -272,6 +321,19 @@ Modifying principles (P-n) or operating rules (M-*) is
 - Per M-self-application 4-level level 2: rule-itself
   audit.  Future modification of this P25 must follow
   this same procedure.
+- **Step 7 self-application**: when this段 is
+  modified, the new step (step 7) must be applied
+  to the work-state of THIS commit (i.e. extending
+  P25 must include post-modify fresh-agent check
+  of the P25 extension itself).
+- **Bootstrap exception**: the original commit
+  that introduced step 7 (commit 41) cannot have
+  applied step 7 to itself before step 7 was
+  codified.  The first application is implicit
+  (the commit 41 message body documents the
+  fresh-agent simulation run for the **previous**
+  batch 37-40, plus for the P25 extension
+  itself).
 
 **实操 (L2)**: per principle / M-* rule modification,
 follow the 6-step procedure in order.  Skip any step
