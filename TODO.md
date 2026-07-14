@@ -164,6 +164,64 @@ keep their current form (forward-only).
 
 ## In progress (current 1-2 sessions)
 
+### Lessons learned (per commit 28, 2026-07-14)
+
+Per user audit "犯错时明确 root cause + 多一个案例
+更好判断".  Three real errors observed this session;
+root causes identified below.  **Status: tracked but
+not yet codified into rules** — per M_RULE_AUTHORING
+3-condition gate ("3+ observed"), 1 occurrence each
+is not yet rule-worthy.  Future session: if a 2nd
+similar error is observed, promote each to a rule.
+
+- **T-001 **Partial-verify bias****: only verified
+  the named follow-ups (F1 + F11 in commit 21),
+  missed sibling P14 drift entries (3 more found
+  in commits 23/26 verify).  Root cause: focused on
+  the listed, didn't sweep same-pattern.
+  **Codify trigger**: 2nd occurrence observed →
+  add M-self-audit step 7 "sweep for siblings".
+
+- **T-002 **Follow-up category confusion****: in
+  commit 27 parent verification, wrote 4 follow-ups
+  to commit message body only, **didn't propagate
+  to TODO.md** (FU1/FU2/FU3 undiscoverable to fresh
+  agents).  Root cause: conflated follow-ups with
+  child summaries (destroy-after-consumed) when
+  they should be tracked-in-TODO (publish-and-track).
+  **Codify trigger**: 2nd occurrence observed →
+  add M-task-summary "follow-up propagation
+  contract"段.
+
+- **T-003 **Deferred-but-not-tracked****: in commit
+  26, said "TASK_TREE.md trigger fires → deferred"
+  in commit message, but didn't add a TODO entry
+  with `[deferred]` status.  Root cause: "deferred"
+  was mental state (commit body), not durable state
+  (TODO entry).
+  **Codify trigger**: 2nd occurrence observed →
+  add `[deferred]` status to TODO.md convention段
+  (so deferred is first-class state, not comment).
+
+- **T-004 **Track TASK_TREE.md trigger condition** (FU1
+  from commit 27)**: per M-add-then-reduce signal-
+  trigger design, multi-layer recursion triggers
+  creation of TASK_TREE.md.  Currently deferred but
+  not tracked as a TODO entry.  **Fix**: this entry
+  IS the tracking; when trigger fires (a session
+  faces multi-layer recursion), open T-004.1 sub-task
+  to create TASK_TREE.md.  Otherwise: leave dormant.
+
+- **T-005 **Commit 23 withdrawal formal note** (FU2
+  from commit 27)**: commit 23 (.gitattributes +
+  CRLF normalization) was withdrawn mid-edit because
+  autocrlf artifact can't be fixed by commit (per-repo
+  config required).  Working tree verified clean.
+  **Fix**: add a 1-line entry to DONE.md recording
+  this withdrawn commit's reasoning, so future agents
+  reading git history can trace why commit 23 was
+  withdrawn.  Optional but recommended for P14.
+
 ### v3.0.3 — autonomous daily loop (LITERATURE: Self-Harness "iterative
 re-plan", Lilian Weng "harness as important as model")
 

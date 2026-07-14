@@ -1485,3 +1485,31 @@ This commit:
 
 Per LITERATURE: real bug, real fix, real LLM verification.
 Per P17 honest: first fix (004f47b) was INSUFFICIENT; this is the real fix.
+
+
+## 2026-07-14 — Doc cleanup session (27 commits, summary)
+
+Per user audit "对比你最后一个版本的文档和现在的文档" +
+multiple session extensions (follow-ups, design filtering,
+verify-before-edit, follow-up tracking).  27 commits across
+7 batches (orphan-reference cleanup → EXTENSIONS.md X2 →
+switch action protocol → follow-ups cleanup → verify-before-
+edit → follow-ups + design filtering → follow-up tracking
+fix).  Full batch summary in `git log c8efd26~1..HEAD~1` (parent
+verification commits).
+
+**Withdrawn commit (commit 23)**: planned as `.gitattributes` +
+CRLF normalization (2 files: INDEX.md, EXTENSIONS.md), but
+verify revealed autocrlf artifact can't be fixed by commit
+(per-repo `core.autocrlf` config required).  Working tree
+verified clean (4/4 PASS via hermes-verify-sua-c23-withdraw
+script, since cleaned up).  Commit withdrawn mid-edit, no
+git history residue.
+
+**Key principles applied** (per M-self-application 4-level L4):
+verify-before-edit (P-n vs M-* boundary), design filtering
+(TASK_TREE.md rejected for 4+ principle violations), follow-up
+tracking (3 root-causes tracked as TODO T-001/T-002/T-003).
+
+Per P17: this summary is ad-hoc; future session should not
+re-do this work.
