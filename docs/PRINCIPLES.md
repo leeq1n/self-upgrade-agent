@@ -111,6 +111,9 @@ descends from.  Per P22 步骤 3: 找 rule 之间的共性.
 - Pending tasks: [../../TODO.md](../../TODO.md)
 
 
+
+## Meta principles
+
 ## Data Flow (P19)
 
 **P19: Data flow observability**
@@ -147,8 +150,7 @@ tasks, see `docs/SUMMARY_LIFECYCLE.md` and the
 "Child-summary destroy contract" sub-section in
 `docs/OPERATING_RULES.md` M-task-summary段.
 
-## Meta principles
-
+**Note (per commit 45, 2026-07-14)**: P19 moved here from above References section (was at line 113) for numerical order (P19 → P20 → P20.细则 → P21 → P22/P23 in PRINCIPLES_DETAIL.md → P24 → P25 → P26). Per user meta-rule "原则顺序不是一成不变的" (commit 42) + "自顶向下" (commit 44), P-n sections should be in numerical order within their containing段.
 ### P20. 渐进式披露 (progressive disclosure)
 
 Documents should expose content in layers, each layer addressing a
