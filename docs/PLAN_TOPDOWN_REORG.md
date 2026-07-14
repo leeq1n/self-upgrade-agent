@@ -27,14 +27,35 @@
 | 渐进式披露 self-app | Self-audit | 48 | ✅ done |
 | 任务规划顺序 | Parent verification | 49 | ✅ done |
 | Recursive 类比 to whole project | Project-level audit | 50 | ✅ done |
-| **(NEW) 新agent hermes-independent** | **MCP tools L0 doc** | **51** | **✅ done** |
-| **(NEW) 项目 self-organization 自动化** | **SELF_ORG principle** (no human needed for top-down) | **52** | **⏳ next** |
-| **(NEW) P25 step 7 trigger codification** | Extend M-self-audit with step 7 auto-trigger | 53 | ⏳ after 52 |
-| **(NEW) P-n redundancy self-eval** | Periodic trigger codification | 54 | ⏳ after 53 |
-| **(NEW) Doc structure self-audit** | Periodic trigger codification | 55 | ⏳ after 54 |
-| **(NEW) AGENTS.md update** | Integrate all new triggers | 56 | ⏳ after 55 |
+| **(NEW) 新agent hermes-independent** | **MCP tools L0 doc** | **51** | **✅ done (graph view in SUA)** |
+| **(NEW) 项目 self-organization 自动化** | **SELF_ORG principle (P27 candidate)** | **52** | **✅ done (P27 lives in PRINCIPLES.md)** |
+| **(NEW) 知识组织 architecture** | **图/树 + 平铺式 model** | **53** | **⏳ next** |
+| **(NEW) skill-v2 项目 skeleton** | **Create `hermes-root/agent-onboarding-v2/`** | **54** | ⏳ after 53 |
+| **(NEW) skill-v2 initial content** | **SKILL.md + references/** | 55 | ⏳ after 54 |
+| **(NEW) EXTENSIONS.md X2 update** | **X2 = skill-v2 (in hermes-root, not Hermes global)** | 56 | ⏳ after 55 |
+| **(NEW) SUA → skill cross-ref** | **SUA docs link to skill references** | 57 | ⏳ after 56 |
 | 50a-50e (DONE/PRINCIPLES cap fixes) | Doc fixes (per c50 audit) | 50a-50e | ⏳ pending user |
 | 47a-d (P-n merge) | Apply 4 merge candidates | 47a-d | ⏳ pending user |
+
+## 2-project architecture (per user clarification 2026-07-14)
+
+**SUA (this project)** = knowledge graph view
+- P1-P27 principles
+- M-* rules
+- R1-R12 invariants
+- MCP tools
+- Plan files
+- Audit results
+- Cross-references
+
+**agent-onboarding-v2 (NEW, in hermes-root)** = flat context view
+- SKILL.md entry point
+- references/ (sequential, L0/L1/L2)
+- Self-contained reading
+- Reusable across projects
+
+Per P21 cross-project: SUA + skill-v2 linked via
+EXTENSIONS.md (X1 = KG, X2 = skill-v2).
 
 ## New task sequence (commits 51-53) per user meta-rule
 
