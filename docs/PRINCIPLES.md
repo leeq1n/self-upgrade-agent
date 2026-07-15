@@ -22,8 +22,8 @@ P7 奥卡姆 — earn its place.
 | # | Root axiom | L1 children | WHY |
 |---|---|---|---|
 | 奥卡姆 | P7, P9, P13, P23 | Minimum API, no rule until 3+ failures, no orphan nodes, doc > script (with nuance) |
-| Workflow | P1, P2, P4, P5, P6, P15, P22, P23 | 整理→思考→行动, plan, test pyramid, 1 commit = 1 feature, stage gate, meta-rules |
-| Test | P3, P5, P6, P16, P18, P19 | Unit → joint → integration, 真跑再 commit, ad-hoc verify, failure → regression test, data-flow observability |
+| Workflow | P1, P2, P4, P5, P15, P22, P23 | 整理→思考→行动, plan, test pyramid, 1 commit = 1 feature, stage gate, meta-rules (P5 merged with P6 per c47a) |
+| Test | P3, P5, P16, P18, P19 | Unit → joint → integration, verify before commit (P5 merged with P6), ad-hoc verify, failure → regression test, data-flow observability |
 | Doc | P10, P11, P12, P14, P17, P20, P21 | Entity > prompt, 摘要+引用, knowledge in project, docs stay current, honest reporting, progressive disclosure, cross-project boundaries |
 
 **P27 (project self-organization)** spans **all 4 root axioms**
@@ -51,7 +51,7 @@ axioms are categorical):
 | Essence family | P-n | Operational commonalities (类比) |
 |---|---|---|
 | **Plan-then-act** (sequence + organization) | P1, P2, P4, P15, P22 | All about "step before step".  Organize workspace (P1), search before designing (P2), 1 commit per feature (P4), stage gate at boundary (P15), plan when stuck (P22).  Essence: **don't leapfrog steps**. |
-| **Verify-don't-guess** (truth by structure) | P3, P5, P6, P16, P18, P19, P24 | All about "verify by structure, not by assumption".  Test pyramid (P3), test before commit (P5/P6), ad-hoc verify when uncertain (P16), failure → regression (P18), intermediate state observable (P19), sequential chain test (P24).  Essence: **make the unseen testable**. |
+| **Verify-don't-guess** (truth by structure) | P3, P5, P16, P18, P19, P24 | All about "verify by structure, not by assumption".  Test pyramid (P3), verify before commit (P5, merged with P6 per c47a), ad-hoc verify when uncertain (P16), failure → regression (P18), intermediate state observable (P19), sequential chain test (P24).  Essence: **make the unseen testable**. |
 | **Capture-in-writing** (docs as truth) | P10, P11, P12, P14, P17, P20, P21 | All about "if it isn't written, it isn't true".  Code over prompt (P10), 摘要+引用 (P11), knowledge in project not memory (P12), docs stay current (P14), honest reporting (P17), progressive disclosure (P20), cross-project boundaries (P21).  Essence: **commit to the record**. |
 | **Minimum-viable** (奥卡姆 + structure) | P7, P8, P9, P13 | All about "don't over-build, but make structure clear".  奥卡姆 (P7), fail-open (P8), hard rules not LLM-judged (P9), no orphan nodes (P13).  Essence: **minimum + intentional structure**. |
 | **Meta-rules** (how to reason about rules) | P22, P23, P25, P26, P27 | All about "how to think about the other P-n".  Stuck→plan (P22), doc>script (P23), principle modification discipline (P25), user-acceptance fresh-agent check (P26), project self-organization (P27).  Essence: **process for the process itself**. |
@@ -94,9 +94,10 @@ itself.
 
 **奥卡姆 implication**: per user "细节可能你还要
 补全一部分" + "条数多而且混乱，不符合奥卡姆" —
-some P-n may be redundant (P5/P6 both about test
-before commit; P3/P24 both about test pyramid).
-Future batch (commit 45+) should evaluate per P7
+some P-n were redundant.
+Per c44 audit + c47 MERGE_EVAL: P5+P6 merged into
+单一 P5 (per c47a, 2026-07-14).  Future batches
+继续 evaluate per P7:
 奥卡姆 whether to **merge** overlapping P-n.  This
 commit establishes the **analogy framework** for
 that evaluation.

@@ -109,21 +109,23 @@ not the goal.  The goal is **per-feature commit** with **all
 `docs:` / `chore:` + 1-line WHY.  Per Workflow root.
 
 
-### P5. 测通再 commit
-"测通" = unit + joint + integration.  Not "I ran a test".
-Especially: integration tests catch bugs the unit tests can't
-(no mocking, real env).
+### P5. Verify before commit (per c47 MERGE_EVAL + commit 77)
+P6 ("真跑再 commit") was merged into P5 per P7 奥卡姆
+(P6 was a specific case of P5 — both about "verify
+before commit").  After merge: P-n count reduces
+26 → 25 (per c47 plan).
 
-**实操 (L2)**: before `git commit`, run full suite (with
-`HERMES_FAST=1`) + 1 integration smoke.  Per Test root.
+"测通" = unit + joint + integration + **real-world run**.
+Not "I ran a test".  Especially: integration tests
+catch bugs the unit tests can't (no mocking, real
+env); real-world run catches bugs integration tests
+can't (real inputs, real env, user-meaningful).
 
+**实操 (L2)**: before `git commit`, run full suite
+(with `HERMES_FAST=1`) + 1 integration smoke + 1
+real-world run (if user gave a real cmd).  Per Test
+root.  (合并前 P5 实操 + P6 实操).
 
-### P6. 真跑再 commit, 不猜
-If the user has a real-world run they care about, simulate it
-yourself before commit.  Don't assume "if it parses, it works".
-
-**实操 (L2)**: if user gave a real cmd, run it (or a smoke-test
-mock) and include the output in commit.  Per Test root.
 
 
 ### P7. 奥卡姆剃刀
