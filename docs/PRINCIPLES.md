@@ -4,7 +4,7 @@ status: "summary"
 ---
 
 # PRINCIPLES — Working principles (portable)
-> L0: The 26 working principles (P1-P27 minus P6 + P24, merged into P5 + P3 per c47a+c78) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P25 + P26 + P27 (also meta-rules) here.
+> L0: The 24 working principles (P1-P27 minus P6 + P15 + P24, merged into P5 + P3 per c47a+c78+c79) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P25 + P26 + P27 (also meta-rules) here.
 > See `docs/PRINCIPLES_DETAIL.md` "Root axioms"段 (L0 categorical synthesis) + "Cross-reference to PRINCIPLES.md 类比联想段" (L1 operational mirror) for bidirectional context.
 Last P20-verified: 2026-07-14
 
@@ -22,7 +22,7 @@ P7 奥卡姆 — earn its place.
 | # | Root axiom | L1 children | WHY |
 |---|---|---|---|
 | 奥卡姆 | P7, P9, P13, P23 | Minimum API, no rule until 3+ failures, no orphan nodes, doc > script (with nuance) |
-| Workflow | P1, P2, P4, P5, P15, P22, P23 | 整理→思考→行动, plan, test pyramid, 1 commit = 1 feature, stage gate, meta-rules (P5 merged with P6 per c47a) |
+| Workflow | P1, P2, P4, P5, P22, P23 | 整理→思考→行动, plan, test pyramid, 1 commit = 1 feature, verify (P5 merged with P6 + P15 per c77a+c79), meta-rules |
 | Test | P3, P5, P16, P18, P19 | Unit → joint → integration, verify before commit (P5 merged with P6), ad-hoc verify, failure → regression test, data-flow observability |
 | Doc | P10, P11, P12, P14, P17, P20, P21 | Entity > prompt, 摘要+引用, knowledge in project, docs stay current, honest reporting, progressive disclosure, cross-project boundaries |
 
@@ -50,7 +50,7 @@ axioms are categorical):
 
 | Essence family | P-n | Operational commonalities (类比) |
 |---|---|---|
-| **Plan-then-act** (sequence + organization) | P1, P2, P4, P15, P22 | All about "step before step".  Organize workspace (P1), search before designing (P2), 1 commit per feature (P4), stage gate at boundary (P15), plan when stuck (P22).  Essence: **don't leapfrog steps**. |
+| **Plan-then-act** (sequence + organization) | P1, P2, P4, P22 | All about "step before step".  Organize workspace (P1), search before designing (P2), 1 commit per feature (P4), plan when stuck (P22).  (P15 stage-gate demoted to P5 实操 per c79.)  Essence: **don't leapfrog steps**. |
 | **Verify-don't-guess** (truth by structure) | P3, P5, P16, P18, P19 | All about "verify by structure, not by assumption".  Test pyramid (P3, merged with P24 per c78), verify before commit (P5, merged with P6 per c47a), ad-hoc verify when uncertain (P16), failure → regression (P18), intermediate state observable (P19).  Essence: **make the unseen testable**. |
 | **Capture-in-writing** (docs as truth) | P10, P11, P12, P14, P17, P20, P21 | All about "if it isn't written, it isn't true".  Code over prompt (P10), 摘要+引用 (P11), knowledge in project not memory (P12), docs stay current (P14), honest reporting (P17), progressive disclosure (P20), cross-project boundaries (P21).  Essence: **commit to the record**. |
 | **Minimum-viable** (奥卡姆 + structure) | P7, P8, P9, P13 | All about "don't over-build, but make structure clear".  奥卡姆 (P7), fail-open (P8), hard rules not LLM-judged (P9), no orphan nodes (P13).  Essence: **minimum + intentional structure**. |

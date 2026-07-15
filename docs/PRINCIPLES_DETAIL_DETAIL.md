@@ -118,22 +118,29 @@ not the goal.  The goal is **per-feature commit** with **all
 `docs:` / `chore:` + 1-line WHY.  Per Workflow root.
 
 
-### P5. Verify before commit (per c47 MERGE_EVAL + commit 77)
-P6 ("真跑再 commit") was merged into P5 per P7 奥卡姆
-(P6 was a specific case of P5 — both about "verify
-before commit").  After merge: P-n count reduces
-26 → 25 (per c47 plan).
+### P5. Verify before commit (per c47 MERGE_EVAL + commit 77, + commit 79)
+P6 ("真跑再 commit") and P15 ("stage gate + cleanup") were
+merged into P5 per P7 奥卡姆 (P6 = specific case of P5
+[verify before commit]; P15 = stage-boundary variant of P5
+[verify at stage boundary instead of per-commit]).  After
+these merges: P-n count reduces 27 → 25 → 24 (per c47 plan,
+4 candidates: P5+P6 done in c77, P3+P24 done in c78, P15
+demote done here in c79, P16 demote deferred to c80).
 
-"测通" = unit + joint + integration + **real-world run**.
-Not "I ran a test".  Especially: integration tests
-catch bugs the unit tests can't (no mocking, real
-env); real-world run catches bugs integration tests
-can't (real inputs, real env, user-meaningful).
+"测通" = unit + joint + integration + **real-world run**
++ **stage gate** + **cleanup**.  Not "I ran a test".
+Especially: integration tests catch bugs the unit tests
+can't (no mocking, real env); real-world run catches bugs
+integration tests can't (real inputs, real env, user-
+meaningful); stage gate catches per-stage boundary issues;
+cleanup prevents working-tree rot.
 
 **实操 (L2)**: before `git commit`, run full suite
 (with `HERMES_FAST=1`) + 1 integration smoke + 1
-real-world run (if user gave a real cmd).  Per Test
-root.  (合并前 P5 实操 + P6 实操).
+real-world run (if user gave a real cmd).  Per major
+stage, also run 4-item stage gate (tests, docs, working
+tree, no tempfiles).  Per Test + Doc roots.  (合并前
+P5 实操 + P6 实操 + P15 实操).
 
 
 
@@ -212,14 +219,6 @@ After any code change that affects docs, update docs in the
 
 **实操 (L2)**: per commit, if docs/*.md or README change → same
 commit.  Per Doc root.
-
-
-### P15. Stage gate + cleanup
-After each significant stage, run a gate check (tests, docs,
-working tree, no tempfiles) before moving on.  Clean as you go.
-
-**实操 (L2)**: per major commit, add a "DONE.md stage gate" line.
-Per Workflow + Doc roots.
 
 
 ### P16. Ad-hoc verify, then commit
