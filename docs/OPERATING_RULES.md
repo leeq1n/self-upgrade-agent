@@ -710,7 +710,9 @@ both as a single framework.
 **Trigger**: when agent notices that principles
 have become disordered, or after modifying any
 principle (P-n or M-n), or when project vision
-drifts.
+drifts.  **See `M_PRINCIPLE_REORDERING_DETAIL.md`
+(L2 companion per P11 + R6) for worked examples per
+sub-step + relationship to P25 + self-application.**
 
 **Action** (6 sub-steps, per 你 turn explicit
 sequence):
