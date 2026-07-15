@@ -1319,6 +1319,9 @@ following:
   skill-incubator/SKILL_DESIGN.md)
 - **skill 内容**: skill files (in agent-reflection-
   skill or future incubated skills)
+**See `M_AGENT_DISCOVERABILITY_CHECK_DETAIL.md`
+for decision tree, worked examples, and how to
+apply across 3-project arch.**
 
 **Action** (4 sub-steps, per 你 turn 2026-07-15):
 
