@@ -680,6 +680,49 @@ how both tracks compose.**
 Both tracks operate on different entropy directions,
 which is why both are needed for full reasoning.
 
+**Classify 类比推理 as 抽象 + 归纳** (per 你 turn
+2026-07-15 deep analysis):
+
+- **类比推理 = 抽象能力**: extract common
+  essence across domains (cross-domain abstraction).
+- **类比推理 = 归纳能力**: induct N instances
+  to 1 general rule.
+
+**Why 类比 is project 自主 缩减 core (per 你 turn)**:
+- Project context grows (P14 docs stay current +
+  L2 companions + 24 P-n + 13 M-n).
+- Without 类比: agent must read all docs (爆炸).
+- With 类比: agent finds "M-n 17 similar to
+  M-n 11 (both are 行为 rules)" → reuse M-n 11
+  framework, avoid re-reading.
+- **类比 = automatic "find prior similar pattern"
+  → avoid duplicate context loading → project 自主
+  缩减**.
+
+**Classify 逻辑推理 as 演绎 + 发散** (per 你 turn
+deep analysis):
+
+- **逻辑推理 = 演绎能力**: general → specific
+  (deduction).
+- **逻辑推理 = 发散能力**: 1 rule → N cases
+  (diverge).
+
+**6-stage chain distribution** (per M-n 16 stage
+3 top-down 分治 + 你 turn deep analysis):
+
+| Stage | 类比 占比 | 逻辑 占比 | 说明 |
+|---|---|---|---|
+| 1. 观察 | 80% | 20% | find similar observations (类比) + verify (逻辑) |
+| 2. 思考-1 (归纳) | 70% | 30% | 归纳 = 类比 + 逻辑 混合, 偏 类比 |
+| 3. 执行-1 (规划) | 20% | 80% | top-down 分治 = 逻辑 sequential |
+| 4. 思考-2 (怎么行动) | 70% | 30% | find similar past actions (类比) |
+| 5. 执行-2 (调用记忆) | 30% | 70% | 顺序 apply memory entries (逻辑) |
+| 6. 思考-3 + 执行-3 | 40% | 60% | 类比 verify + 逻辑 execute + verify |
+
+**Conclusion**: 类比 在 阶段 1/2/4 重要 (观察,
+归纳, 怎么行动), 逻辑 在 阶段 3/5/6 重要 (规划,
+调用记忆, 修改代码).
+
 **Anti-patterns**:
 
 - **Don't** use only one track (both required for
