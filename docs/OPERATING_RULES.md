@@ -1158,6 +1158,63 @@ gate, 4+ observed):
   (parent)
 - 你 turn 2026-07-15 — origin
 
+### M-n 18 clarification: 节点 生命周期管理 (added 2026-07-15, per 你 turn "二级节点隔离 + 生命周期 + 销毁")
+
+Per 你 turn 2026-07-15 clarification of M-n 18, the
+node lifecycle has 3 additional details:
+
+**1. 二级节点 隔离 (Sibling isolation)**:
+- 二级节点 should NOT see other 二级兄弟节点's
+  子节点 总结.
+- Each 父 only sees its OWN 子's summaries (not
+  other 父's children).
+- This is what makes "父看自己子任务 总结" (sub-
+  step 2 of M-n 18) explicit.
+
+**2. 节点 状态 生命周期 (Node state lifecycle)**:
+- **未完成 state**: node has 任务 摘要 (task
+  description) + 子任务 说明 (sub-task descriptions).
+- **完成 state**: node has 只留下 总结 (only
+  summary remains; 任务 摘要 + 子任务 说明 are
+  replaced by 总结).
+- Transition: when sub-task 完成, write 总结;
+  replace 任务 摘要 + 子任务 说明 with 总结.
+
+**3. 销毁 子节点 (Destroy children after parent
+synthesizes)**:
+- After 父 reads 子 总结 (sub-step 2) + 父 writes
+  父 总结 (sub-step 3) + 父 hands 父 总结 to 爷爷
+  (sub-step 4):
+- **Destroy 子 总结** (sub-step 5: 销毁) to avoid
+  pollution.
+- 爷爷 只看 父 总结 (sub-step 5: 爷爷只看父).
+
+**Updated M-n 18 6 sub-steps (incorporating 你 turn
+clarification)**:
+
+1. 写子任务总结 (write sub-task summary when
+   sub-task 完成)
+2. 父看自己子任务总结 (parent sees OWN children's
+   summaries only; sibling isolation)
+3. 父写父总结 (parent synthesizes → 1 parent
+   summary via 类比 compress)
+4. 交父总结给爷爷节点 (hand parent summary to
+   grandparent)
+5. **销毁子节点** (destroy child summaries to
+   avoid pollution)
+6. 爷爷只看父总结 (grandparent sees only parent
+   summary, not 2nd/3rd-level summaries)
+
+**Why clarification matters**: per 你 turn "每个节
+点未完成的时候是任务摘要和子任务说明，完成的时候
+就只留下总结。在父节点读取子节点总结、写完父节点
+总结之后应该将子节点销毁，避免污染上下文（这是节
+点生命周期管理，这是agent行为规范的一部分）".
+
+This M-rule is now part of agent behavior规范
+(per 你 turn).  Project should self-learn +
+consistently apply.
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
