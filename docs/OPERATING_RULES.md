@@ -796,7 +796,10 @@ makes it explicit.
 
 **Trigger**: when agent (or project) needs to
 perform a task, and wants to use principled
-meta-level structure.
+meta-level structure.  **See
+`M_OBSERVE_THINK_EXECUTE_DETAIL.md` (L2 companion
+per P11 + R6) for worked examples per stage +
+relationship to M-n 14 + self-application.**
 
 **Action** (6-stage chain, per 你 turn explicit
 sequence):
