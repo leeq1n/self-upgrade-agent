@@ -55,11 +55,11 @@ orientation.
 
 - **Commits**: 319 in mainline
 - **Last commit**: c78 = P3+P24 merge (47b, c47 plan)
-- **P-n count**: P1-P27 minus P6 + P24 = 25 working principles
+- **P-n count**: P1-P28 minus P6 + P15 + P16 + P24 = 24 working principles (post c47a + c78 + c79 + c80 + c96 P28 lift)
 - **R-n compliance**: R5 compliant (0 violations);
   R4/R6 conflict resolved (c75); R12 still has 1 violation
   (knowledge-graph-seed PHILOSOPHY.md stale, sibling project)
-- **M-n status**: 9 operator rules (M-task-summary, M-must-read,
+- **M-n status**: 21 operator rules (M-n 1-21; M-n 1-9 = M-task-summary, M-must-read, etc. from c18 + c37; M-n 10-21 = c83 M-skill-synchronize, c89 M-experiment-in-subproject, c92 M-terminology-clarity, c95 修订 L4 boundary, c97 M-layer-extension, c98 M-two-track-reasoning, c99 M-principle-reordering, c100 M-observe-think-execute, c106 M-context-freshness-check, c111 M-recursive-summary-protocol, c115 M-file-naming-convention, c116 M-agent-discoverability-check, c118 M-ask-or-infer-mark-guess) (M-task-summary, M-must-read,
   M-context-snapshot, M-subtask-summary, M-intent-parsing,
   M-learn, M-add-then-reduce, M-self-audit, M-self-application)
 - **MCP tools**: 5 tools available (chrome_devtools, llm_wiki,
@@ -109,6 +109,29 @@ for its scope, then `SKILL.md` for invocation contract.
 | **Audit / plan** | `docs/PROJECT_TOPDOWN_AUDIT.md` (last full audit, c50), `docs/PLAN_TOPDOWN_REORG.md`, `docs/MERGE_EVAL.md` (c47 4 candidates) |
 | **Contracts** | `docs/SUMMARY_LIFECYCLE.md` (recursive destroy contract, c62), `docs/MCP_TOOLS.md`, `docs/EXTENSIONS.md` (+ `_DETAIL.md`) |
 | **Self-ref** | `docs/SELF_ORG.md` (P27 candidate, c52), `docs/HOW_TO_READ_GRAPH.md` (3-step pattern, c57) |
+
+## 3-project arch (per c83 + c85 + round 82)
+
+SUA is part of a 3-project architecture:
+
+- **SUA** (`self-upgrade-agent/`) = 原则库
+  (24 P-n + 21 M-n + 8 L2 companions + HANDOFF)
+- **skill-incubator** (`../skill-incubator/`) =
+  skill 孵化器 (designs + incubates skills)
+- **agent-reflection-skill** (`../agent-reflection-skill/`) =
+  自我改进 skill (6 reasoning primitives + recursion)
+
+## Framework-agnostic (per M-n 20)
+
+This project is designed for:
+- **Hermes** (current)
+- **Codex** (per 你 turn)
+- **Claude Code** (per 你 turn)
+- **Others** (auto-detected via AGENTS.md)
+
+File names avoid Hermes-specific terms (per M-n
+19).  Future agents should be able to read this
+project without Hermes-specific knowledge.
 
 ## Detail (L2)
 
