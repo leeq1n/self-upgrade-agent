@@ -492,6 +492,23 @@ primitive (recursion) in
 The skill commit also adds a "Self-application" 段
 demonstrating recursion on the skill itself.
 
+**P28 LIFT (per c96, 2026-07-15)**: per M_RULE_AUTHORING
+3-condition gate + 你 directive "不用找我确认"
++ bootstrap exception:
+
+- **Trigger**: when agent (or project) needs to
+  apply P-n to itself.
+- **Action**: explicit recursive loop with depth
+  limit 2 (per M-n 12 boundary + memory 9 trap
+  detection).
+- **Why lift now**: c82 candidate + c92 M-n 12
+  self-application + c93 L2 self-application +
+  c94 MCP-first self-application + c95 autonomy
+  boundary self-application = **5+ observed
+  recursion demos** (3-condition gate met).
+- **Apply to**: project self-organization, doc
+  structure, P-n evaluation, M-rule refinement.
+
 ---
 
 ## P-n vs M-* boundary (clarification per user 2026-07-14)
