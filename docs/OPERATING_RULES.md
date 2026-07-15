@@ -1306,6 +1306,137 @@ gate, 4+ observed):
   summary protocol (uses M-n 19 conventions)
 - 你 turn 2026-07-15 — origin
 
+### M-agent-discoverability-check (added 2026-07-15, per 你 turn "新 agent 读 + framework-agnostic + 持久化")
+
+**Trigger**: when agent modifies any of the
+following:
+- **agent 原则**: P-n or M-n in SUA
+- **skill 原则**: skill-generation-knowledge
+  (per M-n 18 + c83 SKILL_GENERATION.md /
+  skill-incubator/SKILL_DESIGN.md)
+- **skill 内容**: skill files (in agent-reflection-
+  skill or future incubated skills)
+
+**Action** (4 sub-steps, per 你 turn 2026-07-15):
+
+1. **Cross-framework check**:
+   - 改动 是 framework-agnostic?
+   - 不 only Hermes-specific?
+   - 未来 agent (Codex / Claude Code / others)
+     能 用?
+   - If 不是: 修订 to be framework-agnostic
+     (or explicitly mark as Hermes-only).
+
+2. **Naming check** (per M-n 19):
+   - 改动 涉及 的 路径/名字 framework-agnostic?
+   - Avoid Hermes-specific terms in names
+     (e.g., not "hermes-onboarding" but
+     "agent-onboarding").
+   - Per M-n 19: `.hermes/` is OK (it's the
+     directory, not the file name); but file
+     names should be framework-agnostic.
+
+3. **Discoverability check** (per P26 fresh-agent
+   simulation):
+   - Simulate 新 agent entering project
+   - Check if 新 agent can read what it needs
+   - 4 questions:
+     a. 新 agent 知道 原则 改了 吗? (commit
+        message + cross-refs)
+     b. 新 agent 知道 哪里 改的 吗? (file path
+        + commit hash)
+     c. 新 agent 知道 为什么 改 吗? (rationale
+        + 你 turn origin)
+     d. 新 agent 知道 怎么 follow 吗? (action
+        steps + anti-patterns)
+
+4. **Memory persistence** (per 你 turn "这条需要记"):
+   - Persist this M-rule to memory
+   - Per M-n 19: memory entry should be
+     framework-agnostic (avoid Hermes-specific
+     terms)
+   - Future agents should load this memory
+     entry on entry (P26 fresh-agent check)
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"这条需要记，不然改几轮以后可能会发现，以后新agent
+进来不知道很多东西、行为非预期".
+
+This M-rule prevents:
+- 新 agent 不知道 原则 改动
+- 新 agent 行为 非预期
+- 改 几轮 后 知识 丢失 (vs. memory persistence)
+
+**Relationship to other M-rules + P-n**:
+
+- **M-n 19 (file-naming-convention)**: M-n 20 sub-
+  step 2 (naming check) uses M-n 19 conventions.
+- **M-n 18 (recursive-summary-protocol)**: M-n 20
+  sub-step 4 (memory persistence) uses M-n 18
+  protocol.
+- **P11 摘要+引用**: M-n 20 sub-step 3
+  (discoverability) enforces P11.
+- **P14 docs stay current**: M-n 20 ensures
+  changes are discoverable.
+- **P26 fresh-agent discoverability check**: M-n 20
+  sub-step 3 IS P26 applied to principle changes.
+- **P28 (recursion)**: M-n 20 is recursive
+  (apply to itself: changes to M-n 20 also require
+  M-n 20 check).
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c53 + c82 + c83 (3-project arch)**: SUA +
+   skill-incubator + agent-reflection-skill split.
+   agent-reflection-skill is framework-agnostic
+   (Hermes/Codex/Claude Code).  Same pattern
+   (cross-framework + discoverability).
+2. **c92 (M-n 12)**: terminology-clarity + framing
+   revision.  No framework-specific check at
+   time.  Anti-example.
+3. **c115 (M-n 19)**: file naming convention.  M-n
+   19 mentions 新 agent but doesn't fully address
+   framework-agnostic.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**When to invoke**:
+
+- After any P-n modification (per P25 6-step
+  includes M-n 20 implicit; now explicit).
+- After any M-n codification (per M_RULE_AUTHORING).
+- After any skill principle change (per M-skill-
+  synchronize).
+- After any skill content change.
+- Before declaring "all pass" (per P26 + M-self-
+  audit + M-n 20).
+
+**Anti-patterns**:
+
+- **Don't** assume changes are framework-agnostic
+  without checking.
+- **Don't** use Hermes-specific names in new
+  files (e.g., "hermes-skill", "hermes-onboarding"
+  vs. "agent-skill", "agent-onboarding").
+- **Don't** skip memory persistence (per 你 turn
+  "这条需要记").
+- **Don't** skip P26 fresh-agent simulation after
+  principle changes.
+- **Don't** assume 新 agent has same context as
+  current agent (per P26).
+
+**Cross-references**:
+
+- `OPERATING_RULES.md` § M-n 19 — file naming
+  convention
+- `docs/PRINCIPLES.md` — P-n list (24 P-n)
+- `docs/AGENTS.md` — agent entry point (per P26)
+- `OPERATING_RULES_DETAIL.md` (or
+  `M_AGENT_DISCOVERABILITY_CHECK_DETAIL.md` future
+  L2 companion)
+- 你 turn 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
