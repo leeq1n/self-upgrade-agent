@@ -1,16 +1,16 @@
 L0: Project state — goal, current version, next step (1-paragraph).
-Last P20-verified: 2026-07-13
+Last P20-verified: 2026-07-15
 
 ---
 description: "Project goal, status, mistakes, constraints, next step"
 status: "summary"
-last_updated: "2026-07-14 (35 commits: doc cleanup + P25 lift + final audit)"
+last_updated: "2026-07-15 (119 commits: 24 P-n + 21 M-n + 3-project arch + 整理 + 修订 L4 boundary + framework-agnostic)"
 ---
 
 # PROJECT_STATE — brief
 > L0: Current project state (1-paragraph).  Load when: need snapshot of current goal/version/next step.
 
-**Goal (1 sentence) (updated 2026-07-15 turn reset)**: 一个原则库项目 + skill 孵化器 + 已孵化的自我改进 skill 项目的 3-project 架构。SUA 自身 = 原则库（agent 行为规范 + 跨项目知识）；skill 孵化器 = sibling project（`../skill-incubator/`，设计并孵化 skill）；已孵化 skill = `../agent-reflection-skill/`（6 reasoning primitives + recursion + self-application）。
+**Goal (1 sentence) (updated 2026-07-15)**: 一个原则库项目 + skill 孵化器 + 已孵化的自我改进 skill 项目的 3-project 架构。SUA 自身 = 原则库（**24 P-n** + **21 M-n** + 修订 L4 boundary + framework-agnostic per M-n 20）；skill 孵化器 = sibling project（`../skill-incubator/`，设计并孵化 skill）；已孵化 skill = `../agent-reflection-skill/`（6 reasoning primitives + recursion + self-application + framework-agnostic per Hermes/Codex/Claude Code）。
 
 **Pivot note**: 之前目标是 self-improving agent that modifies core/planner.py（session 早期定义）。中间用户调整为"项目自组织 + 知识图谱/平铺式 + agent-onboarding skill 给其他项目用"。新目标替代旧目标，旧 self-improving 实现仍存在 core/planner.py 但不再是 project 焦点。
 
