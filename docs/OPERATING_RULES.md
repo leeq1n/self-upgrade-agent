@@ -1451,6 +1451,9 @@ uncertain about:
 - What to do (what action)
 - Why to do it (rationale)
 - Whether to proceed (decision)
+**See `M_ASK_OR_INFER_MARK_GUESS_DETAIL.md` for
+decision tree, worked examples, and how to apply
+across 3-project arch.**
 
 **Action** (3 sub-steps, per 你 turn explicit
 sequence):
