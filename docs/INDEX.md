@@ -38,21 +38,21 @@ Total: 35 min to full orientation.
 These are **stealth docs** (per P20): they have no summary, only
 a pointer.  Read them only when your task matches the trigger.
 
-- [EXTENSIONS.md](EXTENSIONS.md) — only if you're considering
-  work that crosses project boundaries (e.g. starting a new
-  repo, integrating with another tool, or wondering "is there
-  an X for Y?")
-- [SKILLS.md](SKILLS.md) — only if planning to add skill
-  lifecycle (v3.2.0), to inspect auto-commit skill metadata,
-  or to understand SkillOpt paper's candidate/active/archived
-  lifecycle in our context.
-- Knowledge graph project: see `../knowledge-graph-seed/`.  Per
-  P21 (cross-project), this project links; SPEC + impl live in
-  the KG seed project.  Read [../knowledge-graph-seed/SEED.md](../knowledge-graph-seed/SEED.md)
+**Trigger annotations** (per R3 + M-n 22 3W1H Who):
+
+- **trigger: cross-project work** → [EXTENSIONS.md](EXTENSIONS.md) —
+  only if you're considering work that crosses project
+  boundaries (e.g. starting a new repo, integrating with
+  another tool, or wondering "is there an X for Y?")
+- **trigger: skill lifecycle planning** → [SKILLS.md](SKILLS.md) —
+  only if planning to add skill lifecycle (v3.2.0), to inspect
+  auto-commit skill metadata, or to understand SkillOpt paper's
+  candidate/active/archived lifecycle in our context.
+- **trigger: knowledge graph / Q&A** → Knowledge graph project:
+  see `../knowledge-graph-seed/`.  Per P21 (cross-project), this
+  project links; SPEC + impl live in there.  Read
+  [../knowledge-graph-seed/SEED.md](../knowledge-graph-seed/SEED.md)
   before reading docs/TODO_KNOWLEDGE_GRAPH.md (which is the linker).
-  lifecycle (v3.2.0), to inspect auto-commit skill metadata,
-  or to understand SkillOpt paper's candidate/active/archived
-  lifecycle in our context.
 
 If a section is unclear or you need full rationale, follow the
 links — each summary points to its `_DETAIL.md` companion.
