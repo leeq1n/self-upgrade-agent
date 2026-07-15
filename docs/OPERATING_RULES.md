@@ -1583,6 +1583,9 @@ gate, 4+ observed):
 
 **Trigger**: before any major decision, commit
 batch, or analysis task.
+**See `M_3W1H_THINK_FIRST_DETAIL.md` for decision
+tree, worked examples, and how to apply across
+3-project arch.**
 
 **Action**: apply **3W1H 分析法** BEFORE
 top-down 分治 (per M-n 16 stage 3):
