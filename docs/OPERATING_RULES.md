@@ -1056,6 +1056,106 @@ gate, 5+ observed):
 - When memory 印象 is unclear (Path 1)
 - When user mentions a new term/concept (Path 2)
 
+### M-recursive-summary-protocol (added 2026-07-15, per 你 turn "分治 + 递归 总结 + pollution control")
+
+**Trigger**: when a task or sub-task completes
+within a top-down 分治 plan (per M-n 16 stage 3).
+
+**Action** (5 sub-steps, per 你 turn explicit
+sequence):
+
+1. **写子任务总结**: when sub-task completes,
+   write summary (what was done, key insights,
+   any issues).
+2. **父任务看子任务总结**: parent task receives
+   all its own sub-task summaries (not others'
+   sub-tasks).
+3. **父任务写父总结**: parent synthesizes child
+   summaries → 1 parent summary (compress via
+   类比 reasoning, per M-n 14).
+4. **交给爷爷节点**: parent summary handed to
+   grandparent node (not all child summaries).
+5. **爷爷只看父**: grandparent sees only parent
+   summary, not the 2nd/3rd-level summaries.
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"总任务你应该是有记录的，每个拆解的子任务也有记
+录（递归都有记录），子任务完成的时候写总结，父任
+务看到所有自己子任务的总结后写父任务总结，然后交
+给爷爷节点（爷爷节点只看到父节点，不然一堆二级三
+级节点的总结会污染上下文）".
+
+This M-rule operationalizes 你 分治 protocol:
+递归 总结 + pollution control.  Without this
+M-rule, context fills up with 2nd/3rd-level
+summaries, polluting agent's working memory.
+
+**Anti-patterns**:
+
+- **Don't** skip sub-task summary (loses child
+  insights).
+- **Don't** forward all child summaries to
+  grandparent (causes context pollution).
+- **Don't** skip parent synthesis (grandparent
+  needs 1 parent summary, not N child summaries).
+- **Don't** include unrelated sub-tasks' summaries
+  in parent summary (only own children).
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c60-c62 SUMMARY_LIFECYCLE 递归 destruction 协
+   议**: SUA 之前 codify recursive destruction +
+   parent summary. Same pattern (pollution
+   control).
+2. **skill-incubator 5-phase process (c88)**:
+   Sense → Think → Extract → Organize → Design,
+   with each phase producing summary. Same
+   pattern (sub-task summary → parent).
+3. **c107-c110 (我 之前 turns)**: did NOT follow
+   this protocol (no sub-task summary per commit).
+   Anti-example.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**Relationship to other M-rules + P-n**:
+
+- **M-n 16 (observe-think-execute)**: stage 6
+  (思考-3 + 执行-3) applies this M-rule after
+  sub-task completion.
+- **M-n 14 (two-track reasoning)**: parent synthesis
+  uses 类比 (compress N child summaries → 1
+  parent summary).
+- **M-n 15 (principle-reordering)**: parent summary
+  may trigger M-n 15 6-step if principles are
+  disordered.
+- **P11 摘要+引用**: this M-rule enforces P11
+  via recursive summary.
+- **P14 docs stay current**: parent summary
+  ensures docs reflect all sub-task changes.
+- **P28 (recursion)**: this M-rule IS recursion
+  applied to summary protocol.
+
+**When to invoke**:
+
+- After any sub-task completes (write sub-task
+  summary)
+- After all sub-tasks of a parent complete (write
+  parent summary, hand to grandparent)
+- When working context has 3+ 2nd-level summaries
+  (pollution alert, apply this M-rule)
+
+**Cross-references**:
+
+- `docs/SUMMARY_LIFECYCLE.md` — c62 recursive
+  destruction 协议 (related)
+- `docs/SKILL_GENERATION.md` /
+  `../skill-incubator/SKILL_DESIGN.md` — 5-phase
+  process (related sub-task pattern)
+- `OPERATING_RULES.md` § M-n 16 — top-down 分治
+  (parent)
+- 你 turn 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
