@@ -416,6 +416,83 @@ process.
   — first worked case (skill-incubator's first
   decision)
 
+### M-terminology-clarity (added 2026-07-15, per user meta-rule)
+
+**Trigger**: when a phrase / term / metaphor is used
+in agent responses or user turns **without clear
+operational definition**, AND the ambiguity may
+cause confusion in later turns.
+
+**Action** (4 sub-steps):
+
+1. **Detect**: notice when a phrase is repeated 3+
+   times without a clear definition (P11 摘要+引用
+   check: ≤ 120 chars, no jargon).
+2. **Acknowledge**: explicitly say "this term is
+   unclear; let me clarify" — not silently assume
+   the user knows.
+3. **Clarify or codify**: choose 1 of 3 paths:
+   - (a) **Refine name**: pick a clearer term (e.g.,
+     "撞到一起" → "plan-iterate on conflict" per
+     P11)
+   - (b) **Add definition段**: write 1 段 in
+     PRINCIPLES.md or relevant doc
+   - (c) **Update memory**: replace ambiguous term in
+     memory entries
+4. **Verify**: re-read after the change; ensure the
+   new term is consistently used in future turns.
+
+**Anti-patterns**:
+
+- **Don't** silently use ambiguous terms (P17 honest:
+  say "I'm using X to mean Y, but X is unclear; let
+  me clarify").
+- **Don't** over-codify: 1 occurrence doesn't warrant
+  a M-n (M_RULE_AUTHORING 3-condition gate).
+- **Don't** invent new terms without checking existing
+  ones first (P7 奥卡姆: prefer existing terms).
+
+**Why this M-rule exists**: per user meta-rule
+2026-07-15: "如果'撞到一起'是你提的摘要/标题, 我认为
+它没说清楚是什么意思, 你后续可能要处理一下这类问题".
+The user is explicit: agent should self-detect
+ambiguous terms and clarify them.  This M-rule
+operationalizes that meta-rule.
+
+**Example application**: the phrase "撞到一起" was
+used 5+ times in 2026-07-15 turns without clear
+definition.  Per this M-rule:
+- Detect: 5+ occurrences
+- Acknowledge: "撞到一起" 是 metaphor, not precise
+  term
+- Refine: replace with "plan-iterate on conflict" or
+  simply "replan" (per P11 摘要+引用, ≤ 120 chars
+  + clear English)
+- Verify: future turns use "plan-iterate" consistently
+
+**Relationship to other M-rules**:
+
+- M-self-application: this M-rule is a self-application
+  of M-self-application's 4-level check (L4 = agent's
+  own operating behavior)
+- P11 摘要+引用: P11 says "summary ≤ 120 chars, no
+  jargon" — this M-rule operationalizes P11's
+  terminology check
+- P22 case-3: this is a meta-rule (about how the
+  agent should behave in ambiguous situations)
+- M_RULE_AUTHORING 3-condition gate: even meta-rules
+  need 3+ observations OR bootstrap exception (this
+  M-rule has bootstrap exception per user-explicit
+  ask)
+
+**Cross-references**:
+- `docs/HANDOFF_DETAIL.md` — recording of related
+  patterns
+- `docs/OPERATING_RULES_DETAIL.md` (or new
+  `M_TERMINOLOGY_CLARITY.md` companion per P11) —
+  L2 detail
+- User meta-rule 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
