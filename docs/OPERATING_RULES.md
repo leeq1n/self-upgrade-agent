@@ -1652,6 +1652,95 @@ gate, 4+ observed):
   answers)
 - 你 turn 2026-07-15 — origin
 
+### M-periodic-re-analysis (added 2026-07-15, per 你 turn "如果做了很久, 重新在最终目标的角度上做分析")
+
+**Trigger**: when agent has been working a long
+time (per M-n 17 Path 1: 10+ commits OR 1+ hour
+of work), OR when user explicitly asks for re-
+analysis.
+
+**Action** (3 sub-steps, per 你 turn "自顶向下看
+看有没有需要变动"):
+
+1. **Re-analyze at 最终目标 level** (per M-n 22
+   3W1H first):
+   - What: What is the 最终目标? (per
+     PROJECT_STATE.md + 3-project arch)
+   - Why: Why is this important? (per P22 case-3
+     boundary)
+   - Who: Who is affected? (per M-n 20 framework-
+     agnostic)
+   - How: How to achieve? (per top-down 分治)
+
+2. **Compare to 当前 state** (per M-n 17 Path 1):
+   - List 实际 完成 state
+   - Compare to 最终目标
+   - Identify gaps (R-n violations, missing L2
+     companions, stale entry files, etc.)
+
+3. **Plan for re-analysis-driven changes**:
+   - Per P7 奥卡姆: 哪些 changes 真正 需要?
+   - Per M-n 16 stage 3 top-down: 优先级
+   - Apply M-n 18 节点 生命周期管理 to
+     sub-task summary
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"如果做了很久，你可以考虑重新在最终目标的角度上
+做分析。自顶向下看看有没有需要变动".
+
+This M-rule prevents:
+- Long sessions drift away from 最终目标
+- Continue mechanical queue mode without
+  questioning
+- Missing critical gaps (R-n violations, etc.)
+- Over-修订 L4 boundary without end vision
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c110 (你 turn "现在陷进任务很久了")**: 你
+   raise concern about 做了很久.  Pattern:
+   re-analysis needed.
+2. **c115 (整理)**: 你 raise concern about 乱.
+   Pattern: 整理 process.
+3. **c116 (M-n 20 framework-agnostic)**: 你 raise
+   concern about 新 agent.  Pattern: re-分析 at
+   multi-agent level.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**When to invoke**:
+
+- After 10+ commits in single session
+- After 1+ hour of work without re-analysis
+- When user explicitly asks (e.g., "重新分析")
+- Before declaring "all pass" (per P26)
+- After major M-rule changes (c97-c100, c106, c111,
+  c115-c122)
+
+**Anti-patterns**:
+
+- **Don't** continue mechanical queue mode without
+  re-analysis (per memory 9 trap symptom).
+- **Don't** skip 3W1H first (per M-n 22).
+- **Don't** miss critical gaps (R-n violations,
+  L2 companions, stale entry files).
+- **Don't** 修订 L4 boundary without end vision
+  check.
+
+**Cross-references**:
+
+- `OPERATING_RULES.md` § M-n 22 — 3W1H 分析法
+  (used in sub-step 1)
+- `OPERATING_RULES.md` § M-n 17 — context-
+  freshness-check (used in sub-step 2)
+- `OPERATING_RULES.md` § M-n 16 — top-down 分治
+  (used in sub-step 3)
+- `OPERATING_RULES.md` § M-n 18 — recursive
+  summary (used in sub-step 3)
+- `docs/PROJECT_STATE.md` — 最终目标 reference
+- 你 turn 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
