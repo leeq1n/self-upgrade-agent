@@ -873,6 +873,100 @@ reasoning).  M-n 14 = the 2 tracks; M-n 16 = the
   reordering) — related workflow
 - User meta-rule 2026-07-15 — origin
 
+### M-context-freshness-check (added 2026-07-15, per 你 turn "经常修改的文件需要确认 + 新的领域需要搜索")
+
+**Trigger**: when agent (or project) is about to
+modify a doc that has been modified 3+ times
+recently, OR when entering a domain that's new to
+the agent.
+
+**Action** (2 paths, per 你 turn 类比 thinking):
+
+**Path 1 — Intra-agent context check (经常修改的
+文件)**:
+- Re-read the doc before modifying
+- Confirm agent has current context (印象)
+- If 印象 不 清晰: re-read thoroughly
+- Reason: avoid drifting from current content;
+  avoid modifying based on stale context
+
+**Path 2 — Inter-domain search (新的领域)**:
+- Use MCP search tools (sciverse / llm_wiki /
+  zotero / mineru / chrome_devtools) to read
+  current state of the domain
+- Search for prior art (academic papers,
+  documentation, established practices)
+- Reason: avoid reinventing; avoid 闭门造车;
+  avoid repeating work (the 类比 between code and
+  papers)
+
+**Why both paths**: per 你 turn 2026-07-15
+"经常修改的文件需要确认最后一次修改是否自己有印
+象，确保自己的上下文是最新的；同样的，比较新的领
+域也需要通过搜索工具读到最新的现状，才能避免闭门
+造车，避免浪费时间重复造轮子（这指的不仅是代码，
+也是论文等。这里需要你类比思考）".
+
+The 2 paths are the same pattern: **context
+freshness check**, applied at 2 different scopes
+(intra-agent vs inter-domain).
+
+**Anti-patterns**:
+
+- **Don't** skip Path 1 (modifying doc without re-
+  read leads to drift).
+- **Don't** skip Path 2 (entering new domain without
+  search leads to reinvention).
+- **Don't** over-rely on Path 1 (memory may be
+  stale; always verify).
+- **Don't** over-rely on Path 2 (search results may
+  be outdated; verify with multiple sources).
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 5+ observed):
+
+1. **c96 P28 lift**: modified PRINCIPLES.md +
+   PRINCIPLES_FULL.md + AGENTS.md + hook (4 files),
+   re-read M-n 12/13/14/15 + memory 7 first.
+2. **c94 M-n 11 prior art**: entered "sub-project
+   for experimentation" domain, used sciverse to
+   search 3 papers (Li 2022 / Tsagkari 2020 /
+   Sparrius 1980).
+3. **c100 M-n 16 codify**: 你 turn "观察-思考-执行
+   链" is implicit existing pattern, re-read M-n
+   14 + memory to internalize.
+4. **skill-incubator c88-c101**: multiple SKILL_DESIGN.md
+   modifications, re-read prior content each time.
+5. **c102-c105 L2 companion batch**: modified
+   OPERATING_RULES.md 4 times for M-n 12/13/14/15/16
+   L2, re-read OPERATING_RULES.md before each edit.
+
+**Relationship to other M-rules + P-n**:
+
+- **P14 docs stay current**: Path 1 enforces this.
+- **M-n 14 (two-track reasoning)**: Path 2 uses
+  Track 1 (类比 to search results) + Track 2
+  (verify with multiple sources).
+- **M-n 11 (sub-project)**: when entering new
+  domain, may spawn sub-project (Path 2 → M-n 11).
+- **M-n 15 (principle-reordering)**: Path 1
+  complements M-n 15 sub-step 1 (重读).
+- **M-n 16 (observe-think-execute)**: Path 1
+  applies to stage 1 (观察); Path 2 applies to
+  stage 2 (思考-1) when entering new domain.
+- **P28 (recursion)**: this M-rule is recursive
+  (apply to itself: re-read this M-rule when
+  modifying).
+
+**When to invoke**:
+
+- Before modifying any doc that has been modified
+  3+ times in last 10 commits (Path 1)
+- Before entering any domain that hasn't been
+  searched in last 20 commits (Path 2)
+- When memory 印象 is unclear (Path 1)
+- When user mentions a new term/concept (Path 2)
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
