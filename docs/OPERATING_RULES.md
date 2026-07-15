@@ -829,7 +829,12 @@ sequence):
    规划.  Per M-n 14 Track 2 (逻辑) + induction
    primitive.
 3. **执行 (execute 1)**: 实际规划.  Decide what
-   to do, what memory is needed.
+   to do, what memory is needed.  **Per 你 turn
+   2026-07-15 top-down 分治 method**: 想清楚
+   目标 → 倒推 需要做的 节点 → 自顶向下、分治
+   拆解 → 做下去.  This applies to all planning
+   steps, not just execute 1 (but execute 1 is
+   where planning starts).
 4. **思考 (think 2)**: 怎么行动, 需要什么记忆.
    Per M-n 14 Track 1 (类比) — find similar past
    actions.
