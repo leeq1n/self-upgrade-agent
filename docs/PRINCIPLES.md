@@ -4,9 +4,9 @@ status: "summary"
 ---
 
 # PRINCIPLES — Working principles (portable)
-> L0: The 26 working principles (P1-P26) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P24 + P25 + P26 (also meta-rules) here.
+> L0: The 27 working principles (P1-P27) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P24 + P25 + P26 (also meta-rules) here, P27 (project self-org, meta) here.
 > See `docs/PRINCIPLES_DETAIL.md` "Root axioms"段 (L0 categorical synthesis) + "Cross-reference to PRINCIPLES.md 类比联想段" (L1 operational mirror) for bidirectional context.
-Last P20-verified: 2026-07-13
+Last P20-verified: 2026-07-14
 
 > Distilled from working on this project (2026-07-08 session).
 > These are project-agnostic — copy them to any future project.
@@ -25,6 +25,13 @@ P7 奥卡姆 — earn its place.
 | Workflow | P1, P2, P4, P5, P6, P15, P22, P23 | 整理→思考→行动, plan, test pyramid, 1 commit = 1 feature, stage gate, meta-rules |
 | Test | P3, P5, P6, P16, P18, P19 | Unit → joint → integration, 真跑再 commit, ad-hoc verify, failure → regression test, data-flow observability |
 | Doc | P10, P11, P12, P14, P17, P20, P21 | Entity > prompt, 摘要+引用, knowledge in project, docs stay current, honest reporting, progressive disclosure, cross-project boundaries |
+
+**P27 (project self-organization)** spans **all 4 root axioms**
+(meta-meta principle per c52 SELF_ORG.md case-3 boundary
+test: "principle about principles").  It is the *operating*
+form of these axioms — the axioms as observed from the
+project's own behavior rather than the project's behavior
+as observed from the axioms.
 
 ### 类比联想 (analogy map — the 4 root essences)
 
@@ -47,7 +54,7 @@ axioms are categorical):
 | **Verify-don't-guess** (truth by structure) | P3, P5, P6, P16, P18, P19, P24 | All about "verify by structure, not by assumption".  Test pyramid (P3), test before commit (P5/P6), ad-hoc verify when uncertain (P16), failure → regression (P18), intermediate state observable (P19), sequential chain test (P24).  Essence: **make the unseen testable**. |
 | **Capture-in-writing** (docs as truth) | P10, P11, P12, P14, P17, P20, P21 | All about "if it isn't written, it isn't true".  Code over prompt (P10), 摘要+引用 (P11), knowledge in project not memory (P12), docs stay current (P14), honest reporting (P17), progressive disclosure (P20), cross-project boundaries (P21).  Essence: **commit to the record**. |
 | **Minimum-viable** (奥卡姆 + structure) | P7, P8, P9, P13 | All about "don't over-build, but make structure clear".  奥卡姆 (P7), fail-open (P8), hard rules not LLM-judged (P9), no orphan nodes (P13).  Essence: **minimum + intentional structure**. |
-| **Meta-rules** (how to reason about rules) | P22, P23, P25, P26 | All about "how to think about the other P-n".  Stuck→plan (P22), doc>script (P23), principle modification discipline (P25), user-acceptance fresh-agent check (P26).  Essence: **process for the process itself**. |
+| **Meta-rules** (how to reason about rules) | P22, P23, P25, P26, P27 | All about "how to think about the other P-n".  Stuck→plan (P22), doc>script (P23), principle modification discipline (P25), user-acceptance fresh-agent check (P26), project self-organization (P27).  Essence: **process for the process itself**. |
 
 **Why 5 families not 4**: the 4 root axioms are
 **categorical** (Test/Doc/Workflow/奥卡姆 as abstract
