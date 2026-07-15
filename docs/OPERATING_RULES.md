@@ -333,6 +333,89 @@ This rule is the operational form of that meta-rule.
 - `../agent-reflection-skill/docs/framework/analogy-and-induction.md`
   — the 4 (now 6) reasoning primitives that skill teaches
 
+### M-experiment-in-subproject (added 2026-07-15, per user meta-rule)
+
+**Trigger**: when current project lacks experience to
+handle a task, or when a sub-task becomes too complex
+to handle in the main project.
+
+**Action** (4 sub-steps):
+
+1. **Decide**: evaluate whether the sub-task warrants
+   a sub-project (per the 4 conditions in
+   `docs/HANDOFF_DETAIL.md` "Sub-project-for-
+   experimentation pattern" 段).
+2. **Spawn**: create the sub-project as a sibling per
+   P21 (separate git repo in `hermes-root/`, not a
+   subdir of the main project).  Initialize with
+   minimal skeleton (README + HANDOFF + 1 core doc).
+3. **Set goal + return criterion**: explicitly write
+   "I will return to the main project when [specific
+   condition]" — this is the anti-trap.  Without a
+   return criterion, the sub-project can become a
+   permanent drift.
+4. **Accumulate + return**: in the sub-project, follow
+   the normal commit conventions (per P-n / M-n of
+   the sub-project, OR a minimal version of SUA's P-n
+   if sub-project is small).  When the return
+   criterion is met, write a parent verification
+   commit and resume the main project's queue.
+
+**Anti-patterns**:
+
+- **Don't** spawn a sub-project without a clear goal
+  (per user meta-rule "可能陷进子任务，需要设定好
+  目标").
+- **Don't** spawn a sub-project as a subdir of the
+  main project (per P21 cross-project independence,
+  same as for sibling projects).
+- **Don't** lose the connection to the main project
+  (write a "Sub-project created" commit in the main
+  project that references the sub-project's location
+  and goal, per P14 docs stay current).
+- **Don't** forget to return (the return criterion is
+  the safety net; if no criterion, treat the sub-
+  project as a permanent sibling per P21).
+
+**Why this M-rule exists**: per user meta-rule
+2026-07-15: "如果当前经验不足以支撑项目，可以考虑
+新建一个子项目用来做实验积累失败经验" + "经验积累
+完成，知道怎么处理后再切回主项目".  This M-rule
+operationalizes that meta-rule into a 4-sub-step
+process.
+
+**Relationship to other M-rules**:
+
+- M-self-audit: applies after sub-project cycle ends
+  (verify the main project wasn't broken)
+- M-task-summary: when returning, write a parent
+  task summary that records the sub-project's findings
+- M-add-then-reduce: sub-project findings should be
+  *added* to the main project's docs, then *reduced*
+  (per the skill-incubator's 信息拓扑 方案 C
+  principle)
+- P21 (cross-project): the sub-project is a sibling;
+  P21 applies
+- P22 (stuck→plan): this M-rule is one possible
+  outcome of stuck→plan (when "plan" reveals
+  insufficient experience, route to sub-project)
+- P27 (project self-org): sub-project is a form of
+  self-organization when the project recognizes its
+  own experience limits
+
+**Cross-references**:
+- `docs/HANDOFF_DETAIL.md` "Sub-project-for-
+  experimentation pattern" 段 — recording of the
+  pattern (per c89-small)
+- `docs/M_EXPERIMENT_IN_SUBPROJECT.md` (planned, c90)
+  — L2 detail companion per P11
+- `../skill-incubator/SKILL_DESIGN.md` — analogous
+  pattern (skill-incubator itself is a sub-project
+  for skill design, with 5-phase process)
+- `../skill-incubator/docs/framework/case-studies.md`
+  — first worked case (skill-incubator's first
+  decision)
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
