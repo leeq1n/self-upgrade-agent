@@ -443,6 +443,55 @@ Test / Doc).  Per P22 case 3 boundary test
 (principle about principles), P27 is **P-n
 meta, not M-***.
 
+### Recursion (P28 candidate, per skill b502577 + user meta-rule 2026-07-15)
+
+**Trigger** (when recursion should be invoked):
+- When the project itself is the problem
+- When P-n / M-* are being evaluated for self-application
+- When the agent is reviewing its own behavior at a
+  meta level
+- When SUA's sibling project (agent-reflection-skill)
+  receives a self-application request from the user
+
+**Action** (what recursion requires):
+1. Apply any P-n to the project itself (not just to
+   artifacts the project produces).
+2. Apply M-self-application to M-self-application
+   (per M-self-application 4-level L4, the highest
+   level is the agent's own behavior pattern).
+3. Cross-reference sister project (skill) before
+   making meta-decisions.
+4. Limit recursion to depth 2 (primitives on self,
+   not primitives on primitives on self).
+
+**Why recursion is a candidate, not yet P28**:
+- Per M_RULE_AUTHORING 3-condition gate, this is
+  the **1st observed occurrence** of the recursion
+  primitive in SUA (the previous 4 primitives were
+  in skill).
+- Per P25 6-step, lifting to P28 requires: read
+  first + root axiom (cross-axiom, like P27) +
+  no duplication (no existing P-n covers recursion)
+  + 4 elements (above) + impact analysis +
+  commit with trace + post-modify re-apply new
+  rules check.
+- This 段 **does the impact analysis** but stops
+  short of full lift.  When the next 2+ SUA
+  commits demonstrate recursion, then P28 lift.
+
+**Cross-axiom position** (like P27): recursion
+spans all 4 root axioms (it is the *act of applying
+P-n to self*, not the *content* of any single P-n).
+Per 信息拓扑 方案 C (c81): cross-axiom principles
+live flat in PRINCIPLES.md (and detail in
+PRINCIPLES_FULL.md), not in PRINCIPLES_DETAIL_DETAIL.md.
+
+**Cross-ref** to skill b502577: 6th reasoning
+primitive (recursion) in
+`../agent-reflection-skill/docs/framework/analogy-and-induction.md`.
+The skill commit also adds a "Self-application" 段
+demonstrating recursion on the skill itself.
+
 ---
 
 ## P-n vs M-* boundary (clarification per user 2026-07-14)

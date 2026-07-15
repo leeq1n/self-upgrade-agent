@@ -33,6 +33,13 @@ form of these axioms — the axioms as observed from the
 project's own behavior rather than the project's behavior
 as observed from the axioms.
 
+**Recursion (P28 candidate, mirror of skill b502577's
+6th primitive)** — applying any P-n / M-* to the project
+itself.  Like P27, it's a cross-axiom meta-meta principle.
+See `PRINCIPLES_FULL.md` for the full 4-element draft
+(per P25 6-step; lift to P28 deferred until 2+ more
+SUA commits demonstrate recursion).
+
 ### 类比联想 (analogy map — the 4 root essences)
 
 Per user audit 2026-07-14 ("原则中有共性的是否汇总到一起"
