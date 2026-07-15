@@ -967,7 +967,9 @@ reasoning).  M-n 14 = the 2 tracks; M-n 16 = the
 **Trigger**: when agent (or project) is about to
 modify a doc that has been modified 3+ times
 recently, OR when entering a domain that's new to
-the agent.
+the agent.  **See `M_CONTEXT_FRESHNESS_CHECK_DETAIL.md`
+(L2 companion per P11 + R6) for decision tree +
+worked examples + how both paths compose.**
 
 **Action** (2 paths, per 你 turn 类比 thinking):
 
