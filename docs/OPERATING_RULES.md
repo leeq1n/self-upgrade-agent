@@ -786,6 +786,82 @@ makes it explicit.
   restoration)
 - User meta-rule 2026-07-15 — origin
 
+### M-observe-think-execute (added 2026-07-15, per 你 turn "观察-思考-执行链")
+
+**Trigger**: when agent (or project) needs to
+perform a task, and wants to use principled
+meta-level structure.
+
+**Action** (6-stage chain, per 你 turn explicit
+sequence):
+
+1. **观察 (observe)**: gather raw data, observe
+   current state, identify changes.  Per M-n 14
+   Track 1 (类比) — find similar observations.
+2. **思考 (think 1)**: 归纳总结 + 判断是否进入
+   规划.  Per M-n 14 Track 2 (逻辑) + induction
+   primitive.
+3. **执行 (execute 1)**: 实际规划.  Decide what
+   to do, what memory is needed.
+4. **思考 (think 2)**: 怎么行动, 需要什么记忆.
+   Per M-n 14 Track 1 (类比) — find similar past
+   actions.
+5. **执行 (execute 2)**: 调用记忆.  Apply past
+   patterns + memory entries.
+6. **思考 (think 3) + 执行 (execute 3)**: 如何
+   修改、运行代码 → 实际修改、运行代码.  Per M-n
+   14 Track 2 (逻辑) + P25 6-step.
+
+**本质 (essence)** (per 你 turn): 这条 链 本质
+上 就是 "思考 包括 两种, 类比 推理 + 逻辑 推理":
+
+- 观察 + 思考-1 + 思考-2 = 类比 推理 (Track 1)
+- 思考-3 + 执行-1 + 执行-2 + 执行-3 = 逻辑 推理
+  (Track 2)
+
+**Higher-level position** (per 你 turn): this M-
+rule is **higher-level** than M-n 14 (two-track
+reasoning).  M-n 14 = the 2 tracks; M-n 16 = the
+6-stage chain that uses both tracks.
+
+**Relationship to other M-rules + P-n**:
+
+- **M-n 14 (two-track-reasoning)**: this M-rule
+  uses both tracks; M-n 14 is the foundation.
+- **M-n 11 (sub-project)**: this M-rule applies
+  within sub-project lifecycle (Decide → Spawn →
+  Set goal → Return → Accumulate).
+- **M-n 12 (terminology-clarity)**: this M-rule
+  sub-step 1 (观察) may detect unclear terms.
+- **M-n 13 (layer-extension)**: this M-rule sub-
+  step 6 (修改、运行代码) may add L0.5/L2.5/L3.
+- **M-n 15 (principle-reordering)**: this M-rule
+  sub-step 4 (思考-2) may invoke M-n 15 when
+  principles are in flux.
+- **P22 step 3 "find commonalities"**: this M-rule
+  sub-step 2 (思考-1) applies P22.
+- **P25 6-step**: this M-rule sub-step 6 (思考-3 +
+  执行-3) applies P25.
+
+**Anti-patterns**:
+
+- **Don't** skip 观察 (start with 思考 or 执行
+  without data).
+- **Don't** skip 思考 between 执行 stages (each
+  执行 should be preceded by 思考).
+- **Don't** conflate 思考 and 执行 (they are
+  distinct stages per 你 turn).
+
+**Cross-references**:
+
+- `OPERATING_RULES.md` § M-n 14 (two-track
+  reasoning) — foundation
+- `OPERATING_RULES.md` § M-n 11 (sub-project) —
+  related workflow
+- `OPERATING_RULES.md` § M-n 15 (principle-
+  reordering) — related workflow
+- User meta-rule 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
