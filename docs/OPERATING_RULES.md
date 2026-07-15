@@ -633,7 +633,10 @@ gate):
 ### M-two-track-reasoning (added 2026-07-15, per 你 turn "类比推理 + 逻辑推理")
 
 **Trigger**: when agent (or project) needs to reason
-about a problem, structure, or pattern.
+about a problem, structure, or pattern.  **See
+`M_TWO_TRACK_REASONING_DETAIL.md` (L2 companion per
+P11 + R6) for decision tree + worked examples +
+how both tracks compose.**
 
 **Action** (2 tracks):
 
