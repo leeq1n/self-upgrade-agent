@@ -723,6 +723,31 @@ deep analysis):
 归纳, 怎么行动), 逻辑 在 阶段 3/5/6 重要 (规划,
 调用记忆, 修改代码).
 
+**Topology dimension** (per 你 turn 2026-07-15
+"类比是并行、图中任意两点串联的能力；逻辑推理是
+串行、只在一条线上的单线程能力"):
+
+- **类比推理 = 并行 + 图 (parallel + graph)**:
+  - 并行 (parallel): process N cases / N domains
+    同时, not sequentially.
+  - 图中任意两点串联: any 2 nodes can be
+    connected (类比), regardless of distance.
+  - Like 知识图谱 (knowledge graph): nodes =
+    domains, edges = 类比 relationships.
+- **逻辑推理 = 串行 + 线 (serial + line)**:
+  - 串行 (serial): 1 step at a time, in order.
+  - 单线程 (single-thread): 1 path only, no
+    branching.
+  - Like 程序执行 (program execution): step 1 → step
+    2 → step 3, no jumps.
+
+**Implication for project**: 类比 thinking
+allows agent to jump between domains freely
+(graph traversal), while 逻辑 thinking forces
+sequential reasoning (line traversal).  Both
+needed: 类比 for cross-domain insight (避免 context
+爆炸), 逻辑 for verification + gate checks.
+
 **Anti-patterns**:
 
 - **Don't** use only one track (both required for
