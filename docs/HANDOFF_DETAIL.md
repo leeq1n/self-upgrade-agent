@@ -91,6 +91,35 @@ too (per "skill 等 SUA").
 
 
 
+## Sub-project-for-experimentation pattern (per user 2026-07-15)
+
+Per user meta-rule 2026-07-15: "如果当前经验不足以
+支撑项目，可以考虑新建一个子项目用来做实验积累失败
+经验".
+
+**When to consider**: when current project lacks
+experience to handle a task, or when a sub-task
+becomes too complex to handle in the main project.
+
+**Anti-pattern**: 可能陷进子任务，需要设定好目标.
+
+**Lifecycle**: 子项目 → 经验积累完成，知道怎么处理后
+→ 切回主项目.
+
+**Codification status (2026-07-15)**: 1st occurrence
+in SUA; not yet lifted to P-n (M_RULE_AUTHORING
+3-condition gate; bootstrap exception applies per
+user-explicit ask).  Plan: codify as M-experiment-in-
+subproject段 in OPERATING_RULES.md (commit c89), then
+L2 detail companion (commit c90), then parent verify
+(commit c91).  See queue in this turn's planning
+response.
+
+**Related principles**: P21 (sub-project is sibling
+per cross-project independence), P22 (stuck→plan
+could route to sub-project), P27 (project self-org
+allows sub-project for self-development).
+
 ## What NOT to do (per AGENTS.md + refactor audit findings)
 
 - Don't create parallel doc structures (M33 in M-self-application)
