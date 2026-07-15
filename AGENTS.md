@@ -8,7 +8,7 @@ Last P20-verified: 2026-07-13
 
 ## Read first (in order)
 
-1. `docs/PRINCIPLES.md` — operating principles (P1-P27).  Read
+1. `docs/PRINCIPLES.md` — operating principles (P1-P28, 24 working per c47a/c78/c79/c80).  Read
    the FULL file (~11 KB).  Do not skim.
 2. `docs/INDEX.md` — orientation map (8-step reading order
    + conditional stealth loads).  Follow the numbered steps
@@ -91,6 +91,45 @@ P11, P12, P13, P14, P17, P18, P19, P20, P21, P22, P23,
 P15 (demoted to P5 实操 per c79), P16 (demoted to P5 实操 per c80),
 P24 (merged into P3 per c78), P25, P26, P27, P28.  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
 list.
+
+## Operating rules (M-n 12-20, per c95-c116)
+
+**20 M-n** in `docs/OPERATING_RULES.md`:
+
+- **M-n 12**: terminology-clarity (refine "撞到一起" → "replan")
+- **M-n 13**: layer-extension (L0/L1/L2 + extensions)
+- **M-n 14**: two-track-reasoning (类比+逻辑, 6-stage distribution)
+- **M-n 15**: principle-reordering (6-step after 原则 混乱)
+- **M-n 16**: observe-think-execute (6-stage + top-down 分治)
+- **M-n 17**: context-freshness-check (intra-agent + inter-domain)
+- **M-n 18**: recursive-summary-protocol (6 sub-steps + 节点 生命周期)
+- **M-n 19**: file-naming-convention (PLAN dir + name + L2 companion)
+- **M-n 20**: agent-discoverability-check (cross-framework + naming + discoverability + memory persistence)
+
+**修订 L4 boundary (per c95 + memory 7)**:
+
+- (a) 1 line / typo / cross-ref = low-risk autonomous, skip 7-check
+- (b) 1-2 files / 7-check needed = mid-risk, run 7-check + ask
+- (c) 3+ files / vision-affecting = high-risk, always ask
+
+(但 你 override: "如果你通过了原则确认没问题，就
+直接进行，不用找我确认" — 主动 allowed per 你
+directive.)
+
+**Phrasing** (per M-n 12 + c95):
+
+- "撞到一起" → "replan" (or "撞到一起" preserved
+  in M-n 12 example text)
+- "等下次 next trigger" → "我 [active plan]"
+
+**Framework-agnostic** (per M-n 20 + 你 turn 2026-
+07-15):
+
+- This project designed for Hermes / Codex / Claude
+  Code / others.
+- File names should avoid Hermes-specific terms.
+- Future agents should be able to read this project
+  without Hermes-specific knowledge.
 
 ## When in doubt
 
@@ -178,7 +217,7 @@ it.
 
 These are project-wide pointers; load if your task type matches.
 
-- `docs/PRINCIPLES.md` — the principles themselves (P1-P27).
+- `docs/PRINCIPLES.md` — the principles themselves (P1-P28, 24 working).
   **Read FULLY before modifying any P-n / M-* rule** (per
   "P-n / M-* modification discipline" 段).
 - `docs/INDEX.md` — orientation map.
