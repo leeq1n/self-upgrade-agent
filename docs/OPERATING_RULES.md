@@ -1062,6 +1062,9 @@ gate, 5+ observed):
 
 **Trigger**: when a task or sub-task completes
 within a top-down 分治 plan (per M-n 16 stage 3).
+**See `M_RECURSIVE_SUMMARY_PROTOCOL_DETAIL.md`
+(L2 companion per P11 + R6) for decision tree +
+worked examples + 节点 生命周期管理.**
 
 **Action** (5 sub-steps, per 你 turn explicit
 sequence):
@@ -1214,6 +1217,94 @@ clarification)**:
 This M-rule is now part of agent behavior规范
 (per 你 turn).  Project should self-learn +
 consistently apply.
+
+### M-file-naming-convention (added 2026-07-15, per 你 turn "recursive rule + multi-agent 维护")
+
+**Trigger**: when agent creates a new file in
+project (PLAN file, M-n L2 companion, etc.).
+
+**Action**: follow the 4 codified conventions:
+
+1. **PLAN directory**: always `.hermes/plans/`
+   (plural), NOT `.hermes/plan/` (singular).
+2. **PLAN file naming**: `YYYY-MM-DD_HHMMSS-
+   topic.md` (e.g., `2026-07-15_160000-replan.md`).
+3. **M-n L2 companion**: `M_<NAME>_DETAIL.md`
+   (no `_DETAIL` suffix in summary, `_DETAIL`
+   suffix in companion).
+4. **M-n summary segment in OPERATING_RULES.md**:
+   `### M-<name> (added YYYY-MM-DD, per 你 turn ...)`.
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"这是一个递归的规则（分治、自顶向下拆解），写的文
+件路径、名字需要规范，不然新agent进来和老agent可能
+维护两个任务，你需要在多agent协作的角度思考会不会
+有问题".
+
+This M-rule ensures:
+- 新 agent knows where to find existing PLANS.
+- 新 agent knows how to name new PLANS.
+- 多 agent don't create dual maintenance (e.g.,
+  one agent writes to `.hermes/plan/`, another to
+  `.hermes/plans/`).
+- M-n L2 companions are consistently named.
+
+**Relationship to other M-rules + P-n**:
+
+- **M-n 18 (recursive-summary-protocol)**: M-n 18
+  produces files (PLAN, L2 companions); M-n 19
+  codifies how those files are named + placed.
+- **P21 (cross-project independence)**: M-n 19
+  respects P21 (e.g., no commit to
+  `../knowledge-graph-seed/` from SUA).
+- **P11 摘要+引用**: M-n 19 enforces P11 via
+  consistent file naming.
+- **P28 (recursion)**: M-n 19 is recursive (apply
+  to itself: new M-n files must follow M-n 19
+  conventions).
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c115 (整理)**: detected inconsistency
+   between `.hermes/plan/` (mine) and `.hermes/plans/`
+   (existing).  Same pattern (multi-agent dual
+   maintenance risk).
+2. **c112 + c114**: PLAN file created without
+   codified naming convention.  Anti-example.
+3. **M-n 13-17 L2 companions (c102-c105, c113)**:
+   all use `M_<NAME>_DETAIL.md` convention.
+   Implicit pattern.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**When to invoke**:
+
+- Before creating any new file in project.
+- When 新 agent enters project (P26 fresh-agent
+  discoverability check).
+- When reviewing existing files for consistency
+  (e.g., c115 整理).
+
+**Anti-patterns**:
+
+- **Don't** create files in `.hermes/plan/` (use
+  `.hermes/plans/`).
+- **Don't** name PLAN files without HHMMSS
+  (multiple plans same day would conflict).
+- **Don't** name M-n L2 companions inconsistently
+  (always `_DETAIL.md` suffix).
+- **Don't** skip cross-references between summary
+  and companion (per R6).
+
+**Cross-references**:
+
+- `.hermes/plans/` — all PLAN files (per M-n 19)
+- `docs/M_*_DETAIL.md` — all M-n L2 companions
+  (per M-n 19)
+- `OPERATING_RULES.md` § M-n 18 — recursive
+  summary protocol (uses M-n 19 conventions)
+- 你 turn 2026-07-15 — origin
 
 ## Anti-patterns (what NOT to do)
 
