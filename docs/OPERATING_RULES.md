@@ -276,6 +276,9 @@ new rule or pattern, or when debugging "rule didn't apply".
 **Trigger**: when the user mentions a skill concept (whether
 the existing `agent-reflection-skill/` or a future skill),
 or when SUA's commits involve pattern-extraction to skill.
+**See `M_SKILL_SYNCHRONIZE.md` (L2 companion per
+P11 + R6) for decision tree + 4 sub-steps + 4 anti-
+patterns + cross-project sync protocol.**
 
 **Action** (4 sub-steps):
 
@@ -338,6 +341,10 @@ This rule is the operational form of that meta-rule.
 **Trigger**: when current project lacks experience to
 handle a task, or when a sub-task becomes too complex
 to handle in the main project.
+**See `M_EXPERIMENT_IN_SUBPROJECT.md` + `_DETAIL`
+(L2 companion per P11 + R6) for 4 sub-steps +
+4 anti-patterns + prior art (Li 2022, Tsagkari 2020,
+Sparrius 1980 via sciverse).**
 
 **Action** (4 sub-steps):
 
@@ -422,6 +429,10 @@ process.
 in agent responses or user turns **without clear
 operational definition**, AND the ambiguity may
 cause confusion in later turns.
+**See `M_TERMINOLOGY_CLARITY.md` + `_DETAIL` (L2
+companion per P11 + R6) for 4 sub-steps + 3 anti-
+patterns + worked examples ("撞到一起" → "replan";
+"等下次 next trigger" → "我 [active plan]").**
 
 **Action** (4 sub-steps):
 
@@ -1761,6 +1772,9 @@ gate, 4+ observed):
 **Trigger**: when agent has plan (per M-n 16 top-
 down + M-n 18 节点 生命周期管理) AND no 真问题
 (P17 honest blockers).
+**See `M_PACE_CONTINUITY_DETAIL.md` (L2 companion
+per P11 + R6) for decision tree + worked examples
++ 5 anti-patterns.**
 
 **Action** (3 sub-steps, per 你 vision 2026-07-15):
 
