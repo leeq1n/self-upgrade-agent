@@ -17,11 +17,13 @@ agent behavior by its own documentation**, so an agent that
 follows the project's rules can operate correctly **without
 depending on the Hermes runtime**.
 
-**Three deliverable layers** (per user meta-rule 2026-07-14):
+**Three deliverable layers** (per user meta-rule 2026-07-14 + c89 M-n 11):
 
-1. **Operational rules**: 25 working principles (P1-P27 minus
-   P6 + P24, merged into P5 + P3 per c47a + c78) +
-   9 M-* operator rules
+1. **Operational rules**: 23 working principles (P1-P27
+   minus P6 + P15 + P16 + P24, merged into P5 + P3 per
+   c47a + c78 + c79 + c80) + **11 M-* operator rules**
+   (M-task-summary through M-experiment-in-subproject,
+   per c89)
 2. **Self-organization**: the project itself follows its own
    rules (per P27 + 7-check pattern; documented in
    `docs/HOW_TO_READ_GRAPH.md`)
