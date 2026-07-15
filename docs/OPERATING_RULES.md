@@ -552,6 +552,81 @@ when user says "X is unclear", agent should:
   revision consolidated
 - 你 turn 2026-07-15 — origin
 
+### M-layer-extension (added 2026-07-15, per user meta-rule)
+
+**Trigger**: when a project needs to add a new
+information layer (e.g. L0.5, L2.5, L3) beyond the
+fixed L0/L1/L2 structure.
+
+**Action** (4 sub-steps):
+
+1. **Detect**: notice when fixed L0/L1/L2 is
+   insufficient (e.g., too long summary, or need
+   intermediate layer for worked examples).
+2. **Name the new layer**: pick a clear name (per
+   M-n 12 terminology-clarity), e.g., L0.5 (between
+   L0 summary and L1 detail), L2.5 (between L2
+   detail and full examples), L3 (full examples).
+3. **Codify the new layer**: add a 段 or doc for
+   the new layer; reference from parent layer (per
+   R6).
+4. **Verify**: re-read after adding; ensure the new
+   layer doesn't violate P11 摘要+引用 (≤ 120 chars
+   for L0, ≤ 7KB for L1).
+
+**Anti-patterns**:
+
+- **Don't** add layers ad-hoc without naming (P11 +
+  M-n 12).
+- **Don't** add layers to fix unclear L0/L1/L2
+  (refine existing first, per P7 奥卡姆).
+- **Don't** add layers for every project (per M-n
+  12, only when 3+ observed needs).
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"我说过层级不一定只有固定层数，你需要看看项目会
+在特定情况下主动扩展层数吗，管理是合理的吗？".
+
+This M-rule operationalizes 你 turn: project CAN
+add new layers in specific cases, but should manage
+them (name + codify + verify).
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate):
+
+1. **L0.5 = Last P20-verified stamp** (per P20 段 in
+   multiple docs).
+2. **L2.5 = _DETAIL companion** (per R6).
+3. **L3 = full worked examples** (per
+   M_TERMINOLOGY_CLARITY_DETAIL.md 3 examples).
+4. **"## Detail (L2)"段** in summary docs (per c93
+   pattern).
+
+**Relationship to other M-rules + P-n**:
+
+- **P11 摘要+引用**: P11 fixed L0/L1/L2; this M-rule
+  allows controlled extension (not violation).
+- **P20 progressive disclosure**: P20 mandates L0/L1
+  structure; this M-rule allows intermediate layers
+  (L0.5, L2.5) when needed.
+- **M-n 12 (terminology-clarity)**: this M-rule
+  applies M-n 12 to layer names.
+- **M_RULE_AUTHORING 3-condition gate**: this M-rule
+  requires 3+ observed needs before adding new
+  layer.
+- **P7 奥卡姆**: don't add layers ad-hoc; refine
+  existing first.
+
+**Cross-references**:
+
+- `docs/M_TERMINOLOGY_CLARITY.md` — M-n 12 (used
+  for layer naming).
+- `docs/P11.md` (if exists) — P11 摘要+引用 fixed
+  L0/L1/L2.
+- `docs/P20.md` (if exists) — P20 progressive
+  disclosure.
+- User meta-rule 2026-07-15 — origin.
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
