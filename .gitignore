@@ -76,3 +76,6 @@ verify_p0_fixes.sh
 
 # core/planner.py runtime DB (harness persistence)
 data/
+
+# Hermes chat history (per c115 accident, per M-n 19 naming convention)
+chat_history.json
