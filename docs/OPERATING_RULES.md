@@ -627,6 +627,78 @@ gate):
   disclosure.
 - User meta-rule 2026-07-15 — origin.
 
+### M-two-track-reasoning (added 2026-07-15, per 你 turn "类比推理 + 逻辑推理")
+
+**Trigger**: when agent (or project) needs to reason
+about a problem, structure, or pattern.
+
+**Action** (2 tracks):
+
+**Track 1 — 类比推理 (analogical reasoning)**:
+- Find structural similarity across domains
+- Apply pattern from domain A to domain B
+- Useful for: 5-family 类比 (c44), 信息拓扑 类比
+  (c81), cross-project patterns (skill-incubator
+  mirror), 案例库 类比
+- Self-application: project applies P-n to similar
+  projects, similar situations
+
+**Track 2 — 逻辑推理 (logical reasoning)**:
+- Sequential deduction from established facts
+- 7-check + P25 6-step + 5-family verify
+- Useful for: principle verification, code logic,
+  test pyramid, failure → regression, gate checks
+- Self-application: project verifies P-n internal
+  consistency, M-rule boundary check
+
+**When to use which** (per P7 奥卡姆):
+- Use **类比** when problem is novel or cross-domain
+- Use **逻辑** when problem is well-defined or needs
+  verification
+- Use **both** when problem is high-stakes (P25 6-step
+  requires both: read first = 类比 + analysis = 逻辑)
+
+**Anti-patterns**:
+
+- **Don't** use only one track (both required for
+  principled reasoning, per P25 6-step).
+- **Don't** use 类比 when 逻辑 is sufficient
+  (over-engineering).
+- **Don't** use 逻辑 when 类比 is the right tool
+  (cross-domain insight missed).
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"我需要说明思考包括两种，类比推理和逻辑推理，请
+你学习下这个观点，然后决定要不要做一些原则和
+任务规划之类的调整".
+
+This M-rule makes the 2 tracks explicit and
+operational.  Project already uses both (c44 类比
+framework, P25 6-step 逻辑); this M-rule codifies
+both as a single framework.
+
+**Relationship to other M-rules + P-n**:
+
+- **P22 step 3 "find commonalities"** = 类比
+  (per memory 5)
+- **P25 6-step** = 逻辑 (per established practice)
+- **P28 (recursion)** = both (apply 类比 + 逻辑
+  to self)
+- **M-n 12 (terminology-clarity)** = both (detect
+  via 类比, refine via 逻辑)
+- **M-n 13 (layer-extension)** = 类比 (find layer
+  pattern across projects)
+- **5-family 类比 framework (c44)** = 类比
+  foundational
+
+**Cross-references**:
+
+- `docs/P22.md` (if exists) — P22 step 3 类比
+- `docs/P25.md` (if exists) — P25 6-step 逻辑
+- `docs/PRINCIPLES_FULL.md` "Recursion"段 — P28
+  applies both
+- User meta-rule 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
