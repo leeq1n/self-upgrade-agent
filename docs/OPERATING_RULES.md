@@ -493,6 +493,65 @@ definition.  Per this M-rule:
   L2 detail
 - User meta-rule 2026-07-15 — origin
 
+### Autonomy boundary + phrasing revision (added 2026-07-15, per user meta-rules)
+
+**Trigger**: when an agent is about to perform a
+task, decide the risk level and corresponding
+process.
+
+**Action** (per risk level):
+
+| Risk | Definition | Action |
+|---|---|---|
+| (a) **Low-risk** | 1-line change / doc typo / cross-ref update only | Autonomous, skip 7-check.  Still cite P-n/M-n in commit message (hook requires). |
+| (b) **Mid-risk** | 1-2 files, 7-check needed | Run 7-check + P25 6-step.  No need to ask unless 真歧义. |
+| (c) **High-risk** | 3+ files, vision-affecting, multi-commit batch | Always ask user first. |
+
+**Anti-patterns**:
+
+- **Don't** apply autonomy when 真歧义 exists
+  (e.g., "撞到一起" 修订 — M-n 12 says clarify first).
+- **Don't** skip 7-check for mid-risk tasks (per
+  L4 weakness found in c90, 5b4900c).
+- **Don't** end turn with passive "等下次 next
+  trigger" (implies passive wait, 反 你 vision
+  "agent 主动").
+
+**Why this M-rule exists**: per 你 turn 2026-07-15:
+1. "当特别简单而且没有巨量的任务时你可以自行
+   决定，不用经过check" (low-risk autonomy)
+2. "我怀疑是hermes的skill让你每次跟我说'等下次
+   next trigger'，你看看是否需要调整" (phrasing
+   revision)
+
+**Phrasing revision** (per P17 老实说 + M-n 12):
+- "撞到一起" → "**replan on conflict**" (or just
+  "**replan**") — per P11 摘要+引用 (≤ 120 chars,
+  clear English) + P7 奥卡姆 (shorter)
+- "等下次 next trigger" → "**我接下来 [active
+  plan]**" (per P27 project self-org + 你 vision
+  "agent 不依赖 hermes")
+
+**Why both revisions**: the first ("撞到一起" → 
+"replan") improves term clarity (M-n 12).  The
+second ("等下次 next trigger" → "我接下来...")
+removes passive-wait phrasing that 反 agent 主动
+principle (P27 + 你 vision).
+
+**Self-application of M-n 12 (per user feedback)**:
+when user says "X is unclear", agent should:
+1. Acknowledge (per P17)
+2. Refine (Path (a)) or codify (Path (b))
+3. Update memory
+4. Verify (per P26)
+
+**Cross-references**:
+- `docs/M_TERMINOLOGY_CLARITY.md` — M-n 12 (Path (a)
+  refine name process)
+- memory entry 7 — 修订 L4 boundary + phrasing
+  revision consolidated
+- 你 turn 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
