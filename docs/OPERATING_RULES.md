@@ -1570,6 +1570,88 @@ gate, 4+ observed):
 - `docs/PRINCIPLES.md` — P17 (老实说)
 - 你 turn 2026-07-15 — origin
 
+### M-3w1h-think-first (added 2026-07-15, per 你 turn "自顶向下之前, 往上思考一步, 3W1H 分析法")
+
+**Trigger**: before any major decision, commit
+batch, or analysis task.
+
+**Action**: apply **3W1H 分析法** BEFORE
+top-down 分治 (per M-n 16 stage 3):
+
+| 3W1H | Question | 中文 |
+|---|---|---|
+| **What** | What is the problem / task? | 什么 |
+| **Why** | Why is this important / rationale? | 为什么 |
+| **Who** | Who is involved / affected? | 谁 |
+| **How** | How to approach / execute? | 怎么 |
+
+**3W1H → top-down 分治 sequence**:
+
+1. **3W1H 分析** (NEW, per 你 turn "往上思考一步"):
+   - What: clarify the problem
+   - Why: clarify rationale (per M-n 21 强调 "不仅
+     做什么, 还 为什么")
+   - Who: clarify stakeholders
+   - How: high-level approach
+2. **top-down 分治** (per M-n 16 stage 3):
+   - 目标 (per 3W1H What)
+   - 倒推 节点 (per 3W1H How)
+   - 分治 拆解 (per 3W1H How)
+   - 做下去 (per 3W1H How)
+3. **execute + sub-task summary** (per M-n 18)
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"自顶向下想问题之前，也需要往上思考一步，3W1H分析
+法".
+
+This M-rule prevents:
+- 直接 top-down 没 抽象 思考 (per 你 turn
+  criticism)
+- 漏掉 关键 维度 (What / Why / Who)
+- 思考 顺序 错 (先 抽象, 再 具体, 不 直接 具体)
+
+**When to invoke**:
+
+- Before any major commit batch
+- Before any 修订 L4 boundary decision
+- Before applying M-n 16 stage 3
+- Before declaring "all pass" (per P26 + M-self-
+  audit + M-n 22)
+- When 你 turn 涉及 multi-step decision
+
+**Anti-patterns**:
+
+- **Don't** skip 3W1H (go directly to top-down).
+- **Don't** answer 3W1H trivially (e.g., What =
+  "stuff" without specifics).
+- **Don't** confuse 3W1H (abstract) with
+  top-down (concrete): 3W1H is "above" (per
+  你 turn), top-down is "below".
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c118 (M-n 21)**: 我 did not apply 3W1H first;
+   went directly to M-n 21 codify.  Anti-example.
+2. **c110 (M-n 14 topology)**: 我 did not ask "Why
+   is this insight important" (3W1H Why).
+   Anti-example.
+3. **c119 (PROJECT_STATE reframe)**: 我 went
+   directly to 类比 c117; didn't apply 3W1H
+   Who (new agents affected).  Anti-example.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**Cross-references**:
+
+- `OPERATING_RULES.md` § M-n 16 — top-down 分治
+  (used in step 2)
+- `OPERATING_RULES.md` § M-n 21 — ask-or-infer-
+  mark-guess (3W1H Why relates)
+- `docs/PRINCIPLES.md` — P17 (老实说, for 3W1H
+  answers)
+- 你 turn 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
