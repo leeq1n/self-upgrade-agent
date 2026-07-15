@@ -315,10 +315,19 @@ or when SUA's commits involve pattern-extraction to skill.
 This rule is the operational form of that meta-rule.
 
 **Cross-references**:
-- `docs/SKILL_GENERATION.md` (committed next, c83) —
-  SUA 维护的 skill-generation-knowledge
+- `docs/SKILL_GENERATION.md` (deprecated 2026-07-15,
+  per c87) — historical location of skill-generation-
+  knowledge; canonical is now
+  `../skill-incubator/SKILL_DESIGN.md`
 - `docs/M_SKILL_SYNCHRONIZE.md` — full text with
-  case studies
+  case studies, 4 sub-steps detail, worked examples
+  (3 of them), and relationship to other M-rules
+- `../skill-incubator/SKILL_DESIGN.md` — canonical
+  design knowledge (per c88)
+- `../skill-incubator/docs/process/when-to-incubate.md`
+  — 4-condition checklist
+- `../skill-incubator/docs/framework/case-studies.md`
+  — first worked case
 - `../agent-reflection-skill/HANDOFF_DETAIL.md` 04a2935
   — skill side mirror
 - `../agent-reflection-skill/docs/framework/analogy-and-induction.md`
