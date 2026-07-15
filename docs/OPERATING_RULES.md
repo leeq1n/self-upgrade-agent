@@ -664,6 +664,22 @@ how both tracks compose.**
 - Use **both** when problem is high-stakes (P25 6-step
   requires both: read first = 类比 + analysis = 逻辑)
 
+**Entropy dimension** (per 你 turn 2026-07-15
+"逻辑推理负责熵增发散，类比推理负责熵减归纳"):
+
+- **类比推理** = **熵减归纳** (compression):
+  compress possibilities to essence, reduce
+  complexity.  Related to skill b502577 5th primitive
+  "compression" + 4th primitive "abduction" (best
+  explanation).
+- **逻辑推理** = **熵增发散** (diverge):
+  expand premises to conclusions, generate
+  possibilities.  Related to skill b502577 2nd
+  primitive "induction" + 6th primitive "recursion".
+
+Both tracks operate on different entropy directions,
+which is why both are needed for full reasoning.
+
 **Anti-patterns**:
 
 - **Don't** use only one track (both required for
