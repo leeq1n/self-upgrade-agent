@@ -699,6 +699,93 @@ both as a single framework.
   applies both
 - User meta-rule 2026-07-15 — origin
 
+### M-principle-reordering (added 2026-07-15, per 你 turn "原则混乱/修改原则后" 6-step)
+
+**Trigger**: when agent notices that principles
+have become disordered, or after modifying any
+principle (P-n or M-n), or when project vision
+drifts.
+
+**Action** (6 sub-steps, per 你 turn explicit
+sequence):
+
+1. **重读 (re-read)**: re-read all current P-n +
+   M-n + R-n + memory entries.  Goal: ensure
+   current state is fully internalized before
+   proceeding.
+2. **类比思考 (analogical thinking)**: find
+   structural similarity between current chaos
+   and previous patterns (per M-n 14 Track 1).
+   Useful for: 5-family 类比 (c44), cross-project
+   类比 (skill-incubator), prior similar disarrays.
+3. **归纳总结 (inductive summary)**: extract
+   pattern from observations.  Per M-n 14 Track 2
+   (逻辑) + induction primitive (skill
+   b502577).
+4. **确认顺序 (confirm order)**: verify ordering
+   of P-n (numerical), M-n (numerical), R-n
+   (numerical), and within-doc段 (per 7-check
+   step 3).
+5. **整理 (reorganize)**: apply reorderings +
+   renumberings + cross-ref updates.  Per P11 +
+   R6 + P14.
+6. **读一遍原则确认无误 (re-read principles to
+   verify)**: re-read all P-n/M-n/R-n + memory
+   once more, verify no further chaos, confirm
+   order, then proceed.  This is the
+   **principle-modification discipline** (per
+   P25 6-step).
+
+**Anti-patterns**:
+
+- **Don't** skip 重读 (start with 类比 or 归纳
+  without internalizing current state).
+- **Don't** skip 确认顺序 (may miss numerical
+  ordering issues, per 7-check step 3).
+- **Don't** skip the final 读一遍原则确认无误
+  (P25 step 7 post-modify check is critical).
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"当你意识到原则混乱/修改过原则后需要重读、类比思
+考、归纳总结、确认顺序、整理、最后读一遍原则确认
+无误".
+
+This M-rule operationalizes 你 6-step sequence as
+a single M-rule.  Project has been doing this
+informally (per c95, c96, c97, c98); this M-rule
+makes it explicit.
+
+**Relationship to other M-rules + P-n**:
+
+- **P25 6-step**: this M-rule is P25 extended with
+  explicit 类比 + 归纳 sub-steps
+- **M-n 14 (two-track reasoning)**: sub-steps 2 +
+  3 are 类比 + 归纳 (Track 1 + Track 2)
+- **M-n 12 (terminology-clarity)**: step 5
+  (整理) may rename unclear terms
+- **M-n 13 (layer-extension)**: step 5 (整理)
+  may add L0.5/L2.5/L3 if needed
+- **7-check**: step 4 (确认顺序) maps to 7-check
+  step 3 (ordering check)
+
+**When to invoke**:
+
+- After any P-n modification (per P25)
+- After M-n codification (per M_RULE_AUTHORING)
+- After parent verification (per SUMMARY_LIFECYCLE)
+- When vision drift detected (per P26)
+- When chaos / disorder observed in docs
+
+**Cross-references**:
+
+- `docs/PRINCIPLES.md` — P-n ordering check
+- `docs/OPERATING_RULES.md` — M-n ordering check
+- `docs/P25.md` (if exists) — P25 6-step (related
+  but different: P25 is principle-modification
+  discipline, this M-rule is post-chaos
+  restoration)
+- User meta-rule 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
