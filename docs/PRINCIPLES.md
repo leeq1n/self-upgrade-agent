@@ -4,7 +4,7 @@ status: "summary"
 ---
 
 # PRINCIPLES — Working principles (portable)
-> L0: The 27 working principles (P1-P27) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P24 + P25 + P26 (also meta-rules) here, P27 (project self-org, meta) here.
+> L0: The 26 working principles (P1-P27 minus P6 + P24, merged into P5 + P3 per c47a+c78) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P25 + P26 + P27 (also meta-rules) here.
 > See `docs/PRINCIPLES_DETAIL.md` "Root axioms"段 (L0 categorical synthesis) + "Cross-reference to PRINCIPLES.md 类比联想段" (L1 operational mirror) for bidirectional context.
 Last P20-verified: 2026-07-14
 
@@ -51,7 +51,7 @@ axioms are categorical):
 | Essence family | P-n | Operational commonalities (类比) |
 |---|---|---|
 | **Plan-then-act** (sequence + organization) | P1, P2, P4, P15, P22 | All about "step before step".  Organize workspace (P1), search before designing (P2), 1 commit per feature (P4), stage gate at boundary (P15), plan when stuck (P22).  Essence: **don't leapfrog steps**. |
-| **Verify-don't-guess** (truth by structure) | P3, P5, P16, P18, P19, P24 | All about "verify by structure, not by assumption".  Test pyramid (P3), verify before commit (P5, merged with P6 per c47a), ad-hoc verify when uncertain (P16), failure → regression (P18), intermediate state observable (P19), sequential chain test (P24).  Essence: **make the unseen testable**. |
+| **Verify-don't-guess** (truth by structure) | P3, P5, P16, P18, P19 | All about "verify by structure, not by assumption".  Test pyramid (P3, merged with P24 per c78), verify before commit (P5, merged with P6 per c47a), ad-hoc verify when uncertain (P16), failure → regression (P18), intermediate state observable (P19).  Essence: **make the unseen testable**. |
 | **Capture-in-writing** (docs as truth) | P10, P11, P12, P14, P17, P20, P21 | All about "if it isn't written, it isn't true".  Code over prompt (P10), 摘要+引用 (P11), knowledge in project not memory (P12), docs stay current (P14), honest reporting (P17), progressive disclosure (P20), cross-project boundaries (P21).  Essence: **commit to the record**. |
 | **Minimum-viable** (奥卡姆 + structure) | P7, P8, P9, P13 | All about "don't over-build, but make structure clear".  奥卡姆 (P7), fail-open (P8), hard rules not LLM-judged (P9), no orphan nodes (P13).  Essence: **minimum + intentional structure**. |
 | **Meta-rules** (how to reason about rules) | P22, P23, P25, P26, P27 | All about "how to think about the other P-n".  Stuck→plan (P22), doc>script (P23), principle modification discipline (P25), user-acceptance fresh-agent check (P26), project self-organization (P27).  Essence: **process for the process itself**. |
@@ -121,4 +121,4 @@ descends from.  Per P22 步骤 3: 找 rule 之间的共性.
 
 ## Detail (L2)
 
-For per-P-n full text (P19, P20, P20细则, P21, P24, P25, P26), P-n vs M-* boundary段, and L2 实操段, see [`PRINCIPLES_FULL.md`](PRINCIPLES_FULL.md).  Per R6, this companion is required for files > 7KB.
+For per-P-n full text (P19, P20, P20细则, P21, P25, P26, P27), P-n vs M-* boundary段, and L2 实操段, see [`PRINCIPLES_FULL.md`](PRINCIPLES_FULL.md).  (P24 merged into P3 per c78; P24段 removed from PRINCIPLES_FULL.md.)  Per R6, this companion is required for files > 7KB.

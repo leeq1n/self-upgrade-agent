@@ -88,7 +88,7 @@ Detailed body.
 
 Allowed `P##` values: P1, P2, P3, P4, P5, P7, P8, P9, P10,
 P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22, P23,
-P24, P25, P26, P27 (P6 merged into P5 per c47a).  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
+P24 (merged into P3 per c78), P25, P26, P27.  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
 list.
 
 ## When in doubt

@@ -153,40 +153,6 @@ This is the formal statement of the philosophy behind
 and the L1 children column.  See `PRINCIPLES_DETAIL.md` for full
 text.  R12 in P20.细则 governs child-project sync.
 
-### P24. Sequential chain test (output → input)
-When implementing a pipeline of small features (A → B → C), test
-each stage individually AND test the chain by **passing Stage A's
-disk output as Stage B's input**.  Don't mock the disk boundary;
-use real disk + tmp_path fixture.
-
-Pattern (4 stages, extends P3 单元→联合→集成):
-1. **Unit** (Stage A): test A() alone with mock external (LLM, network).
-2. **Chain** (A → B): A() → save to disk → read from disk → B().
-   No mock of disk; use `tmp_path` fixture.  Verify intermediate
-   output is correct shape.
-3. **Joint** (A + B + C wired): all stages in one test, mock
-   external only at boundaries (LLM).
-4. **Integration** (real run): no mocks, real LLM, real disk.
-
-Why (per P19 data flow observability): intermediate outputs are
-already persisted to disk.  Tests should verify that the
-persistence is **readable + correct shape** for downstream stages.
-A unit test only verifies Stage A's return value; it doesn't catch
-"wrong file path", "wrong JSON format", "stale data from previous
-run".
-
-Rationale (per user 2026-07-11): '小功能测通以后将输出作为下一
-个小功能的输入测, 都测通了合并测'.  Same idea as integration
-testing — test the **boundary**, not just the function.
-
-Find commonality (per P22):
-- P3 单元→联合→集成: extended to 4 stages
-- P19 data flow observability: chain test verifies intermediate
-- P7 奥卡姆: chain test is **one new test class**, not new framework
-
-**实操 (L2)**: per new pipeline feature, write 1 unit + 1 chain
-test before the joint test.  Chain test uses `tmp_path` for disk
-isolation.  Per Test + Doc roots.
 
 ### P25. Principle modification discipline (per user 2026-07-14, lifted from commit f6c796d by commit 33)
 
@@ -414,6 +380,68 @@ principle modification).
 - `docs/OPERATING_RULES.md` "User-provided meta-
   rules → codify to doc"段 (the M-* rule about
   codification that this P-n extends).
+
+---
+
+### P27. Project self-organization (per c52 SELF_ORG + commit 73)
+
+Per M_RULE_AUTHORING 3-condition gate + P25 6-step:
+
+**Trigger** (when this principle should fire):
+- After every commit (post-commit phase)
+- After every P-n / M-* modification
+- After every doc reorganization
+- After every parent verification (SUMMARY_LIFECYCLE)
+- When project state entropy is detected (per c44 audit finding)
+
+**Action** (what the principle requires):
+
+1. **Top-down check**: project docs should be in
+   top-down + 分治 structure (per P20 progressive
+   disclosure).
+2. **类比 check**: are there 5 essence families
+   in current docs? per P22 step 3.
+3. **Ordering check**: are P-n in numerical order?
+   per P14 doc ordering.
+4. **Cross-ref check**: every new doc has parent
+   (per P13).
+5. **Cap check**: every doc ≤ 7KB / 300 lines
+   (per R5/R8).
+6. **L0 + R10 check**: L0 line present,
+   Last P20-verified stamped (per R9/R10).
+7. **Inductive check**: per P22 step 3, find
+   commonalities; per P-n vs M-* boundary
+   3-case test, decide where new content lives.
+
+**Anti-patterns** (what this principle prevents):
+
+- Wait for user prompting before organizing
+- Ad-hoc reorganization (no plan)
+- Add new structure without removing old
+- Skip the "obviously broken" cases
+
+**Rationale**: Per user meta-rule 2026-07-14:
+"未来我不说的话, 这项目会自己整理原则和项目为
+顺序规范吗?". Per P20 progressive disclosure
+applied recursively (this principle self-applies
+to project docs).
+
+**Bootstrap exception**: This principle was
+codified explicitly in commit 73, so prior
+commits predating P27 did not auto-apply it.
+Going forward, every commit should fire
+P27 checks.
+
+**实操 (L2)**: Per commit, agent should
+self-apply 7-check (top-down + class + ordering
++ cross-ref + cap + L0+R10 + inductive) BEFORE
+commit.  Per Doc + Workflow roots.
+
+**Relationship**: P27 is **meta-principle**
+spanning all 4 root axioms (奥卡姆 / Workflow /
+Test / Doc).  Per P22 case 3 boundary test
+(principle about principles), P27 is **P-n
+meta, not M-***.
 
 ---
 

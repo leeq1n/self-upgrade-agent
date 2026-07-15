@@ -87,17 +87,26 @@ P14 (docs stay current) — search is one of the discovery
 mechanisms that triggers doc updates.
 
 
-### P3. 单元 → 联合 → 集成
+### P3. Test pyramid — unit + joint + integration + chain test (per c47 MERGE_EVAL + commit 78)
+P24 ("Sequential chain test") was merged into P3 per
+P7 奥卡姆 (P24 was a specific case of P3 — chain test
+arrangement for sequential functions).  After merge:
+P-n count reduces 26 → 25 (per c47 plan).
+
 Tests form a pyramid:
 - **Unit**: one mechanism in isolation (atomic, fast)
 - **Joint**: multiple modules together (the contract)
 - **Integration**: real run with real inputs (the truth)
+- **Chain**: sequential functions tested by passing
+  intermediate state through the chain (per P19, P24
+  merged in here)
 
 Skip integration = "passing tests but broken in production".
 
 **实操 (L2)**: per new feature, write unit (fast) + joint (mock)
-+ integration (real LLM if applicable) tests before commit.  Per
-Test root.
++ integration (real LLM if applicable) + chain test (if
+sequential function chain per P19) tests before commit.
+Per Test root.  (合并前 P3 实操 + P24 实操).
 
 
 ### P4. 1 commit = 1 logical feature
