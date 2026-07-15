@@ -271,6 +271,59 @@ anti-patterns, relationship to other M-rules) lives in
 `docs/M_SELF_APPLICATION.md` — load when encountering any
 new rule or pattern, or when debugging "rule didn't apply".
 
+### M-skill-synchronize (added 2026-07-15, per user meta-rule)
+
+**Trigger**: when the user mentions a skill concept (whether
+the existing `agent-reflection-skill/` or a future skill),
+or when SUA's commits involve pattern-extraction to skill.
+
+**Action** (4 sub-steps):
+
+1. **Check SUA's skill-generation-knowledge**: does SUA
+   already have a 段 about this skill topic?  Per
+   information-topology 方案 C (c81), SUA 维护
+   skill-generation-knowledge as flat content (in
+   `docs/SKILL_GENERATION.md` or this 段).
+2. **Decide sync direction**: SUA → skill (pattern
+   extraction) or skill → SUA (pattern absorption)?
+   Per sibling awareness protocol (HANDOFF_DETAIL.md
+   61aab30).
+3. **Mirror appropriately**: if SUA → skill, write a
+   skill commit that captures the framework-agnostic
+   pattern (without SUA-specific code).  If skill →
+   SUA, document the lesson in SUA's HANDOFF_DETAIL.md
+   "Sibling project awareness" 段.
+4. **Verify skill self-preservation**: does the new
+   content preserve the skill's portability, cross-ref
+   to SUA, and not break existing 4 reasoning primitives
+   (analogy / induction / reflection / abduction)?
+
+**Anti-patterns**:
+
+- Don't blindly mirror SUA-specific code into skill
+  (breaks portability).
+- Don't add new skill primitives without explicit
+  user meta-rule (P7 奥卡姆).
+- Don't break the lightweight sync protocol
+  (HANDOFF_DETAIL.md 04a2935) — sync is "review at
+  parent-verify", not "every commit".
+
+**Why this M-rule exists**: per user meta-rule
+2026-07-15: "当我提到跟 skill 有关的内容时, 你需要看
+看 SUA 能不能学到对应知识, 并且在提炼到 skill 项目
+的时候提供给对方这类知识, 避免破坏自己, 做好维护".
+This rule is the operational form of that meta-rule.
+
+**Cross-references**:
+- `docs/SKILL_GENERATION.md` (committed next, c83) —
+  SUA 维护的 skill-generation-knowledge
+- `docs/M_SKILL_SYNCHRONIZE.md` — full text with
+  case studies
+- `../agent-reflection-skill/HANDOFF_DETAIL.md` 04a2935
+  — skill side mirror
+- `../agent-reflection-skill/docs/framework/analogy-and-induction.md`
+  — the 4 (now 6) reasoning primitives that skill teaches
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
