@@ -36,6 +36,60 @@ last_updated: "2026-07-14"
    options, pick one, apply, cite principle (per AGENTS.md
    "When in doubt").
 
+## Sibling project awareness (per user meta-rule 2026-07-15)
+
+Per user meta-rule "skill 项目是基于 SUA 的": SUA is upstream,
+agent-reflection-skill is downstream.  This means:
+
+### When SUA changes, skill needs attention
+
+Every SUA commit that establishes a **new reusable pattern**
+(e.g., P-n merge, M-n addition, R-n fix, 7-check discovery)
+should trigger the question: "Should this pattern be lifted
+to `../agent-reflection-skill/`?"
+
+### Decision tree (when a SUA commit is "skill-extractable")
+
+A SUA commit is skill-extractable if:
+
+1. The commit demonstrates a **meta-cognitive pattern**
+   (about how to reason, not what to do in this project).
+2. The pattern has **3+ observed occurrences** (per
+   M_RULE_AUTHORING 3-condition gate; not just 1 case).
+3. The pattern is **framework-agnostic** (would work in
+   Hermes / Claude Code / Codex, not just SUA).
+
+### Sync protocol (lightweight, not auto)
+
+SUA does **not** automatically update skill.  Instead:
+
+- SUA commits cite the pattern in their commit message
+  (per `"this commit demonstrates X"` parenthetical).
+- The skill project maintains a "patterns pending extraction"
+  list in its HANDOFF.md.
+- When SUA becomes stable (parent verify batch), the agent
+  reviews the "patterns pending" list and extracts those
+  that meet the 3-condition gate.
+
+This is **lightweight**: no auto-sync, no CI cron.  Just a
+discipline: when SUA's project self-org (per P27) detects
+a stable pattern, the next agent opens the skill project.
+
+### Reverse direction
+
+Skill project changes do **not** require SUA changes (skill
+is downstream).  But: if skill codifies a pattern that SUA
+**doesn't already have**, that's a signal to add it to SUA
+too (per "skill 等 SUA").
+
+### When NOT to sync
+
+- When SUA change is **specific to SUA** (e.g., OKR update,
+  P-n specific to SUA's tests) — NOT skill-extractable.
+- When skill change is **specific to a framework** (e.g.,
+  Hermes-specific invocation syntax) — irrelevant to SUA.
+
+
 
 ## What NOT to do (per AGENTS.md + refactor audit findings)
 
