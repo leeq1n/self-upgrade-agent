@@ -556,7 +556,10 @@ when user says "X is unclear", agent should:
 
 **Trigger**: when a project needs to add a new
 information layer (e.g. L0.5, L2.5, L3) beyond the
-fixed L0/L1/L2 structure.
+fixed L0/L1/L2 structure.  **See
+`M_LAYER_EXTENSION.md` (L2 companion per P11 + R6)
+for worked examples + decision tree + naming
+convention.**
 
 **Action** (4 sub-steps):
 
