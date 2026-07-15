@@ -1222,6 +1222,9 @@ consistently apply.
 
 **Trigger**: when agent creates a new file in
 project (PLAN file, M-n L2 companion, etc.).
+**See `M_FILE_NAMING_CONVENTION_DETAIL.md` for
+decision tree, worked examples, and how to apply
+across 3-project arch.**
 
 **Action**: follow the 4 codified conventions:
 
