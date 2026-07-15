@@ -1437,6 +1437,139 @@ gate, 4+ observed):
   L2 companion)
 - 你 turn 2026-07-15 — origin
 
+### M-ask-or-infer-mark-guess (added 2026-07-15, per 你 turn "不仅要做什么, 还 为什么 + 问/推理/标注猜测 + top-down 默认")
+
+**Trigger**: when agent is about to commit,
+modify, or make any decision, AND agent is
+uncertain about:
+- What to do (what action)
+- Why to do it (rationale)
+- Whether to proceed (decision)
+
+**Action** (3 sub-steps, per 你 turn explicit
+sequence):
+
+1. **问 (ask)**:
+   - First, ask user via clarify tool or
+     direct question.
+   - Be specific: list 2-4 options + 你 turn
+     origin context.
+   - Don't ask trivially (only 真歧义).
+
+2. **推理 (infer)**:
+   - If user does not respond OR response
+     insufficient:
+     - Apply 类比 reasoning (per M-n 14
+       Track 1): find prior similar pattern
+     - Apply 逻辑 reasoning (per M-n 14
+       Track 2): verify with P-n + M-n
+     - Self-reason the best action
+
+3. **标注 猜测 (mark guess)**:
+   - Mark the action as "**猜测**" or
+     "**inferred, unverified**"
+   - Cite the inference path (which P-n /
+     M-n / memory entry was used)
+   - Per P17 老实说: never claim green when
+     yellow
+   - If user later corrects: update memory
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"不仅要考虑我在做什么，还需要考虑为什么我要这么
+做，如果不确定就问，问了不回答就推理下，然后标注
+为猜测".
+
+This M-rule prevents:
+- Agent 盲跟随 (just doing what user says
+  without understanding why)
+- Agent over-asking (ask when infer is possible)
+- Agent 隐瞒 猜测 (claiming certainty when
+  uncertain)
+
+**Top-down 默认 (per 你 turn "要自顶向下分析问题")**:
+
+Apply M-n 16 stage 3 (top-down 分治) **always**,
+not just for explicit plans:
+- 任何 commit / 改动 前:
+  - clarify 目标 (what + why)
+  - 倒推 节点 (reverse-engineer nodes)
+  - 分治 拆解 (decompose)
+  - 做下去 (execute)
+- Per M-n 18: 写 sub-task summary
+
+**Relationship to other M-rules + P-n**:
+
+- **M-n 14 (two-track reasoning)**: sub-step 2
+  (infer) uses both 类比 + 逻辑 tracks.
+- **M-n 16 (observe-think-execute)**: top-down
+  默认 applies M-n 16 stage 3 always.
+- **M-n 18 (recursive-summary-protocol)**: sub-
+  task summary protocol.
+- **M-n 20 (agent-discoverability-check)**: M-n
+  21 段 is discoverable (新 agent can read it).
+- **P17 老实说**: sub-step 3 (mark guess)
+  enforces P17.
+- **P22 case-3 boundary**: M-n 21 is case 2
+  (behavioral), not P-n.
+- **P26 fresh-agent discoverability**: M-n 21
+  applied to P26 simulation (新 agent should
+  see M-n 21段).
+- **P28 (recursion)**: M-n 21 is recursive
+  (apply to itself: when modifying M-n 21,
+  apply M-n 21 3 sub-steps).
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c86-r87 (clarify tool)**: 2 uses.  Pattern
+   was just ask; not follow-up infer + mark
+   guess.  Anti-example (now codified as M-n
+   21 3 sub-steps).
+2. **c106-c117 (recent turns)**: I did not
+   always apply top-down 分治.  Some commits
+   focused on "what" without "why".  Anti-
+   example.
+3. **c110 (M-n 14 topology)**: 我 didn't pre-
+   analyze "为什么 你 turn 这条 insight 重要".
+   Anti-example.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**When to invoke**:
+
+- Before any commit (clarify why, not just what).
+- Before any modification (clarify goal +
+  reverse-engineer nodes).
+- Before any decision (ask, then infer if no
+  answer, then mark guess).
+- Always apply top-down 分治 (M-n 16 stage 3
+  + M-n 18 summary).
+
+**Anti-patterns**:
+
+- **Don't** ask without follow-up reasoning
+  (sub-step 2).
+- **Don't** infer without marking guess
+  (sub-step 3).
+- **Don't** skip top-down 分治 (per 你 turn
+  "要自顶向下分析问题").
+- **Don't** focus only on "what" without "why".
+- **Don't** claim certainty when uncertain
+  (per P17).
+
+**Cross-references**:
+
+- `OPERATING_RULES.md` § M-n 14 — two-track
+  reasoning (used in sub-step 2)
+- `OPERATING_RULES.md` § M-n 16 — top-down 分治
+  (used in top-down 默认)
+- `OPERATING_RULES.md` § M-n 18 — sub-task
+  summary
+- `OPERATING_RULES.md` § M-n 20 — agent
+  discoverability
+- `docs/PRINCIPLES.md` — P17 (老实说)
+- 你 turn 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
