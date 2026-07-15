@@ -1756,6 +1756,99 @@ gate, 4+ observed):
 - `docs/PROJECT_STATE.md` — 最终目标 reference
 - 你 turn 2026-07-15 — origin
 
+### M-pace-continuity (added 2026-07-15, per 你 turn "有计划的情况下，一直推进到遇到问题再来找我 ... 最近几轮不用这样打断项目推进节奏")
+
+**Trigger**: when agent has plan (per M-n 16 top-
+down + M-n 18 节点 生命周期管理) AND no 真问题
+(P17 honest blockers).
+
+**Action** (3 sub-steps, per 你 vision 2026-07-15):
+
+1. **Commit + continue** (no verbose ending):
+   - After commit, **directly continue next
+     commit** (per M-n 16 stage 3 + M-n 18 sub-
+     task summary).
+   - Don't add verbose "end this turn"段 or
+     "active next plan"段.
+   - Response should be: commit acknowledgment
+     + 简短 status, NOT 重复 commit content.
+
+2. **Only interrupt for 真问题** (P17 honest):
+   - 真问题 = "I can't proceed because..." (per
+     P17 老实说)
+   - Not interrupt for: confirmation requests,
+     verification, or trivial questions.
+   - Per M-n 21: only ask when 真歧义 (not
+     trivially).
+
+3. **Per 你 vision "主动 + 不打扰"**:
+   - Default mode: 主动 continue per PLAN.
+   - Exception: 真问题 (per P17).
+   - Per M-n 12: phrasing revision ("等下次
+     next trigger" → "我 [active plan]"; "撞到
+     一起" → "replan").
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"有计划的情况下，一直推进到遇到问题再来找我 ...
+最近几轮不用这样打断项目推进节奏".
+
+This M-rule prevents:
+- Agent 打断 项目 推进 节奏 (verbose "end this
+  turn"段)
+- Agent over-asking (already covered by M-n 21,
+  but reinforced here)
+- Agent "等我 next 决定" (passive wait, already
+  covered by M-n 12)
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c106-c133 (最近 28 commits)**: 我 每次
+   都 verbose "end this turn" + "active next
+   plan" 段.  你 turn 第 2 部分 是 对 这 28
+   commits 的 feedback.  Anti-example.
+2. **c95 (L4 boundary 你 override)**: 你 vision
+   = "不用找我确认" — 主动 continue.  Pattern:
+   not interrupt.
+3. **c100 ("只要你处理好了，就继续推进")**:
+   你 vision = continue, don't wait.  Pattern:
+   not interrupt.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**When to invoke**:
+
+- Default: 任何 commit 后 (always apply).
+- Exception: 真问题 (per P17 + M-n 21 sub-step 1).
+- After M-n 18 sub-task summary: don't add
+  verbose ending段.
+
+**Anti-patterns**:
+
+- **Don't** add "end this turn"段 after commit.
+- **Don't** add "active next plan"段 after
+  commit (plan is in PLAN file + commit body).
+- **Don't** ask user for trivial confirmation
+  (per M-n 21: 真歧义 only).
+- **Don't** say "等下次 next trigger" (per M-n
+  12).
+- **Don't** "撞到一起" without replanning (per
+  M-n 12).
+
+**Cross-references**:
+
+- `OPERATING_RULES.md` § M-n 12 — terminology-
+  clarity (phrasing revision)
+- `OPERATING_RULES.md` § M-n 16 — top-down 分治
+  (used in sub-step 1)
+- `OPERATING_RULES.md` § M-n 18 — recursive
+  summary (used in sub-step 1)
+- `OPERATING_RULES.md` § M-n 21 — ask-or-infer-
+  mark-guess (used in sub-step 2)
+- `OPERATING_RULES.md` § M-n 23 — periodic re-
+  analysis (used to verify plan still valid)
+- 你 turn 2026-07-15 — origin
+
 ## Anti-patterns (what NOT to do)
 
 - **Don't** skip M-task-summary at task end (lose
