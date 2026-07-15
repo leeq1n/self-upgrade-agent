@@ -1670,6 +1670,9 @@ gate, 4+ observed):
 time (per M-n 17 Path 1: 10+ commits OR 1+ hour
 of work), OR when user explicitly asks for re-
 analysis.
+**See `M_PERIODIC_RE_ANALYSIS_DETAIL.md` for
+decision tree, worked examples, and how to apply
+across 3-project arch.**
 
 **Action** (3 sub-steps, per 你 turn "自顶向下看
 看有没有需要变动"):
