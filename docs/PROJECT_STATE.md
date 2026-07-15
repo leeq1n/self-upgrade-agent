@@ -10,10 +10,17 @@ last_updated: "2026-07-14 (35 commits: doc cleanup + P25 lift + final audit)"
 # PROJECT_STATE — brief
 > L0: Current project state (1-paragraph).  Load when: need snapshot of current goal/version/next step.
 
-**Goal (1 sentence)**: a self-improving agent that reads papers,
-modifies its own code in `core/planner.py`, verifies via the project
-test suite, and either keeps or reverts.  Local framework + remote
-minimax LLM API.
+**Goal (1 sentence) (updated 2026-07-14 turn reset)**: 一个能约束 agent 行为的项目，让 agent 不依赖 hermes 也能按好规则行动。
+
+**Pivot note**: 之前目标是 self-improving agent that modifies core/planner.py（session 早期定义）。中间用户调整为"项目自组织 + 知识图谱/平铺式 + agent-onboarding skill 给其他项目用"。新目标替代旧目标，旧 self-improving 实现仍存在 core/planner.py 但不再是 project 焦点。
+
+**3 个子目标** (per c50 audit + c52 SELF_ORG + c53 KNOWLEDGE_ORG + c57 HOW_TO_READ_GRAPH):
+
+1. **A. 项目自组织 + 自规划**：agent 写新 commit 时自动 self-audit（per P27 candidate）
+2. **B. 知识组织**：图/树（项目文档）+ 平铺式（agent-onboarding skill 给其他项目用）
+3. **C. 新 agent 入场可学**：HOW_TO_READ_GRAPH.md 提供 3 步读模式，新 agent 不需要 hermes 也能按规则行动
+
+**V2 起源**: PROJECT_STATE.md + README.md + AGENTS.md 三处之前都说旧目标"自进化 agent"，用户 turn reset 指出 vision drift。c73 同步三处目标陈述。
 
 **Tests**: 621 PASS + 6 skip + 0 fail (last commit `2b88a79`).
 *Excludes* 1 deselected test (`test_core_planner_md5_matches_head`)

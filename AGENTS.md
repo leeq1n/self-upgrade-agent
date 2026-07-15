@@ -8,7 +8,7 @@ Last P20-verified: 2026-07-13
 
 ## Read first (in order)
 
-1. `docs/PRINCIPLES.md` — operating principles (P1-P26).  Read
+1. `docs/PRINCIPLES.md` — operating principles (P1-P27).  Read
    the FULL file (~11 KB).  Do not skim.
 2. `docs/INDEX.md` — orientation map (8-step reading order
    + conditional stealth loads).  Follow the numbered steps
@@ -60,7 +60,7 @@ that motivated the change).
 ## Commit message contract
 
 Every commit message MUST contain at least one `P##` reference
-(one of P1-P26) explaining which principle motivated the
+(one of P1-P27) explaining which principle motivated the
 change.  The `commit-msg` hook enforces this.
 
 **Hook install** (one-time per clone):
@@ -78,7 +78,7 @@ Format:
 ```
 <type>(<scope>): <short description>
 
-Cite one of P1-P26 here, e.g.:
+Cite one of P1-P27 here, e.g.:
 - P5 — "added tests before commit"
 - P11 — "rewrote L0/L1 boundary"
 - P17 — "documented what is NOT shipped"
@@ -88,7 +88,7 @@ Detailed body.
 
 Allowed `P##` values: P1, P2, P3, P4, P5, P6, P7, P8, P9, P10,
 P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22, P23,
-P24.  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
+P24, P25, P26, P27.  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
 list.
 
 ## When in doubt
@@ -177,7 +177,7 @@ it.
 
 These are project-wide pointers; load if your task type matches.
 
-- `docs/PRINCIPLES.md` — the principles themselves (P1-P26).
+- `docs/PRINCIPLES.md` — the principles themselves (P1-P27).
   **Read FULLY before modifying any P-n / M-* rule** (per
   "P-n / M-* modification discipline" 段).
 - `docs/INDEX.md` — orientation map.
