@@ -122,6 +122,23 @@ agent MUST apply **5 primitives** (per M-n 16 stage 1-2
 + M-n 14 two-track + M-n 25 turn-pattern + M-n 26
 context-decay; codified in M-n 29 Step 2):
 
+**Per 你 turn 2026-07-16 + M-n 14 two-track**: complete
+thinking needs BOTH constructive + adversarial.  Apply
+**4 critical-thinking primitives** FIRST (default-on for
+high-stakes, optional for single-file refactors, skip for
+trivial fixes; per
+`docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md`):
+
+0a. **质疑 (Challenge)**: 3 specific weaknesses + which
+    weakness has highest damage
+0b. **逆向 (Invert)**: OPPOSITE state + 2-3 reasons OPPOSITE
+    could be true + what would change
+0c. **预演失败 (Pre-mortem)**: "this FAILED in 30 days" +
+    3-5 failure modes + 1-2 preventable (Gary Klein 2007)
+0d. **对立论证 (Steelman-the-opposite)**: most charitable
+    opposing case + 2-3 strongest opposing arguments +
+    acknowledge valid opposing points
+
 1. **Analyze** (M-n 16 stage 1): 任务 IS what? 范围
    (per R11) + components / files / commits involved?
 2. **Reason** (M-n 16 stage 2 + M-n 22 3W1H): Why
