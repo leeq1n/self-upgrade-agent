@@ -60,11 +60,23 @@ failure mode M-n 34 is designed to prevent.
    (per M-n 34 pre-task scan: scan this file for M-n
    applicable to your current task).  Read when task
    needs M-rule application OR per M-n 34 step 2.
+8. `core-layer/README.md` — L0 marker for the **3-layer
+   governance** (per 你 turn 2026-07-16).  Read when
+   modifying AGENTS.md / hooks/ / .hermes/scripts/ /
+   OPERATING_RULES.md — these are the 核心 layer (agent
+   self-edit only, with eval-before + verify-after gate).
+   See `core-layer/governance-template.md` for the gate
+   template.
 
 **Note**: items 5-7 are added per M-n 34 (2026-07-16) so
 fresh agents can find all rules, not just P-n.  Per
 P21 cross-project, this list stays SUA-specific
 (sibling repos have their own entry docs).
+
+Item 8 added per 3-layer architecture (你 turn
+2026-07-16) — the core-layer/ directory has its own
+governance template separate from docs/ because
+modification rules differ (核心 = agent-only).
 
 ## Hard rules (top 6 from PRINCIPLES.md, binding)
 
