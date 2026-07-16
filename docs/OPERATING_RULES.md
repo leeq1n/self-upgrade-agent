@@ -2053,3 +2053,100 @@ pattern):
 
 
 .
+
+### M-knowledge-layer-architecture (added 2026-07-15, per 你 turn "3层知识结构 + 3 source 关系 + 单 skill scenario")
+
+**Trigger**: when designing skill structure
+OR auditing skill against new-agent perspective
+OR integrating 3 sources (hermes + SUA +
+skill) in single-skill scenario.
+
+**See `M_KNOWLEDGE_LAYER_ARCHITECTURE_DETAIL.md`
+(L2 companion per P11 + R6) for 3-layer
+definition + 3 sources mapping + lifecycle +
+跨项目 memory + 10 联想 问题.**
+
+**Action** (3-layer architecture + 3 sources):
+
+1. **3-layer knowledge structure**:
+   - **核心层 (core layer)**: agent 自指
+     behavior rules (M-n 12, M-n 14, M-n 18,
+     M-n 21, M-n 22, M-n 25, M-n 26, M-n 27,
+     P7, P17, P20, P22, P27, P28).  Self-
+     reference (自指) = case-3 meta-principle
+     per P22 — needs careful boundary.
+   - **知识层 (knowledge layer)**: general
+     agent capabilities applicable across
+     most projects (类比 reasoning + 归纳 +
+     压缩 + recursion, 6 primitives, 5 case
+     studies, when-to-reflect, M-n 14, M-n
+     23, M-n 26, P29, P10, P11).
+   - **项目层 (project layer)**: project-
+     specific knowledge (which framework,
+     which combos, which APIs, project
+     history, CHANGELOG, conventions).
+     Examples: skill-incubator's 5-phase
+     process, SUA's P-n/M-n system, hermes
+     memory system.
+
+2. **3 sources relationship**:
+   - **hermes 自进化 files**: ephemeral
+     (per-session) + cross-project memory.
+     Source for M-n 7 (M-task-summary) +
+     M-n 8 (M-task-graph) + self-application.
+   - **SUA 项目知识库**: persistent
+     (project-internal) + project-agnostic.
+     Source for 25 P-n + 26 M-n + R1-R12.
+   - **skill (final 3rd source)**: portable +
+     cross-framework.  Source for 6 primitives
+     + 6 case studies + when-to-reflect.
+     Per 你 turn Part 3: 用户 may only have
+     skill, not SUA/hermes.
+
+3. **Single-skill scenario**:
+   - skill contains ALL knowledge from
+     3 layers (subset for portability):
+     - 核心层: P7 + P11 + P17 + P20 + P22 +
+       P28, M-n 12 + M-n 14 + M-n 18 + M-n 21
+       + M-n 22 + M-n 25 + M-n 26
+     - 知识层: 6 primitives + 5 case studies
+       + when-to-reflect, M-n 14 + M-n 23 +
+       M-n 26
+     - 项目层: framework compatibility matrix
+       + 3-layer architecture doc + single-
+       skill fallback protocol
+   - When skill is the ONLY source, agent
+     should not require hermes-specific or
+     SUA-specific paths.
+
+**Why this M-rule exists**: per 你 turn
+2026-07-15 explicit 6 parts + 联想 + 推理
++ 类比 (per M_RULE_AUTHORING 3-condition
+gate, 5+ observed sites).
+
+**5 transition rules** (per 你 turn + M-n 26
+context-decay):
+
+- 核心层 ↔ 知识层 transition: P22 case-3
+  meta-principles → M-n operator rules.
+- 知识层 ↔ 项目层 transition: M-n 14
+  类比 → specific framework conventions.
+- 3 source synchronization: M-skill-
+  synchronize (c83) + hermes sync via
+  MEMORY.md.
+- Single-skill fallback: P29 reduce
+  context + R6 cross-ref + R11 boundary.
+- New agent perspective: P26 fresh-agent
+  simulation 5/5 PASS.
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-n 26
+  context-decay-management
+- `docs/OPERATING_RULES.md` § M-self-
+  application 4 levels
+- `docs/OPERATING_RULES.md` § M-n 18
+  recursive-summary-protocol
+- `docs/PRINCIPLES_FULL.md` "P29"段
+- 你 turn 2026-07-15 — origin
+
