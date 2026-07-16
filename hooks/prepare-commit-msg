@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# prepare-commit-msg hook: when commit message mentions 'task done' /
+# 'PASS' / '完成' / 'all green', append a reminder checklist line.
+# Per 你 turn 2026-07-16 retrospective 4-FAIL + M-n 32 Guardrail #4.
+#
+# TEMPLATE — install with: cp hooks/prepare-commit-msg .git/hooks/prepare-commit-msg
+#                    then: chmod +x .git/hooks/prepare-commit-msg
+#
+# This is the AUTOMATED MECHANICAL enforcement layer that prevents
+# "✅ DONE" claims without applied 5 primitives (per retrospective
+# failure mode that LLM-self-judgment couldn't catch).
+#
+# Hook receives:
+#   $1 = path to commit message file
+#   $2 = source of commit message (message / template / merge / squash / commit)
+#   $3 = commit SHA-1 (only for amend/squash)
+#
+# Behavior:
+#   - Read commit message
+#   - If contains trigger word (done / pass / 完成 / green), append
+#     "M-n 29 5-step applied: Y / N" checklist trailer
+#   - Otherwise: no-op (no friction for non-claim commits)
+
+set -e
+
+COMMIT_MSG_FILE="${1:-}"
+COMMIT_SOURCE="${2:-}"
+if [ -z "$COMMIT_MSG_FILE" ] || [ ! -f "$COMMIT_MSG_FILE" ]; then
+    echo "ERROR: prepare-commit-msg hook called without message file" >&2
+    exit 1
+fi
+
+# Only enforce for normal commits (skip merge / squash where claim
+# text might be auto-generated)
+if [ "$COMMIT_SOURCE" != "message" ] && [ "$COMMIT_SOURCE" != "" ]; then
+    exit 0
+fi
+
+MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Trigger word detection (case-insensitive for English)
+TRIGGER_WORD=$(echo "$MSG" | grep -iE 'task done|完成|all green|all pass|task complete|\[done\]|\[pass\]' || true)
+if [ -z "$TRIGGER_WORD" ]; then
+    exit 0
+fi
+
+# Check if 5 primitives already mentioned (avoid double-prompt)
+if echo "$MSG" | grep -qiE 'Analyze.*Reason.*联想.*归纳.*总结|5 primitives applied|m-n 29 5-step'; then
+    exit 0
+fi
+
+# Append checklist trailer
+{
+    echo ""
+    echo "# M-n 29 5-step applied? Y / N  (per AGENTS.md Task-done-notify reminder)"
+    echo "#   Step 1 Design 验收 角度 — Y / N"
+    echo "#   Step 2 Execute with 5 primitives — Y / N"
+    echo "#     (Analyze / Reason / 联想 / 归纳 / 总结)"
+    echo "#   Step 3 Validate (all PASS) — Y / N"
+    echo "#   Step 4 If FAIL → re-verify cycle — Y / N"
+    echo "#   Step 5 Notify this 'task done' — Y / N"
+    echo "# Run: python .hermes/scripts/m_n29_5step.py --self --claim 'task'"
+    echo "# Per M-n 32 Guardrail #4 pre-claim (per retrospective 2026-07-16)."
+} >> "$COMMIT_MSG_FILE"
+
+exit 0
