@@ -143,7 +143,7 @@ def main() -> int:
                         help="target repo path (default: SUA)")
     args = parser.parse_args()
 
-    target = Path(args.target) if args.target else Path(__file__).resolve().parents[2]
+    target = Path(args.target).resolve() if args.target else Path(__file__).resolve().parents[2]
     tag = "v1.0.0"  # TODO: detect from package metadata or arg
 
     print("=" * 60)
