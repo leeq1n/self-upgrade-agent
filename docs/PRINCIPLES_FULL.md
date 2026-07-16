@@ -643,6 +643,50 @@ requires:
 - 你 turn 2026-07-15 (3W1H + re-analysis +
   pace-continuity explicit directives)
 
+
+**P29 LIFT (per c167, 2026-07-15)**: per M_RULE_AUTHORING
+3-condition gate + 你 directive "不用找我确认"
++ bootstrap exception + P25 6-step step 6
+verification:
+
+- **Trigger**: when agent (or project) needs
+  to actively reduce context.
+- **Action**: explicit 4-sub-step loop with
+  entropy awareness + 类比 + 节点 生命周期
+  + periodic re-analysis + pace continuity:
+  - (1) Identify when context exceeds threshold
+    (per M-n 23 trigger: 10+ commits OR 1+ hour).
+  - (2) Apply 类比 to find similar prior
+    patterns (per M-n 14 entropy decrease +
+    M-n 17 Path 2 inter-domain MCP search).
+  - (3) Compress to essence (per M-n 14
+    compression primitive + M-n 18 节点
+    生命周期).
+  - (4) Destroy redundant summaries (per
+    M-n 18 destruction contract + sibling
+    isolation).
+- **Why lift now**: c165 itself demonstrates
+  P29 applied (主动 reduced context by moving
+  P29 detail to PRINCIPLES_FULL.md +
+  slimming L0 line per P20 R9) +
+  c137 (project 整洁) + c127 (re-analysis 3
+  issues COMPLETE) + c115 (整理 = analyze +
+  induction + sort) + c122 (M-n 23 re-
+  analysis) + c134 (M-n 24 pace-continuity) =
+  **6+ P29 demonstrations** (P25 6-step step
+  6 verification met).
+- **Apply to**: project self-organization,
+  context reduction, doc structure, M-rule
+  refinement, multi-commit batch work.
+
+**Status update**: P29 PROPOSED → P29 LIFTED
+(per c167).  P-n count: 24 → 25 working
+(per c96 P28 LIFT pattern + c165 PROPOSAL
++ c167 LIFT verification).
+
+---
+
+
 ## P-n vs M-* boundary (clarification per user 2026-07-14)
 
 When proposing a new rule, decide which category it
