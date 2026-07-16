@@ -118,6 +118,37 @@ trigger), M-self-learning-guardrail (M-n 32
 Guardrail #4 mechanical enforcement), M-knowledge-
 context-trade-off (M-n 30 Priority 1).
 
+## 3-layer governance (per 你 turn 2026-07-16)
+
+Per 你 turn 3-layer architecture proposal +
+M-n 30 Priority 1 (knowledge 充足) +
+retrospective failure mode (e7c9072 → c681e0b
+revert + a447b0b redo using `core-layer/`):
+
+- **`core-layer/README.md`** (commit `a447b0b`):
+  L0 marker for the 3-layer separation (核心/
+  用户/项目).  Defines modification governance
+  for core layer.
+- **`core-layer/governance-template.md`** (commit
+  `a447b0b`): L1 eval-before + verify-after
+  template.  Agent-self-edit only, with
+  M-n 29 5-step gate before AND after commit.
+
+The **核心 layer scope** (per core-layer/README.md):
+
+| In 核心 | NOT in 核心 |
+|---|---|
+| AGENTS.md, hooks/, .hermes/scripts/ | docs/PRINCIPLES.md |
+| OPERATING_RULES.md M-n sections | docs/PROJECT_STATE.md |
+| Mechanical enforcement trigger | docs/* (project-specific) |
+
+Sibling repos (agent-reflection-skill,
+skill-incubator, knowledge-graph-seed) each
+adopted cross-ref to core-layer/ in their
+VERIFICATION.md (commits `08ed89e`, `274ad5d`,
+`7438fc4`).  See each repo's VERIFICATION.md
+"3-layer governance cross-ref" 段.
+
 ## How to update this verification
 
 When a new P-n / M-n is added (codified +
