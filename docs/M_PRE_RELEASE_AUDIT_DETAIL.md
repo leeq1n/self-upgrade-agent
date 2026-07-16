@@ -158,3 +158,67 @@ modified for release case), M-n 32
 verify), M-n 34 (pre-task-scan self-application),
 M-n 35 (critical-thinking primitives applied
 during codification).
+
+## Where to commit (heuristic — per 你 turn 2026-07-16)
+
+**You turn 2026-07-16**: "下次你修改直接在
+commit 比较细的项目上改, 大版本的项目尽量少
+提交, 这样能减少工作量".
+
+**Pattern**:
+
+| Project type | Commit strategy |
+|---|---|
+| **Skill / fine-grained project** (e.g., agent-reflection-skill) | **Direct commit OK**.  Smaller scope, easier to verify, less coupling. |
+| **Big project** (e.g., SUA, with hooks + scripts + multiple M-n) | **Minimize commits**.  Batch related changes into 1 commit.  Prefer doc-only changes for M-rule updates. |
+| **Sibling project** (skill-incubator, KG) | **Cross-ref only** (don't duplicate content). |
+
+**Why**:
+
+1. **Big projects accumulate state** — each
+   commit shifts HEAD, requiring tag/tag-pointer
+   maintenance.
+2. **Squash cycles multiply** — every commit
+   added to a big project post-tag forces a
+   re-squash for clean releases.
+3. **Cross-repo sync** — content changes in
+   big projects need propagation to N consumers.
+
+**For release_audit.py specifically**:
+
+- **SUA has reference impl** (`.hermes/scripts/release_audit.py`)
+  — canonical M-n 36 codification
+- **Skill projects that ship releases copy the
+  script** (per commit 55d2ef9 example) — that's
+  fine, since each skill needs its own copy
+- **Modifications**: when fixing release_audit.py
+  bugs, fix in SUA first (canonical), then
+  propagate to skill projects (less work
+  cumulatively than re-deriving per-skill)
+
+**Re-derivation test (per M-n 34 + M-n 35
+critical-thinking #2 逆向)**: when designing
+a new M-rule or script, ask:
+
+> "Which project is the **canonical source of
+> truth** for this content?"
+
+If **SUA** (it's a meta-rule): SUA gets the
+canonical impl + doc; consumers copy on
+adoption.
+
+If **skill** (it's domain-specific): skill
+gets the impl directly; SUA only documents
+the rule pattern.
+
+**M-n 18 destruction extension**: this
+heuristic = "minimize cross-project commits"
+= M-n 18 applied at **organizational level**
+(not just within-file destruction).
+
+**Sources cited**:
+
+- 你 turn 2026-07-16 explicit heuristic
+- Monorepo pattern (canonical + consumers)
+- DNS hierarchy (root → TLD → domain)
+- Single source of truth (M-n 27)
