@@ -2150,3 +2150,106 @@ context-decay):
 - `docs/PRINCIPLES_FULL.md` "P29"段
 - 你 turn 2026-07-15 — origin
 
+### M-plan-conditional (added 2026-07-15, per 你 turn "不确定 → 规划; 清晰 → 继续")
+
+**Trigger**: before any major decision OR
+when 4 conditions met (any of):
+- (a) agent 不确定 plan
+- (b) plan 混乱 OR 多 part conflict
+- (c) 重大调整 (new M-n / P-n / 原则
+  改动, OR 项目 pivot)
+- (d) user explicit "应该 先 做规划"
+
+If NONE of (a-d): agent has plan AND
+plan is 清晰 / 合理 / 可行 / 符合预期 →
+**continue per plan** (per M-n 24 pace-
+continuity).
+
+**See `M_PLAN_CONDITIONAL_DETAIL.md`
+(L2 companion per P11 + R6) for self-
+audit 4-condition check + worked examples
++ relationship to P22 case-3 + P29.**
+
+**Action** (4 sub-steps per 你 turn):
+
+1. **Self-audit 4 conditions** (per M-n 22
+   3W1H first):
+   - Q1: agent 不确定? (per M-n 21 ask/
+     infer/guess)
+   - Q2: plan 混乱 OR 多 part conflict?
+   - Q3: 重大调整 (new M-n / P-n)?
+   - Q4: user explicit "先 做规划"?
+2. **If any YES → 先 做规划** (per P22 +
+   M-n 23 periodic re-analysis):
+   - 目标 (final goal per M-n 23 re-
+     analysis)
+   - 倒推 (sub-tasks per M-n 16 stage 3
+     top-down 分治)
+   - 分治 (sub-task breakdown per M-n 22
+     3W1H)
+   - 做下去 (execute per plan per M-n 24)
+3. **If all NO → continue per plan** (per
+   M-n 24 + M-n 18 sub-task continue):
+   - commit + continue per M-n 24
+   - 节点 生命周期 (per M-n 18 destruction
+     contract)
+   - pace-continuity 不 interrupt
+4. **Plan conditional 自我 验证** (per
+   P17 老实说 + M-n 22):
+   - If agent 显式 claim "规划 清晰 合理"
+     but 实际 conflict → trigger this M-rule
+   - Per P29 主动 reduce context: explicit
+     plan > implicit assumption
+
+**Why this M-rule exists**: per 你 turn
+2026-07-15 explicit directive + 你 vision
+"主动 allowed":
+
+- 你 turn 1st: 不确定/混乱/重大调整 → 先
+  做规划
+- 你 turn 2nd: 清晰/可行/符合预期 → 继续
+- 你 turn explicit: "如果你不知道的话
+  就学习下"
+
+Per M_RULE_AUTHORING 3-condition gate (7+
+observed sites: c118 + c122 + c127 + c134
++ P22 + M-n 12 + 你 turn explicit).
+
+**Relationship to other M-n / P-n**:
+
+- **M-n 21 (ask-or-infer-mark-guess)**: this
+  M-rule extends M-n 21 with explicit 4-
+  condition check.
+- **M-n 22 (3W1H-think-first)**: this
+  M-rule uses M-n 22 BEFORE planning
+  decision.
+- **M-n 23 (periodic-re-analysis)**: this
+  M-rule applies M-n 23 to 4-condition
+  context.
+- **M-n 24 (pace-continuity)**: this M-rule
+  applies M-n 24 when all NO.
+- **P22 (case-3 meta)**: P22 IS "when stuck
+  STOP + plan" (subset of this M-rule).
+- **P29 (reduce context)**: P29 IS "主动
+  reduce context" (ethos of this M-rule).
+
+**Self-application** (per P28 recursion):
+
+This M-rule IS M-self-application level 4
+applied to planning decision.  Recursive:
+this M-rule applies itself (i.e., apply 4-
+condition check to M-n 28 codification).
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-n 21 ask-
+  or-infer-mark-guess
+- `docs/OPERATING_RULES.md` § M-n 22 3W1H-
+  think-first
+- `docs/OPERATING_RULES.md` § M-n 23
+  periodic-re-analysis
+- `docs/OPERATING_RULES.md` § M-n 24 pace-
+  continuity
+- `docs/PRINCIPLES.md` P22 (case-3 meta)
+- 你 turn 2026-07-15 — origin
+
