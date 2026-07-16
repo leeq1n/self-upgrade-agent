@@ -2905,3 +2905,53 @@ via 你 turn explicit).
   test, linter, health-check (共同 pattern =
   external-triggered automatic check)
 
+
+
+### M-release-audit (added 2026-07-16, per 你 turn retrospective audit)
+
+**Trigger**: before tagging any `x.0.0` release /
+pre-push to github / pre-publish to package
+manager / pre-distribution of zip artifact.
+
+**5 checks** (full detail in `docs/M_PRE_RELEASE_AUDIT_DETAIL.md`):
+
+1. **Commit history cleanliness**: main branch
+   should have N+1 commits where N is expected
+   (or 1 + initial).  If cluttered, **suggest
+   squash** before tagging.
+2. **Tag points at HEAD**: `git rev-parse v1.0.0^{commit}`
+   should equal `git rev-parse HEAD`.  If tag is
+   behind, **suggest move tag forward**.
+3. **CHANGELOG.md exists**: records pre-release
+   history in tabular form.
+4. **Build artifact (zip) matches tag tree**:
+   `git ls-tree v1.0.0` content should equal
+   zip contents.  Use `git archive` to regenerate.
+5. **Documentation cross-refs + integrity**:
+   AGENTS.md + README.md + VERIFICATION.md
+   reference current version.
+
+**Default-on** for: x.0.0 release tags.
+**Optional** for: x.y.0 minor / x.y.z patch tags.
+**Skip** for: dev/feature-x / pre-release rc tags.
+
+**Sources cited** (per P14 / P29):
+- 你 turn 2026-07-16 retrospective audit
+- npm publish / Linux stable / chromium release
+  branch patterns
+- GitHub squash-merge default
+
+**Self-application** (per P28 recursion): M-n 36
+should be discovered (not explicitly told) by
+future agents reading this L1 section.  Per M-n 13
+layer-extension, AGENTS.md L0 surface must expose
+M-n 36 via "Read first" item 10.
+
+**Cross-references**:
+- `docs/M_PRE_RELEASE_AUDIT_DETAIL.md` (L2 companion)
+- `.hermes/scripts/release_audit.py` (script — to
+  be added)
+- `hooks/prepare-commit-msg` (extended for release
+  keyword trigger — to be added)
+- `AGENTS.md` "Read first" item 10 (L0 surface —
+  to be added)
