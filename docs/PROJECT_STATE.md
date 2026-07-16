@@ -1,146 +1,141 @@
-# PROJECT STATE — Where We Are (2026-07-07)
+L0: Project state — goal, current version, next step (1-paragraph).
+Last P20-verified: 2026-07-15
 
-> Read this first if you are a new agent (or human) joining this project.
-> Goal: orient you in 5 minutes.
+---
+description: "Project goal, status, mistakes, constraints, next step"
+status: "summary"
+last_updated: "2026-07-15 (c199 commits: 25 P-n + 27 M-n + 3-project arch + 整理 + 修订 L4 boundary + framework-agnostic + P29 LIFT + M-n 27 3-layer)"
+---
 
-## TL;DR
+# PROJECT_STATE — brief
+> L0: Current project state (1-paragraph).  Load when: need snapshot of current goal/version/next step.
 
-- **What**: A self-upgrading agent.  Daily loop: search arxiv → filter → patch → A/B + harness → decide → mark seen.
-- **Status**: v1.8.1.  7+ commits this session.  270 unit tests + 5 skip + 0 fail.
-- **Working tree**: clean, on `master`.
-- **One thing to know**: v1.8.1 has **emergent subsystems** (memory policy, goals registry) — they start empty.  LLM is expected to populate them via patchgen over time.
+**Goal (1 sentence) (updated 2026-07-15)**: 一个原则库项目 + skill 孵化器 + 已孵化的自我改进 skill 项目的 3-project 架构。SUA 自身 = 原则库（**25 P-n** + **27 M-n** + 修订 L4 boundary + framework-agnostic per M-n 20）；skill 孵化器 = sibling project（`../skill-incubator/`，设计并孵化 skill）；已孵化 skill = `../agent-reflection-skill/`（6 reasoning primitives + recursion + self-application + 3-layer architecture per M-n 27 + framework-agnostic per Hermes/Codex/Claude Code）。
 
-## Project goals (your 2026-07-07 statement)
+**Pivot note**: 之前目标是 self-improving agent that modifies core/planner.py（session 早期定义）。中间用户调整为"项目自组织 + 知识图谱/平铺式 + agent-onboarding skill 给其他项目用"。新目标替代旧目标，旧 self-improving 实现仍存在 core/planner.py 但不再是 project 焦点。
 
-> "做一个能自主升级的 agent, 它可以通过 selenium 等工具每天通过搜索最新的论文,
-> 筛选具体方法和趋势, 尝试将适合的创新点加在这个 agent 上, 对比这个功能的效果提升和代价,
-> 最终决定是否留下, 使用类似 bootloader 的方法切换代码, 也就是说这个模型需要调用大模型改进自己的代码.
-> 它应该有 skill 和新增创新点的生命周期管理, 每隔一段时间, 需要进行一次 skill/创新点
-> 的使用频率统计、质量评估与优化/销毁.  项目应当有干净的接口、实现代码与文档.
-> 项目应该有稳定性、可靠性、可用性和健壮性.  有 harness 和 loop 的思想."
+**3 个子目标** (per c50 audit + c52 SELF_ORG + c53 KNOWLEDGE_ORG + c57 HOW_TO_READ_GRAPH):
 
-## Architecture (3 layers)
+1. **A. 项目自组织 + 自规划**：agent 写新 commit 时自动 self-audit（per P27 candidate）
+2. **B. 知识组织**：图/树（项目文档）+ 平铺式（agent-onboarding skill 给其他项目用）
+3. **C. 新 agent 入场可学**：HOW_TO_READ_GRAPH.md 提供 3 步读模式，新 agent 不需要 hermes 也能按规则行动
 
+**V2 起源**: PROJECT_STATE.md + README.md + AGENTS.md 三处之前都说旧目标"自进化 agent"，用户 turn reset 指出 vision drift。c73 同步三处目标陈述。
+
+**Tests**: 621 PASS + 6 skip + 0 fail (last commit `2b88a79`).
+*Excludes* 1 deselected test (`test_core_planner_md5_matches_head`)
+because the user modified `core/planner.py` directly (LLM Round 5
+KEPT, commit `20e958d`) — user decides keep/revert.
+
+## Doc cleanup session 2026-07-14 (commits 95097fb..f6c796d)
+
+31 commits across 8 batches addressing doc drift +
+extending workflow rules.  Per M-task-summary parent
+verification, the latest batch is documented in
+`git log 7802611..HEAD~1` (or by message body
+search "batch verification").
+
+Key changes:
+- Orphan-reference cleanup (commits 95097fb..c414821)
+- EXTENSIONS.md X2 consolidation (commits 31ea3ce..e7a0c1f)
+- Switch action protocol (commits 05312d2..b6adb74)
+- Follow-ups cleanup (commits 0c59e4f..aa2710f)
+- Verify-before-edit rule (commits 0a4240a..c8efd26)
+- Follow-ups + design filtering (commits 99596e9..6d30895)
+- Lessons learned + follow-up propagation (commits 264c4cd..7802611)
+- Principle modification discipline (commit f6c796d)
+
+**Note**: all 35 commits this session were docs-only;
+no code changes.  Project functionality unchanged.
+
+## P25 lift batch (commits 6c6cb6c..6ca8b3a)
+
+3 commits lifting "P-n / M-* modification discipline"
+to a first-class P-n (P25) + extending the P-n vs
+M-* boundary段 with a 3rd case ("meta-principles
+about principles").  Fixes a mis-classification
+introduced in commit f6c796d.
+
+Key changes:
+- **PRINCIPLES.md**: new `### P25. Principle modification
+  discipline` 段 (canonical location); boundary段
+  extended with 3rd case + test question
+- **AGENTS.md**: 4 places updated P1-P24 → P1-P25
+- **hooks/commit-msg**: regex updated to `P([0-9]|1[0-9]|2[0-5])`
+- **PRINCIPLES_DETAIL.md + MEMORY_TOOLS.md**: L0 lines updated
+
+**Note**: installed hook at `.git/hooks/commit-msg`
+still has P1-P24.  User must `cp hooks/commit-msg
+.git/hooks/commit-msg && chmod +x` for hook to
+accept P25-only citations.
+
+## Current status (v3.0.2 OVERALL COMPLETE, doc cleanup + P25 lift 2026-07-14)
+
+Per LITERATURE (Self-Harness 40→62%, Lilian Weng "harness as
+important as model"), v3.0.2 implements a think-execute harness:
+
+| Module | Purpose | LOC |
+|--------|---------|-----|
+| `src/v3_multipaper.py` | read all 11 papers from catalog | 180 |
+| `src/v3_judge.py` | LLM judge picks best paper (with mock fallback) | 265 |
+| `src/v3_persist.py` | save summaries + decisions (P19) | 167 |
+| `src/v3_replay.py` | inspect failures (fast, no LLM) | 81 |
+| `src/v4_thinker.py` | Thinker abstract (plan API + 5 fallback paths) | 169 |
+| `src/v4_executor.py` | Executor abstract (skill dispatcher) | 129 |
+| `src/v4_loop.py` | Loop controller (Think → Execute → Observe) | 124 |
+| `src/v2_round.py` | extended: `run_one_round_with_harness()` | 360+ |
+
+**CLI (unified, 3 visible subcommands)**:
+```bash
+python -m self_upgrade improve --multi --max-retries 2 --count 5
+python -m self_upgrade replay   # inspect failures (default) or --live
+python -m self_upgrade test-scale 5  # N consecutive single-paper rounds
 ```
-Layer 1 — INVARIANT (these don't change):
-  harness-first decision (src/decide.py)
-  switcher atomic write (src/switcher.py)
-  skill lifecycle (src/skill_lifecycle.py)
-  preflight safety (src/pipeline_lg.py:_safety_restore_planner)
 
-Layer 2 — EMERGENT (LLM is expected to evolve these):
-  src/goals.py: registry of goal strategies.  Starts empty.
-  src/learning.py:apply_memory_policy: memory trim.  Starts noop.
+**Hidden aliases** (backward compat): `improve-multi`, `improve-harness`.
 
-Layer 3 — USER INTERFACE:
-  python -m core.agent "task"     # use the agent
-  python run.py [--live]          # run self-evolve
-  python -m self_upgrade <subcmd> # unified CLI
-  python run_stable.py [target] [gap]  # convergence test
-  python collect_papers.py 50 "topic" # bulk paper collection
-```
+## Real LLM data (v3.0.2 follow-up #4 + #5)
 
-## Current state
+- `--count 5` multi-paper run (commit `20e958d`): **1/5 KEPT (20%)**
+- Round 5 KEPT: LLM added `generate_tests` option to `core/planner.py`
+  (Self-Harness-style improvement, 16/16 tests pass)
+- `core/planner.py` is LLM-modified, **user decides keep/revert**
 
-### Done in v1.8.0 / v1.8.1 (this session, 7+ commits)
+## Mistakes made (do not repeat)
 
-| Commit | Feature |
-|---|---|
-| f37e48c | Real Python harness — 8 unit tests for core/planner.py |
-| a7d91d5 | Harness wired into pipeline_lg + decide |
-| 3247adc | node_evaluate e2e + skill_lifecycle_static + 1 round live |
-| 39eb9f2 | node_skill_audit (8th node, 0 LLM) |
-| 55bc8a8 | audit_history table |
-| 5372b93 | `self_upgrade audit` CLI subcommand |
-| 5401f0b | ISSUES + PROJECT_BRIEF updates with 5-round results |
-| f41f21a | run_1round.py wrapper + provider config docs |
-| e436412 | RELEASE_v180.md |
-| 970d76c | Day 7 — local qwen3.6-27B + run_stable.py |
-| 330801f | (other agent) P0 fixes — atomic manifest write + surgical merge |
-| e0ce870 | (other agent) ISS-003 upgrade to P0 |
-| 2b32628 | seen-papers filter + streaming LLM + collect_papers |
-| 5e0adac | Streaming for core/agent + design philosophy docs |
-| 0b76e55 | run_stable patches both namespaces + seen_papers gc |
-| d3ab5fa | Emergent memory policy (let LLM design it) |
-| f7bc951 | Emergent goals (extensible + anti-lock-in + 奥卡姆) |
+See full table in
+[`PROJECT_STATE_DETAIL.md §Mistakes`](PROJECT_STATE_DETAIL.md#mistakes-made-do-not-repeat);
+short version: 12 specific bugs (LLM timeout misinterpreted, key bypass
+missing, hardcoded pre-filter, `git add -A` danger, retry logic
+status confusion, etc.) — don't re-introduce them.
 
-### Open issues (per ISSUES.md)
+## Constraints
 
-- **ISS-014**: ModelScope instability (still open, lower priority now we have local qwen3.6)
-- All P0/P1 from older issues are resolved.
+See [CONSTRAINTS.md](CONSTRAINTS.md) for the full list (奥卡姆,
+fail-OPEN, atomic, user-edits-keys-never-agent, etc.).  Project
+constraints change rarely; that file is the source of truth.
 
-## What works (verified)
+## Next step
 
-- ✅ `pytest tests/ --deselect bloat --deselect slow` → 270 PASS, 5 skip, 0 fail
-- ✅ `python -m self_upgrade gc` → runs, shows seen_papers status
-- ✅ `python -m self_upgrade audit` → shows audit history
-- ✅ `python -m self_upgrade status` → shows planner version + history.db
-- ✅ `python -m src.llm_stream` → streaming works (local qwen3.6)
-- ✅ `python collect_papers.py --help` → CLI works
+See [../../TODO.md](../../TODO.md) for pending work.  Top priority
+is **v3.0.3 — autonomous daily loop** (per user 2026-07-10
+"我希望这个项目之后可以自己独立运行"):
 
-## What is BROKEN or NOT verified
+1. **More 5-round data** — `--count 5` 拿 10+ runs 拿统计 KEPT ratio
+2. **Decide `core/planner.py`** — keep (LLM 真贡献) or revert
+3. **`daily-loop --interval 24h`** — autonomous, cron-driven
+4. **state.json + failure recovery** (P18 + P19)
+5. **Skill registry** (per LITERATURE: SkillOpt)
 
-- ❌ `python run_stable.py N` — pipeline ran but every round `decision=None`.  Root cause:
-  - arxiv search returns 0 papers (maybe network?) OR
-  - patchgen returns 0 candidates OR
-  - LLM timeout under 30 min budget
-  - **Need a real LLM network test to debug**
-- ❌ `python run.py` — same issue (depends on real LLM)
-- ❌ `python -m core.agent "task"` — works in streaming mode but only smoke-tested
+## References
 
-## What's expected but NOT implemented (future agent's job)
-
-| Priority | Feature | Notes |
-|---|---|---|
-| HIGH | **Context-aware LLM prompts** (Step 3-5 of plan) | node_research / node_implement / sandbox |
-| HIGH | **Real LLM end-to-end run** | After Step 1-5 are in place |
-| MED | Auto-promote option (when cfg.pipeline.auto_promote=True) | Currently decision=KEPT is manual |
-| MED | `node_evaluate` fail-fast: check harness BEFORE arm 2 | Saves LLM tokens |
-| LOW | Split src/pipeline_lg.py (currently 1024 lines) | Decided NOT to do (奥卡姆) |
-| LOW | `core/agent.py` agent loop optimization | Works, just slow on local model |
-
-## Emergent subsystems state
-
-### src/goals.py (commit f7bc951)
-- Registry: **empty** (intentional, emergent)
-- Fallback: `fallback_explore` always available
-- LLM can `register(name, description, decide_fn)` via patchgen
-
-### src/learning.py:apply_memory_policy (commit d3ab5fa)
-- Default: **noop** (intentional, emergent)
-- Hard ceiling: `MAX_LEARNING_ROWS = 10000` (fuse, not policy)
-- LLM can edit `apply_memory_policy` or pass `--memory-policy module:fn`
-
-### src/llm_stream.py (commit 2b32628)
-- chat_stream(messages, ...) yields tokens
-- Used by `core/agent.py` (default `stream=True`)
-- NOT used by `pipeline_lg.py` (sequential node, streaming doesn't help)
-
-## Constraints (奥卡姆 — don't violate)
-
-1. **Don't hard-code strategies** in src/goals.py — they should emerge
-2. **Don't hard-code memory policies** — they should emerge
-3. **Don't hard-code "what makes a good patch"** — let harness decide
-4. **Don't split src/pipeline_lg.py** unless absolutely needed (1024 lines, but cohesive)
-5. **Don't add features "for completeness"** — every feature must solve a real pain
-
-## Open risks
-
-1. **LLM context window**: long prompts may exceed model limits.  Currently we don't summarize.
-2. **arxiv search scope**: only 90 days lookback.  Older landmark papers missed.
-3. **No compatibility check**: patches may target old Python / old LangGraph.
-4. **No "what worked before" feedback**: filter doesn't see last_outcome.
-
-## Recommended next actions (Step 1-6 of plan)
-
-1. Write CONTEXT_FOR_LLM.md (LLM calling guide)
-2. Add seen_papers summary to node_research prompt
-3. Add last_outcome to node_implement prompt
-4. Add sandbox compat check (Python version, etc.)
-5. Run end-to-end with real LLM
-6. Commit + report
-
-## One-page "if you only read one thing"
-
-→ Read `docs/DESIGN_PHILOSOPHY_v181.md` + `docs/MEMORY_DESIGN.md` + `docs/GOALS_DESIGN.md`.
-   These three docs explain what is fixed, what is emergent, and why.
+- INDEX: [INDEX.md](INDEX.md)
+- User intent (verbatim quotes): [USER_INSIGHTS.md](USER_INSIGHTS.md)
+- Hard rules: [CONSTRAINTS.md](CONSTRAINTS.md)
+- LLM choice: [MODEL_STRATEGY.md](MODEL_STRATEGY.md)
+- Working principles: [PRINCIPLES.md](PRINCIPLES.md)
+- Real-run data: [OBSERVATIONS.md](OBSERVATIONS.md)
+- Pending tasks: [../../TODO.md](../../TODO.md)
+- Done tasks: [../../DONE.md](../../DONE.md)
+- **Detailed technical history** (the long form): [PROJECT_STATE_DETAIL.md](PROJECT_STATE_DETAIL.md)
+- **Knowledge Graph (P1, deferred)**: [TODO_KNOWLEDGE_GRAPH.md](TODO_KNOWLEDGE_GRAPH.md)

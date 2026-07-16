@@ -1,497 +1,447 @@
-"""self_upgrade — unified CLI for the self-upgrade agent.
+"""self_upgrade - unified CLI for the self-upgrade agent.
 
-Subcommands:
-  run      "task"   Use the agent (single task, ~5-30s)
-  evolve   [--live]  Self-improvement loop (7 stages, ~15min)
-  status             Show history.db, manifest, planner version
-  unlock             Reset quota_state dead marks
-  cull               Cull low-effectiveness skills
+Per user feedback 2026-07-08: 'need unified management, can run
+self-improvement, can use specifically, can keep project clean'.
 
-Design: one CLI = one product.  v1.7.2 had two separate entry
-points (`python -m core.agent` and `python run.py`) that felt
-like different products.  This unifies them under one roof.
+This file is the unified CLI.  It uses Click and exposes:
+  - improve:        one round with FIXED_PAPER (single paper)
+  - replay:         replay failure log (P18)
+  - test-scale:     N consecutive rounds (debug / load test)
+  - improve-multi:  multi-paper selection + 1 round (v3.0.1)
+
+Usage:
+  python -m self_upgrade improve --target core/planner.py
+  python -m self_upgrade replay
+  python -m self_upgrade test-scale 5
+  python -m self_upgrade improve-multi --target core/planner.py
+  python -m self_upgrade --help
 """
-import argparse
 import os
 import sys
-import logging
+import json
+import time
+
+import click
+
+# Lazy imports: tests and scripts that touch this module shouldn't
+# trigger LLMConfig / v2 module loading at import time.
+
+def _lazy_v2():
+    from src.v2_round import run_one_round, run_one_round_multi, replay_all_failures
+    from src.v2_round import run_one_round_with_harness
+    from src.v2_agent import FIXED_PAPER, Paper
+    return (run_one_round, run_one_round_multi, replay_all_failures,
+            run_one_round_with_harness, FIXED_PAPER, Paper)
+
+
+def _format_round_result(r) -> str:
+    """One-line summary of a RoundResult."""
+    return (f"decision={r.decision} elapsed={r.elapsed_s:.1f}s "
+            f"tests_passed={r.tests_passed} tests_failed={r.tests_failed} "
+            f"target={r.target_module}"
+            + (f" error={r.error[:80]}" if r.error else ""))
+
+
+def _do_auto_commit(target, r, multi):
+    """Per user 2026-07-10: '区分开自动更新和手动更新'.
+
+    When --auto-commit is set and round KEPT, commit the patched file
+    with author 'Auto Upgrade <auto@self-upgrade.local>' and [auto]
+    prefix.  Also write a patch bundle to upgrades/auto-patches/ for
+    human review / selective apply / rejection.
+
+    Per P7 奥卡姆: helper function, not a new abstraction.  Per
+    P22 找共性: reuses v3_persist's save pattern (write to disk).
+    Per P18: only commits KEPT (atomic + tested).
+    """
+    from src.v3_auto_commit import write_patch_bundle, auto_commit
+    bundle = write_patch_bundle(target)
+    paper_id = ""
+    # Extract paper id if available
+    if hasattr(r, "paper") and r.paper:
+        paper_id = getattr(r.paper, "arxiv_id", "") or str(r.paper)
+    commit_hash = auto_commit(
+        target_module=target,
+        paper_id=paper_id,
+        tests_passed=getattr(r, "tests_passed", 0),
+        bundle_path=bundle,
+    )
+    if commit_hash:
+        click.echo(f"  [auto-commit] {commit_hash[:8]} by Auto Upgrade")
+        click.echo(f"  [auto-commit] bundle: {bundle or '(no diff)'}")
+    else:
+        click.echo("  [auto-commit] FAILED (see git error above)")
+
+
+@click.group()
+@click.option("--mock/--no-mock", default=False,
+              help="Use mocked LLM (no network, fast).")
+def cli(mock):
+    """self-upgrade-agent: a self-improving agent for code generation."""
+    ctx = click.get_current_context()
+    ctx.obj = {"mock": mock}
+
+
+@cli.command()
+@click.option("--target", default="core/planner.py",
+              help="Target module to improve (default: core/planner.py).")
+@click.option("--paper", default=None,
+              help="Specific paper arxiv_id (single-paper mode only).")
+@click.option("--test-path", default=None,
+              help="Test path to run (default: tests/test_v2_round.py if --multi).")
+@click.option("--multi/--single", default=True,
+              help="Multi-paper (LLM judge, default) or single paper (--paper).")
+@click.option("--max-retries", default=2, type=int,
+              help="Harness retries on NO_PATCH/REVERTED (default: 2).")
+@click.option("--count", default=1, type=int,
+              help="Run N consecutive rounds (default: 1).")
+@click.option("--auto-commit/--no-auto-commit", default=False,
+              help="Auto-commit KEPT patches with [auto] author (default: no).")
+@click.option("--interval", default=0, type=int,
+              help="Seconds between rounds (default: 0; only used with --count > 1).")
+@click.option("--mock/--no-mock", default=False,
+              help="Use mock LLM (no API call, default: real LLM).")
+@click.pass_obj
+def improve(obj, target, paper, test_path, multi, max_retries, count,
+            auto_commit, interval, mock):
+    """Run one round of self-improvement (with flags).
+
+    Default: multi-paper mode, harness with 2 retries.  Use --single
+    for a specific paper (with --paper), or --mock for offline tests.
+
+    Examples:
+      improve                                    # 1 round multi, 2 retries
+      improve --single --paper 2310.02170        # specific paper
+      improve --count 5 --interval 0             # 5 rounds back-to-back
+      improve --auto-commit                      # auto-commit KEPT with [auto]
+    """
+    if test_path is None:
+        test_path = "tests/test_v2_round.py" if multi else "tests/test_pipeline.py"
+
+    run_one_round, run_one_round_multi, _, run_with_harness, FIXED_PAPER, Paper = _lazy_v2()
+
+    if mock and not multi:
+        click.echo("ERROR: --mock not yet supported for single-paper 'improve'. "
+                   "Use --multi (mock judge) instead.", err=True)
+        sys.exit(1)
+
+    kept_count = 0
+    last_paper_id = ""
+    for i in range(count):
+        if count > 1:
+            click.echo(f"===== Round {i + 1}/{count} =====")
+
+        if multi:
+            # Multi-paper mode (LLM or mock judge + retry-on-fail harness)
+            from src.llm import LLMConfig
+            config = LLMConfig.from_env() if not mock else None
+            r = run_with_harness(
+                target_module=target,
+                config=config,
+                max_retries=max_retries,
+                test_path=test_path,
+            )
+        else:
+            # Single-paper mode
+            if paper is None:
+                p = FIXED_PAPER
+            else:
+                p = Paper(arxiv_id=paper, title=paper, abstract="(manual)")
+            r = run_one_round(paper=p, target_module=target,
+                              test_path=test_path)
+
+        click.echo(_format_round_result(r))
+        if hasattr(r, "decision") and r.decision == "KEPT":
+            kept_count += 1
+            # Per user 2026-07-10: '区分开自动更新和手动更新'
+            if auto_commit:
+                _do_auto_commit(target, r, multi)
+        elif auto_commit and hasattr(r, "decision") and r.decision in ("REVERTED", "APPLY_FAILED"):
+            # Auto-commit was attempted but round failed: nothing to commit.
+            click.echo("  [auto-commit skipped: round did not KEPT]")
+
+        # Back-to-back: sleep between rounds if count > 1 and not last
+        if count > 1 and i < count - 1 and interval > 0:
+            click.echo(f"  Sleeping {interval}s... (Ctrl-C to stop)")
+            time.sleep(interval)
+
+    if count > 1:
+        click.echo(f"===== Summary =====")
+        click.echo(f"KEPT: {kept_count}/{count} ({100*kept_count//count}%)")
+    sys.exit(0 if (count == 1 and hasattr(r, "decision") and r.decision == "KEPT")
+                  or (count > 1 and kept_count == count) else 1)
+
+
+@cli.command()
+@click.option("--live/--no-live", default=False,
+              help="If --live, actually replay (slow, real LLM). Default is "
+                   "inspect (fast, no LLM) per user feedback 2026-07-10 "
+                   "'跑的时候卡了 5+ min'.")
+def replay(live):
+    """Replay (or inspect) failures from upgrades/failures.jsonl (P18).
+
+    By default, just inspects the log (no LLM call).  Pass --live to
+    actually replay each unique failure through run_one_round (slow).
+    """
+    if not live:
+        # Fast: just inspect the log
+        from src.v3_replay import inspect_failures, format_inspect
+        insp = inspect_failures()
+        click.echo(format_inspect(insp))
+        return
+
+    # Live: actually replay (slow)
+    _, _, replay_all_failures, _, _, _ = _lazy_v2()
+    report = replay_all_failures(test_path="tests/test_pipeline.py")
+    click.echo(json.dumps(report.to_dict(), indent=2, ensure_ascii=False))
+
+
+@cli.command(name="test-scale")
+@click.argument("n_rounds", type=int)
+@click.option("--target", default="core/planner.py",
+              help="Target module (default: core/planner.py).")
+@click.option("--paper", default=None,
+              help="Paper arxiv_id (default: FIXED_PAPER = DyLAN 2310.02170).")
+@click.pass_obj
+def test_scale(obj, n_rounds, target, paper):
+    """Run N consecutive rounds (debug / load test / stability probe)."""
+    run_one_round, _, _, _, FIXED_PAPER, Paper = _lazy_v2()
+    if obj["mock"]:
+        click.echo("ERROR: --mock not yet supported for 'test-scale'.",
+                   err=True)
+        sys.exit(1)
+    if paper is None:
+        paper = FIXED_PAPER
+    else:
+        paper = Paper(arxiv_id=paper, title=paper, abstract="(manual)")
+    results = []
+    t0 = time.time()
+    for i in range(1, n_rounds + 1):
+        click.echo(f"=== Round {i}/{n_rounds} ===")
+        r = run_one_round(paper=paper, target_module=target,
+                          test_path="tests/test_pipeline.py")
+        results.append(r)
+        click.echo(f"  {_format_round_result(r)}")
+    total_t = time.time() - t0
+    decisions = [r.decision for r in results]
+    kept = decisions.count("KEPT")
+    reverted = decisions.count("REVERTED")
+    no_patch = decisions.count("NO_PATCH")
+    apply_failed = decisions.count("APPLY_FAILED")
+    click.echo()
+    click.echo("=== SUMMARY ===")
+    click.echo(f"Total elapsed: {total_t:.1f}s")
+    click.echo(f"Decisions: {decisions}")
+    click.echo(f"KEPT: {kept}/{n_rounds}  REVERTED: {reverted}/{n_rounds}  "
+               f"NO_PATCH: {no_patch}/{n_rounds}  "
+               f"APPLY_FAILED: {apply_failed}/{n_rounds}")
+    if kept == n_rounds:
+        click.echo("=> Loop is STABLE")
+    elif kept == 0:
+        click.echo("=> Loop is BLOCKED (LLM may need prompt fix)")
+    else:
+        click.echo("=> Loop is MIXED (LLM temperature is non-zero)")
+    click.echo()
+    click.echo("To restore core/planner.py if a round KEPT:")
+    click.echo("  git checkout core/planner.py")
+
+
+@cli.command(name="improve-harness", hidden=True)
+@click.option("--target", default="core/planner.py")
+@click.option("--test-path", default="tests/test_v2_round.py")
+@click.option("--max-retries", default=2, type=int)
+@click.option("--count", default=1, type=int)
+@click.pass_obj
+def improve_harness(obj, target, test_path, max_retries, count):
+    """DEPRECATED: alias for `improve --multi --max-retries N`."""
+    ctx = click.get_current_context()
+    ctx.invoke(improve, target=target, test_path=test_path,
+               multi=True, max_retries=max_retries, count=count)
+
+
+@cli.command(name="improve-multi", hidden=True)
+@click.option("--target", default="core/planner.py")
+@click.option("--test-path", default="tests/test_v2_round.py")
+@click.option("--no-judge-llm/--judge-llm", default=True)
+@click.option("--count", default=1, type=int)
+@click.pass_obj
+def improve_multi(obj, target, test_path, no_judge_llm, count):
+    """DEPRECATED: alias for `improve --multi`.  Kept for backward compat."""
+    ctx = click.get_current_context()
+    ctx.invoke(improve, target=target, test_path=test_path,
+               multi=True, count=count)
+
+@cli.command(name="daily-loop")
+@click.option("--target", default="core/planner.py",
+              help="Target module to improve (default: core/planner.py).")
+@click.option("--interval", default=3600, type=int,
+              help="Seconds between rounds (default: 3600 = 1h).")
+@click.option("--max-rounds", default=None, type=int,
+              help="Stop after N rounds (default: infinite, Ctrl-C to stop).")
+@click.option("--multi/--single", default=True,
+              help="Multi-paper (LLM judge, default) or single paper.")
+@click.option("--max-retries", default=2, type=int,
+              help="Harness retries per round (default: 2).")
+@click.option("--test-path", default="tests/test_v2_round.py",
+              help="Test path for decision gate (default: tests/test_v2_round.py).")
+@click.option("--auto-commit/--no-auto-commit", default=False,
+              help="Auto-commit KEPT patches with [auto] author (default: no).")
+@click.option("--mock/--no-mock", default=False,
+              help="Use mock LLM (no API call, default: real LLM).")
+@click.option("--enable-ab/--no-ab", default=False,
+              help="Enable A/B benchmark (per v3.3.0 MVP, statistical KEPT/REJECT).")
+@click.pass_obj
+def daily_loop(obj, target, interval, max_rounds, multi, max_retries,
+               test_path, auto_commit, mock, enable_ab):
+    """Autonomous daily loop: keep improving target forever (or until max-rounds).
+
+    Per user vision 2026-07-08 '我希望这个项目之后可以自己独立运行':
+    Runs rounds back-to-back, waiting `--interval` seconds between each.
+    Stop with Ctrl-C.  All flags match the unified `improve` subcommand.
+
+    Examples:
+      python -m self_upgrade daily-loop                       # 1h interval, forever
+      python -m self_upgrade daily-loop --interval 60         # 1 min (testing)
+      python -m self_upgrade daily-loop --max-rounds 5        # 5 rounds then stop
+      python -m self_upgrade daily-loop --target core/x.py    # different target
+      python -m self_upgrade daily-loop --auto-commit         # auto-commit KEPT
+    """
+    run_one_round, run_one_round_multi, _, run_with_harness, _, _ = _lazy_v2()
+    from src.llm import LLMConfig
+    config = LLMConfig.from_env() if not mock else None
+
+    # Per v3.3.0 sub-task 4/3: wire A/B benchmark into daily-loop CLI
+    # When --enable-ab, use A/B-verified KEPT/REJECT decision (statistical)
+    from src.ab_benchmark import run_tests as ab_run_tests
+    ab_baseline = None
+    if enable_ab:
+        click.echo("[ab] A/B baseline tests...")
+        ab_baseline = ab_run_tests(test_path, cwd=".")
+
+    rounds = 0
+    kept = 0
+    rejected = 0
+    try:
+        while max_rounds is None or rounds < max_rounds:
+            rounds += 1
+            click.echo(f"\n===== Round {rounds} @ {time.strftime('%Y-%m-%d %H:%M:%S')} =====")
+            if multi:
+                r = run_with_harness(target_module=target, config=config,
+                                     max_retries=max_retries, test_path=test_path)
+            else:
+                _, _, _, FIXED_PAPER, Paper = _lazy_v2()
+                r = run_one_round_multi(target_module=target, config=config,
+                                         llm_config=config, test_path=test_path)
+            click.echo(_format_round_result(r))
+            # Per v3.3.0 sub-task 4/3: A/B verification when --enable-ab
+            if enable_ab and hasattr(r, "decision") and r.decision == "KEPT":
+                from src.ab_benchmark import compare_runs
+                ab_candidate = ab_run_tests(test_path, cwd=".")
+                comparison = compare_runs(ab_baseline or {"passed": 0, "failed": 0, "elapsed_sec": 0}, ab_candidate)
+                if comparison["decision"] == "regression":
+                    click.echo(f"[ab] REGRESSION detected: {comparison['reason']}")
+                    r.decision = "REJECT"
+                else:
+                    click.echo(f"[ab] confirmed: {comparison['reason']}")
+            if hasattr(r, "decision") and r.decision == "KEPT":
+                kept += 1
+                # Per user 2026-07-10: '区分开自动更新和手动更新'
+                if auto_commit:
+                    _do_auto_commit(target, r, multi)
+            elif hasattr(r, "decision") and r.decision == "REJECT":
+                rejected += 1
+            if max_rounds is None or rounds < max_rounds:
+                click.echo(f"  Sleeping {interval}s... (Ctrl-C to stop)")
+                time.sleep(interval)
+    except KeyboardInterrupt:
+        click.echo("\n[stopped by user]")
+
+    click.echo(f"\n===== Daily loop done: {rounds} rounds, {kept} KEPT, {rejected} REJECT =====")
+    sys.exit(0 if kept > 0 else 1)
+
+
+@cli.command(name="chat")
+@click.option("--system", default=None,
+              help="System prompt (default: 'You are a helpful assistant').")
+@click.option("--history-path", default=None,
+              help="Chat history file path (default: chat_history.json).")
+@click.option("--max-history", default=50, type=int,
+              help="Max history turns in context (default: 50).")
+@click.option("--stream/--no-stream", default=False,
+              help="Stream responses token-by-token (per sub-task 2).")
+@click.pass_obj
+def chat(obj, system, history_path, max_history, stream):
+    """Interactive chat (per 你 vision '其他agent产品').
+
+    Per 自上而下/分治 (user meta-principle):
+    - Big: project as 'real agent product'
+    - Sub-task 1: multi-turn chat REPL with history
+    - Sub-task 2: streaming responses (per --stream flag)
+
+    Per LITERATURE Signal-to-Fix: minimal, 奥卡姆.
+    Per P19: cross-session memory via history file.
+    """
+    from src.chat_repl import chat_repl, chat_repl_streaming
+    if stream:
+        result = chat_repl_streaming(system=system, history_path=history_path,
+                                       max_history=max_history)
+    else:
+        result = chat_repl(system=system, history_path=history_path,
+                            max_history=max_history)
+    sys.exit(0 if result["turns"] >= 0 else 1)
+
+
+@cli.command(name="cron")
+@click.option("--install", "do_install", is_flag=True, default=False,
+              help="Generate OS cron config (dry-run by default per P9).")
+@click.option("--apply", "do_apply", is_flag=True, default=False,
+              help="Actually write config to disk (CAUTION: real install).")
+@click.option("--show", is_flag=True, default=False,
+              help="Show the generated OS cron config (dry-run, no install).")
+@click.option("--cron-expr", default="0 2",
+              help="Cron expression 'H M' (default: 0 2 = 02:00 daily).")
+@click.pass_obj
+def cron(obj, do_install, do_apply, show, cron_expr):
+    """v4.0.0 cron deployment (per 你 vision 2026-07-08).
+
+    Per 自上而下/分治 (user meta-principle):
+    - Big: SA v4.0.0 cron execution
+    - Sub-task 2 (c7998fa): OS cron integration
+
+    Per P9 hard rule: dry_run=True by default (safe).
+    """
+    from src.os_cron_installer import install_cron
+    if not (do_install or show):
+        click.echo("Use --show (dry-run) or --install --apply (real install). Try --help.")
+        return
+    dry_run = not do_apply
+    result = install_cron(cron_expr=cron_expr, dry_run=dry_run)
+    if show or dry_run:
+        click.echo(f"OS: {result.get('os')}")
+        click.echo(f"Config path: {result.get('config_path')}")
+        click.echo(f"Dry run: {result.get('dry_run')}")
+        click.echo("---")
+        click.echo(result.get('config_content', ''))
+        click.echo("---")
+        click.echo(f"To install, run: {result.get('install_command')}")
+    else:
+        click.echo(f"Installed: {result.get('config_path')}")
+        click.echo(f"Install command: {result.get('install_command')}")
+        ir = result.get('install_result') or {}
+        rc = ir.get('returncode') if isinstance(ir, dict) else None
+        if rc == 0:
+            click.echo(f"Register result: SUCCESS (rc=0)")
+        elif rc is not None:
+            click.echo(f"Register result: FAILED (rc={rc})")
+            click.echo(f"stderr: {ir.get('stderr', '')[:200]}")
+        else:
+            click.echo(f"Register result: {ir}")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        prog="self-upgrade",
-        description="Self-upgrade agent — use it, or watch it evolve itself",
-    )
-    sub = parser.add_subparsers(dest="cmd", required=True)
-
-    # run: use the agent
-    p_run = sub.add_parser("run", help="Run a task with the agent")
-    p_run.add_argument("task", nargs="+", help="Task description")
-
-    # evolve: self-upgrade loop
-    p_ev = sub.add_parser("evolve", help="Run the self-upgrade loop")
-    p_ev.add_argument(
-        "--live", action="store_true",
-        help="Real LLM calls (default: dry-run)",
-    )
-    p_ev.add_argument(
-        "--config", default="config.yaml",
-        help="Path to config file (default: config.yaml)",
-    )
-
-    # status: show history
-    sub.add_parser("status", help="Show history.db, manifest, planner version")
-
-    # unlock: reset quota
-    sub.add_parser("unlock", help="Reset quota_state dead marks")
-
-    # cull: prune skills
-    sub.add_parser("cull", help="Cull low-effectiveness skills")
-
-    # audit: show audit history
-    p_audit = sub.add_parser("audit", help="Show skill audit history (v1.8.0)")
-    p_audit.add_argument(
-        "--limit", type=int, default=10,
-        help="Show last N audit runs (default 10)",
-    )
-    p_audit.add_argument(
-        "--run", action="store_true",
-        help="Run a skill audit right now (instead of showing history)",
-    )
-
-    # gc: garbage-collect cache + temp files
-    p_gc = sub.add_parser("gc", help="Garbage-collect cache files (arxiv_cache, s2_cache, __pycache__, sandbox residue)")
-    p_gc.add_argument(
-        "--arxiv-cache-max-age-days", type=int, default=30,
-        help="Delete arxiv_cache files older than N days (default: 30, 0=delete all)",
-    )
-    p_gc.add_argument(
-        "--archive-history-older-than-rows", type=int, default=0,
-        help="Archive history.db rows older than N rows (default: 0=keep all)",
-    )
-    p_gc.add_argument(
-        "--dry-run", action="store_true",
-        help="Show what would be deleted without actually deleting",
-    )
-    p_gc.add_argument(
-        "--memory-policy", type=str, default=None,
-        help="Emergent memory policy as 'module:function' (v1.8.1). "
-             "Default: noop. LLM can install a smarter policy by editing "
-             "src/learning.py:apply_memory_policy via patchgen, "
-             "or by passing --memory-policy my_policies:trim_old.",
-    )
-
-    args = parser.parse_args()
-
-    if args.cmd == "run":
-        return cmd_run(" ".join(args.task))
-    if args.cmd == "evolve":
-        return cmd_evolve(live=args.live, config_path=args.config)
-    if args.cmd == "status":
-        return cmd_status()
-    if args.cmd == "unlock":
-        return cmd_unlock()
-    if args.cmd == "cull":
-        return cmd_cull()
-    if args.cmd == "audit":
-        return cmd_audit(limit=args.limit, run_now=args.run)
-    if args.cmd == "gc":
-        return cmd_gc(
-            arxiv_max_age=args.arxiv_cache_max_age_days,
-            history_archive_rows=args.archive_history_older_than_rows,
-            dry_run=args.dry_run,
-            memory_policy=args.memory_policy,
-        )
-    parser.print_help()
-    return 1
-
-
-# ── Subcommand implementations ─────────────────────────────────
-
-def cmd_run(task: str) -> int:
-    """Use the agent on a single task.
-
-    This is the same as the old `python -m core.agent "task"` entry
-    point, but now it lives under the unified CLI.
-    """
-    print(f"\nTask: {task}\n{'='*50}")
-    from core.agent import quick_test
-    result = quick_test(task)
-    print(f"\n{'='*50}")
-    if result.get("error"):
-        print(f"Error: {result['error']}")
-        return 1
-    print(f"Steps planned:  {result['steps_planned']}")
-    print(f"Tools used:     {result['tools_used']}")
-    print(f"Time:           {result['elapsed']}s")
-    print(f"Success:        {result['success']}")
-    print(f"\nPlan:")
-    for i, log in enumerate(result.get("logs", [])):
-        print(f"  {i+1}. {log.get('step', '?')[:80]}")
-    return 0
-
-
-def cmd_evolve(live: bool, config_path: str) -> int:
-    """Run the self-evolution loop.
-
-    Same as the old `python run.py [--live]` entry point.
-    """
-    import src.pipeline_lg as plg
-    from src.config import load_config
-    cfg = load_config(config_path)
-    if not live:
-        cfg.dry_run = True
-    print(f"Starting self-evolution (live={live}, config={config_path})")
-    state = plg.run(cfg, dry_run=cfg.dry_run)
-    print(f"\nDone: {state.get('done')}")
-    decision = (state.get("decision") or {}).get("decision")
-    if decision:
-        print(f"Decision: {decision}")
-    return 0 if state.get("done") else 1
-
-
-def cmd_status() -> int:
-    """Show history.db, manifest, planner version, etc."""
-    print(f"\n{'='*50}")
-    print("SELF-UPGRADE AGENT STATUS")
-    print(f"{'='*50}\n")
-
-    # Planner version
-    planner_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "core", "planner.py",
-    )
-    if os.path.exists(planner_path):
-        size = os.path.getsize(planner_path)
-        with open(planner_path) as f:
-            for line in f:
-                if "__version__" in line:
-                    print(f"core/planner.py: {size} bytes, {line.strip()}")
-                    break
-    else:
-        print("core/planner.py: NOT FOUND")
-
-    # History.db
-    import sqlite3
-    hist = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "upgrades", "history.db",
-    )
-    if os.path.exists(hist):
-        conn = sqlite3.connect(hist)
-        c = conn.cursor()
-        c.execute("SELECT COUNT(*) FROM upgrades")
-        n_total = c.fetchone()[0]
-        c.execute("SELECT decision, COUNT(*) FROM upgrades GROUP BY decision")
-        print(f"\nupgrades/history.db: {n_total} total attempts")
-        for row in c.fetchall():
-            print(f"  {row[0]}: {row[1]}")
-        c.execute("SELECT id, decision, notes FROM upgrades ORDER BY id DESC LIMIT 3")
-        print("  latest 3:")
-        for row in c.fetchall():
-            print(f"    id={row[0]} decision={row[1]!r} notes={row[2][:60]!r}")
-        conn.close()
-    else:
-        print("\nupgrades/history.db: NOT FOUND")
-
-    # Manifest.json
-    manifest = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "upgrades", "manifest.json",
-    )
-    if os.path.exists(manifest):
-        import json
-        m = json.load(open(manifest))
-        n_promoted = len(m.get("history", []))
-        print(f"\nupgrades/manifest.json: {n_promoted} promoted")
-    return 0
-
-
-def cmd_unlock() -> int:
-    """Reset quota_state dead marks.
-
-    Same as the old `python run.py --unlock-keys`.
-    """
-    import json
-    qf = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "upgrades", "quota_state.json",
-    )
-    if not os.path.exists(qf):
-        print("No quota_state.json — nothing to unlock")
-        return 0
-    state = json.load(open(qf))
-    n = sum(1 for v in state.get("keys", {}).values() if v.get("dead_until", 0) > 0)
-    for info in state.get("keys", {}).values():
-        info["dead_until"] = 0
-        info["failures_today"] = 0
-    json.dump(state, open(qf, "w"), indent=2)
-    print(f"Unlocked {n} keys in {qf}")
-    return 0
-
-
-def cmd_cull() -> int:
-    """Cull low-effectiveness skills.
-
-    Same as the old `python run.py --cull`.
-    """
-    from src.skill_lifecycle import cull_obsolete
-    n = cull_obsolete()
-    print(f"Culled {n} skills")
-    return 0
-
-
-# === v1.8.0: garbage-collect ===
-
-def _file_age_days(path: str) -> float:
-    """Return age of file in days (mtime)."""
-    import time
-    return (time.time() - os.path.getmtime(path)) / 86400.0
-
-
-def cmd_gc(arxiv_max_age: int, history_archive_rows: int, dry_run: bool,
-           memory_policy=None) -> int:
-    """Garbage-collect runtime data.
-
-    - arxiv_cache/ : delete pkl files older than --arxiv-cache-max-age-days
-                     (default 30; 0 = delete all)
-    - s2_cache/     : same rule
-    - gh_cache/     : same rule
-    - pwc_cache/    : same rule
-    - __pycache__/  : always delete (Python rebuilds on import)
-    - *.bench_bak / *.bench_tmp : always delete (transient)
-    - history.db    : if --archive-history-older-than-rows > 0, archive
-                     the oldest N rows to upgrades/history_archive_<ts>.json
-
-    Default behavior (no flags) is conservative: 30-day cache TTL +
-    no history archive.  Use --dry-run to see what would be deleted.
-    """
-    upgraded = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "upgrades",
-    )
-    if not os.path.exists(upgraded):
-        print(f"upgrades/ does not exist ({upgraded})")
-        return 0
-
-    verb = "would delete" if dry_run else "deleted"
-    n_files = 0
-    n_bytes = 0
-
-    # 1. Cache directories: arxiv_cache, s2_cache, gh_cache, pwc_cache
-    cache_dirs = ["arxiv_cache", "s2_cache", "gh_cache", "pwc_cache"]
-    for sub in cache_dirs:
-        sub_path = os.path.join(upgraded, sub)
-        if not os.path.exists(sub_path):
-            continue
-        for f in os.listdir(sub_path):
-            full = os.path.join(sub_path, f)
-            if not os.path.isfile(full):
-                continue
-            age = _file_age_days(full)
-            keep = (arxiv_max_age > 0 and age < arxiv_max_age)
-            if not keep:
-                size = os.path.getsize(full)
-                if not dry_run:
-                    os.remove(full)
-                n_files += 1
-                n_bytes += size
-                print(f"  {verb}: {sub}/{f} ({age:.1f}d, {size}B)")
-
-    # 2. __pycache__ directories everywhere in repo
-    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    for root, dirs, files in os.walk(project_root):
-        # Skip .git, upgrades
-        if ".git" in root or root.startswith(upgraded):
-            continue
-        for d in list(dirs):
-            if d == "__pycache__":
-                pycache = os.path.join(root, d)
-                size = sum(
-                    os.path.getsize(os.path.join(pycache, f))
-                    for f in os.listdir(pycache)
-                    if os.path.isfile(os.path.join(pycache, f))
-                )
-                if not dry_run:
-                    import shutil
-                    shutil.rmtree(pycache)
-                n_files += 1
-                n_bytes += size
-                print(f"  {verb}: {pycache[len(project_root)+1:]} ({size}B)")
-                dirs.remove(d)
-
-    # 3. Sandbox residue
-    for pattern in (".bench_bak", ".bench_tmp", ".v17_test_bak",
-                    ".stress_bak", ".e2e_test_bak", ".test_bak"):
-        for root, dirs, files in os.walk(project_root):
-            if ".git" in root or root.startswith(upgraded):
-                continue
-            for f in files:
-                if f.endswith(pattern):
-                    full = os.path.join(root, f)
-                    size = os.path.getsize(full)
-                    if not dry_run:
-                        os.remove(full)
-                    n_files += 1
-                    n_bytes += size
-                    print(f"  {verb}: {full[len(project_root)+1:]} ({size}B)")
-
-    # 4. history.db archive (if requested)
-    if history_archive_rows > 0:
-        import sqlite3
-        hist_db = os.path.join(upgraded, "history.db")
-        if os.path.exists(hist_db):
-            conn = sqlite3.connect(hist_db)
-            c = conn.cursor()
-            c.execute("SELECT COUNT(*) FROM upgrades")
-            n_total = c.fetchone()[0]
-            if n_total > history_archive_rows:
-                c.execute(
-                    "SELECT id, decision, notes FROM upgrades ORDER BY id ASC LIMIT ?",
-                    (n_total - history_archive_rows,),
-                )
-                old_rows = c.fetchall()
-                conn.close()
-                import datetime
-                ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                arch_path = os.path.join(
-                    upgraded, f"history_archive_{ts}.json")
-                with open(arch_path, "w") as f:
-                    json.dump(
-                        {"archived_at": ts, "rows": [
-                            {"id": r[0], "decision": r[1], "notes": r[2]}
-                            for r in old_rows
-                        ]},
-                        f, indent=2,
-                    )
-                print(f"  archived {len(old_rows)} old rows to {arch_path}")
-                if not dry_run:
-                    # Delete the archived rows from main db
-                    conn = sqlite3.connect(hist_db)
-                    c = conn.cursor()
-                    c.execute(
-                        "DELETE FROM upgrades WHERE id <= ?",
-                        (old_rows[-1][0],),
-                    )
-                    conn.commit()
-                    conn.close()
-                    n_files += 1
-            else:
-                conn.close()
-
-    # 5. learning.db seen_papers (v1.8.1: 奥卡姆-涌现 — no hand-coded policy)
-    # Default policy is noop.  LLM can install a smarter one via patchgen
-    # editing apply_memory_policy() in src/learning.py.
-    try:
-        from src.learning import init_db, apply_memory_policy, MAX_LEARNING_ROWS
-        learn_db = os.path.join(upgraded, "learning.db")
-        if os.path.exists(learn_db):
-            conn = init_db(learn_db)
-            try:
-                # If user passed --memory-policy, load it
-                policy_fn = None
-                if memory_policy:
-                    try:
-                        mod_name, fn_name = memory_policy.split(":", 1)
-                        import importlib
-                        mod = importlib.import_module(mod_name)
-                        policy_fn = getattr(mod, fn_name)
-                    except Exception as e:
-                        print("  warning: --memory-policy load failed: %s" % e)
-                        policy_fn = None
-
-                if dry_run and memory_policy:
-                    print("  dry-run: would apply policy %s" % memory_policy)
-                    result = {"policy": "noop", "before": 0, "after": 0, "deleted": 0}
-                else:
-                    result = apply_memory_policy(conn, policy_fn)  # default = noop
-                if result.get("hard_ceiling_fired"):
-                    print("  seen_papers: hard ceiling fired — "
-                          "deleted %d rows (now at %d, ceiling %d). "
-                          "Install a smarter policy via patchgen."
-                          % (result["deleted"], result["after"], MAX_LEARNING_ROWS))
-                elif result["deleted"] > 0:
-                    print("  seen_papers: policy %s deleted %d rows (%d -> %d)"
-                          % (result["policy"], result["deleted"],
-                             result["before"], result["after"]))
-                else:
-                    print("  seen_papers: %d rows (no policy active yet — "
-                          "patchgen can install one)" % result["before"])
-            finally:
-                conn.close()
-    except Exception as e:
-        print(f"  seen_papers check failed (non-fatal): {e}")
-
-    prefix = "would be " if dry_run else ""
-    print(f"Total: {n_files} files {prefix}deleted, {n_bytes} bytes")
-    return 0
-
-
-def cmd_audit(limit: int, run_now: bool) -> int:
-    """Show audit history, or run audit now.
-
-    --run    : run a one-off audit (uses node_skill_audit logic)
-    --limit N: show last N audit runs (default 10)
-    """
-    import os as _os
-    db_path = _os.path.join(
-        _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
-        "upgrades", "history.db",
-    )
-    if run_now:
-        # Run a one-off audit using the same logic as the pipeline node
-        from src.db import UpgradeHistory
-        from src.skill_lifecycle import evaluate_all_skills_static
-        if not _os.path.exists(db_path):
-            print(f"No history.db at {db_path} — nothing to audit")
-            return 0
-        h = UpgradeHistory(db_path)
-        try:
-            result = evaluate_all_skills_static(h, cull_threshold=0.0)
-            culled = []
-            for skill_name, info in result.items():
-                if info["action"] == "culled":
-                    h.archive_skill(skill_name)
-                    culled.append(skill_name)
-            # Persist to audit_history
-            h.record_audit(
-                n_skills=len(result),
-                n_culled=len(culled),
-                n_kept=len(result) - len(culled),
-                details=result,
-            )
-        finally:
-            h.close()
-        print(f"Audit: {len(result)} skills evaluated, {len(culled)} culled")
-        for n in culled:
-            print(f"  culled: {n}")
-        return 0
-
-    # Show history
-    if not _os.path.exists(db_path):
-        print(f"No history.db at {db_path}")
-        print("Run a round first: python -m self_upgrade evolve --live")
-        return 0
-    from src.db import UpgradeHistory
-    h = UpgradeHistory(db_path)
-    try:
-        rows = h.get_audit_history(limit=limit)
-    finally:
-        h.close()
-    if not rows:
-        print("No audit history yet.")
-        print("Audits happen automatically each round (or run one now:")
-        print("  python -m self_upgrade audit --run")
-        return 0
-    print(f"Last {len(rows)} audit runs:")
-    print()
-    for r in rows:
-        print(
-            f"  id={r['id']} at={r['audited_at'][:19]} "
-            f"skills={r['n_skills']} culled={r['n_culled']} kept={r['n_kept']}"
-        )
-    return 0
+    """Module entry point."""
+    cli()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

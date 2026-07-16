@@ -140,8 +140,27 @@ def _llm_score_paper(paper: Paper, llm_config: Optional[LLMConfig] = None) -> Sc
     A/B evaluation, bootloader), so high scores correlate with
     actually useful upgrades.
     """
+    # v1.8.2: inject memory context — past decisions about similar papers.
+    # This helps LLM avoid re-rating papers we already decided on.
+    memory_context = ""
+    try:
+        from src.mcp_client import call_tool as _call_tool
+        query_text = (paper.title or "") + " " + (paper.abstract or "")[:500]
+        relevant = _call_tool("memory_search", query=query_text, top_k=3,
+                              kind_filter=["paper", "outcome"])
+        if relevant:
+            lines = ["Prior context from memory:"]
+            for unit in relevant:
+                kind = unit.get("kind", "?")
+                text = unit.get("text", "")[:200]
+                lines.append(f"  [{kind}] {text}")
+            memory_context = "\n".join(lines) + "\n\n"
+    except Exception:
+        memory_context = ""
+
     prompt = (
-        "You are selecting which research papers this self-upgrade agent\n"
+        memory_context
+        + "You are selecting which research papers this self-upgrade agent\n"
         "should try to turn into code patches.  Score the paper on 3 axes (1-10):\n\n"
         "  applicability_to_agent_pipeline: how well the paper's method\n"
         "    could improve one of these 5 specific pain points in this\n"

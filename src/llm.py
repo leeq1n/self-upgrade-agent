@@ -62,7 +62,10 @@ class LLMConfig:
     base_url: str = ""
     model: str = ""
     fallback_models: List[str] = field(default_factory=list)
-    max_tokens: int = 2048
+    max_tokens: int = 8192  # default 8K; LLM_MAX_TOKENS env override.
+    # 2048 was the v1.8.1 default (ModelScope hard-limit, see ISS-014).
+    # minimax M2 = 204.8K context, M3 = 1M.  Patchgen writes full
+    # function bodies + tests; 2048 was truncating the JSON.
     temperature: float = 0.1
     timeout: int = 30  # per-request HTTP timeout (large prompts need >15s)
     max_retries: int = 2  # retries per (key, model) on minute-level 429
@@ -89,11 +92,26 @@ class LLMConfig:
     def from_env(cls) -> "LLMConfig":
         """Build config from environment variables.
 
+        On entry, auto-load .env (if python-dotenv is installed) so
+        users running `python` interactively or in jupyter get correct
+        config without manual `load_dotenv()`.  Already-set env vars
+        are preserved (override=False).
+
         Multi-key discovery order:
           1. ``LLM_API_KEY_0``, ``LLM_API_KEY_1``, ..., ``LLM_API_KEY_N``
              (highest contiguous index wins; gaps are tolerated but odd)
           2. If none of the above, fall back to single ``LLM_API_KEY``
         """
+        # Auto-load .env (the .env file is the user's source of truth,
+        # but Python REPL/jupyter doesn't auto-load it).  This is
+        # idempotent; if env vars are already set (e.g. via export),
+        # we don't override them — explicit env wins.
+        try:
+            import dotenv
+            dotenv.load_dotenv(override=False)
+        except ImportError:
+            pass
+
         api_keys: List[str] = []
         # Look for indexed keys first.
         for i in range(64):  # hard cap to avoid pathological envs
@@ -139,7 +157,7 @@ class LLMConfig:
             ),
             model=os.environ.get("LLM_MODEL", "deepseek-ai/DeepSeek-V4-Pro"),
             fallback_models=fallback_models,
-            max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "2048")),
+            max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "8192")),
             temperature=float(os.environ.get("LLM_TEMPERATURE", "0.1")),
             timeout=int(os.environ.get("LLM_TIMEOUT", "30")),
             max_retries=int(os.environ.get("LLM_MAX_RETRIES", "2")),

@@ -448,6 +448,29 @@ def node_filter(state: dict) -> dict:
     except Exception as e:
         state["errors"].append(f"Filter: {e}")
         logger.error(f"   Filter failed: {e}")
+
+    # v1.8.2: write the best paper to memory (MCP).
+    # This is the "memory remembers papers" requirement.  We write the
+    # top paper even if subsequent steps fail — we want the memory to
+    # record what we *tried*, not just what succeeded.
+    if scored:
+        try:
+            from src.mcp_client import call_tool as _call_tool
+            best_paper = scored[0].paper
+            summary = (
+                f"{best_paper.title} ({best_paper.arxiv_id}); "
+                f"applicability={scored[0].applicability_score:.1f}, "
+                f"novelty={scored[0].novelty_score:.1f}"
+            )
+            topics = list(best_paper.categories or [])
+            state["_memory_paper_id"] = _call_tool(
+                "memory_add_paper",
+                arxiv_id=best_paper.arxiv_id,
+                summary=summary,
+                topics=topics,
+            ).get("memory_id")
+        except Exception as e:
+            logger.debug(f"memory_add_paper failed: {e}")
         state["scored_papers"] = []
 
     return state
@@ -849,6 +872,25 @@ def node_decide(state: dict) -> dict:
     logger.info("6. Decide: evaluating results...")
     decision = make_decision(eval_data, cfg.decide)
     state["decision"] = decision
+
+    # v1.8.2: write outcome to memory (MCP).  This closes the loop —
+    # next round's filter will see this outcome and use it.
+    try:
+        from src.mcp_client import call_tool as _call_tool
+        patch_summary = (
+            (patch.get("function", "")[:200] if patch else "")
+            or "no patch generated"
+        )
+        paper_id = state.get("_memory_paper_id")
+        _call_tool(
+            "memory_add_outcome",
+            paper_id=paper_id,
+            decision=decision or "no_decision",
+            patch_summary=patch_summary,
+            topics=None,
+        )
+    except Exception as e:
+        logger.debug(f"memory_add_outcome failed: {e}")
 
     target_module = patch.get("module", "planner.py") if patch else "planner.py"
 
