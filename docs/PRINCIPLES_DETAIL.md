@@ -1,11 +1,11 @@
 L0: Per-P-n 实操 (L2 details) — how to actually follow each principle.  Main file is PRINCIPLES.md (L0+L1).
-Last P20-verified: 2026-07-13
+Last P20-verified: 2026-07-15
 
 # PRINCIPLES_DETAIL — per-P-n 实操 (L2)
-> L0: Full text of P1-P26 principles (P1-P21 + P22/P23 + P24-P26 cross-refs).  Companion to PRINCIPLES.md.  Load when: need rationale.
+> L0: Full text of P1-P29 principles (P1-P21 + P22-P29 cross-refs).  Companion to PRINCIPLES.md.  Load when: need rationale.
 
 This file holds the L2 实操 details for each P-n principle.  The main
-`docs/PRINCIPLES.md` holds L0 (4 root axioms) + L1 (the 23 principles).
+`docs/PRINCIPLES.md` holds L0 (4 root axioms) + L1 (the 25 principles).
 Read main first; read this when you need to know "how to actually
 follow" a specific principle.
 
