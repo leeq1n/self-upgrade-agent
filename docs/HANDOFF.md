@@ -19,11 +19,10 @@ depending on the Hermes runtime**.
 
 **Three deliverable layers** (per user meta-rule 2026-07-14 + c89 M-n 11):
 
-1. **Operational rules**: 23 working principles (P1-P27
-   minus P6 + P15 + P16 + P24, merged into P5 + P3 per
-   c47a + c78 + c79 + c80) + **11 M-* operator rules**
-   (M-task-summary through M-experiment-in-subproject,
-   per c89)
+1. **Operational rules**: 25 P-n (P1-P29
+   minus P6 + P15 + P16 + P24) + 24 M-n
+   (M-task-summary through M-pace-continuity,
+   per c95-c134)
 2. **Self-organization**: the project itself follows its own
    rules (per P27 + 7-check pattern; documented in
    `docs/HOW_TO_READ_GRAPH.md`)
@@ -55,7 +54,7 @@ orientation.
 
 - **Commits**: 319 in mainline
 - **Last commit**: c78 = P3+P24 merge (47b, c47 plan)
-- **P-n count**: P1-P28 minus P6 + P15 + P16 + P24 = 24 working principles (post c47a + c78 + c79 + c80 + c96 P28 lift)
+- **P-n count**: P1-P29 minus P6 + P15 + P16 + P24 = 25 working principles (post c47a + c78 + c79 + c80 + c96 P28 lift + c167 P29 lift)
 - **R-n compliance**: R5 compliant (0 violations);
   R4/R6 conflict resolved (c75); R12 still has 1 violation
   (knowledge-graph-seed PHILOSOPHY.md stale, sibling project)
