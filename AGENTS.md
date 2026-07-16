@@ -93,9 +93,9 @@ P24 (merged into P3 per c78), P25, P26, P27, P28, P29
 (lifted per c167).  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
 list.
 
-## Operating rules (M-n 12-24, per c95-c134)
+## Operating rules (M-n 12-25, per c95-c183)
 
-**24 M-n** in `docs/OPERATING_RULES.md`:
+**25 M-n** in `docs/OPERATING_RULES.md`:
 
 - **M-n 12**: terminology-clarity (refine "撞到一起" → "replan")
 - **M-n 13**: layer-extension (L0/L1/L2 + extensions)
@@ -110,6 +110,7 @@ list.
 - **M-n 22**: 3w1h-think-first (3W1H 分析法 BEFORE top-down)
 - **M-n 23**: periodic-re-analysis (re-分析 at 最终目标)
 - **M-n 24**: pace-continuity (commit + continue, no verbose ending)
+- **M-n 25**: turn-pattern-recognition (parse 你 turn + 5 patterns + M-n self-application 4 levels)
 
 **修订 L4 boundary (per c95 + memory 7)**:
 

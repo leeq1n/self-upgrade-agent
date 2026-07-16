@@ -1622,6 +1622,82 @@ gate, 4+ observed):
 - `docs/PRINCIPLES.md` — P17 (老实说)
 - 你 turn 2026-07-15 — origin
 
+### M-turn-pattern-recognition (added 2026-07-15, per 你 turn "学习下我发言的思路 ... 也需要看看有没有学习过")
+
+**Trigger**: when agent receives a user turn
+that contains 2+ parts (directive + 真问题
++ 真意 + 隐含 codify request).
+
+**See `M_TURN_PATTERN_RECOGNITION_DETAIL.md`
+(L2 companion per P11 + R6) for worked
+examples + 4 sub-steps + 5 anti-patterns +
+per-turn-type decision tree.**
+
+**Action** (4 sub-steps per M-self-application
+4 levels + M-n 14 类比 vs 逻辑):
+
+1. **Parse turn** (object level): identify
+   all parts (directive / 真问题 / 真意 /
+   隐含 codify / 隐含 verification).
+2. **Apply pattern** (rule level): recognize
+   你 turn patterns (常见 pattern 见
+   decision tree in L2 companion).
+3. **Update memory** (memory level): if
+   new pattern observed, add to
+   7+ observed cases list.
+4. **Adjust behavior** (self level): for
+   next turn, recognize pattern faster +
+   apply correct M-rule (M-n 21/22/23/24).
+
+**5 observed 你 turn patterns** (per M_RULE_
+AUTHORING 3-condition gate):
+
+- **Pattern A (2-3 parts + directive)**: per
+  c92, c98, c106 prior turns.
+- **Pattern B (3-4 parts + 真问题)**: per
+  c118, c122 prior turns.
+- **Pattern C (5 parts + 真问题 + 隐含
+  codify)**: per 你 turn 2026-07-15 (你
+  turn 真意 = 5 distinct parts: 规划
+  角度 / 方法 / 任务管理 / 记录 / 学习
+  思路).
+- **Pattern D (directive + 真问题 verify)**:
+  per c145, c155 prior turns.
+- **Pattern E (implicit + 主动)**: per
+  c163-c182 prior turns (你 turn "按
+  计划继续推进" = 主动 mode).
+
+**Why this M-rule exists**: per 你 turn
+2026-07-15 explicit ask "学习我发言
+思路这个也需要看看有没有学习过" +
+M_RULE_AUTHORING 3-condition gate (3+
+sites: c18 + c92 + c98 + c106 + c118 +
+c122 = 6 sites; triggerable: 你 turn
+parser; 5+ observed: 5 patterns above).
+
+**Self-application of M-self-application
+(per P28 recursion)**: this M-rule IS
+M-self-application applied to 你 turn
+recognition (level 4: own behavior).
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-self-
+  application — 4 levels (this M-rule IS
+  level 4 application)
+- `docs/OPERATING_RULES.md` § M-n 12
+  terminology-clarity — refine 你 turn
+  terms
+- `docs/OPERATING_RULES.md` § M-n 14
+  two-track-reasoning — 类比 (find
+  similar 你 turn) vs 逻辑 (parse 1
+  turn)
+- `docs/OPERATING_RULES.md` § M-n 21
+  ask-or-infer-mark-guess — for 真问题
+- `docs/OPERATING_RULES.md` § M-n 22
+  3W1H-think-first — for 你 turn 真意
+- 你 turn 2026-07-15 — origin
+
 ### M-3w1h-think-first (added 2026-07-15, per 你 turn "自顶向下之前, 往上思考一步, 3W1H 分析法")
 
 **Trigger**: before any major decision, commit
