@@ -2503,3 +2503,94 @@ Recursive: applies itself.
   c211)
 - 你 turn 2026-07-15 — origin
 
+### M-task-lifecycle (added 2026-07-15, per 你 turn 中优先级 567 处理 directive)
+
+**Trigger**: when agent receives 你 turn with
+explicit directive (including 中优先级 items
+567 处理).
+
+**See `M_TASK_LIFECYCLE_DETAIL.md`
+(L2 companion per P11 + R6) for full
+4-phase decision tree + worked examples.**
+
+**Action** (4-phase per 你 turn 567 处理):
+
+| Phase | Name | Goal | Method |
+|---|---|---|---|
+| 1 | **task-init** | understand scope + boundaries | M-n 22 3W1H + M-n 21 ask-or-infer + clarify before execute |
+| 2 | **task-execute** | do the task | M-n 16 observe-think-execute + M-n 18 sub-task summary + commit 进度 |
+| 3 | **task-done-notify** | 明确 通知 你 PASS | M-n 29 Step 5 + 你 turn directive "明确告知" |
+| 4 | **task-retrospective** | capture lessons | M-n 26 context-decay + memory update + 7-check |
+
+**Why this M-rule exists**: per 你 turn
+2026-07-15 explicit directive:
+
+- **Item 6 (task-done notification)**: per
+  你 turn prior "如果做完任务，需要你跟
+  我明确指出" → Phase 3 explicit 段
+  (M-n 29 Step 5).
+- **Item 7 (project lifecycle)**: per 你
+  turn prior "项目生命周期，以及跨项目
+  记忆管理" → Phase 1-4 explicit.
+
+Per M_RULE_AUTHORING 3-condition gate (5+
+observed sites):
+- c100-c108 (M-n 16 + M-n 17 + M-n 18 codify)
+- c122-c132 (M-n 22 + M-n 23 codify)
+- c134 (M-n 24 pace-continuity)
+- c183 (M-n 25 turn-pattern-recognition)
+- c189 (M-n 26 context-decay-management)
+- c203 (M-n 29 acceptance-protocol)
+- 你 turn 2026-07-15 explicit directive
+
+**4-phase detail**:
+
+- **Phase 1 (task-init)**: 接受 你 turn →
+  用 M-n 22 3W1H 分析 → 用 M-n 21
+  ask-or-infer (要 mark guess) → 用 M-n 28
+  4-condition self-audit → 如果 明确, 进
+  Phase 2; 如果 不 明确, **先 做规划**
+  (per M-n 28 plan-first).
+- **Phase 2 (task-execute)**: execute per
+  PLAN → commit per M-n 18 sub-task summary
+  → continue per M-n 24 pace-continuity →
+  interrupt only for 真问题 (per M-n 28).
+- **Phase 3 (task-done-notify)**: 完成 时
+  → 用 M-n 29 Step 5 explicit notify →
+  "明确告知" 你 (per 你 turn prior
+  directive) → list passed/failed items →
+  request next directive.
+- **Phase 4 (task-retrospective)**: 之后
+  → capture lessons via M-n 26 + memory
+  update + 7-check (per 你 turn turn-pattern
+  directives).
+
+**Task-done indicator** (per 你 turn
+explicit "如果做完任务，需要你跟我明确
+指出"):
+
+> "✅ Task done. Per M-n 29 Step 5 +
+> per 你 turn directive 2 (明确告知):
+> - PASS items: [list]
+> - FAIL items: [list OR none]
+> - Next directive needed: [OR continue]"
+
+**Project lifecycle** (per 你 turn prior
+"项目生命周期"):
+
+- **Init**: AGENTS.md created + PLAN file +
+  R1-R12 baseline.
+- **Active**: 多 commit + M-n codify + cross-
+  ref + retention (R5).
+- **Archive**: 当 项目 done → freeze commits
+  + move to .archive/ + keep context for
+  future reference.
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-n 16 / M-n
+  18 / M-n 21 / M-n 22 / M-n 24 / M-n 26 /
+  M-n 28 / M-n 29
+- 你 turn 2026-07-15 directive "中优先级
+  567 处理" (item 6 + 7)
+
