@@ -528,9 +528,38 @@ process.
   trigger" (implies passive wait, 反 你 vision
   "agent 主动").
 
+**修订 L4 boundary** (per c127 re-analysis +
+你 turn 2026-07-15 explicit codification):
+
+The 3 risk levels (a/b/c) are now consolidated
+here as an explicit decision tree.  Per M-n 17
+Path 1 + M-n 23 + M-n 24:
+
+| Level | Trigger | Action | 7-check? | Ask user? |
+|---|---|---|---|---|
+| (a) Low | 1 line / typo / cross-ref | Autonomous | Skip | No |
+| (b) Mid | 1-2 files / 7-check needed | Autonomous + 7-check | Yes | Only if 真歧义 |
+| (c) High | 3+ files / vision-affecting | Ask user first | Yes | Yes |
+
+**你 vision override** (per 你 turn 2026-07-15):
+
+> "如果你通过了原则确认没问题，就直接进行，不用找我确认"
+> "有计划的情况下，一直推进到遇到问题再来找我"
+> "最近几轮不用这样打断项目推进节奏"
+
+This means **(a) and (b) are autonomous** by
+default.  (c) requires user confirmation only
+when 真问题 (P17 honest "I can't proceed
+because..."), not for trivial confirmations.
+
+**M-n 24 (pace-continuity)** (per 你 turn
+2026-07-15) reinforces: agent should commit +
+continue per PLAN, not interrupt for trivial
+reasons.
+
 **Why this M-rule exists**: per 你 turn 2026-07-15:
-1. "当特别简单而且没有巨量的任务时你可以自行
-   决定，不用经过check" (low-risk autonomy)
+ 1. "当特别简单而且没有巨量的任务时你可以自行
+    决定，不用经过check" (low-risk autonomy)
 2. "我怀疑是hermes的skill让你每次跟我说'等下次
    next trigger'，你看看是否需要调整" (phrasing
    revision)
