@@ -29,11 +29,11 @@ fi
 
 MSG=$(cat "$COMMIT_MSG_FILE")
 
-# Look for a P<n> reference (P1-P28, except P6 merged into P5 per c47a).
+# Look for a P<n> reference (P1-P29, except P6 merged into P5 per c47a).
 # Whitelist approach to avoid matching P6.
-if ! echo "$MSG" | grep -qE 'P(1|2|3|4|5|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27)'; then
+if ! echo "$MSG" | grep -qE 'P(1|2|3|4|5|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29)'; then
     cat >&2 <<'EOF'
-ERROR: commit message must reference at least one P-n (P1-P28, except P6).
+ERROR: commit message must reference at least one P-n (P1-P29, except P6).
 
   Per AGENTS.md 'Commit message contract' and docs/PRINCIPLES.md,
   every commit must cite the principle that motivated the change.
@@ -45,8 +45,9 @@ ERROR: commit message must reference at least one P-n (P1-P28, except P6).
 
   Allowed P-n values: P1 P2 P3 P4 P5 P7 P8 P9 P10 P11 P12
                      P13 P14 P15 P16 P17 P18 P19 P20 P21 P22
-                     P23 P24 P25 P26 P27
-                     (P6 merged into P5 per c47a)
+                     P23 P24 P25 P26 P27 P28 P29
+                     (P6 merged into P5 per c47a;
+                      P28 lifted per c96, P29 lifted per c167)
 
   To skip this check (NOT recommended), pass --no-verify.
 EOF
