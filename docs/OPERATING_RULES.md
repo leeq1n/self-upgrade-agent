@@ -2546,8 +2546,22 @@ explicit directive (including 中优先级 items
 |---|---|---|---|
 | 1 | **task-init** | understand scope + boundaries | M-n 22 3W1H + M-n 21 ask-or-infer + clarify before execute |
 | 2 | **task-execute** | do the task | M-n 16 observe-think-execute + M-n 18 sub-task summary + commit 进度 |
-| 3 | **task-done-notify** | 明确 通知 你 PASS | M-n 29 Step 5 + 你 turn directive "明确告知" |
+| 3 | **task-done-notify** | 明确 通知 你 PASS | **MUST apply M-n 29 5-step first** (per L0.1 commit; M-n 29 trigger S5 = pre-Phase-3) — then Step 5 notify |
 | 4 | **task-retrospective** | capture lessons | M-n 26 context-decay + memory update + 7-check |
+
+**Phase 3 pre-condition** (per P25 step 5
+impact analysis, follow-up to L0.1 commit):
+Phase 3 cannot start until M-n 29 5-step
+(Design 角度 → Execute 5 primitives → Validate
+→ FAIL-cycle-or-PASS → Notify) has been
+**completed and recorded** in the session
+output.  Anti-pattern: skip M-n 29 5-step
+and go directly to "notify you" — this is
+the failure mode that triggered 你 turn
+2026-07-16 "skill 最后的时候要验收，你
+验收了吗？".  Per P17 老实说, the "完成"
+message itself is a SIGNAL (per M-n 29 S1),
+not a substitute for the 5-step.
 
 **Why this M-rule exists**: per 你 turn
 2026-07-15 explicit directive:
