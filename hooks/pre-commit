@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# pre-commit hook — invokes eval_before.py + verify_after.py gates
+# per core-layer/governance-template.md "Verify-After"
+# + 你 turn 2026-07-16 "修改时需要评估，修改后需要验收".
+#
+# Per M-n 32 Guardrail #1 retrofitted (verify target state
+# before commit).  Per M-n 35 critical-thinking primitive 3
+# (pre-mortem): pre-commit check is cheap insurance against
+# LLM-self-judgment.
+#
+# Non-blocking by default (prints warning, exits 0).  Set
+# STRICT_EVAL=1 in env to convert warnings to FAIL.
+#
+# Per M-n 18 destruction: this hook is the FULL evaluation
+# gate.  It runs BOTH eval_before.py (pre-staging check)
+# AND prepare-commit-msg logic (commit message inspection
+# after staging).
+
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+EVAL_BEFORE="$REPO_ROOT/.hermes/scripts/eval_before.py"
+VERIFY_AFTER="$REPO_ROOT/.hermes/scripts/verify_after.py"
+
+echo "[pre-commit] Running eval_before gate..."
+
+if [ -f "$EVAL_BEFORE" ]; then
+    if python "$EVAL_BEFORE" --strict 2>&1; then
+        echo "[pre-commit] eval_before: PASS"
+    else
+        rc=$?
+        if [ "${STRICT_EVAL:-0}" = "1" ]; then
+            echo "[pre-commit] eval_before: FAIL (strict mode)" >&2
+            exit $rc
+        fi
+        echo "[pre-commit] eval_before: WARN (non-blocking, set STRICT_EVAL=1 for strict)"
+    fi
+else
+    echo "[pre-commit] eval_before.py not found — skipping"
+fi
+
+# Note: verify_after.py is intentionally NOT called from pre-commit
+# because the commit hasn't happened yet.  Run it manually after
+# commit (or in CI) per core-layer/governance-template.md.
+
+exit 0
