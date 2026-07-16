@@ -77,6 +77,47 @@ twice commit once)
    (context-decay-management) + 1 sample
    P-n 段 per P29.
 
+## Mechanical enforcement layer (per retrospective 2026-07-16)
+
+Per 你 turn "根据原则做决定" + retrospective 4-FAIL
+diagnosis (M-n 32 Guardrail #4 violation across
+multiple turns — claimed DONE without applying
+5-step), this project adds mechanical external
+trigger layer:
+
+- **`.hermes/scripts/m_n29_5step.py`** (commit `05cd4d5`):
+  deterministic baseline — 15 design criteria + 5
+  primitives + validate cycle
+- **`hooks/prepare-commit-msg`** (commit `f11b145`):
+  commit-time reminder trailer when commit body
+  mentions "task done" / "完成" / "PASS"
+- **`AGENTS.md` "Task-done-notify reminder"段** (commit
+  `e80fc73`): L0 surface with hard step 5 = external
+  script invocation
+
+## What's NOT yet enforced
+
+Per 你 turn "怎么样才能保证自主阅读学习" + M-n 32
+Guardrail #5 (auto-learning): LLM self-invocation
+of M-n 29 5-step is NOT 100% guaranteed.  AGENTS.md
+reminder + commit-time trailer + external script
+all maximize external-trigger coverage.  Future
+agents reading this project should:
+
+1. Run `python .hermes/scripts/m_n29_5step.py --self`
+   BEFORE claiming task done
+2. Apply 5 primitives (Analyze / Reason / 联想 /
+   归纳 / 总结) in plan / commit message
+3. Cite P-n / M-n values that motivated changes
+
+P-n cited: P17 (老实说 — explicit retrospective
+diagnosis), P25 (post-modify re-apply per M-n 34
+self-application), P29 (recursive enforcement).
+M-n cited: M-acceptance-protocol (M-n 29 external
+trigger), M-self-learning-guardrail (M-n 32
+Guardrail #4 mechanical enforcement), M-knowledge-
+context-trade-off (M-n 30 Priority 1).
+
 ## How to update this verification
 
 When a new P-n / M-n is added (codified +
