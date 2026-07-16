@@ -92,6 +92,7 @@ Total: ~35 min to full orientation.
 | M-n 33 | [M_NARRATIVE_AS_SPEC_DETAIL.md](M_NARRATIVE_AS_SPEC_DETAIL.md) | 3-primitive: parse + structure + codify |
 | M-n 11 | [M_EXPERIMENT_IN_SUBPROJECT_DETAIL.md](M_EXPERIMENT_IN_SUBPROJECT_DETAIL.md) | Sub-project experimental pattern |
 | M-n 12 | [M_TERMINOLOGY_CLARITY_DETAIL.md](M_TERMINOLOGY_CLARITY_DETAIL.md) | Terminology refinement rules |
+| M-n 35 | [M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md](M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md) | 4 adversarial primitives (质疑/逆向/预演失败/对立论证) — added 2026-07-16 |
 
 ## L1: Process / lifecycle patterns (8)
 
