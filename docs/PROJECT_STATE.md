@@ -4,13 +4,13 @@ Last P20-verified: 2026-07-15
 ---
 description: "Project goal, status, mistakes, constraints, next step"
 status: "summary"
-last_updated: "2026-07-15 (c179 commits: 25 P-n + 24 M-n + 3-project arch + 整理 + 修订 L4 boundary + framework-agnostic + P29 LIFT)"
+last_updated: "2026-07-15 (c199 commits: 25 P-n + 27 M-n + 3-project arch + 整理 + 修订 L4 boundary + framework-agnostic + P29 LIFT + M-n 27 3-layer)"
 ---
 
 # PROJECT_STATE — brief
 > L0: Current project state (1-paragraph).  Load when: need snapshot of current goal/version/next step.
 
-**Goal (1 sentence) (updated 2026-07-15)**: 一个原则库项目 + skill 孵化器 + 已孵化的自我改进 skill 项目的 3-project 架构。SUA 自身 = 原则库（**25 P-n** + **24 M-n** + 修订 L4 boundary + framework-agnostic per M-n 20）；skill 孵化器 = sibling project（`../skill-incubator/`，设计并孵化 skill）；已孵化 skill = `../agent-reflection-skill/`（6 reasoning primitives + recursion + self-application + framework-agnostic per Hermes/Codex/Claude Code）。
+**Goal (1 sentence) (updated 2026-07-15)**: 一个原则库项目 + skill 孵化器 + 已孵化的自我改进 skill 项目的 3-project 架构。SUA 自身 = 原则库（**25 P-n** + **27 M-n** + 修订 L4 boundary + framework-agnostic per M-n 20）；skill 孵化器 = sibling project（`../skill-incubator/`，设计并孵化 skill）；已孵化 skill = `../agent-reflection-skill/`（6 reasoning primitives + recursion + self-application + 3-layer architecture per M-n 27 + framework-agnostic per Hermes/Codex/Claude Code）。
 
 **Pivot note**: 之前目标是 self-improving agent that modifies core/planner.py（session 早期定义）。中间用户调整为"项目自组织 + 知识图谱/平铺式 + agent-onboarding skill 给其他项目用"。新目标替代旧目标，旧 self-improving 实现仍存在 core/planner.py 但不再是 project 焦点。
 

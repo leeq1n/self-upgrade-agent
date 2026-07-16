@@ -36,8 +36,8 @@ twice commit once)
 ## P-n / M-n completeness (per c167 + c183 + c189)
 
 - **25 P-n working** (P1-P29 minus P6/P15/P16/P24)
-- **26 M-n codified** (M-n 1-26, per c183 + c189)
-- **24 M-n L2 companions** + 2 段 in OPERATING_RULES.md
+- **27 M-n codified** (M-n 1-27, per c183 + c189 + c197)
+- **24 M-n L2 companions** + 3 段 in OPERATING_RULES.md
 
 ## 3-project arch (per round 82 + c101)
 

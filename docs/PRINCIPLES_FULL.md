@@ -524,10 +524,7 @@ demonstrating recursion on the skill itself.
 
 P29 = "agent 主动 reduce context" (主动 reduces
 context via 类比 + 节点 生命周期 + periodic
-re-analysis + pace continuity).  Per M-n 22
-3W1H first + M-n 23 re-analysis + M-n 24
-pace-continuity + M-n 14 entropy dimension +
-M-n 18 节点 生命周期管理.
+re-analysis + pace continuity + 3-layer).
 
 **M_RULE_AUTHORING 3-condition gate**:
 
