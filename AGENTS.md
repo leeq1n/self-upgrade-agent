@@ -74,6 +74,14 @@ failure mode M-n 34 is designed to prevent.
    thinking (5 primitives) + adversarial thinking
    (4 critical primitives) = full thinking pair (per
    M-n 14 two-track).
+10. `docs/M_PRE_RELEASE_AUDIT_DETAIL.md` — L2 detail
+    for **release preparation** (M-n 36, per 你 turn
+    2026-07-16 retrospective).  Read when tagging x.0.0
+    release, pushing to github, publishing to package
+    manager, or distributing zip.  Contains 5 checks
+    (commit cleanliness / tag at HEAD / CHANGELOG /
+    artifact / docs) to prevent "github commit
+    confusion" pattern.
 
 **Note**: items 5-7 are added per M-n 34 (2026-07-16) so
 fresh agents can find all rules, not just P-n.  Per
