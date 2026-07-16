@@ -163,3 +163,40 @@ Result: trade-off 4-priority PASS.
 - SUA `agent-reflection-skill/SKILL.md` §
   Flat structure (per c211)
 - 你 turn 2026-07-15 — origin
+
+---
+
+## UPDATE ORDER RULE (added per 你 turn 2026-07-15 priority directive)
+
+### Priority 5 (Always): Update order rule
+
+**Trigger**: when 知识 changes in SUA (P-n, M-n, R-n, docs, etc.).
+
+**Rule** (per 你 turn 4 parts):
+1. **SUA** (知识库) = **source** — change 起源.
+2. **skill-incubator** (孵化器) = **middle** — process propagation.
+3. **skill** (final) = **downstream** — receives change.
+
+**Propagation path**: SUA → skill-incubator → skill.
+
+**Reverse propagation NOT allowed** (per M-n 20 framework-agnostic + P21 cross-project independence).
+
+**Why this rule**:
+- SUA holds 原则 + M-rules + R-rules (core 知识库).
+- skill-incubator holds 5-phase process + 4 sub-knowledge areas + case studies.
+- skill holds 6 reasoning primitives + when-to-reflect + Stand-alone spec.
+
+**When SUA changes**:
+- P-n change: re-evaluate all M-n that cite P-n, then update skill references
+- M-n change: update skill SUBSET (primitives that match new M-n), then update skill-incubator case studies
+- R-n change: verify skill + skill-incubator compliance
+
+**When skill changes**:
+- Should NOT happen — skill is downstream, must follow SUA source
+- If 必要, write a SUA proposal first (per M_RULE_AUTHORING)
+
+**Worked example (c222 self-application)**:
+
+This 段 IS M-n 30 self-application: codify Update order rule as Priority 5 (Always), per 你 turn 2026-07-15 explicit directive.
+
+SUA c222 codify → THEN propagate to skill-incubator (c223) → THEN propagate to skill (c224).

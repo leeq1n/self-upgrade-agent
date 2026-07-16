@@ -2440,6 +2440,7 @@ Part 1+2+3+4):
 | **HIGH** | **Context 管理** | M-n 26 (context-decay-management) + M-n 23 (periodic re-analysis) + M-n 18 (节点 生命周期).  Lazy-load for smaller models. |
 | **TIE** | **Trade-off** | M-n 27 (3-layer) + M-n 14 (class比 compression).  分层 for knowledge layer + 平铺式 for behavior spec (per 你 turn Part 5). |
 | **Always** | **分层 自顶向下 分治** | M-n 16 stage 3 top-down + M-n 18 recursive-summary + M-n 22 3W1H-first.  Per 你 turn Part 4 隐含 ask "希望 你 没有忘记". |
+| **Always** | **Update order rule** | SUA (知识库, source) → skill-incubator (孵化器, middle) → skill (final, downstream).  Per 你 turn 2026-07-15 explicit priority directive.  When 知识 changes in SUA, MUST propagate to skill-incubator + skill.  Reverse direction NOT allowed (per M-n 20 + P21). |
 
 **Why this M-rule exists**: per 你 turn
 2026-07-15 explicit 5 parts:
