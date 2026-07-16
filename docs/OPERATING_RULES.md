@@ -2594,3 +2594,80 @@ explicit "如果做完任务，需要你跟我明确
 - 你 turn 2026-07-15 directive "中优先级
   567 处理" (item 6 + 7)
 
+### M-self-learning-guardrail (added 2026-07-15, per 你 turn "自动学习相关的功能还在 + 一开始就约束好")
+
+**Trigger**: when agent modifies this skill
+or any sibling project (per M-n 20 +
+framework-agnostic).  Permanent guardrail
+in 项目 一开始.
+
+**See `M_SELF_LEARNING_GUARDRAIL_DETAIL.md`
+(L2 companion per P11 + R6) for 4-level
+decision tree + 5 guardrails worked examples.**
+
+**Action** (5 modification guardrails per
+你 vision "新 agent 修改 都需要 在 一开始
+就 约束好"):
+
+Every new agent modifying this skill MUST
+follow:
+
+| # | Guardrail | Trigger | Enforcement |
+|---|---|---|---|
+| 1 | **Cite P-n or M-n** | every commit | commit-msg hook whitelist (P1-P29) |
+| 2 | **R5 ≤ 7168 bytes** | docs L0/L1 files | pre-commit R5 check (manual via wc -c) |
+| 3 | **Cross-ref check** | file edits that drift refs | manual review per M-n 20 + P14 docs stay current |
+| 4 | **Acceptance protocol** | claim "task done" / "all pass" | per M-n 29 5-step (design + execute + validate + cycle + notify) |
+| 5 | **Update order rule** | SUA change | per M-n 30 Priority 5: SUA → skill-incubator → skill |
+
+**Auto-learning functionality** (per 你
+turn "希望 项目 里 自动学习 相关 的 功能
+还在"):
+
+- **M-self-application** (M-n 2): agent
+  applies M-rules to itself recursively
+  (4 levels: literal / analogical /
+  meta-level / recursive)
+- **M_RULE_AUTHORING** (M-n 4): 3-condition
+  gate for codifying new M-n (3+ observed
+  sites + triggerable + 你 turn explicit
+  directive)
+- **M-context-decay-management** (M-n 26):
+  re-read + 类比归纳 + 整理 + checkpoint
+- **M-self-audit** (M-n 3): 6-step + step
+  7 = verify-before-edit
+
+**Why this M-rule exists**: per 你 vision
+deep:
+
+1. "新 agent 还有可能改" = 永久 接受 新
+   agent 修改
+2. "后续这个skill的修改等等都需要在一开
+   始就约束好" = 一开始 永久 guardrail
+3. "你应该自动学习更新" = self-learning
+   is permanent functionality
+4. "希望项目里自动学习相关的功能还在" =
+   verify auto-learning 在 working state
+
+**Enforcement mechanism**:
+
+- `hooks/commit-msg` whitelist P-n (c175 +
+  c217 sync)
+- `wc -c` R5 check (manual per commit)
+- `git log --oneline` audit (per M-n 23
+  periodic re-analysis)
+- `.../VERIFY.md` cross-ref check
+
+**Self-application** (per P28 recursion):
+
+This 段 IS M-self-application applied to
+guardrails.  Recursive: applies itself.
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-n 2 + M-n
+  3 + M-n 4 + M-n 26
+- `docs/OPERATING_RULES.md` § M-n 30
+  Priority 5 (Update order rule)
+- 你 turn 2026-07-15 — origin
+

@@ -93,9 +93,9 @@ P24 (merged into P3 per c78), P25, P26, P27, P28, P29
 (lifted per c167).  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
 list.
 
-## Operating rules (M-n 12-31, per c95-c228)
+## Operating rules (M-n 12-32, per c95-c234)
 
-**31 M-n** in `docs/OPERATING_RULES.md`:
+**32 M-n** in `docs/OPERATING_RULES.md`:
 
 - **M-n 12**: terminology-clarity (refine "撞到一起" → "replan")
 - **M-n 13**: layer-extension (L0/L1/L2 + extensions)
@@ -105,7 +105,7 @@ list.
 - **M-n 17**: context-freshness-check (intra-agent + inter-domain)
 - **M-n 18**: recursive-summary-protocol (6 sub-steps + 节点 生命周期)
 - **M-n 19**: file-naming-convention (PLAN dir + name + L2 companion)
-- **M-n 20**: agent-discoverability-check (cross-framework + naming + discoverability + memory persistence)
+- **M-n 20**: agent-discoverability-check (cross-framework + naming + discoverability)
 - **M-n 21**: ask-or-infer-mark-guess (3 sub-steps + top-down 默认)
 - **M-n 22**: 3w1h-think-first (3W1H 分析法 BEFORE top-down)
 - **M-n 23**: periodic-re-analysis (re-分析 at 最终目标)
@@ -116,7 +116,8 @@ list.
 - **M-n 28**: plan-conditional (4-condition check: uncertain → plan; clear → continue)
 - **M-n 29**: acceptance-protocol (5-step protocol: design + 5 primitives + validate + cycle + notify)
 - **M-n 30**: knowledge-context-trade-off (4-priority: knowledge 充足 > context 管理 > trade-off via 分层+类比 > 分层 自顶向下 分治 always)
-- **M-n 31**: task-lifecycle (4-phase: task-init + task-execute + task-done-notify + task-retrospective, per 你 turn directive "中优先级 567 处理" item 6 + 7)
+- **M-n 31**: task-lifecycle (4-phase: init + execute + done-notify + retrospective)
+- **M-n 32**: self-learning-guardrail (5 modification guardrails + auto-learning)
 
 ## Recent cross-project sync (per 你 turn 2026-07-15)
 
@@ -125,8 +126,7 @@ Per M-n 30 + 你 turn verification directive:
 - SUA → skill: SKILL_DETAIL.md c219
 - SUA → KG: AGENTS.md c217
 
-**All 3 sibling projects now have explicit
-Reading order + SUA P-n/M-n cross-ref.**
+**All 3 sibling projects now have explicit Reading order + SUA cross-ref.**
 
 
 **修订 L4 boundary (per c95 + memory 7)**:
