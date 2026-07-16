@@ -57,6 +57,29 @@ def five_primitives(claim: str) -> dict[str, str]:
     }
 
 
+def four_critical_thinking(claim: str) -> dict[str, str]:
+    """Step 2a: 4 critical-thinking primitives (adversarial pair
+    to the 5 constructive primitives, per 你 turn 2026-07-16
+    + M-n 14 two-track reasoning).
+
+    Full detail: docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md
+    """
+    return {
+        "质疑 (Challenge)":
+            "3 specific weaknesses + highest-damage weakness "
+            "explicitly acknowledged",
+        "逆向 (Invert)":
+            "OPPOSITE state + 2-3 reasons OPPOSITE could be "
+            "true + what would change",
+        "预演失败 (Pre-mortem)":
+            "this FAILED in 30 days + 3-5 failure modes + "
+            "1-2 preventable (Klein 2007)",
+        "对立论证 (Steelman-the-opposite)":
+            "most charitable opposing case + 2-3 strongest "
+            "opposing arguments + acknowledge valid ones",
+    }
+
+
 def validate(primitives: dict[str, str], criteria: list[tuple[str, str]]) -> tuple[int, int]:
     """Step 3: Validate by counting keys present."""
     crit_keys = {c[0] for c in criteria}
@@ -82,7 +105,13 @@ def main() -> int:
     crits = design_criteria()
     print(f"  Designed {len(crits)} criteria.")
 
-    # Step 2
+    # Step 2a: critical-thinking (BEFORE constructive, per 你 turn)
+    print("\n[Step 2a] Apply — 4 critical-thinking primitives (adversarial pair)")
+    ct = four_critical_thinking(args.claim)
+    for k, v in ct.items():
+        print(f"  {k}: {v[:80]}")
+
+    # Step 2: constructive
     print("\n[Step 2] Execute — 5 primitives")
     prims = five_primitives(args.claim)
     for k, v in prims.items():
@@ -93,6 +122,7 @@ def main() -> int:
     pk, ck = validate(prims, crits)
     print(f"  5 primitives keys: {pk}")
     print(f"  Coverage with criteria: {ck}")
+    print(f"  4 critical-thinking primitives: {len(ct)} (default-on for high-stakes)")
 
     # Step 4 (reconciliation)
     print("\n[Step 4] Cycle loop check")
