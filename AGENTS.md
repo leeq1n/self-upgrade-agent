@@ -60,11 +60,49 @@ that motivated the change).
 ## Task-done-notify reminder (per 你 turn 2026-07-16)
 
 Per 你 turn "我之前说过，skill 最后的时候要验收，你验收
-了吗？你不知道要验收这件事" + L0.1-L0.3 commits in
-`fix/m29-trigger-explicit` branch:
+了吗？你不知道要验收这件事" + 你 turn 2026-07-16
+"很多地方说的思考都需要用原则里的思考方法。在工作
+的时候你经常想不到用这思考方法，你得问问自己为什么"
++ L0.1-L0.3 commits in `fix/m29-trigger-explicit` branch:
 
-**Before sending any "task done" / "完成" / "PASS" /
-"all green" message to 你**, agent MUST:
+**Before any commit / before sending "task done" message**,
+agent MUST apply **5 primitives** (per M-n 16 stage 1-2
++ M-n 14 two-track + M-n 25 turn-pattern + M-n 26
+context-decay; codified in M-n 29 Step 2):
+
+1. **Analyze** (M-n 16 stage 1): 任务 IS what? 范围
+   (per R11) + components / files / commits involved?
+2. **Reason** (M-n 16 stage 2 + M-n 22 3W1H): Why
+   this design? Trade-offs? Alternatives considered?
+3. **联想 (analogize)** (M-n 14 class比 + M-n 17
+   Path 2): 类似 prior pattern? (e.g., linter 漏检
+   / compiler self-host / API doc 漏 cover — common
+   pattern: "rules written ≠ rules invoked")
+4. **归纳 (induct)** (M-n 14 induction + M-n 18):
+   General pattern from specific? What can be
+   applied to other tasks?
+5. **总结 (summarize)** (M-n 26 compression + M-n
+   18 destruction): Synthesize 1-paragraph L0;
+   节点 生命周期 (destroy redundant detail).
+
+**Why this is a gate, not a step description**:
+"5 primitives written in M-n 29 Step 2" is L2
+detail.  LLM agents don't auto-invoke L2 detail
+content (root cause: same self-referential
+problem as M-n 29 trigger).  Lifting these 5
+primitives to L0 (AGENTS.md "Read first" 段)
++ this reminder段 makes them **observable to
+fresh agents on every commit** (per P25 step 7
++ P26 fresh-agent simulation).
+
+**Self-application reminder** (per M-n 14
+Track 1 类比): my own failure on the previous
+batch (5 commits without explicit 5-primitives
+apply) was the same pattern as M-n 29
+self-referential trigger — rules written ≠
+rules invoked.  This reminder IS the fix.
+
+Then MUST apply **M-n 29 5-step protocol**:
 
 1. Apply **M-n 29 5-step protocol**:
    - **Step 1**: Design 验收 角度 (per M-n 22 3W1H):
