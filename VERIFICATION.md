@@ -149,6 +149,40 @@ VERIFICATION.md (commits `08ed89e`, `274ad5d`,
 `7438fc4`).  See each repo's VERIFICATION.md
 "3-layer governance cross-ref" 段.
 
+## 4 critical-thinking primitives (per 你 turn 2026-07-16)
+
+Per 你 turn 3-layer + critical-thinking injection:
+SUA now codifies **9 primitives** for
+self-correction (5 constructive + 4 adversarial):
+
+- **5 constructive primitives** (existing):
+  Analyze, Reason, 联想, 归纳, 总结
+- **4 critical-thinking primitives** (new M-n 35):
+  质疑 (Challenge), 逆向 (Invert), 预演失败
+  (Pre-mortem), 对立论证 (Steelman-the-opposite)
+
+Per M-n 14 two-track-reasoning: complete
+thinking needs BOTH constructive + adversarial.
+
+**L1 detail**: `docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md`
+(commit `35a25d3`).
+
+**Integration**:
+- AGENTS.md "Task-done-notify reminder"段 updated
+  (commit `d31e9de`)
+- `M_ACCEPTANCE_PROTOCOL_DETAIL.md` Step 2 includes
+  both constructive + adversarial (commit `f0ba8b7`)
+- `.hermes/scripts/m_n29_5step.py` Step 2a runs
+  critical-thinking BEFORE constructive (commit
+  `b3b56a1`)
+- `hooks/prepare-commit-msg` trailer checklist now
+  includes Step 2a (commit `80cad53`)
+
+**Default-on**: high-stakes commits (architecture
+/ cross-project / new P-n or M-n lifts).
+**Optional**: single-file refactors.
+**Skip**: trivial fixes (typo / formatting).
+
 ## How to update this verification
 
 When a new P-n / M-n is added (codified +
