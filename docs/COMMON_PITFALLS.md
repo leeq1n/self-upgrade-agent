@@ -39,7 +39,10 @@ See `docs/TODO_KNOWLEDGE_LIFECYCLE.md` and
 
 Per M-context-snapshot (`docs/OPERATING_RULES.md`), save
 session state to:
-`C:\Users\LQ\AppData\Local\Temp\hermes-snapshot-<topic>-<date>.md`
+`hermes-snapshot-<topic>-<date>.md` (use
+`tempfile.mkstemp(prefix="hermes-snapshot-",
+dir=os.environ.get("TEMP", "/tmp"))` per OS-safe
+tempfile path convention)
 
 This is **session_search-able** by title.  NOT in repo unless
 user asks (Temp gets cleared on session restart, so don't

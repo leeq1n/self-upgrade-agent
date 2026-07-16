@@ -121,7 +121,10 @@ high.
 User should not have to remind agent to snapshot.
 
 **Snapshot location convention**:
-`C:\Users\LQ\AppData\Local\Temp\hermes-snapshot-<topic>-<date>.md`
+`hermes-snapshot-<topic>-<date>.md` (use
+`tempfile.mkstemp(prefix="hermes-snapshot-",
+dir=os.environ.get("TEMP", "/tmp"))` per OS-safe
+tempfile path convention)
 (session_search-able by title).  NOT in repo unless user
 asks (Temp gets cleared on session restart, so don't rely
 on long-term).
