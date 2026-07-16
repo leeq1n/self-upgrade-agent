@@ -49,11 +49,23 @@ if echo "$MSG" | grep -qiE 'Analyze.*Reason.*联想.*归纳.*总结|5 primitives
     exit 0
 fi
 
+# Per 你 turn 2026-07-16 + M-n 14 two-track: ALSO check for at
+# least one critical-thinking primitive keyword (质疑 / 逆向 /
+# pre-mortem / steelman — Chinese + English).  Default-on for
+# high-stakes commits; agents may use any 1 of 4 to satisfy.
+if echo "$MSG" | grep -qiE '质疑|Challenge|Invert|逆向|Pre-mortem|预演失败|Steelman|对立论证'; then
+    # 5 primitives present (else we passed earlier check) +
+    # critical-thinking keyword present → no trailer needed
+    exit 0
+fi
+
 # Append checklist trailer
 {
     echo ""
     echo "# M-n 29 5-step applied? Y / N  (per AGENTS.md Task-done-notify reminder)"
     echo "#   Step 1 Design 验收 角度 — Y / N"
+    echo "#   Step 2a 4 critical-thinking primitives — Y / N"
+    echo "#     (质疑 / 逆向 / 预演失败 / 对立论证 — per M-n 35)"
     echo "#   Step 2 Execute with 5 primitives — Y / N"
     echo "#     (Analyze / Reason / 联想 / 归纳 / 总结)"
     echo "#   Step 3 Validate (all PASS) — Y / N"
@@ -61,6 +73,7 @@ fi
     echo "#   Step 5 Notify this 'task done' — Y / N"
     echo "# Run: python .hermes/scripts/m_n29_5step.py --self --claim 'task'"
     echo "# Per M-n 32 Guardrail #4 pre-claim (per retrospective 2026-07-16)."
+    echo "# M-n 35 critical-thinking: see docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md"
 } >> "$COMMIT_MSG_FILE"
 
 exit 0
