@@ -2420,3 +2420,85 @@ this M-rule applies itself (i.e., apply
 - 你 turn 2026-07-15 — origin
 - NASA SWE-034 — research reference
 
+### M-knowledge-context-trade-off (added 2026-07-15, per 你 turn "知识 vs 上下文 trade-off + 分层 + 类比")
+
+**Trigger**: when designing new skill /
+project / M-rule, or when agent must
+balance knowledge 充足 度 vs context 管理
+trade-off.
+
+**See `M_KNOWLEDGE_CONTEXT_TRADE_OFF_DETAIL.md`
+(L2 companion per P11 + R6) for 4-priority
+decision tree + worked examples.**
+
+**Action** (4-priority table per 你 turn
+Part 1+2+3+4):
+
+| Priority | Criterion | Method |
+|---|---|---|
+| **HIGHEST** | **Knowledge 充足** | All audit points PASS + reasoning primitives + case studies.  Per M-n 29 acceptance-protocol. |
+| **HIGH** | **Context 管理** | M-n 26 (context-decay-management) + M-n 23 (periodic re-analysis) + M-n 18 (节点 生命周期).  Lazy-load for smaller models. |
+| **TIE** | **Trade-off** | M-n 27 (3-layer) + M-n 14 (class比 compression).  分层 for knowledge layer + 平铺式 for behavior spec (per 你 turn Part 5). |
+| **Always** | **分层 自顶向下 分治** | M-n 16 stage 3 top-down + M-n 18 recursive-summary + M-n 22 3W1H-first.  Per 你 turn Part 4 隐含 ask "希望 你 没有忘记". |
+
+**Why this M-rule exists**: per 你 turn
+2026-07-15 explicit 5 parts:
+
+1. Knowledge 充足 = HIGHEST priority
+2. Context 管理 = HIGH priority
+3. Trade-off via 分层 + 类比
+4. 分层 自顶向下 分治 still 实践
+5. Skill 行为规范 = 平铺式 (per M-n 27
+   3-layer, 核心层 平铺)
+
+Per M_RULE_AUTHORING 3-condition gate (5+
+observed sites):
+- c97-c110 (M-n 13 + M-n 14 + M-n 16 + M-n
+  18 + M-n 22 + M-n 23 + M-n 24 codify)
+- c197 (M-n 27 knowledge-layer-architecture)
+- c189 (M-n 26 context-decay-management)
+- c211 (skill Flat structure codify)
+- 你 turn 2026-07-15 explicit trade-off
+
+**Trade-off method** (per 你 turn Part 3):
+
+- **分层 (hierarchical)**: for knowledge
+  layer (primitives + case studies).
+  Per P11 摘要+引用.
+- **平铺式 (flat)**: for behavior spec
+  (agent 行为规范).  Per M-n 27 核心
+  layer.
+- **类比 (analogy)**: for compression
+  (per M-n 14 entropy dimension + 6
+  reasoning primitives).
+- **自顶向下 分治**: for project /
+  task decomposition (per M-n 16 stage 3
+  + M-n 22 3W1H).
+
+**3-layer application** (per M-n 27):
+
+- 核心层 (behavior spec) = 平铺式
+  (per 你 turn Part 5)
+- 知识层 (primitives + case studies) =
+  分层 (per P11)
+- 项目层 (framework specific) = high
+  churn + 分层 as needed
+
+**Self-application** (per P28 recursion):
+
+This M-rule IS M-n 27 (3-layer) + M-n 14
+(class比) + M-n 18 (节点 生命周期)
+applied to knowledge vs context trade-off.
+Recursive: applies itself.
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-n 26 / M-n
+  27 / M-n 29
+- `docs/OPERATING_RULES.md` § M-n 18
+  recursive-summary-protocol
+- SUA `agent-reflection-skill/SKILL.md` §
+  Flat structure for behavior spec (per
+  c211)
+- 你 turn 2026-07-15 — origin
+
