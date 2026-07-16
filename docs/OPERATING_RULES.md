@@ -1622,6 +1622,284 @@ gate, 4+ observed):
 - `docs/PRINCIPLES.md` — P17 (老实说)
 - 你 turn 2026-07-15 — origin
 
+### M-3w1h-think-first (added 2026-07-15, per 你 turn "自顶向下之前, 往上思考一步, 3W1H 分析法")
+
+**Trigger**: before any major decision, commit
+batch, or analysis task.
+**See `M_3W1H_THINK_FIRST_DETAIL.md` for decision
+tree, worked examples, and how to apply across
+3-project arch.**
+
+**Action**: apply **3W1H 分析法** BEFORE
+top-down 分治 (per M-n 16 stage 3):
+
+| 3W1H | Question | 中文 |
+|---|---|---|
+| **What** | What is the problem / task? | 什么 |
+| **Why** | Why is this important / rationale? | 为什么 |
+| **Who** | Who is involved / affected? | 谁 |
+| **How** | How to approach / execute? | 怎么 |
+
+**3W1H → top-down 分治 sequence**:
+
+1. **3W1H 分析** (NEW, per 你 turn "往上思考一步"):
+   - What: clarify the problem
+   - Why: clarify rationale (per M-n 21 强调 "不仅
+     做什么, 还 为什么")
+   - Who: clarify stakeholders
+   - How: high-level approach
+2. **top-down 分治** (per M-n 16 stage 3):
+   - 目标 (per 3W1H What)
+   - 倒推 节点 (per 3W1H How)
+   - 分治 拆解 (per 3W1H How)
+   - 做下去 (per 3W1H How)
+3. **execute + sub-task summary** (per M-n 18)
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"自顶向下想问题之前，也需要往上思考一步，3W1H分析
+法".
+
+This M-rule prevents:
+- 直接 top-down 没 抽象 思考 (per 你 turn
+  criticism)
+- 漏掉 关键 维度 (What / Why / Who)
+- 思考 顺序 错 (先 抽象, 再 具体, 不 直接 具体)
+
+**When to invoke**:
+
+- Before any major commit batch
+- Before any 修订 L4 boundary decision
+- Before applying M-n 16 stage 3
+- Before declaring "all pass" (per P26 + M-self-
+  audit + M-n 22)
+- When 你 turn 涉及 multi-step decision
+
+**Anti-patterns**:
+
+- **Don't** skip 3W1H (go directly to top-down).
+- **Don't** answer 3W1H trivially (e.g., What =
+  "stuff" without specifics).
+- **Don't** confuse 3W1H (abstract) with
+  top-down (concrete): 3W1H is "above" (per
+  你 turn), top-down is "below".
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c118 (M-n 21)**: 我 did not apply 3W1H first;
+   went directly to M-n 21 codify.  Anti-example.
+2. **c110 (M-n 14 topology)**: 我 did not ask "Why
+   is this insight important" (3W1H Why).
+   Anti-example.
+3. **c119 (PROJECT_STATE reframe)**: 我 went
+   directly to 类比 c117; didn't apply 3W1H
+   Who (new agents affected).  Anti-example.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**Cross-references**:
+
+- `OPERATING_RULES.md` § M-n 16 — top-down 分治
+  (used in step 2)
+- `OPERATING_RULES.md` § M-n 21 — ask-or-infer-
+  mark-guess (3W1H Why relates)
+- `docs/PRINCIPLES.md` — P17 (老实说, for 3W1H
+  answers)
+- 你 turn 2026-07-15 — origin
+
+
+
+### M-periodic-re-analysis (added 2026-07-15, per 你 turn "如果做了很久, 重新在最终目标的角度上做分析")
+
+**Trigger**: when agent has been working a long
+time (per M-n 17 Path 1: 10+ commits OR 1+ hour
+of work), OR when user explicitly asks for re-
+analysis.
+**See `M_PERIODIC_RE_ANALYSIS_DETAIL.md` for
+decision tree, worked examples, and how to apply
+across 3-project arch.**
+
+**Action** (3 sub-steps, per 你 turn "自顶向下看
+看有没有需要变动"):
+
+1. **Re-analyze at 最终目标 level** (per M-n 22
+   3W1H first):
+   - What: What is the 最终目标? (per
+     PROJECT_STATE.md + 3-project arch)
+   - Why: Why is this important? (per P22 case-3
+     boundary)
+   - Who: Who is affected? (per M-n 20 framework-
+     agnostic)
+   - How: How to achieve? (per top-down 分治)
+
+2. **Compare to 当前 state** (per M-n 17 Path 1):
+   - List 实际 完成 state
+   - Compare to 最终目标
+   - Identify gaps (R-n violations, missing L2
+     companions, stale entry files, etc.)
+
+3. **Plan for re-analysis-driven changes**:
+   - Per P7 奥卡姆: 哪些 changes 真正 需要?
+   - Per M-n 16 stage 3 top-down: 优先级
+   - Apply M-n 18 节点 生命周期管理 to
+     sub-task summary
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"如果做了很久，你可以考虑重新在最终目标的角度上
+做分析。自顶向下看看有没有需要变动".
+
+This M-rule prevents:
+- Long sessions drift away from 最终目标
+- Continue mechanical queue mode without
+  questioning
+- Missing critical gaps (R-n violations, etc.)
+- Over-修订 L4 boundary without end vision
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c110 (你 turn "现在陷进任务很久了")**: 你
+   raise concern about 做了很久.  Pattern:
+   re-analysis needed.
+2. **c115 (整理)**: 你 raise concern about 乱.
+   Pattern: 整理 process.
+3. **c116 (M-n 20 framework-agnostic)**: 你 raise
+   concern about 新 agent.  Pattern: re-分析 at
+   multi-agent level.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**When to invoke**:
+
+- After 10+ commits in single session
+- After 1+ hour of work without re-analysis
+- When user explicitly asks (e.g., "重新分析")
+- Before declaring "all pass" (per P26)
+- After major M-rule changes (c97-c100, c106, c111,
+  c115-c122)
+
+**Anti-patterns**:
+
+- **Don't** continue mechanical queue mode without
+  re-analysis (per memory 9 trap symptom).
+- **Don't** skip 3W1H first (per M-n 22).
+- **Don't** miss critical gaps (R-n violations,
+  L2 companions, stale entry files).
+- **Don't** 修订 L4 boundary without end vision
+  check.
+
+**Cross-references**:
+
+- `OPERATING_RULES.md` § M-n 22 — 3W1H 分析法
+  (used in sub-step 1)
+- `OPERATING_RULES.md` § M-n 17 — context-
+  freshness-check (used in sub-step 2)
+- `OPERATING_RULES.md` § M-n 16 — top-down 分治
+  (used in sub-step 3)
+- `OPERATING_RULES.md` § M-n 18 — recursive
+  summary (used in sub-step 3)
+- `docs/PROJECT_STATE.md` — 最终目标 reference
+- 你 turn 2026-07-15 — origin
+
+
+
+### M-pace-continuity (added 2026-07-15, per 你 turn "有计划的情况下，一直推进到遇到问题再来找我 ... 最近几轮不用这样打断项目推进节奏")
+
+**Trigger**: when agent has plan (per M-n 16 top-
+down + M-n 18 节点 生命周期管理) AND no 真问题
+(P17 honest blockers).
+**See `M_PACE_CONTINUITY_DETAIL.md` (L2 companion
+per P11 + R6) for decision tree + worked examples
++ 5 anti-patterns.**
+
+**Action** (3 sub-steps, per 你 vision 2026-07-15):
+
+1. **Commit + continue** (no verbose ending):
+   - After commit, **directly continue next
+     commit** (per M-n 16 stage 3 + M-n 18 sub-
+     task summary).
+   - Don't add verbose "end this turn"段 or
+     "active next plan"段.
+   - Response should be: commit acknowledgment
+     + 简短 status, NOT 重复 commit content.
+
+2. **Only interrupt for 真问题** (P17 honest):
+   - 真问题 = "I can't proceed because..." (per
+     P17 老实说)
+   - Not interrupt for: confirmation requests,
+     verification, or trivial questions.
+   - Per M-n 21: only ask when 真歧义 (not
+     trivially).
+
+3. **Per 你 vision "主动 + 不打扰"**:
+   - Default mode: 主动 continue per PLAN.
+   - Exception: 真问题 (per P17).
+   - Per M-n 12: phrasing revision ("等下次
+     next trigger" → "我 [active plan]"; "撞到
+     一起" → "replan").
+
+**Why this M-rule exists**: per 你 turn 2026-07-15
+"有计划的情况下，一直推进到遇到问题再来找我 ...
+最近几轮不用这样打断项目推进节奏".
+
+This M-rule prevents:
+- Agent 打断 项目 推进 节奏 (verbose "end this
+  turn"段)
+- Agent over-asking (already covered by M-n 21,
+  but reinforced here)
+- Agent "等我 next 决定" (passive wait, already
+  covered by M-n 12)
+
+**Observed cases** (per M_RULE_AUTHORING 3-condition
+gate, 4+ observed):
+
+1. **c106-c133 (最近 28 commits)**: 我 每次
+   都 verbose "end this turn" + "active next
+   plan" 段.  你 turn 第 2 部分 是 对 这 28
+   commits 的 feedback.  Anti-example.
+2. **c95 (L4 boundary 你 override)**: 你 vision
+   = "不用找我确认" — 主动 continue.  Pattern:
+   not interrupt.
+3. **c100 ("只要你处理好了，就继续推进")**:
+   你 vision = continue, don't wait.  Pattern:
+   not interrupt.
+4. **你 turn 2026-07-15**: explicit codification
+   request.
+
+**When to invoke**:
+
+- Default: 任何 commit 后 (always apply).
+- Exception: 真问题 (per P17 + M-n 21 sub-step 1).
+- After M-n 18 sub-task summary: don't add
+  verbose ending段.
+
+**Anti-patterns**:
+
+- **Don't** add "end this turn"段 after commit.
+- **Don't** add "active next plan"段 after
+  commit (plan is in PLAN file + commit body).
+- **Don't** ask user for trivial confirmation
+  (per M-n 21: 真歧义 only).
+- **Don't** say "等下次 next trigger" (per M-n
+  12).
+- **Don't** "撞到一起" without replanning (per
+  M-n 12).
+
+**Cross-references**:
+
+- `OPERATING_RULES.md` § M-n 12 — terminology-
+  clarity (phrasing revision)
+- `OPERATING_RULES.md` § M-n 16 — top-down 分治
+  (used in sub-step 1)
+- `OPERATING_RULES.md` § M-n 18 — recursive
+  summary (used in sub-step 1)
+- `OPERATING_RULES.md` § M-n 21 — ask-or-infer-
+  mark-guess (used in sub-step 2)
+- `OPERATING_RULES.md` § M-n 23 — periodic re-
+  analysis (used to verify plan still valid)
+- 你 turn 2026-07-15 — origin
+
+
 ### M-turn-pattern-recognition (added 2026-07-15, per 你 turn "学习下我发言的思路 ... 也需要看看有没有学习过")
 
 **Trigger**: when agent receives a user turn
@@ -1772,322 +2050,6 @@ pattern):
   reduce context)
 - 你 turn 2026-07-15 — origin
 
-### M-3w1h-think-first (added 2026-07-15, per 你 turn "自顶向下之前, 往上思考一步, 3W1H 分析法")
 
-**Trigger**: before any major decision, commit
-batch, or analysis task.
-**See `M_3W1H_THINK_FIRST_DETAIL.md` for decision
-tree, worked examples, and how to apply across
-3-project arch.**
 
-**Action**: apply **3W1H 分析法** BEFORE
-top-down 分治 (per M-n 16 stage 3):
-
-| 3W1H | Question | 中文 |
-|---|---|---|
-| **What** | What is the problem / task? | 什么 |
-| **Why** | Why is this important / rationale? | 为什么 |
-| **Who** | Who is involved / affected? | 谁 |
-| **How** | How to approach / execute? | 怎么 |
-
-**3W1H → top-down 分治 sequence**:
-
-1. **3W1H 分析** (NEW, per 你 turn "往上思考一步"):
-   - What: clarify the problem
-   - Why: clarify rationale (per M-n 21 强调 "不仅
-     做什么, 还 为什么")
-   - Who: clarify stakeholders
-   - How: high-level approach
-2. **top-down 分治** (per M-n 16 stage 3):
-   - 目标 (per 3W1H What)
-   - 倒推 节点 (per 3W1H How)
-   - 分治 拆解 (per 3W1H How)
-   - 做下去 (per 3W1H How)
-3. **execute + sub-task summary** (per M-n 18)
-
-**Why this M-rule exists**: per 你 turn 2026-07-15
-"自顶向下想问题之前，也需要往上思考一步，3W1H分析
-法".
-
-This M-rule prevents:
-- 直接 top-down 没 抽象 思考 (per 你 turn
-  criticism)
-- 漏掉 关键 维度 (What / Why / Who)
-- 思考 顺序 错 (先 抽象, 再 具体, 不 直接 具体)
-
-**When to invoke**:
-
-- Before any major commit batch
-- Before any 修订 L4 boundary decision
-- Before applying M-n 16 stage 3
-- Before declaring "all pass" (per P26 + M-self-
-  audit + M-n 22)
-- When 你 turn 涉及 multi-step decision
-
-**Anti-patterns**:
-
-- **Don't** skip 3W1H (go directly to top-down).
-- **Don't** answer 3W1H trivially (e.g., What =
-  "stuff" without specifics).
-- **Don't** confuse 3W1H (abstract) with
-  top-down (concrete): 3W1H is "above" (per
-  你 turn), top-down is "below".
-
-**Observed cases** (per M_RULE_AUTHORING 3-condition
-gate, 4+ observed):
-
-1. **c118 (M-n 21)**: 我 did not apply 3W1H first;
-   went directly to M-n 21 codify.  Anti-example.
-2. **c110 (M-n 14 topology)**: 我 did not ask "Why
-   is this insight important" (3W1H Why).
-   Anti-example.
-3. **c119 (PROJECT_STATE reframe)**: 我 went
-   directly to 类比 c117; didn't apply 3W1H
-   Who (new agents affected).  Anti-example.
-4. **你 turn 2026-07-15**: explicit codification
-   request.
-
-**Cross-references**:
-
-- `OPERATING_RULES.md` § M-n 16 — top-down 分治
-  (used in step 2)
-- `OPERATING_RULES.md` § M-n 21 — ask-or-infer-
-  mark-guess (3W1H Why relates)
-- `docs/PRINCIPLES.md` — P17 (老实说, for 3W1H
-  answers)
-- 你 turn 2026-07-15 — origin
-
-### M-periodic-re-analysis (added 2026-07-15, per 你 turn "如果做了很久, 重新在最终目标的角度上做分析")
-
-**Trigger**: when agent has been working a long
-time (per M-n 17 Path 1: 10+ commits OR 1+ hour
-of work), OR when user explicitly asks for re-
-analysis.
-**See `M_PERIODIC_RE_ANALYSIS_DETAIL.md` for
-decision tree, worked examples, and how to apply
-across 3-project arch.**
-
-**Action** (3 sub-steps, per 你 turn "自顶向下看
-看有没有需要变动"):
-
-1. **Re-analyze at 最终目标 level** (per M-n 22
-   3W1H first):
-   - What: What is the 最终目标? (per
-     PROJECT_STATE.md + 3-project arch)
-   - Why: Why is this important? (per P22 case-3
-     boundary)
-   - Who: Who is affected? (per M-n 20 framework-
-     agnostic)
-   - How: How to achieve? (per top-down 分治)
-
-2. **Compare to 当前 state** (per M-n 17 Path 1):
-   - List 实际 完成 state
-   - Compare to 最终目标
-   - Identify gaps (R-n violations, missing L2
-     companions, stale entry files, etc.)
-
-3. **Plan for re-analysis-driven changes**:
-   - Per P7 奥卡姆: 哪些 changes 真正 需要?
-   - Per M-n 16 stage 3 top-down: 优先级
-   - Apply M-n 18 节点 生命周期管理 to
-     sub-task summary
-
-**Why this M-rule exists**: per 你 turn 2026-07-15
-"如果做了很久，你可以考虑重新在最终目标的角度上
-做分析。自顶向下看看有没有需要变动".
-
-This M-rule prevents:
-- Long sessions drift away from 最终目标
-- Continue mechanical queue mode without
-  questioning
-- Missing critical gaps (R-n violations, etc.)
-- Over-修订 L4 boundary without end vision
-
-**Observed cases** (per M_RULE_AUTHORING 3-condition
-gate, 4+ observed):
-
-1. **c110 (你 turn "现在陷进任务很久了")**: 你
-   raise concern about 做了很久.  Pattern:
-   re-analysis needed.
-2. **c115 (整理)**: 你 raise concern about 乱.
-   Pattern: 整理 process.
-3. **c116 (M-n 20 framework-agnostic)**: 你 raise
-   concern about 新 agent.  Pattern: re-分析 at
-   multi-agent level.
-4. **你 turn 2026-07-15**: explicit codification
-   request.
-
-**When to invoke**:
-
-- After 10+ commits in single session
-- After 1+ hour of work without re-analysis
-- When user explicitly asks (e.g., "重新分析")
-- Before declaring "all pass" (per P26)
-- After major M-rule changes (c97-c100, c106, c111,
-  c115-c122)
-
-**Anti-patterns**:
-
-- **Don't** continue mechanical queue mode without
-  re-analysis (per memory 9 trap symptom).
-- **Don't** skip 3W1H first (per M-n 22).
-- **Don't** miss critical gaps (R-n violations,
-  L2 companions, stale entry files).
-- **Don't** 修订 L4 boundary without end vision
-  check.
-
-**Cross-references**:
-
-- `OPERATING_RULES.md` § M-n 22 — 3W1H 分析法
-  (used in sub-step 1)
-- `OPERATING_RULES.md` § M-n 17 — context-
-  freshness-check (used in sub-step 2)
-- `OPERATING_RULES.md` § M-n 16 — top-down 分治
-  (used in sub-step 3)
-- `OPERATING_RULES.md` § M-n 18 — recursive
-  summary (used in sub-step 3)
-- `docs/PROJECT_STATE.md` — 最终目标 reference
-- 你 turn 2026-07-15 — origin
-
-### M-pace-continuity (added 2026-07-15, per 你 turn "有计划的情况下，一直推进到遇到问题再来找我 ... 最近几轮不用这样打断项目推进节奏")
-
-**Trigger**: when agent has plan (per M-n 16 top-
-down + M-n 18 节点 生命周期管理) AND no 真问题
-(P17 honest blockers).
-**See `M_PACE_CONTINUITY_DETAIL.md` (L2 companion
-per P11 + R6) for decision tree + worked examples
-+ 5 anti-patterns.**
-
-**Action** (3 sub-steps, per 你 vision 2026-07-15):
-
-1. **Commit + continue** (no verbose ending):
-   - After commit, **directly continue next
-     commit** (per M-n 16 stage 3 + M-n 18 sub-
-     task summary).
-   - Don't add verbose "end this turn"段 or
-     "active next plan"段.
-   - Response should be: commit acknowledgment
-     + 简短 status, NOT 重复 commit content.
-
-2. **Only interrupt for 真问题** (P17 honest):
-   - 真问题 = "I can't proceed because..." (per
-     P17 老实说)
-   - Not interrupt for: confirmation requests,
-     verification, or trivial questions.
-   - Per M-n 21: only ask when 真歧义 (not
-     trivially).
-
-3. **Per 你 vision "主动 + 不打扰"**:
-   - Default mode: 主动 continue per PLAN.
-   - Exception: 真问题 (per P17).
-   - Per M-n 12: phrasing revision ("等下次
-     next trigger" → "我 [active plan]"; "撞到
-     一起" → "replan").
-
-**Why this M-rule exists**: per 你 turn 2026-07-15
-"有计划的情况下，一直推进到遇到问题再来找我 ...
-最近几轮不用这样打断项目推进节奏".
-
-This M-rule prevents:
-- Agent 打断 项目 推进 节奏 (verbose "end this
-  turn"段)
-- Agent over-asking (already covered by M-n 21,
-  but reinforced here)
-- Agent "等我 next 决定" (passive wait, already
-  covered by M-n 12)
-
-**Observed cases** (per M_RULE_AUTHORING 3-condition
-gate, 4+ observed):
-
-1. **c106-c133 (最近 28 commits)**: 我 每次
-   都 verbose "end this turn" + "active next
-   plan" 段.  你 turn 第 2 部分 是 对 这 28
-   commits 的 feedback.  Anti-example.
-2. **c95 (L4 boundary 你 override)**: 你 vision
-   = "不用找我确认" — 主动 continue.  Pattern:
-   not interrupt.
-3. **c100 ("只要你处理好了，就继续推进")**:
-   你 vision = continue, don't wait.  Pattern:
-   not interrupt.
-4. **你 turn 2026-07-15**: explicit codification
-   request.
-
-**When to invoke**:
-
-- Default: 任何 commit 后 (always apply).
-- Exception: 真问题 (per P17 + M-n 21 sub-step 1).
-- After M-n 18 sub-task summary: don't add
-  verbose ending段.
-
-**Anti-patterns**:
-
-- **Don't** add "end this turn"段 after commit.
-- **Don't** add "active next plan"段 after
-  commit (plan is in PLAN file + commit body).
-- **Don't** ask user for trivial confirmation
-  (per M-n 21: 真歧义 only).
-- **Don't** say "等下次 next trigger" (per M-n
-  12).
-- **Don't** "撞到一起" without replanning (per
-  M-n 12).
-
-**Cross-references**:
-
-- `OPERATING_RULES.md` § M-n 12 — terminology-
-  clarity (phrasing revision)
-- `OPERATING_RULES.md` § M-n 16 — top-down 分治
-  (used in sub-step 1)
-- `OPERATING_RULES.md` § M-n 18 — recursive
-  summary (used in sub-step 1)
-- `OPERATING_RULES.md` § M-n 21 — ask-or-infer-
-  mark-guess (used in sub-step 2)
-- `OPERATING_RULES.md` § M-n 23 — periodic re-
-  analysis (used to verify plan still valid)
-- 你 turn 2026-07-15 — origin
-
-## Anti-patterns (what NOT to do)
-
-- **Don't** skip M-task-summary at task end (lose
-  meta-learning).
-- **Don't** duplicate P-n full text in AGENTS.md (violates
-  M-must-read + bloat).
-- **Don't** try to keep all context in live conversation
-  (silent overflow risk).
-- **Don't** skip M-subtask-summary in multi-leaf tasks
-  (integration step will need to re-read every diff).
-- **Don't** enumerate every ask in messy user input before
-  identifying the goal (M-intent-parsing anti-pattern).
-- **Don't** write "M-learn checked, nothing new" — silent
-  no-op is the discipline (奥卡姆; M-learn anti-pattern).
-- **Don't** silent-destroy intermediate state — every
-  destroy goes in a commit message (M-add-then-reduce
-  anti-pattern).
-- **Don't** skip M-context-snapshot because "the switch is
-  brief / task is small" — small switches lose critical
-  in-flight state (M-context-snapshot anti-pattern;
-  per user 2026-07-13).
-
-## See also
-
-- PRINCIPLES.md P11 (摘要+引用) — the principle that keeps
-  AGENTS.md short.
-- PRINCIPLES.md P14 (docs stay current) — the principle that
-  M-task-summary operationalizes.
-- PRINCIPLES.md P17 (honest reporting) — the principle that
-  M-task-summary's "what could improve" enforces.
-- PRINCIPLES.md P22 (stuck→plan) — meta-rule M-learn's
-  recursive-decomposition trigger lives in step 5.
-- docs/RECURSIVE_DECOMPOSITION.md — 5-step loop; step 5 is
-  M-learn's structural trigger.
-- docs/RECURSIVE_QUALITY.md — "loop = decomposition +
-  analogy + self-reference"; M-learn is the "analogy" arm
-  applied to project memory.
-- PRINCIPLES.md P7 (奥卡姆) — supports M-add-then-reduce's
-  destroy step (奥卡姆 = no redundant storage).
-- PRINCIPLES.md P17 (honest reporting) — supports
-  M-add-then-reduce's auditable-destroy requirement.
-- docs/COMMON_PITFALLS.md — context-switching pitfalls
-  (related but distinct from this doc).
-- docs/MEMORY_TOOLS.md — full decision matrix for memory
-  tools (M-learn's "update knowledge base" sub-action uses
-  this matrix).
+.
