@@ -13,11 +13,14 @@ SUA has **2 aspects** — they're both real and live in
 the same repo:
 
 1. **Docs project** (active since 2026-07-14 turn reset):
-   - 25 P-n (after c47 plan) + P28 candidate (recursion)
-   - 10 M-n (M-task-summary through M-skill-synchronize)
+   - 25 P-n (P1-P29 minus P6/P15/P16/P24,
+     per c96 P28 lift + c167 P29 lift)
+   - 25 M-n (M-n 1-25, per c95-c183)
    - 6 reasoning primitives (mirrored in
      `../agent-reflection-skill/`)
    - Sibling project: `../agent-reflection-skill/`
+   - 3-project arch: SUA + skill-incubator
+     + agent-reflection-skill
 2. **Self-improving agent** (legacy, v1.x-v3.x history):
    - Code: `core/`, `tests/`, `upgrades/`
    - CLI: `python -m self_upgrade <subcommand>`
@@ -41,12 +44,13 @@ Total: ~30 min onboarding.
 
 ## Working principles (P-n) + workflow (M-n)
 
-See `docs/PRINCIPLES.md` (P1-P27 minus 4 demoted to P5
-实操 per c47 plan).  Hook enforces P-n cite in commit
-messages.
+See `docs/PRINCIPLES.md` (25 P-n working,
+P1-P29 minus 4 demoted per c47 plan + c96
+P28 lift + c167 P29 lift).  Hook enforces
+P-n cite in commit messages.
 
-See `docs/OPERATING_RULES.md` (10 M-n, latest
-M-skill-synchronize per c83).
+See `docs/OPERATING_RULES.md` (25 M-n,
+latest M-turn-pattern-recognition per c183).
 
 ## Sibling project (skill)
 
