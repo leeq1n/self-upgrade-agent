@@ -4,9 +4,9 @@ status: "summary"
 ---
 
 # PRINCIPLES — Working principles (portable)
-> L0: The 24 working principles (P1-P28 minus P6 + P15 + P16 + P24, merged into P5 + P3 per c47a+c78+c79+c80) of this project; P1-P21 in PRINCIPLES_DETAIL.md, P20+P21 + meta-rule pointers (P22, P23) here, P25 + P26 + P27 (also meta-rules) here, P28 (recursion, lifted per c96) here.
+> L0: 25 working principles (P1-P29, P28 lifted per c96, P29 proposed per c165).
 > See `docs/PRINCIPLES_DETAIL.md` "Root axioms"段 (L0 categorical synthesis) + "Cross-reference to PRINCIPLES.md 类比联想段" (L1 operational mirror) for bidirectional context.
-Last P20-verified: 2026-07-14
+Last P20-verified: 2026-07-15
 
 > Distilled from working on this project (2026-07-08 session).
 > These are project-agnostic — copy them to any future project.
@@ -37,6 +37,9 @@ as observed from the axioms.
 P-n / M-* to the project itself.  Like P27, it's a
 cross-axiom meta-meta principle.  See `PRINCIPLES_FULL.md`
 "Recursion"段 (4-element段 + P28 LIFT段).
+
+**P29 (agent 主动 reduce context, proposed per c165)**
+— see `PRINCIPLES_FULL.md` "P29"段.
 
 ### 类比联想 (analogy map — the 4 root essences)
 

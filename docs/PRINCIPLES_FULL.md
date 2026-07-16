@@ -511,6 +511,138 @@ demonstrating recursion on the skill itself.
 
 ---
 
+
+
+---
+
+### P29 (agent 主动 reduce context, PROPOSED per c165)
+
+> Per M_RULE_AUTHORING 3-condition gate + 你
+> vision + P22 case-3 boundary test.
+
+**Why P29 is proposed**:
+
+P29 = "agent 主动 reduce context" (主动 reduces
+context via 类比 + 节点 生命周期 + periodic
+re-analysis + pace continuity).  Per M-n 22
+3W1H first + M-n 23 re-analysis + M-n 24
+pace-continuity + M-n 14 entropy dimension +
+M-n 18 节点 生命周期管理.
+
+**M_RULE_AUTHORING 3-condition gate**:
+
+- **Condition 1 (3+ sites)**: ✅ PASS
+  - c44 framework codify
+  - c50 docs framework applied
+  - c74 P27 cross-axiom
+  - c115 整理 (整理 = analyze + induction + sort)
+  - c122 M-n 23 re-analysis
+  - c127 re-analysis 3 issues
+  - c163 修订 L4 boundary explicit
+  - **Total: 7+ sites**
+- **Condition 2 (triggerable)**: ✅ PASS
+  - Trigger: 整理 / re-analysis / pace-
+    continuity / context-too-large
+- **Condition 3 (5+ observed)**: ✅ PASS
+  - All 7 sites above are observed cases
+
+**Gate met: P29 PROPOSAL**.
+
+**P-n vs M-* boundary (per c33 case 3 test)**:
+P29 = case 3 (principle about how project
+self-organizes).  Like P22 (stuck→plan), P25
+(principle modification discipline), P26 (fresh-
+agent check), P27 (project self-org), P28
+(recursion to self).
+
+**4-element 段**:
+
+1. **Trigger**: when project 做了 很久 OR
+   context exceeds threshold OR multiple
+   complex cases accumulate.
+2. **Action** (4 sub-steps per M-n 14 + M-n 18 +
+   M-n 23 + M-n 24):
+   - (1) Identify when context exceeds threshold
+     (per M-n 23).
+   - (2) Apply 类比 to find similar prior patterns
+     (per M-n 14 entropy decrease).
+   - (3) Compress to essence (per M-n 14
+     compression + M-n 18 节点 生命周期).
+   - (4) Destroy redundant summaries (per M-n 18
+     destruction contract).
+3. **Why**: makes agent 不 depend on external
+   context management + applies 4 root axioms
+   + extends P27 self-org + P28 recursion.
+4. **Anti-patterns**:
+   - **Don't** 主动 reduce without identifying
+     threshold (premature compression).
+   - **Don't** skip 类比 step (compress
+     without finding pattern = loss of
+     meaning).
+   - **Don't** destroy before summarizing (per
+     M-n 18 destruction contract).
+   - **Don't** apply when context is small
+     (奥卡姆 = simplicity, not brevity).
+
+**Cross-axiom integration**:
+
+P29 spans all 4 root axioms (per P22 case-3 +
+extends P27 cross-axiom + P28 meta-meta):
+
+| Root axiom | How P29 applies |
+|---|---|
+| Test | Re-analysis verifies context reduction |
+| Doc | Context reduction keeps docs concise |
+| Workflow | Pace-continuity avoids context overflow |
+| 奥卡姆 | Reduces to essence (per M-n 14 entropy) |
+
+**5 essence family placement**:
+
+P29 belongs to **Meta-rules** family (like P22,
+P23, P25, P26, P27, P28).  Essence: **process
+for the process itself** (主动 reduce context
+is process-for-process).
+
+**Status**:
+
+P29 is **proposed** (not yet fully working).
+Per P25 6-step, lifting to full P29 requires:
+- (1) Read existing P-n for overlap check ✅
+  (no overlap with P27 or P28)
+- (2) M_RULE_AUTHORING 3-condition gate ✅ (all 3
+  pass)
+- (3) Bootstrap exception for codification ✅
+  (你 vision matches)
+- (4) Documentation update (this 段) ✅
+- (5) Commit message cites P-n (c165) ✅
+- (6) Verify with P26 fresh-agent check
+  (deferred to future commit)
+
+**LIFT vs PROPOSED distinction**:
+
+Per c96 P28 LIFT pattern, P29 is currently
+**PROPOSED** (not fully LIFT).  Full LIFT
+requires:
+- 1+ future commit demonstrating P29 applied
+  to a project self-organization task
+- User confirmation (per 你 vision "自动
+  allowed", this may be auto-LIFT in c167+)
+- Verification per P26
+
+**Cross-references**:
+
+- SUA `docs/PRINCIPLES.md` P29 段 (per c165)
+- SUA `docs/OPERATING_RULES.md` § M-n 14
+  entropy dimension (c107)
+- SUA `docs/OPERATING_RULES.md` § M-n 18
+  recursive-summary-protocol (c111 + c114)
+- SUA `docs/OPERATING_RULES.md` § M-n 23
+  periodic-re-analysis (c127)
+- SUA `docs/OPERATING_RULES.md` § M-n 24
+  pace-continuity (c134)
+- 你 turn 2026-07-15 (3W1H + re-analysis +
+  pace-continuity explicit directives)
+
 ## P-n vs M-* boundary (clarification per user 2026-07-14)
 
 When proposing a new rule, decide which category it
