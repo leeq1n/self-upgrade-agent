@@ -239,10 +239,21 @@ P24 (merged into P3 per c78), P25, P26, P27, P28, P29
 (lifted per c167).  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
 list.
 
-## Operating rules (M-n 12-33, per c95-c237)
+## Operating rules (M-n 1-34, per c95-c237 + M-pre-task-scan)
 
-**33 M-n** in `docs/OPERATING_RULES.md`:
+**34 M-n** in `docs/OPERATING_RULES.md` (per Phase 3 audit
+2026-07-16: 28 M-n codified with L1段, 22 with L2 _DETAIL.md
+companion.  M-n 1, 5, 6, 9, 10 not in L1 (P-layer principles,
+not operational).):
 
+- **M-n 1**: (top-level: principle-layer, no L1)
+- **M-n 2**: (concept-layer, no L1 in OPERATING_RULES)
+- **M-n 3**: 3w1h-think-first (BEFORE top-down)
+- **M-n 4**: (concept-layer)
+- **M-n 5**: (top-level: principle-layer, no L1)
+- **M-n 6**: (recognition, no L1)
+- **M-n 7-10**: (early-stage, not in OPERATING_RULES L1)
+- **M-n 11**: experiment-in-subproject (sub-project pattern)
 - **M-n 12**: terminology-clarity (refine "撞到一起" → "replan")
 - **M-n 13**: layer-extension (L0/L1/L2 + extensions)
 - **M-n 14**: two-track-reasoning (类比+逻辑, 6-stage distribution)
@@ -265,6 +276,9 @@ list.
 - **M-n 31**: task-lifecycle (4-phase: init + execute + done-notify + retrospective)
 - **M-n 32**: self-learning-guardrail (5 modification guardrails + auto-learning)
 - **M-n 33**: narrative-as-spec (3-primitive: parse + structure + codify/execute)
+- **M-n 34**: pre-task-scan (added 2026-07-16; per 你 turn "自主阅读学习".
+  4 sub-steps: Read AGENTS / Scan P-n+M-n / Apply 5 primitives
+  / Document scan result.  Per `docs/M_PRE_TASK_SCAN_DETAIL.md`.)
 
 ## Recent cross-project sync (per 你 turn 2026-07-15)
 
