@@ -56,6 +56,15 @@ failure mode M-n 34 is designed to prevent.
    with cross-ref traversal rules + 5 essence families
    + 7-check self-org).  Read when entering the project
    or when stuck on graph traversal.
+7. `docs/OPERATING_RULES.md` — M-n 1-34 operating rules
+   (per M-n 34 pre-task scan: scan this file for M-n
+   applicable to your current task).  Read when task
+   needs M-rule application OR per M-n 34 step 2.
+
+**Note**: items 5-7 are added per M-n 34 (2026-07-16) so
+fresh agents can find all rules, not just P-n.  Per
+P21 cross-project, this list stays SUA-specific
+(sibling repos have their own entry docs).
 
 ## Hard rules (top 6 from PRINCIPLES.md, binding)
 
