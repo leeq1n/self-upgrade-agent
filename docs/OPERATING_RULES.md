@@ -2658,7 +2658,7 @@ follow:
 | 1 | **Cite P-n or M-n** | every commit | commit-msg hook whitelist (P1-P29) |
 | 2 | **R5 ≤ 7168 bytes** | docs L0/L1 files | pre-commit R5 check (manual via wc -c) |
 | 3 | **Cross-ref check** | file edits that drift refs | manual review per M-n 20 + P14 docs stay current |
-| 4 | **Acceptance protocol** | claim "task done" / "all pass" | per M-n 29 5-step (design + execute + validate + cycle + notify) |
+| 4 | **Acceptance protocol** | **pre-claim** (before any 'task done' / 'all pass' / 'done' message — per M-n 29 trigger S1) | MUST apply M-n 29 5-step (per L0.1 + L0.2 commits) and produce 验收 report; **NOT** allowed to claim PASS before 5-step is complete |
 | 5 | **Update order rule** | SUA change | per M-n 30 Priority 5: SUA → skill-incubator → skill |
 
 **Auto-learning functionality** (per 你
