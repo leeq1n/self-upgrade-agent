@@ -158,18 +158,38 @@ Then MUST apply **M-n 29 5-step protocol**:
    - **Step 4**: If FAIL → fix → re-verify (loop)
    - **Step 5**: Notify (this is the "完成" message)
 
-2. Include a **"Cold-start simulation"** section in the
+2. **Hard external trigger**: per 你 turn 2026-07-16
+   retrospective 4-FAIL diagnosis (M-n 29 pre-claim
+   + M-n 32 #4 violations across multiple turns),
+   mechanical enforcement is required.  Run the
+   external 5-step script BEFORE claiming task done:
+
+   ```bash
+   python .hermes/scripts/m_n29_5step.py --self --claim "<task description>"
+   ```
+
+   This script externalizes M-n 29 5-step from
+   LLM-self-judgment to deterministic mechanical
+   baseline.  Per M-n 30 Priority 1 (knowledge 充足)
+   + M-n 28 4-condition autonomous execute.
+
+3. Include a **"Cold-start simulation"** section in the
    验收 report: list 3+ trigger points in the project
    + verify each is reachable from the entry doc by a
    fresh agent (per P25 step 7 + P26 fresh-agent simulation).
 
-3. Cite the P-n / M-n that motivated each acceptance
+4. Cite the P-n / M-n that motivated each acceptance
    criterion (per commit-msg hook contract above).
 
 **Anti-pattern**: skipping 5-step and going directly to
 "完成" message — this is the exact failure mode 你 turn
 flagged.  Per M-n 32 Guardrail #4 (pre-claim): NOT
 allowed to claim PASS before 5-step is complete.
+
+**Per retrospective (2026-07-16, your turn)**: previous
+session claimed "✅ Task DONE" multiple times without
+applying M-n 29 5-step.  This external trigger script +
+AGENTS.md reminder段 are the structural fix.
 
 See:
 - `docs/OPERATING_RULES.md` § M-acceptance-protocol (M-n 29
@@ -180,6 +200,8 @@ See:
   (M-n 32 Guardrail #4, per L0.3 commit)
 - `.hermes/plans/2026-07-16_fix-m29-trigger-explicit.md`
   (full plan + 11-commit batch)
+- `.hermes/scripts/m_n29_5step.py` (mechanical external
+  trigger, per retrospective fix)
 
 ## Commit message contract
 
