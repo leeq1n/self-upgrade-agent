@@ -2275,10 +2275,12 @@ notification.**
    - Who: 谁 acceptance?
    - How: 验收 process?
    - 角度 examples: functional / performance
-     / 兼容性 / 安全 / 维护性 / user-
-     facing / framework-agnostic / 跨项目
-     sync / R1-R12 / P-n compliance / M-n
-     compliance
+        / 兼容性 / 安全 / 维护性 / user-
+        facing / framework-agnostic / 跨项目
+        sync / R1-R12 / P-n compliance / M-n
+        compliance / P29 self-application /
+        **项目 整洁度** / **新 agent 可读性**
+        (per 你 turn 2026-07-15 reminder, c205)
 
 2. **执行 验收** (per M-n 14 类比 + 归纳
    + M-n 25 5-pattern + 你 turn

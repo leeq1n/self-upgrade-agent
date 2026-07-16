@@ -35,6 +35,8 @@ acceptance-criteria-verification skill:
 | **P-n compliance** | 25 P-n all cited + applied |
 | **M-n compliance** | 28 M-n all applied per context |
 | **P29 self-application** | agent 主动 reduce context |
+| **项目 整洁度 (per 你 turn 2026-07-15 reminder)** | 路径 + 命名 + 文档结构 consistent (per M-n 19 file-naming-convention + c149-c151 .gitignore + c191 整理 + c115 整理 process) |
+| **新 agent 可读性 (per 你 turn 2026-07-15 reminder)** | 项目 内容 可读 + 充分 (per M-n 20 agent-discoverability + P26 fresh-agent + VERIFICATION.md per c193 + 你 turn prior 7 docs in sync) |
 
 ### Step 2: Execute 验收 (5 logic primitives per 你 turn)
 
