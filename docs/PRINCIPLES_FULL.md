@@ -687,6 +687,85 @@ verification:
 ---
 
 
+
+
+### M-n 25 self-application: 你 turn-pattern-recognition (per c183 + P28 recursion)
+
+> L0: M-n 25 = "你 turn-pattern-recognition"
+> (per 你 turn 2026-07-15 explicit codify
+> request).  This段 is M-n 25 applied to
+> itself (per P28 recursion + M-self-
+> application 4 levels).
+
+**M-n 25 in 1 sentence**: When agent receives
+a 你 turn, parse the parts (directive /
+真问题 / 真意 / 隐含 codify / 隐含
+verification) and recognize which of 5
+patterns (A-E) it matches.
+
+**5 patterns A-E** (per c183 + c185 verification):
+
+| Pattern | Structure | Example | Action |
+|---|---|---|---|
+| A | 2-3 parts + directive | "M-n 21 + top-down 默认" | M-n 12 + M-n 22 + direct M-rule |
+| B | 3-4 parts + 真问题 | "M-n 22 + 自顶向下 + 继续" | M-n 22 + 答 真问题 |
+| C | 5 parts + 真问题 + 隐含 codify | "5 directives + 学习思路 + 有没有学过" | codify new M-n |
+| D | directive + 真问题 verify | "skill 跟 SUA 规范 + 做到了吗？" | M-n 21 答 + apply directive |
+| E | implicit + 主动 | "按计划继续推进" | M-n 24 commit + continue |
+
+**M-n 25 self-application (per P28 recursion +
+M-self-application 4 levels)**:
+
+- **L1 (object)**: M-n 25 rule = parse +
+  recognize 你 turn patterns.
+- **L2 (rule)**: M-n 25 rule = M-self-
+  application 4 levels applied to 你 turn
+  recognition.
+- **L3 (memory)**: M-n 25 codified +
+  persisted (entry 7 + M_TURN_PATTERN_
+  RECOGNITION_DETAIL.md).
+- **L4 (behavior)**: Future agents apply
+  M-n 25 when receiving 你 turn.
+
+**Why M-n 25 is meta-meta-meta (per P28 +
+P29 cross-axiom)**:
+
+- P22 case 3: principle about principles
+- P28 (recursion): applied to M-n 25 itself
+- P29 (agent 主动 reduce context): M-n 25
+  helps agent recognize 你 turn patterns,
+  which reduces clarification back-and-forth
+  (= context reduction)
+- M-n 25 IS M-self-application level 4
+  applied to a specific domain (你 turn
+  recognition)
+
+**Cross-references**:
+
+- SUA `docs/OPERATING_RULES.md` § M-turn-
+  pattern-recognition段 (M-n 25 main 段)
+- SUA `docs/M_TURN_PATTERN_RECOGNITION_DETAIL.md`
+  (L2 companion)
+- SUA `docs/OPERATING_RULES.md` § M-self-
+  application 4 levels (c18 origin)
+- SUA `docs/OPERATING_RULES.md` § M-n 12
+  terminology-clarity (refine 你 turn terms)
+- SUA `docs/OPERATING_RULES.md` § M-n 14
+  two-track-reasoning (类比 find similar
+  你 turn vs 逻辑 parse 1 turn)
+- SUA `docs/OPERATING_RULES.md` § M-n 22
+  3W1H-think-first (for 你 turn 真意)
+- 你 turn 2026-07-15 — origin (Pattern C)
+
+**Status**: M-n 25 self-application段
+codified (per c185 verification).  This
+demonstrates P28 recursion: M-n 25 is
+applied to itself in 4 levels (L1: parse
+rule; L2: rule about rule; L3: memory of
+rule; L4: behavior change due to rule).
+
+---
+
 ## P-n vs M-* boundary (clarification per user 2026-07-14)
 
 When proposing a new rule, decide which category it
