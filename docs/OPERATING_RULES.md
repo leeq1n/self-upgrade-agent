@@ -1486,6 +1486,79 @@ gate, 4+ observed):
   L2 companion)
 - 你 turn 2026-07-15 — origin
 
+
+### Skill portability principle (per 你 turn 2026-07-16)
+
+**Per 你 turn 2026-07-16**: "skill 独立运行在别人
+电脑上 + 充分的知识库" = **本质上共通** (same
+essence, derived from multiple prior 你 turns).
+
+**Common essence name**: **Skill portability** = a
+portable, self-sufficient unit that works in any
+agent context without external dependencies.
+
+**Two facets** (per M-n 14 induction):
+
+1. **No external dependencies** (per 你 turn
+   2026-07-16 "skill 是独立运行的项目, 不应该有
+   其他项目的指代"):
+   - Skill content has zero operational refs to
+     other projects (SUA, parent, sibling, etc.)
+   - Knowledge propagation is one-way: SUA → skill
+     (skill doesn't reference back)
+   - Future skill user won't have SUA / parent
+     project as reference
+
+2. **Sufficient internal knowledge** (per 你 turn
+   之前 turn "skill 的知识是否足够" + "skill 的
+   功能都会在合适的时候被调用"):
+   - User doesn't need to consult external sources
+     for context
+   - 9 primitives + 4-line format + decision tree
+     + anti-patterns + composability + quick-ref =
+     self-contained toolkit
+   - Triggers段 in README makes invocation
+     discoverable
+   - Anti-patterns段 prevents decorative noise
+
+**Why these are the same principle**: both facets
+share the underlying value: **portability**.  A
+skill coupled to a parent project (Facet A
+violation) requires that project.  A skill that's
+incomplete (Facet B violation) requires external
+lookup.  Both reduce portability.
+
+**Test (per 你 turn 2026-07-16)**: "skill 独立运行
+在别人电脑上, 需要有充分的知识库".  If you can
+put the zip on a stranger's computer and they can
+use the skill effectively without contacting you,
+both facets are met.
+
+**Action**: When designing or modifying a skill,
+ask: "Would a stranger on a different machine,
+with no access to SUA / parent project, be able to
+use this skill effectively?"  If NO: identify
+which facet fails (coupling / incompleteness) and
+fix.
+
+**Relationship to other M-rules**:
+
+- **M-n 20 (framework-agnostic)** = portability
+  applied to framework concerns (Hermes/Codex/Claude
+  Code).  This principle is broader: includes ALL
+  external dependencies, not just framework.
+- **M-n 27 (knowledge-layer-architecture)** =
+  portability applied to source-of-truth
+  (per-project, not cross-project).
+- **P20 (L0 ≤ 120 chars)** = portability applied to
+  docs (small L0 = fresh-agent discoverable without
+  context).
+
+**Self-application (per P29 recursion)**: when
+updating this section, ensure the principle
+itself remains portable (no SUA refs in this
+section).
+
 ### M-ask-or-infer-mark-guess (added 2026-07-15, per 你 turn "不仅要做什么, 还 为什么 + 问/推理/标注猜测 + top-down 默认")
 
 **Trigger**: when agent is about to commit,
