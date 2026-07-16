@@ -76,4 +76,19 @@ fi
     echo "# M-n 35 critical-thinking: see docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md"
 } >> "$COMMIT_MSG_FILE"
 
+# Per 你 turn 2026-07-16 + M-n 36 (M-release-audit): also detect
+# release-related keywords.  If commit message contains 'release',
+# 'tag', 'v' followed by digits, or 'CHANGELOG', remind about
+# release_audit.py 5 checks.  Non-blocking by default.
+if echo "$MSG" | grep -qiE 'release|tag v[0-9]|\.0\.0|CHANGELOG|github push|npm publish'; then
+    {
+        echo ""
+        echo "# M-n 36 release-audit detected.  Per 你 turn 2026-07-16 +"
+        echo "# AGENTS.md Read first item 10.  Run before tagging x.0.0:"
+        echo "#   python .hermes/scripts/release_audit.py"
+        echo "# Checks: history cleanliness / tag at HEAD / CHANGELOG /"
+        echo "#   artifact / docs cross-refs.  Per docs/M_PRE_RELEASE_AUDIT_DETAIL.md"
+    } >> "$COMMIT_MSG_FILE"
+fi
+
 exit 0
