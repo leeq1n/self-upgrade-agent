@@ -2253,3 +2253,168 @@ condition check to M-n 28 codification).
 - `docs/PRINCIPLES.md` P22 (case-3 meta)
 - 你 turn 2026-07-15 — origin
 
+### M-acceptance-protocol (added 2026-07-15, per 你 turn "做完任务后需要验收 + 设计验收 + 完整项目 over + 未通过循环修复 + 通过明确说明")
+
+**Trigger**: when agent 认为 任务 完成
+(per M-n 21 self-audit OR M-n 22 final
+3W1H OR per 你 turn explicit "验收" OR
+after every major commit batch).
+
+**See `M_ACCEPTANCE_PROTOCOL_DETAIL.md`
+(L2 companion per P11 + R6) for 5-step
+protocol + 验收 report template + NASA
+SWE-034 reference + cycle loop + 你
+notification.**
+
+**Action** (5 sub-steps per 你 turn):
+
+1. **Design 验收 角度 + 要求** (per M-n
+   22 3W1H first):
+   - What: 哪些 角度 验收?
+   - Why: 验收 标准 = ?
+   - Who: 谁 acceptance?
+   - How: 验收 process?
+   - 角度 examples: functional / performance
+     / 兼容性 / 安全 / 维护性 / user-
+     facing / framework-agnostic / 跨项目
+     sync / R1-R12 / P-n compliance / M-n
+     compliance
+
+2. **执行 验收** (per M-n 14 类比 + 归纳
+   + M-n 25 5-pattern + 你 turn
+   "分析/推理/联想/归纳/总结" logic):
+   - Analyze: 任务 IS what? (per M-n 16
+     observe-think-execute stage 1)
+   - Reason: 为什么 这样? (per M-n 16
+     stage 2 + M-n 22 3W1H)
+   - 联想: 类似 prior pattern? (per M-n 14
+     class比 reasoning + M-n 17 Path 2
+     inter-domain search)
+   - 归纳: general pattern from specific?
+     (per M-n 14 induction + M-n 18
+     recursive summary)
+   - 总结: synthesize? (per M-n 26
+     compression + M-n 18 destruction
+     contract)
+
+3. **Validate 验收 condition** (per 你 turn
+   Part 4 "确认没问题"):
+   - All acceptance criteria PASS
+   - No open FAIL / PARTIAL items
+   - All 角度 covered
+   - 验证 evidence recorded (test output,
+     commit hash, etc.)
+   - Per P17 老实说: don't claim green
+     when yellow.
+
+4. **If FAIL** → 新 任务 cycle (per 你 turn
+   Part 5):
+   - 创建 新 task in PLAN_DETAIL
+   - Re-execute fix
+   - Re-verify (回到 step 2)
+   - Loop until ALL PASS
+   - Per 你 turn: "每次你认为做完任务都
+     需要验收，没通过就修复，修复完再测，
+     循环"
+
+5. **If PASS** → 明确 通知 你 (per 你 turn
+   Part 6):
+   - 明确 indicate "任务 完成 + 验收 通过"
+   - List acceptance criteria + evidence
+   - Per P17 老实说: don't claim PASS
+     without evidence
+   - Per M-n 24: pace-continuity 中 明确
+     通知 user is allowed (interrupt
+     permitted)
+
+**Why this M-rule exists**: per 你 turn
+2026-07-15 explicit 6 parts:
+
+- Part 1 (验收): 任务 完成 后 need to
+  verify
+- Part 2 (设计): agent should design
+  acceptance 角度
+- Part 3 (process): 分析/推理/联想/归纳/
+  总结 (5 primitives, per 你 turn prior
+  c100 M-n 16 + M-n 14 + M-n 25)
+- Part 4 (通过 condition): 确认没问题
+- Part 5 (失败 loop): 验收 失败 = 新任务
+  修复 循环
+- Part 6 (通过 反馈): 通知 你 明确
+
+Per M_RULE_AUTHORING 3-condition gate (5+
+observed sites):
+- c193 VERIFICATION.md create (1-page
+  verification summary)
+- c172 ad-hoc hermes-verify scripts
+- P17 老实说 ("never claim green when
+  yellow")
+- P22 case-3 meta ("when stuck STOP +
+  write plan")
+- M-n 26 context-decay-management
+- 你 turn prior 2026-07-15 ("如果做完任务
+  需要明确指出")
+- 你 turn 2026-07-15 explicit (this turn)
+
+**NASA SWE-034 reference** (per research):
+
+- acceptance criteria = (1) criteria user
+  must satisfy + (2) performance + essential
+  conditions
+- 验收 plan documented in SDP-SMP OR
+  separate V&V Plan
+- Acceptance testing = major portion of
+  验收 plan
+- 如果 deviations exist → negotiated with
+  customer (or fix prior to 验收)
+
+**Claude acceptance-criteria-verification
+skill reference**:
+
+- Per-criterion status: PASS / FAIL /
+  PARTIAL / SKIP
+- Evidence: test output, screenshot, log
+- Verification report template
+- Synced to project-status fields
+
+**Relationship to other M-n / P-n**:
+
+- **M-n 14 (two-track-reasoning)**: this
+  M-rule uses 类比 + 归纳 (steps 2 + 4).
+- **M-n 16 (observe-think-execute)**: this
+  M-rule uses all 6 stages (analyze =
+  stage 1 + reason = stage 2).
+- **M-n 17 (context-freshness-check)**: this
+  M-rule uses Path 2 (联想).
+- **M-n 18 (recursive-summary-protocol)**: this
+  M-rule uses 归纳 (step 4).
+- **M-n 24 (pace-continuity)**: this M-rule
+  explicitly interrupts pace-continuity
+  (step 5).
+- **M-n 26 (context-decay-management)**: this
+  M-rule uses 总结 (step 2).
+- **M-n 28 (plan-conditional)**: this M-rule
+  applies AFTER M-n 28 confirms plan
+  complete.
+- **P17 (老实说)**: this M-rule enforces P17.
+- **P22 (case-3 meta)**: this M-rule IS P22
+  applied to task completion.
+
+**Self-application** (per P28 recursion):
+
+This M-rule IS M-self-application level 4
+applied to task acceptance.  Recursive:
+this M-rule applies itself (i.e., apply
+5-step protocol to M-n 29 codification).
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-n 14/16/17/
+  18/24/26/28
+- `docs/PRINCIPLES.md` P17 (老实说)
+- `docs/PRINCIPLES.md` P22 (case-3 meta)
+- `VERIFICATION.md` (per c193, 1-page
+  verification summary)
+- 你 turn 2026-07-15 — origin
+- NASA SWE-034 — research reference
+

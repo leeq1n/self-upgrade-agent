@@ -93,9 +93,9 @@ P24 (merged into P3 per c78), P25, P26, P27, P28, P29
 (lifted per c167).  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
 list.
 
-## Operating rules (M-n 12-28, per c95-c201)
+## Operating rules (M-n 12-29, per c95-c203)
 
-**28 M-n** in `docs/OPERATING_RULES.md`:
+**29 M-n** in `docs/OPERATING_RULES.md`:
 
 - **M-n 12**: terminology-clarity (refine "撞到一起" → "replan")
 - **M-n 13**: layer-extension (L0/L1/L2 + extensions)
@@ -114,6 +114,7 @@ list.
 - **M-n 26**: context-decay-management (detection + classification + compression + refresh)
 - **M-n 27**: knowledge-layer-architecture (3-layer core/knowledge/project + 3 sources hermes/SUA/skill + single-skill fallback)
 - **M-n 28**: plan-conditional (4-condition check: uncertain → plan; clear → continue)
+- **M-n 29**: acceptance-protocol (5-step protocol: design + 5 primitives + validate + cycle + notify)
 
 **修订 L4 boundary (per c95 + memory 7)**:
 
