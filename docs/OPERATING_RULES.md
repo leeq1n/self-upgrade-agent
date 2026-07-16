@@ -2775,3 +2775,133 @@ aligned + LOW risk = autonomous execute.
   / M-n 27 / M-n 31 / M-n 32
 - 你 turn 2026-07-15 — origin
 
+
+### M-pre-task-scan (added 2026-07-16, per 你 turn "自主阅读学习" + M_RULE_AUTHORING 3-condition gate)
+
+**Trigger**: when agent receives 你 turn with
+explicit directive (any 你 turn) OR when agent
+starts a new session.  Per 你 turn 2026-07-16:
+"我跟你说问题的时候，你需要找办法，避免
+下一次还出现一样的/相似的问题。我不希望
+每次都跟你说了问题你才从项目里找对应条目，
+你应该自主阅读学习".
+
+**Why this M-rule exists** (per M-n 16 stage 2
+归纳): existing M-self-audit + M-n 32 + AGENTS.md
+"Task-done-notify reminder" are all **reactive**
+triggers (after event).  M-pre-task-scan is the
+**proactive complement** — agent scans P-n / M-n
+relevant to current task BEFORE acting, so it
+discovers applicable rules **without** 你 turn
+having to point them out.
+
+**Distinct from existing M-rules** (per P25 step 3
+verify no duplication):
+- vs M-self-audit: M-self-audit = post-event
+  ("did I leave project in a state where fresh
+  agent can pick up?").  M-pre-task-scan = pre-
+  event ("what P-n / M-n apply to this task?")
+- vs M-n 32 self-learning-guardrail: M-n 32 =
+  modification guardrails (5 rules for any
+  change).  M-pre-task-scan = discovery of
+  applicable rules
+- vs M-n 31 Phase 1 task-init: M-n 31 = M-n 22
+  3W1H + clarify.  M-pre-task-scan = scan
+  ALL P-n / M-n for relevance, not just 3W1H
+- vs M-n 30 knowledge-context-trade-off: M-n 30
+  = priority order for trade-offs.  M-pre-task-
+  scan = find candidates to trade-off
+
+**Action** (4 sub-steps per M-n 16 stage 1-2 +
+M-n 14 two-track):
+
+1. **Read AGENTS.md "Read first" 段** (per L0
+   entry doc convention).  Already exposes
+   "Task-done-notify reminder" + "5 primitives
+   gate"段.
+2. **Scan PRINCIPLES.md L0 4 root axioms table**
+   + **OPERATING_RULES.md all M-n**段 (per
+   M-n 30 knowledge-context trade-off).  For
+   each P-n / M-n, ask: "Does this apply to my
+   current task?"  Mark YES / NO / MAYBE.
+3. **Apply 5 primitives** (Analyze / Reason /
+   联想 / 归纳 / 总结) per AGENTS.md gate.
+   Cross-check with M-n 16 6-stage chain.
+4. **Document scan result** in plan / commit
+   message (per P11 摘要+引用).  List the 3-5
+   most relevant P-n / M-n + 1-line reason
+   for each.
+
+**Relationship to other M-rules + P-n**:
+
+- **P11 (摘要+引用)**: scan result is itself
+  a 摘要 — extracted from 25 P-n + 33 M-n
+  down to 3-5 relevant entries
+- **M-n 14 (two-track-reasoning)**: scan uses
+  both tracks (类比 = find similar prior
+  pattern; 逻辑 = sequential check)
+- **M-n 16 (observe-think-execute)**: scan is
+  Stage 1-2 (观察 + 思考-1 归纳)
+- **M-n 22 (3W1H)**: scan + 3W1H = full
+  pre-task context
+- **M-n 25 (turn-pattern-recognition)**: scan
+  result includes 你 turn pattern recognition
+- **M-n 26 (context-decay-management)**: scan
+  detects if prior P-n / M-n was forgotten
+- **M-n 28 (plan-conditional)**: scan → plan
+  if uncertain
+- **M-n 30 (knowledge-context-trade-off)**:
+  scan applies Priority 1 (knowledge 充足)
+- **P28 (recursion)**: M-pre-task-scan is
+  P28 applied to discovery — recursive scan
+  of rules
+
+**Anti-patterns** (per P25 6-step step 4):
+
+- **Don't** skip scan and rely on memory
+  alone — defeats the purpose of external
+  trigger (per M-n 32 self-learning-guardrail
+  failure mode)
+- **Don't** scan only 1-2 P-n / M-n — must
+  scan the full set (per M-n 30 Priority 1
+  "knowledge 充足")
+- **Don't** treat scan as one-time — repeat
+  per 你 turn (per M-n 31 Phase 1 task-init)
+- **Don't** claim scan complete without
+  listing relevant P-n / M-n + 1-line
+  reasons (per P11 摘要+引用)
+- **Don't** confuse M-pre-task-scan with M-self-
+  audit — M-self-audit is reactive (after
+  change); M-pre-task-scan is proactive (before
+  change)
+
+**Self-application** (per P28 recursion):
+
+This M-rule IS P28 applied to discovery
+mechanism.  The recursive application: M-pre-
+task-scan itself should be discovered (not
+explicitly told) by future agents reading
+OPERATING_RULES.md.  Per M-n 13 layer-
+extension, the L0 surface (AGENTS.md "Read
+first" 段) must expose M-pre-task-scan so
+fresh agents pick it up automatically (not
+via 你 turn explicit).
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-self-audit +
+  M-self-learning-guardrail + M-acceptance-
+  protocol + M-task-lifecycle + M-knowledge-
+  context-trade-off (complementary M-rules)
+- `AGENTS.md` § "Read first" + "Task-done-
+  notify reminder" (L0 surface for this
+  M-rule)
+- `docs/M_SELF_AUDIT.md` (L2 companion) —
+  reactive complement
+- 你 turn 2026-07-16 "自主阅读学习" — origin
+- 你 turn 2026-07-16 "M-n 34 候选 3-condition
+  gate" — codification trigger
+- 联想 (M-n 14 Track 1): CI/CD pre-commit
+  test, linter, health-check (共同 pattern =
+  external-triggered automatic check)
+

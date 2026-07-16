@@ -6,6 +6,37 @@ Last P20-verified: 2026-07-15
 > overrides it for a task.  Commits that ignore PRINCIPLES will
 > be caught by the commit-msg hook (P-n cite required).
 
+## Pre-task scan (M-n 34, added 2026-07-16)
+
+**Per 你 turn 2026-07-16 "自主阅读学习" + M_RULE_AUTHORING
+3-condition gate**: before any 你 turn response, before any
+commit, before any "task done" message — agent MUST run
+**M-n 34 pre-task scan** (4 sub-steps per
+`docs/OPERATING_RULES.md` § M-pre-task-scan):
+
+1. Read this `AGENTS.md` (you are here — L0 entry doc).
+2. Scan `docs/PRINCIPLES.md` L0 axioms + `docs/OPERATING_RULES.md`
+   all M-n.  Mark YES / NO / MAYBE for current task.
+3. Apply 5 primitives (Analyze / Reason / 联想 / 归纳 / 总结).
+4. Document scan result in plan / commit message (3-5
+   most relevant P-n / M-n + 1-line reason each).
+
+**Why this 段 is BEFORE "Read first"**: per M-n 13
+layer-extension, L0 surface must expose M-pre-task-scan
+so fresh agents pick it up **without** 你 turn having to
+point it out (per 你 turn "我跟你说问题的时候，你需要
+找办法，避免下一次还出现一样的/相似的问题").
+
+**Trigger** (per M-n 34): any 你 turn (including "fix
+this" / "explain" / "commit" / "task done" / "verify") OR
+new session start.  Per AGENTS.md "Read first" 段 below
++ M-n 31 Phase 1 task-init + M-n 16 stage 1-2 观察+归纳.
+
+**Anti-pattern** (per M-n 32 self-learning-guardrail +
+你 turn 2026-07-16): skip the scan, rely on memory alone,
+be told by 你 turn what to read.  This is the **exact**
+failure mode M-n 34 is designed to prevent.
+
 ## Read first (in order)
 
 1. `docs/PRINCIPLES.md` — operating principles (P1-P29, 25 working per c47a/c78/c79/c80 + c96 P28 lift + c167 P29 lift).  Read
