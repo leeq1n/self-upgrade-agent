@@ -2255,10 +2255,37 @@ condition check to M-n 28 codification).
 
 ### M-acceptance-protocol (added 2026-07-15, per 你 turn "做完任务后需要验收 + 设计验收 + 完整项目 over + 未通过循环修复 + 通过明确说明")
 
-**Trigger**: when agent 认为 任务 完成
-(per M-n 21 self-audit OR M-n 22 final
-3W1H OR per 你 turn explicit "验收" OR
-after every major commit batch).
+**Trigger** (per 你 turn 2026-07-16 + P25 step 7 +
+external-signal-rewrite): apply M-n 29 5-step
+when ANY of these **external signals** fire
+(prior trigger "agent 认为 任务 完成" was
+self-referential and could be silently bypassed
+— see `.hermes/plans/2026-07-16_fix-m29-trigger-explicit.md`):
+
+| # | Signal | When it fires |
+|---|---|---|
+| S1 | About to send "task done" / "完成" / "PASS" / "all green" message to 你 | pre-message (not post-claim) |
+| S2 | About to make final commit in a planned commit batch (per M-n 18 last-commit signal) | pre-commit |
+| S3 | 你 turn contains "验收" / "verify" / "check" keyword | on-receive |
+| S4 | Session commit count is multiple of 5 (per M-n 26 periodic check) | on-commit |
+| S5 | M-n 31 Phase 3 (task-done-notify) about to start | pre-phase |
+
+**Anti-pattern**: "agent 认为 任务 完成" alone
+is NOT sufficient trigger — must combine with
+S1-S4 (per P17 老实说 — self-judgment without
+external signal is unreliable).
+
+**Step 7 reinforcement** (per P25 step 7
+post-modify re-apply new rules check, P26
+fresh-agent simulation): after M-n 29 PASS
+notification, the report itself must include
+a "Cold-start simulation" section that lists
+3+ trigger points in the project and verifies
+each one can be reached from the entry doc
+by a fresh agent.  If any trigger point is
+unreachable, fix it in the same commit
+(or follow-up commit if gap requires new
+logical feature).
 
 **See `M_ACCEPTANCE_PROTOCOL_DETAIL.md`
 (L2 companion per P11 + R6) for 5-step
