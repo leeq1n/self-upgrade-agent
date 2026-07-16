@@ -38,12 +38,19 @@ acceptance-criteria-verification skill:
 | **项目 整洁度 (per 你 turn 2026-07-15 reminder)** | 路径 + 命名 + 文档结构 consistent (per M-n 19 file-naming-convention + c149-c151 .gitignore + c191 整理 + c115 整理 process) |
 | **新 agent 可读性 (per 你 turn 2026-07-15 reminder)** | 项目 内容 可读 + 充分 (per M-n 20 agent-discoverability + P26 fresh-agent + VERIFICATION.md per c193 + 你 turn prior 7 docs in sync) |
 
-### Step 2: Execute 验收 (5 logic primitives per 你 turn)
+## Step 2: Execute 验收 (5 constructive + 4 critical primitives)
 
 Per 你 turn Part 3 explicit: "按照规范分析、
 推理、联想、归纳、总结的逻辑过一遍完整的
-项目".  This is 5 primitives from M-n 16 +
-M-n 14 + M-n 25 + M-n 26:
+项目".  This is 5 constructive primitives (M-n 16 +
+M-n 14 + M-n 25 + M-n 26).
+
+**Per 你 turn 2026-07-16 + M-n 14 two-track**: complete
+thinking needs BOTH constructive + adversarial.  Add 4
+critical-thinking primitives (per
+`docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md`):
+
+### 5 constructive primitives
 
 1. **Analyze** (per M-n 16 observe-think-
    execute stage 1):
@@ -71,14 +78,42 @@ M-n 14 + M-n 25 + M-n 26:
    - Apply 节点 生命周期 (destroy redundant
      details)
 
-### Step 3: Validate 验收 condition
+### 4 critical-thinking primitives (per 你 turn 2026-07-16)
+
+Apply AFTER each corresponding constructive, per
+M-n 14 two-track.  Default-on for high-stakes
+decisions (architecture, cross-project, new P-n
+or M-n lifts); optional for single-file
+refactors; skip for trivial fixes.  Full details:
+`docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md`.
+
+6. **质疑 (Challenge)** — after Analyze:
+   - 3 specific weaknesses in current proposal
+   - Highest-damage weakness — proceed
+     acknowledging
+7. **逆向 (Invert)** — after Reason:
+   - OPPOSITE state explicitly
+   - 2-3 reasons OPPOSITE could be true
+   - What would change if OPPOSITE true
+8. **预演失败 (Pre-mortem)** — after 联想:
+   - "**this FAILED in 30 days**"
+   - 3-5 specific failure modes + causes
+   - 1-2 preventable ones — fix before commit
+9. **对立论证 (Steelman-the-opposite)** —
+   after 归纳:
+   - Most charitable opposing case
+   - 2-3 strongest opposing arguments
+   - Acknowledge valid opposing points
+
+## Step 3: Validate 验收 condition
 
 Per 你 turn Part 4 "确认没问题":
 
 | Check | PASS criteria |
 |---|---|
 | All acceptance criteria | 全部 PASS (no FAIL / PARTIAL) |
-| 5 primitives applied | All 5 used |
+| 5 constructive primitives | All 5 used |
+| 4 critical-thinking primitives | Default-on for high-stakes: 质疑 + 逆向 + 预演失败 + 对立论证 |
 | Evidence recorded | test output / commit hash / file size |
 | R1-R12 ALL PASS | Per c173 + per latest VERIFICATION.md |
 | P-n compliance | All 25 P-n applicable cited |
