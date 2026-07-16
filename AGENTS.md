@@ -93,9 +93,9 @@ P24 (merged into P3 per c78), P25, P26, P27, P28, P29
 (lifted per c167).  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
 list.
 
-## Operating rules (M-n 12-32, per c95-c234)
+## Operating rules (M-n 12-33, per c95-c237)
 
-**32 M-n** in `docs/OPERATING_RULES.md`:
+**33 M-n** in `docs/OPERATING_RULES.md`:
 
 - **M-n 12**: terminology-clarity (refine "撞到一起" → "replan")
 - **M-n 13**: layer-extension (L0/L1/L2 + extensions)
@@ -118,15 +118,11 @@ list.
 - **M-n 30**: knowledge-context-trade-off (4-priority: knowledge 充足 > context 管理 > trade-off via 分层+类比 > 分层 自顶向下 分治 always)
 - **M-n 31**: task-lifecycle (4-phase: init + execute + done-notify + retrospective)
 - **M-n 32**: self-learning-guardrail (5 modification guardrails + auto-learning)
+- **M-n 33**: narrative-as-spec (3-primitive: parse + structure + codify/execute)
 
 ## Recent cross-project sync (per 你 turn 2026-07-15)
 
-Per M-n 30 + 你 turn verification directive:
-- SUA → skill-incubator: README.md c215
-- SUA → skill: SKILL_DETAIL.md c219
-- SUA → KG: AGENTS.md c217
-
-**All 3 sibling projects now have explicit Reading order + SUA cross-ref.**
+Per M-n 30 Priority 5: SUA → skill-incubator (c215) → skill (c219) → KG (c217). All 3 sibling projects have Reading order + SUA cross-ref + Update order rule + "NOT in chain"段 (KG, c232).
 
 
 **修订 L4 boundary (per c95 + memory 7)**:

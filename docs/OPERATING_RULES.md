@@ -2671,3 +2671,66 @@ guardrails.  Recursive: applies itself.
   Priority 5 (Update order rule)
 - 你 turn 2026-07-15 — origin
 
+### M-narrative-as-spec (added 2026-07-15, per 你 turn autonomy + 联想 analytical insight per M-n 14)
+
+**Trigger**: when agent receives 你 turn (per
+M-n 25 turn-pattern-recognition + M-n 31
+Phase 1 task-init).
+
+**See `M_NARRATIVE_AS_SPEC_DETAIL.md`
+(L2 companion per P11 + R6) for 3-primitive
+worked examples.**
+
+**Action** (3 primitives):
+
+| # | Primitive | What to do |
+|---|---|---|
+| 1 | **Parse** | Parse 你 turn 真意 (per M-n 25 + 你 turn history) |
+| 2 | **Structure** | Structure 真意 into 3W1H + actionable sub-tasks (per M-n 22) |
+| 3 | **Codify** | Write down as M-rule / P-n / doc, NOT 单独 respond |
+
+**Why this M-rule exists**: per 你 turn
+2026-07-15 + 你 turn prior vision deep +
+联想 analysis per M-n 14 entropy:
+
+1. 你 turns 是 spec input, NOT casual
+   conversation
+2. Agent should treat 你 turns as
+   requirements (like product manager)
+3. Behavior spec applies to 你 turn context
+   (per M-n 27 核心层)
+
+Per M_RULE_AUTHORING 3-condition gate (5+
+observed sites):
+- M-n 25 (turn-pattern-recognition) —
+  treats 你 turn as 5 patterns A-E
+- M-n 22 (3W1H-think-first) — 你 turn BEFORE
+  top-down
+- M-n 27 (knowledge-layer-architecture) —
+  核心层 handles 你 vision spec
+- M-n 31 (task-lifecycle) — Phase 1 init
+  accepts 你 directive
+- M-n 32 (self-learning-guardrail) — guardrail
+  applies to 你 turn modifications
+
+**Relationship to M-n 25**: M-n 25 parses 5
+patterns (which 你 turn is); M-n 33 codifies
+what to do (treat as spec).
+
+**Relationship to M-n 22**: M-n 22 3W1H is the
+"how" of spec processing; M-n 33 is the
+"what" (treat as spec).
+
+**Self-application** (per P28 recursion):
+
+This 段 IS M-n 33 applied to 你 turn
+"联想 分析 类比 看 性价比": 联想 输出
+spec = 3 insights ranked + your vision
+aligned + LOW risk = autonomous execute.
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-n 22 / M-n 25
+  / M-n 27 / M-n 31 / M-n 32
+- 你 turn 2026-07-15 — origin
+
