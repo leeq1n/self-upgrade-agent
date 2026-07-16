@@ -1698,6 +1698,80 @@ recognition (level 4: own behavior).
   3W1H-think-first — for 你 turn 真意
 - 你 turn 2026-07-15 — origin
 
+### M-context-decay-management (added 2026-07-15, per 你 turn "项目上下文可能变长 + agent 记忆遗忘")
+
+**Trigger**: when agent has many commits OR
+long context OR forgets prior M-rule / P-n.
+
+**See `M_CONTEXT_DECAY_MANAGEMENT_DETAIL.md`
+(L2 companion per P11 + R6) for compression
+strategy + working memory + episodic memory +
+类比 retrieval + 4 sub-steps + 5 anti-patterns.**
+
+**Action** (4 sub-steps per M-n 14 类比
++ M-n 18 节点 生命周期 + 你 turn prior 5
+directives):
+
+1. **Detection**: identify when context is
+   long (commits threshold 10+ OR time 1+
+   hour) OR agent forgets prior rule.
+2. **Classification**: classify decay
+   pattern (5-types: working memory short /
+   working memory overflow / episodic
+   retrieval fail / 类比 inaccessible /
+   L0 rule dropped).
+3. **Compression**: per P29 主动 reduce
+   context — destroy redundant summaries
+   (per M-n 18 destruction contract) +
+   compress to essence (per M-n 14
+   compression primitive).
+4. **Refresh**: load from MEMORY.md (per
+   M-self-application level 3) + 类比
+   retrieval (per M-n 17 Path 2 inter-
+   domain MCP search).
+
+**Why this M-rule exists**: per 你 turn
+2026-07-15 explicit True问题 "记忆遗忘
+的问题" + M_RULE_AUTHORING 3-condition
+gate (6+ sites: c107 熵减 + c127
+periodic re-analysis + c134 pace-
+continuity + c183 turn-pattern + c165-c167
+P29 reduce context + 你 turn explicit).
+
+**5 decay patterns** (per 你 turn 5-part
+pattern):
+
+- **Pattern 1 (working memory short)**:
+  agent forgets prior turn within session.
+  → Apply M-n 25 Pattern E + M-n 21.
+- **Pattern 2 (working memory overflow)**:
+  agent has too many in-context items.
+  → Apply M-n 18 destruction + P29.
+- **Pattern 3 (episodic retrieval fail)**:
+  agent can't recall past session via
+  session_search.
+  → Apply M-n 17 Path 2 (inter-domain MCP
+  search).
+- **Pattern 4 (类比 inaccessible)**: agent
+  doesn't find similar prior pattern.
+  → Apply M-n 14 类比 compression.
+- **Pattern 5 (L0 rule dropped)**: agent
+  forgets a P-n / M-n rule.
+  → Apply M-self-application level 3 +
+  MEMORY.md reload.
+
+**Cross-references**:
+
+- `docs/OPERATING_RULES.md` § M-n 14
+  two-track-reasoning (类比)
+- `docs/OPERATING_RULES.md` § M-n 17
+  context-freshness-check (Path 2)
+- `docs/OPERATING_RULES.md` § M-n 18
+  recursive-summary-protocol (destruction)
+- `docs/PRINCIPLES_FULL.md` "P29"段 (主动
+  reduce context)
+- 你 turn 2026-07-15 — origin
+
 ### M-3w1h-think-first (added 2026-07-15, per 你 turn "自顶向下之前, 往上思考一步, 3W1H 分析法")
 
 **Trigger**: before any major decision, commit
