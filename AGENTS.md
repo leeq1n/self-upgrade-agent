@@ -67,6 +67,13 @@ failure mode M-n 34 is designed to prevent.
    self-edit only, with eval-before + verify-after gate).
    See `core-layer/governance-template.md` for the gate
    template.
+9. `docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md` — L2
+   detail for the **4 critical-thinking primitives**
+   (质疑/逆向/预演失败/对立论证 — per 你 turn 2026-07-16).
+   Read alongside items 1-5 primitives.  Constructive
+   thinking (5 primitives) + adversarial thinking
+   (4 critical primitives) = full thinking pair (per
+   M-n 14 two-track).
 
 **Note**: items 5-7 are added per M-n 34 (2026-07-16) so
 fresh agents can find all rules, not just P-n.  Per
