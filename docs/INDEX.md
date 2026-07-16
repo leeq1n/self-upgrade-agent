@@ -159,6 +159,12 @@ These don't have summaries — read only if relevant to your task:
 - **trigger: 3-layer architecture** (per 你 turn 2026-07-16) → see
   [AUDIT_PHASE_1_2_3_2026_07_16.md](AUDIT_PHASE_1_2_3_2026_07_16.md)
   + Plan: `hermes-plan-3-layer-architecture-2026-07-16.md`
+  + SUA `[../core-layer/README.md](../core-layer/README.md)`
+    (L0 marker, modified 2026-07-16 per commit `a447b0b`)
+  + SUA `[../core-layer/governance-template.md](../core-layer/governance-template.md)`
+    (L1: eval-before + verify-after gate template)
+  + Phase 4 retrospective: `[../.hermes/notes/phase4_c1_failure.md](../.hermes/notes/phase4_c1_failure.md)`
+    (e7c9072 → c681e0b revert + a447b0b redo)
 - **trigger: cold-start simulation** → [M_PRE_TASK_SCAN_DETAIL.md](M_PRE_TASK_SCAN_DETAIL.md)
   + [M_ACCEPTANCE_PROTOCOL_DETAIL.md](M_ACCEPTANCE_PROTOCOL_DETAIL.md)
 
