@@ -57,6 +57,52 @@ that motivated the change).
   (per "storage layered / read flat" principle — see
   `docs/RECURSIVE_DECOMPOSITION.md`).
 
+## Task-done-notify reminder (per 你 turn 2026-07-16)
+
+Per 你 turn "我之前说过，skill 最后的时候要验收，你验收
+了吗？你不知道要验收这件事" + L0.1-L0.3 commits in
+`fix/m29-trigger-explicit` branch:
+
+**Before sending any "task done" / "完成" / "PASS" /
+"all green" message to 你**, agent MUST:
+
+1. Apply **M-n 29 5-step protocol**:
+   - **Step 1**: Design 验收 角度 (per M-n 22 3W1H):
+     functional / 兼容性 / 安全 / 维护性 / user-facing /
+     framework-agnostic / R1-R12 / 项目 整洁度 /
+     **新 agent 可读性** (intended-accessibility test)
+   - **Step 2**: Execute 验收 with 5 primitives:
+     Analyze (M-n 16 stage 1) / Reason (M-n 16 stage 2
+     + M-n 22 3W1H) / 联想 (M-n 14 class比 + M-n 17
+     Path 2) / 归纳 (M-n 14 induction + M-n 18) /
+     总结 (M-n 26 compression)
+   - **Step 3**: Validate (all PASS / no FAIL / no PARTIAL)
+   - **Step 4**: If FAIL → fix → re-verify (loop)
+   - **Step 5**: Notify (this is the "完成" message)
+
+2. Include a **"Cold-start simulation"** section in the
+   验收 report: list 3+ trigger points in the project
+   + verify each is reachable from the entry doc by a
+   fresh agent (per P25 step 7 + P26 fresh-agent simulation).
+
+3. Cite the P-n / M-n that motivated each acceptance
+   criterion (per commit-msg hook contract above).
+
+**Anti-pattern**: skipping 5-step and going directly to
+"完成" message — this is the exact failure mode 你 turn
+flagged.  Per M-n 32 Guardrail #4 (pre-claim): NOT
+allowed to claim PASS before 5-step is complete.
+
+See:
+- `docs/OPERATING_RULES.md` § M-acceptance-protocol (M-n 29
+  trigger S1-S5, per L0.1 commit)
+- `docs/OPERATING_RULES.md` § M-task-lifecycle (M-n 31 Phase 3
+  pre-condition, per L0.2 commit)
+- `docs/OPERATING_RULES.md` § M-self-learning-guardrail
+  (M-n 32 Guardrail #4, per L0.3 commit)
+- `.hermes/plans/2026-07-16_fix-m29-trigger-explicit.md`
+  (full plan + 11-commit batch)
+
 ## Commit message contract
 
 Every commit message MUST contain at least one `P##` reference
