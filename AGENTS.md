@@ -117,6 +117,17 @@ list.
 - **M-n 29**: acceptance-protocol (5-step protocol: design + 5 primitives + validate + cycle + notify)
 - **M-n 30**: knowledge-context-trade-off (4-priority: knowledge 充足 > context 管理 > trade-off via 分层+类比 > 分层 自顶向下 分治 always)
 
+## Recent cross-project sync (per 你 turn 2026-07-15)
+
+Per M-n 30 + 你 turn verification directive:
+- SUA → skill-incubator: README.md c215
+- SUA → skill: SKILL_DETAIL.md c219
+- SUA → KG: AGENTS.md c217
+
+**All 3 sibling projects now have explicit
+Reading order + SUA P-n/M-n cross-ref.**
+
+
 **修订 L4 boundary (per c95 + memory 7)**:
 
 - (a) 1 line / typo / cross-ref = low-risk autonomous, skip 7-check
