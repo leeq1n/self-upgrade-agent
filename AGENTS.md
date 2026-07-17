@@ -121,6 +121,111 @@ See `core-layer/README.md` § "3-layer modification
 policy" for trigger conditions + audit checks
 per layer.
 
+## Iterative thinking (per 你 turn 2026-07-16)
+
+Per 你 turn "有的时候, 一层思考不够充分, 执行
+阶段可以判断需要额外轮的思考, 下一轮继续":
+
+**Thinking is iterative, not single-pass**.
+
+When the first round of thinking produces an
+output, the agent should:
+
+1. **Apply the output** (execute / commit / reply)
+2. **Observe results** (what worked, what didn't,
+   what's missing)
+3. **Re-think if needed** (下一轮思考 = pass 2+)
+
+### When to trigger a next pass
+
+| Trigger | Signal | Action |
+|---|---|---|
+| **Output feels shallow** | Agent output looks superficial | Pass 2: dig deeper |
+| **New info emerged** | Execution revealed facts not in initial thinking | Pass 2: incorporate |
+| **矛盾 / conflict** | Output contradicts earlier reasoning | Pass 2: reconcile |
+| **User correction** | User points out a flaw | Pass 2+: address specifically |
+| **Critical-thinking primitive fires** | 质疑 / 逆向 / 预演失败 / 对立论证 reveals gap | Pass 2: re-plan |
+
+### Termination conditions
+
+Iterative thinking has **bounded depth**:
+
+1. **Termination by satisfaction**: pass N
+   produces an output that passes all 4
+   critical-thinking primitives + 5-step
+   acceptance protocol.
+2. **Termination by user signal**: 你 turn
+   explicit "够" / "验收" / "完成".
+3. **Termination by depth limit**: if pass 3
+   still produces gaps, escalate (per M-n 28
+   4-condition: plan, don't brute-force).
+
+### Anti-patterns
+
+- **Don't infinite-loop** — if pass 3 still has
+  gaps, the issue is upstream (wrong assumption,
+  missing data), not "more thinking".
+- **Don't re-do pass 1** — each pass should add
+  depth, not repeat shallow analysis.
+- **Don't skip pass 1** — even when user is
+  impatient, the first pass establishes baseline.
+
+### Self-application (P29 recursion)
+
+This rule applies to itself. When updating this
+段:
+
+- If you're tempted to keep iterating without
+  converging → check termination conditions.
+- If you're tempted to declare done after one
+  pass → check critical-thinking primitives.
+- If you're tempted to escalate → check user
+  signal first (per 继续 protocol above).
+
+## Skill context cleanliness (per 你 turn 2026-07-16)
+
+Per 你 turn "skill 库是最终面向用户的库, 需要
+为新agent保持项目上下文干净":
+
+When working on skills (or any user-facing
+artifact):
+
+- **NO dev-session references** in skill content
+  (e.g., "per 你 turn 2026-07-16 retrospective" =
+  dev history; not user-facing).
+- **NO SUA-specific examples** in skill content
+  (e.g., "in SUA, we have Y" = project-specific;
+  not portable).
+- **YES generic patterns** (e.g., "When user
+  shows consistent preference" = universal; user-
+  facing).
+
+**Audit checklist** before declaring skill ready:
+
+1. Search skill for "per 你 turn <date>" → should
+   be 0.
+2. Search skill for project-specific names (SUA,
+   parent project) → should be 0 in operational
+   content.
+3. Search skill for session-specific wisdom
+   ("this session we learned", "retrospective",
+   "4-FAIL") → should be 0.
+4. Each section earns its place by being
+   universally useful (per portability filter).
+
+**Why this matters**: a new agent reading the
+skill should see only the skill's domain (how
+to reason), not the development context (what
+SUA did).  Otherwise the agent inherits SUA's
+frame of reference, polluting its own reasoning.
+
+**Implementation**: when designing skill content,
+imagine a stranger on a different machine, with
+zero context, reading the skill for the first
+time.  Would they understand and use it?  If
+NO, simplify or remove context-specific
+references.
+
 ## Read first (in order)
 
 1. `docs/PRINCIPLES.md` — operating principles (P1-P29, 25 working per c47a/c78/c79/c80 + c96 P28 lift + c167 P29 lift).  Read
