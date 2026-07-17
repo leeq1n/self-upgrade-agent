@@ -337,6 +337,95 @@ time.  Would they understand and use it?  If
 NO, simplify or remove context-specific
 references.
 
+## Multi-perspective audit angles (per 你 turn 2026-07-16)
+
+Per 你 turn "我教过的那几个角度" + "或许你需
+要学习下这个" + "你说学习的时候要考虑本地的
+这几个项目":
+
+When working on skills (or any user-facing
+artifact), apply **2 audit angles**:
+
+### A1: User-skill angle (skill usability)
+
+**Question**: when user installs skill, can they
+USE all the primitives + 段s effectively?
+
+**Sub-checks**:
+
+1. **README入口** — does README have explicit
+   trigger items (e.g., "If you see X, do Y")?
+2. **SKILL.md usability** — are all 9 primitives
+   documented with definitions + triggers?
+3. **Quick reference card** — is there a 1-page
+   summary for quick lookup?
+4. **Decision tree** — is there a step-by-step
+   decision aid?
+5. **4-line format** — is the output contract
+   documented?
+6. **HANDOFF orientation** — does a fresh agent
+   know where to start?
+7. **AGENTS framework compat** — does it work in
+   Hermes / Claude Code / Codex / Cursor /
+   generic agents?
+8. **Per-primitive triggers + examples** — does
+   each primitive have explicit trigger + use
+   example?
+9. **Anti-patterns** — does the skill warn about
+   when NOT to use?
+
+### A2: User-project angle (skill fit per project)
+
+**Question**: for each project in the local
+ecosystem (SUA + skill + skill-incubator + KG +
+others), what skill applies + is it the right
+fit?
+
+**Sub-checks** (per project):
+
+1. **Project type** — what kind of work is this
+   (principle project / skill deliverable / meta-
+   skill / knowledge graph / etc.)?
+2. **Skill fit** — which of the 9 reasoning
+   primitives apply to this project's phases?
+3. **Cross-reference** — does the project's
+   AGENTS.md or VERIFICATION.md reference the
+   relevant skill?
+4. **Reasoning application** — for each phase of
+   work, which primitives to use?
+5. **Pre-commit check** — before committing,
+   verify the reasoning was applied correctly?
+
+### When to apply these angles
+
+| Task | Apply A1? | Apply A2? |
+|---|---|---|
+| Skill design / modification | ✅ YES | ✅ YES |
+| Project AGENTS.md update | ❌ NO | ✅ YES |
+| Cross-project integration | ⚠️ Partial | ✅ YES |
+| Single-repo task | ❌ NO | ⚠️ Optional |
+| 你 turn question / clarification | ❌ NO | ❌ NO |
+
+### Self-application (P29 recursion)
+
+This rule applies to itself:
+
+- If A1 audit keeps finding gaps → skill design
+  needs more work (loop in skill design).
+- If A2 audit reveals wrong-skill → reconsider
+  project purpose (loop in project design).
+- If both audits pass + 验收 cycles → task done.
+
+### Cross-reference to other protocols
+
+- **继续 protocol**: A1/A2 audit is part of
+  "tasks not done" detection.
+- **学习 protocol**: A1/A2 audit angles are part
+  of "learning to apply" (per 你 turn "考虑本地
+  项目").
+- **Recursive test-verify**: A1/A2 audit = a
+  verify step that must pass before "task done".
+
 ## Read first (in order)
 
 1. `docs/PRINCIPLES.md` — operating principles (P1-P29, 25 working per c47a/c78/c79/c80 + c96 P28 lift + c167 P29 lift).  Read
