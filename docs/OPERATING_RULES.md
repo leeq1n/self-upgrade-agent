@@ -1559,6 +1559,14 @@ updating this section, ensure the principle
 itself remains portable (no SUA refs in this
 section).
 
+**What does NOT belong in the skill** (per
+portability filter): session-specific wisdom,
+project-specific facts, one-time debugging
+stories.  These belong in chat / parent-project
+docs / git history, NOT in the skill itself.
+The skill is **lean** — every section earns its
+place by being universally useful.
+
 ### M-ask-or-infer-mark-guess (added 2026-07-15, per 你 turn "不仅要做什么, 还 为什么 + 问/推理/标注猜测 + top-down 默认")
 
 **Trigger**: when agent is about to commit,
