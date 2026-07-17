@@ -183,6 +183,50 @@ thinking needs BOTH constructive + adversarial.
 **Optional**: single-file refactors.
 **Skip**: trivial fixes (typo / formatting).
 
+## M-n 36 release-audit (per 你 turn 2026-07-16)
+
+Per 你 turn retrospective + 自顶向下原则:
+SUA codified **M-n 36 (release-audit)** for
+release-time cleanliness.
+
+**5 checks** (per `.hermes/scripts/release_audit.py`,
+commits `c37c443` + `18e893e`):
+
+1. **Commit count** — commits since last x.0.0
+   tag ≤ 5 (configurable).
+2. **P-n cited** — at least 1 P-n or M-n reference
+   in commit messages since last tag.
+3. **Q1+Q2 fixes embedded** — CHANGELOG.md
+   references both Q1 (Anti-patterns) and Q2
+   (Triggers) fix commits.
+4. **Tag at HEAD** — HEAD == tag^{commit}
+   (annotated tag dereferenced).
+5. **Zip matches tag tree** — zipfile.namelist()
+   == git ls-tree tag output.
+
+**L2 detail**: `docs/M_PRE_RELEASE_AUDIT_DETAIL.md`
+(commit `92b8732`).
+
+**Integration**:
+- AGENTS.md "Read first" item 10 = M_PRE_RELEASE_AUDIT_DETAIL.md
+  (commit `ffacef7`)
+- OPERATING_RULES.md M-n 36 section appended (commit
+  `6683093`)
+- `hooks/prepare-commit-msg` adds M-n 36 release-audit
+  block (commit `5215126`)
+- 3 sibling repos (skill-incubator, knowledge-graph-seed,
+  [skill originally then reverted]) added M-n 36 cross-ref
+  in their VERIFICATION.md (commits `deefd68`, `999fd13`)
+
+**Default-on**: pre-release / pre-distribution.
+**Optional**: per-commit dry-run.
+**Skip**: WIP / draft commits.
+
+**Self-application**: per 你 turn heuristic "细项目
+直接改 + 大项目少提交" + M-n 18 destruction, this
+project (SUA) = big project = minimize commits; but
+codification M-n-n requires cross-ref here.
+
 ## How to update this verification
 
 When a new P-n / M-n is added (codified +
