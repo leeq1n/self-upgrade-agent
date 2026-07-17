@@ -182,6 +182,117 @@ This rule applies to itself. When updating this
 - If you're tempted to escalate → check user
   signal first (per 继续 protocol above).
 
+## Recursive test-verify (per 你 turn 2026-07-16)
+
+Per 你 turn "我希望你能在修改后主动验收" + "自顶
+向下分治法做任务的时候, 子任务做完的时候也需要
+一直测试-验收直到通过才能结束, 交给父任务":
+
+**类比 (per M-n 14 Track 1)**: this rule is
+**TDD + recursive testing + 测试金字塔**:
+
+| Analog | Mechanism |
+|---|---|
+| **TDD (Test-Driven Development)** | Write test first, code until pass |
+| **Recursive testing** | Base case test + recursive case test |
+| **测试金字塔** | Unit + integration + system tests at each level |
+| **CI pipeline** | Every commit triggers test pipeline; red blocks merge |
+| **BDD (Behavior-Driven Development)** | Acceptance criteria per feature |
+| **Strong robustness testing** | Invalid inputs fail gracefully |
+
+**Rule**: at every level of top-down task
+decomposition, after completing a sub-task:
+
+1. **Test it** (does it work?)
+2. **Verify it** (does it meet acceptance criteria?)
+3. **Iterate until pass** (max 3 attempts per
+   sub-task, per iterative thinking termination)
+4. **Hand off to parent task** (only when pass)
+
+### Sub-task verify pattern
+
+```
+Parent task: "Implement X"
+├─ Sub-task 1: "Implement X.A"
+│   ├─ Implement
+│   ├─ Test (TDD: write test first)
+│   ├─ Verify (acceptance criteria)
+│   ├─ Iterate until pass (max 3 attempts)
+│   └─ Hand off to parent (only when pass)
+├─ Sub-task 2: "Implement X.B"
+│   ├─ Implement
+│   ├─ Test
+│   ├─ Verify
+│   ├─ Iterate until pass
+│   └─ Hand off to parent (only when pass)
+└─ Sub-task 3: "Integrate X.A + X.B"
+    ├─ Integrate
+    ├─ Test (integration test)
+    ├─ Verify (system-level acceptance)
+    ├─ Iterate until pass
+    └─ Hand off to user (only when pass)
+```
+
+### When to apply
+
+| Task type | Apply recursive test-verify? |
+|---|---|
+| Code commit | ✅ YES (eval_before + verify_after + commit-msg hook) |
+| Doc update | ✅ YES (release_audit + per-section trigger check) |
+| Skill modification | ✅ YES (skill self-modify trigger + portability filter) |
+| Principle modification | ✅ YES (M-n 15 6-step + slippery-slope detection) |
+| Quick chat reply | ❌ NO (no sub-task; simple response) |
+| 你 turn question | ❌ NO (clarification needed) |
+
+### Anti-patterns (when NOT to apply)
+
+- **Don't apply to trivial sub-tasks** (e.g.,
+  "rename a file") — overhead > benefit.
+- **Don't infinite-loop** — max 3 attempts per
+  sub-task (per iterative thinking termination).
+- **Don't skip verify step** — "looks correct" is
+  not the same as "verified pass".
+- **Don't hand off unverified work** — parent task
+  accumulates errors.
+
+### Active verify (vs 你 turn-triggered verify)
+
+Per 你 turn "我希望你能在修改后主动验收":
+agent should **主动 verify** (not wait for 你 turn
+ask).  Specifically:
+
+| Verify trigger | Action |
+|---|---|
+| After any commit | Run release_audit.py (5/5 PASS) |
+| After any doc edit | Check L0 ≤ 120 chars + cross-refs |
+| After any principle change | Apply M-n 15 6-step |
+| After any skill change | Apply portability filter + per-section triggers |
+| Before "task done" claim | Apply M-n 29 5-step |
+
+### Relationship to other protocols
+
+- **继续 protocol**: sub-task completion → 继续
+  trigger for next sub-task, OR 验收 trigger if
+  parent done.
+- **学习 protocol**: sub-task verification = part
+  of "learning" (per cross-project learning).
+- **主动修改 protocol**: skill self-modification =
+  sub-task with recursive verify.
+- **Iterative thinking**: provides termination
+  conditions (max 3 attempts).
+
+### Self-application (P29 recursion)
+
+This rule applies to itself:
+
+- If a sub-task needs > 3 attempts → escalate
+  (per iterative thinking termination).
+- If a sub-task passes without verify → it's not
+  actually verified (false positive).
+- If a parent task accumulates unverified sub-
+  tasks → the parent is at risk of cascade
+  failure.
+
 ## Skill context cleanliness (per 你 turn 2026-07-16)
 
 Per 你 turn "skill 库是最终面向用户的库, 需要
