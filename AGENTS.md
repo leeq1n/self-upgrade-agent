@@ -636,6 +636,99 @@ See:
 - `.hermes/scripts/m_n29_5step.py` (mechanical external
   trigger, per retrospective fix)
 
+## Post-completion verification suggestion (per 你 turn 2026-07-16)
+
+Per 你 turn "因为有了更改, 现在应该再次验收"
++ "做完任务后, 跟用户明确说明的同时, 也需要
+跟用户说建议下一步做验收":
+
+When agent reports **task completion** to user,
+the report MUST include:
+
+1. **明确说明** (clear statement): "task done" /
+   "complete" / "ACCEPTED" — explicit.
+2. **建议下一步做验收** (suggest next verification):
+   "建议你进行下一步验收" / "建议验证 X / Y / Z"
+   / "请运行 release_audit.py 验证" — explicit
+   suggestion.
+
+These 2 actions are NOT optional and NOT
+substitutable.  Both must appear in every
+completion message.
+
+### When to apply
+
+| Task type | Apply both (明确说明 + 建议验收)? |
+|---|---|
+| Code commit | ✅ YES |
+| Doc update | ✅ YES |
+| Skill modification | ✅ YES |
+| Cross-project integration | ✅ YES |
+| 你 turn question / clarification | ❌ NO (no completion) |
+| Trivial chat reply | ❌ NO (no completion) |
+
+### What "建议下一步做验收" should include
+
+A good verification suggestion includes:
+
+1. **What to verify** (specific dimensions):
+   - Run release_audit.py
+   - Check release-audit.py 5/5 PASS
+   - Verify tag at HEAD
+   - Read this section for cross-refs
+
+2. **How to verify** (specific commands):
+   - `python .hermes/scripts/release_audit.py
+     <target>`
+   - `git log --oneline | head -3`
+   - `git status --porcelain`
+
+3. **Acceptance criteria** (what "pass" looks like):
+   - All 5 checks PASS
+   - Working tree clean
+   - Tag at HEAD
+   - 0 errors in fresh verify
+
+### Classify via 类比 (per M-n 14 Track 1)
+
+| Analog | Mechanism |
+|---|---|
+| **CI pipeline** | Every commit triggers verify pipeline; green = ok, red = block |
+| **Definition of Done (DoD)** | DoD includes verification step |
+| **Code review workflow** | Submit → review → re-verify if changes |
+| **Hospital discharge** | Patient leaves with explicit follow-up recommendation |
+| **Construction inspection** | Work complete + sign-off + next inspection scheduled |
+
+### Self-application (P29 recursion)
+
+This rule applies to itself:
+
+- If agent reports completion without
+  verification suggestion → incomplete
+  notification (false positive).
+- If verification suggestion is too verbose →
+  noise (apply M-n 18 destruction).
+- If verification suggestion is too brief →
+  user can't act (apply 3 sub-items above).
+
+### Anti-patterns (when NOT to apply)
+
+- **Don't suggest verification on every chat
+  reply** (only on completion).
+- **Don't include verification suggestion as
+  boilerplate** (must be specific to the task).
+- **Don't skip 明确说明** (both are required).
+
+### Cross-reference to other protocols
+
+- **继续 protocol**: "建议下一步做验收" is part
+  of task completion, separate from "继续".
+- **学习 protocol**: verification = part of
+  learning to apply correctly.
+- **Recursive test-verify**: this rule is the
+  meta-application of recursive test-verify
+  (verify the verification-suggestion itself).
+
 ## Commit message contract
 
 Every commit message MUST contain at least one `P##` reference
@@ -646,7 +739,7 @@ change.  The `commit-msg` hook enforces this.
 
 ```bash
 cp hooks/commit-msg .git/hooks/commit-msg
-chmod +x .git/hooks/commit-msg
+chmod +x hooks/commit-msg
 ```
 
 The hook template is tracked in this repo at `hooks/commit-msg`.
