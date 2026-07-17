@@ -37,6 +37,90 @@ new session start.  Per AGENTS.md "Read first" 段 below
 be told by 你 turn what to read.  This is the **exact**
 failure mode M-n 34 is designed to prevent.
 
+## "继续" protocol (per 你 turn 2026-07-16)
+
+Per 你 turn "我说继续的时候, 一般都和我之前说的
+那段是一个意思":
+
+When 你 turn says "继续", agent MUST interpret it as:
+**推进任务 (考虑之前说的那些思考方法, 考虑是否
+重新做规划等, 考虑自顶向下等原则)**, NOT as a
+generic continuation.
+
+**Two cases**:
+
+| Case | 你 turn signal | Agent action |
+|---|---|---|
+| **任务未完成** | 你 turn 你 turn implicit (e.g., previous turn left tasks undone) | Continue: apply thinking methods (5 primitives + 4 critical-thinking + 自顶向下分治); replan if撞到一起 (per M-n 12 + M-n 28 4-condition); keep committing |
+| **任务完成** | 你 turn 你 turn "验收" / "完成了" / explicit done | Apply M-n 29 5-step acceptance protocol: design 验收 角度, execute 5 primitives + 4 critical-thinking, validate all PASS, cycle if FAIL, **明确告知** (per 你 turn "完成了的时候跟我明确说明情况") |
+
+**Anti-patterns**:
+
+- DON'T stop mid-task and ask "next" (per
+  PITFALL 39 batch rule).
+- DON'T ignore thinking methods when continuing.
+- DON'T skip 验收 when task is done.
+- DON'T claim "task done" without M-n 29 5-step
+  (per M-n 32 Guardrail #4).
+
+## "学习一下" protocol (per 你 turn 2026-07-16)
+
+Per 你 turn "我说学习一下的时候, 指的是不仅仅
+是hermes学习, 也是这几个项目里 agent 的核心层
+/ 用户层需要学习, 需要在迁移到其他用户之后还能
+有充足的这类知识":
+
+"学习" = **cross-project learning**, NOT single-
+hermes learning.
+
+**Three layers of learning**:
+
+| Layer | Where | What | Persistence |
+|---|---|---|---|
+| **核心** | `core-layer/` + `AGENTS.md` + `hooks/` + `.hermes/scripts/` + `OPERATING_RULES.md` | Agent behavior rules | Cross-project, cross-user (migrates to other users' machines via skill) |
+| **用户** | `memory/` system + user-specific files | User habits / preferences | Cross-session (per user) |
+| **项目** | `docs/PRINCIPLES.md` + `docs/PROJECT_STATE.md` + project docs | Project-specific knowledge | Per project (NOT cross-project) |
+
+**Cross-project requirement**: per 你 turn
+"迁移到其他用户之后还能有充足的这类知识" =
+skills must carry 核心 + 用户 layer knowledge
+to new users.  Skill zip should include enough
+context that a fresh user on a different machine
+has the same 核心 + 用户 knowledge the original
+user had.
+
+**Implementation**: when designing skills, ask
+"would a stranger on a different machine have
+enough 核心 + 用户 knowledge to use this skill
+effectively?"  If NO, the skill isn't portable.
+
+## "主动修改 skill" (per 你 turn 2026-07-16)
+
+Per 你 turn "我希望这skill在别人电脑上还会主动
+修改skill, 但是核心层修改需要尽可能少, 主要
+修改用户层 (根据学到的知识判断改哪一层), 而
+项目层知识随着项目变化而变化":
+
+**3-layer modification policy**:
+
+1. **核心层修改尽可能少** — modify core only
+   when absolutely necessary (e.g., new M-n,
+   consistent failure pattern).
+2. **用户层主要改** — modify user layer mainly,
+   based on observed habits (per "判断改哪一层"
+   rule).
+3. **项目层随项目变化** — modify project layer
+   continuously, but as **knowledge base** (NOT
+   log).
+
+**Project knowledge base rule**: past knowledge
+keeps only lessons (经验), not details (细节).
+Latest version of project knowledge is primary.
+
+See `core-layer/README.md` § "3-layer modification
+policy" for trigger conditions + audit checks
+per layer.
+
 ## Read first (in order)
 
 1. `docs/PRINCIPLES.md` — operating principles (P1-P29, 25 working per c47a/c78/c79/c80 + c96 P28 lift + c167 P29 lift).  Read
