@@ -2,11 +2,17 @@
 
 Per the 2026-07-20 simplification (M-n 35 + P7 Occam): this
 file is intentionally minimal.  It bans a *very specific*
-phrase family — role labels followed by the English word
-'turn' — that has been observed to prime a decoder repetition
-loop in agent output.  Other uses of 'turn' as a normal
-English word (e.g., in literary quotes, technical docs about
-ATX turn-based reasoning, etc.) are NOT banned.
+phrase family — the role labels followed by an English noun
+that has been observed to prime a decoder repetition loop
+in agent output.  Other uses of that noun as a normal
+English word (e.g., in literary quotes, technical docs
+about round-based reasoning, etc.) are NOT banned.
+
+The exact banned phrases are listed verbatim in the BANNED
+tuple below.  The test file itself is the only file that
+holds them as literals — structural necessity (you cannot
+ban a phrase without naming it).  Every other prompt
+surface is audited and must be free of those literals.
 """
 
 from pathlib import Path
