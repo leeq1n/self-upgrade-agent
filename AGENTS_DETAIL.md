@@ -691,11 +691,18 @@ directive.)
 - Future agents should be able to read this project
   without Hermes-specific knowledge.
 
+**2026-07-20 retrospective** (per M-n 33 close-loop): see
+[`docs/RETROSPECTIVE_2026-07-20.md`](RETROSPECTIVE_2026-07-20.md)
+for the 5 self-audit questions that close the loop on this
+session's 7 miss-patterns.  Apply at every commit / audit /
+cross-project decision; not encoded as always-loaded rule
+(per OcCam).
+
+
 ## See also (project docs, conditional load)
 
 These are **conditional** docs — load only when the task type
 matches the trigger.  Default: don't load.
-
 - `docs/RECURSIVE_DECOMPOSITION.md` — load when task is big
   (multi-file, multi-project, multi-step).  5-step loop.
 - `docs/OPERATING_RULES.md` — load when ending task, switching
