@@ -140,3 +140,16 @@ This split itself applies the principles:
 
 If a 段 is missing from AGENTS_CORE.md, agent
 should fall back to AGENTS.md (per P22).
+
+## Recent retrospective (2026-07-20)
+
+For session-specific learnings (5-question audit pattern, banned-
+word language habit shift, "OcCam ≠ Stop" meta-insight, project
+layer > agent layer, audit scope declaration), see
+[`docs/RETROSPECTIVE_2026-07-20.md`](docs/RETROSPECTIVE_2026-07-20.md).
+AGENTS_DETAIL.md already cross-refs it for per-task loaders; this
+top-level pointer ensures cold-start agents find it without
+scanning the always-loaded files twice.
+
+Apply at every commit / audit / cross-project decision; not
+encoded as always-loaded rule (per OcCam).
