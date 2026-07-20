@@ -348,9 +348,9 @@ USE all the primitives + 段s effectively?
 ### A2: User-project angle (skill fit per project)
 
 **Question**: for each project in the local
-ecosystem (SUA + skill + skill-incubator + KG +
-others), what skill applies + is it the right
-fit?
+ecosystem (SUA + agent-reflection-skill +
+knowledge-graph-seed + others), what skill applies +
+is it the right fit?
 
 **Sub-checks** (per project):
 
@@ -654,9 +654,16 @@ not operational).):
   4 sub-steps: Read AGENTS / Scan P-n+M-n / Apply 5 primitives
   / Document scan result.  Per `docs/M_PRE_TASK_SCAN_DETAIL.md`.)
 
-## Recent cross-project sync (per user message 2026-07-15)
+## Recent cross-project sync (per user message 2026-07-20)
 
-Per M-n 30 Priority 5: SUA → skill-incubator (c215) → skill (c219) → KG (c217). All 3 sibling projects have Reading order + SUA cross-ref + Update order rule + "NOT in chain"段 (KG, c232).
+Per the 2026-07-20 re-architecture: **SUA is the knowledge
+library for the hermes-root family; siblings are standalone
+or frozen, not downstream.**  Active siblings:
+- `../agent-reflection-skill/` — standalone skill since
+  v1.0.0 (2026-07-16), NOT a downstream of SUA.
+- `../knowledge-graph-seed/` — frozen MVP (no active dev).
+Archived: `../skill-incubator/` (content consolidated into
+SUA's docs/SKILL_DESIGN.md on 2026-07-20).
 
 
 **修订 L4 boundary (per c95 + memory 7)**:

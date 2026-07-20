@@ -101,9 +101,19 @@ Per user message "因为有了更改, 现在应该再次验收" + "做完任务�
 **Live detail**: see the matching section in [`AGENTS_DETAIL.md`](AGENTS_DETAIL.md).
 
 
-### Recent cross-project sync (per user message 2026-07-15)
+### Recent cross-project sync (per user message 2026-07-20)
 
-Per M-n 30 Priority 5: SUA → skill-incubator (c215) → skill (c219) → KG (c217). All 3 sibling projects have Reading order + SUA cross-ref + Update order rule + "NOT in chain"段 (KG, c232).   **修订 L4 boundary (per c95 + memory 7)**:  - (a) 1 line / typo / cross-ref = low-risk autonomous, skip 7-check ...
+Per the 2026-07-20 re-architecture: **SUA is the knowledge
+library for the hermes-root family; siblings are standalone
+or frozen, not downstream.**  Active siblings:
+- `../agent-reflection-skill/` — standalone skill since
+  v1.0.0 (2026-07-16), NOT a downstream of SUA.
+- `../knowledge-graph-seed/` — frozen MVP (no active dev).
+Archived: `../skill-incubator/` (content consolidated into
+SUA's docs/SKILL_DESIGN.md on 2026-07-20).
+
+**修订 L4 boundary (per c95 + memory 7)**:
+- (a) 1 line / typo / cross-ref = low-risk autonomous, skip 7-check
 
 **Live detail**: see the matching section in [`AGENTS_DETAIL.md`](AGENTS_DETAIL.md).
 
