@@ -11,13 +11,21 @@ PROMPT_SURFACES = tuple(
     and ".git" not in path.parts
     and path.suffix.lower() in {".md", ".py", ".sh", ".bash", ".yaml", ".yml", ".toml"}
 )
+# Banned role-shorthand strings are stored as fragment concatenations
+# to keep this file's source text free of literal banned strings
+# (which would make its own self-referential guard trigger a false
+# positive).  Each element is built by concatenating two halves; the
+# runtime value is identical to the natural-language shorthand.
 ROLE_TURN_SHORTHANDS = (
     "你" + " turn",
     "我" + " turn",
-    "user turn",
-    "assistant turn",
+    "user" + " turn",
+    "assistant" + " turn",
 )
-REPEATED_ROLE_LABELS = ("user message user message", "assistant response assistant response")
+REPEATED_ROLE_LABELS = (
+    "user" + " message user message",
+    "assistant" + " response assistant response",
+)
 # The test file itself documents the banned strings; allow it to
 # reference them in docstrings + assertions by name, but block any
 # non-test file from containing them.
@@ -128,4 +136,58 @@ def test_sibling_projects_avoid_role_turn_shorthand():
                         f"{project}/{path.relative_to(project_root)}:{line_number}: {line.strip()[:80]}"
                     )
     assert not offenders, "Role/turn shorthand in sibling projects:\n" + "\n".join(offenders)
+
+
+# Strict self-reference guard: this test file MUST NOT contain the banned
+# role-shorthand in any form, even in docstrings or comments.  If you need
+# to reference the banned strings (e.g., to write a new test), use the
+# ROLE_TURN_SHORTHANDS tuple at the top of this file (which holds them as
+# fragments, not literal strings) — or write 'ROLE_TURN_SHORTHANDS[0]'.
+# This guard exists because earlier versions of this test file contained
+# the banned strings in their own docstrings, which made them invisible
+# to the canonical pytest pass — the test would exempt itself from
+# auditing.  Per P17 honest reporting: an exempt test is no test at all.
+def _self_referential_ban():
+    """Return banned strings by REBUILDING them from fragments.
+
+    Building the strings at runtime means this module's source text
+    does NOT literally contain them (so source-text scans cannot
+    detect false-positive hits in this file's own comments).  This
+    is the placeholder pattern referenced in the file-level note
+    above.
+    """
+    return (
+        "你" + " turn",
+        "我" + " turn",
+        "你" + "turn",
+        "我" + "turn",
+        "user" + " turn",
+        "assistant" + " turn",
+    )
+
+
+def test_test_file_does_not_self_referentially_contain_banned_strings():
+    """The prompt-hygiene test must NOT exempt itself by referencing the banned strings.
+
+    This guard prevents the failure mode where this test file contains
+    a banned role-shorthand in its own docstrings / comments, then
+    the canonical pytest sweep exempts 'tests/test_prompt_hygiene.py'
+    from its own check.  Exempting the test would silently disable
+    the hygiene gate for the rest of the project.
+    """
+    text = (ROOT / TEST_FILE).read_text(encoding="utf-8")
+    banned = _self_referential_ban()
+    hits = []
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        for bad in banned:
+            if bad in line:
+                hits.append(f"{TEST_FILE}:{line_number}: banned-fragment in: {line.strip()[:80]}")
+    assert not hits, (
+        "Test file itself contains a banned role-shorthand.  This makes\n"
+        "the hygiene gate self-referentially exempt, which is the exact\n"
+        "failure mode this guard is designed to catch.  Use the\n"
+        "ROLE_TURN_SHORTHANDS tuple or 'ROLE_TURN_SHORTHANDS[0]' instead\n"
+        "of writing the banned string as a literal.\n"
+        "Hits:\n" + "\n".join(hits)
+    )
 
