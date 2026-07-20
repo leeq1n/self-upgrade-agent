@@ -13,7 +13,7 @@ ask "学习我发言思路这个也需要看看有没有
 
 ## Why this M-rule exists
 
-user message (user turn) often has 2-5 distinct
+user message (用户回合) often has 2-5 distinct
 parts + 1+ 真问题 + 隐含 codify request.
 Per M-self-application 4 levels (c18):
 agent should:

@@ -11,7 +11,12 @@ PROMPT_SURFACES = tuple(
     and ".git" not in path.parts
     and path.suffix.lower() in {".md", ".py", ".sh", ".bash", ".yaml", ".yml", ".toml"}
 )
-ROLE_TURN_SHORTHANDS = ("你" + " turn", "我" + " turn")
+ROLE_TURN_SHORTHANDS = (
+    "你" + " turn",
+    "我" + " turn",
+    "user turn",
+    "assistant turn",
+)
 REPEATED_ROLE_LABELS = ("user message user message", "assistant response assistant response")
 # The test file itself documents the banned strings; allow it to
 # reference them in docstrings + assertions by name, but block any

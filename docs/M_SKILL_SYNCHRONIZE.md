@@ -6,7 +6,7 @@ Last P20-verified: 2026-07-15
 > commits involve pattern-extraction to skill, or when
 > debugging "skill broke after a sync".  Per
 > M_RULE_AUTHORING 3-condition gate: reusable across
-> projects ✓, triggerable (skill-mention user turn) ✓,
+> projects ✓, triggerable (skill-mention user message) ✓,
 > 3+ occurrences observed (c83 + d1dbb66 + f09d06e +
 > b502577 + e19189b + skill-incubator skeleton) ✓ →
 > promoted to full M-rule (per 2026-07-15 session).
@@ -110,7 +110,7 @@ Invoke this M-rule when **any** of these triggers fire:
   `docs/framework/skill-generation.md` (d1dbb66)
 - Sub-step 4: 5 preservation rules verified
 
-### Example 2: User turn 2026-07-15 → 3-project split
+### Example 2: User message 2026-07-15 → 3-project split
 
 - Sub-step 1: User mentions "原则库 + skill 孵化器"
 - Sub-step 2: SUA → skill-incubator (split project)

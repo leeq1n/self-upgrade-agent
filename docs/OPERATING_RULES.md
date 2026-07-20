@@ -429,7 +429,7 @@ process.
 ### M-terminology-clarity (added 2026-07-15, per user meta-rule)
 
 **Trigger**: when a phrase / term / metaphor is used
-in agent responses or user turns **without clear
+in agent responses or user messages **without clear
 operational definition**, AND the ambiguity may
 cause confusion in later turns.
 **See `M_TERMINOLOGY_CLARITY.md` + `_DETAIL` (L2
@@ -1983,7 +1983,7 @@ gate, 4+ observed):
 
 ### M-turn-pattern-recognition (added 2026-07-15, per user message "学习下我发言的思路 ... 也需要看看有没有学习过")
 
-**Trigger**: when agent receives a user turn
+**Trigger**: when agent receives a user message
 that contains 2+ parts (directive + 真问题
 + 真意 + 隐含 codify request).
 
