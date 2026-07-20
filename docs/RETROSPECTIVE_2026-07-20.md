@@ -7,9 +7,11 @@
 
 ## Session 上下文
 
-用户初始问题: 项目中含中文「那个英文词 + turn」类角色简写 (你 / 我
-+ 该英文词; user / assistant + 该英文词), 导致 decoder-loop 重复输出.
-用户要求全面清理.
+用户初始问题: 项目中含中文「那个英文词」类角色简写 (中文
+角色 / 英文角色 + 该英文词), 导致 decoder-loop 重复输出.
+用户要求全面清理. (本文件不再字面写 banned 词 — 用占位符
+「那个英文词」/「banned 词」指代, 以保持项目自洽 — 详见
+本段下方「Meta-note on banned-word avoidance」.)
 
 > 注: 该英文词 = banned 词 (本文件中用「那个英文词」/「banned 词」
 > 替代指代, 因为 banned phrase 自身作为字面量会触发同项目 test 失败.
@@ -56,7 +58,7 @@ per-task reference, 而非 wait for 5 failure cycles.
 - 历史 commits 添加 M-n 36, 修改 AGENTS family 未守 P25 6-step gate.
 
 **Avoid**: 触及 P-n / M-n / always-loaded 文件前**先问** (用户 explicit
-+ multi-session + 3+ turn), 不是 commit 后 retro-fit.
++ multi-session + 该会话多次明确), 不是 commit 后 retro-fit.
 
 ### Pattern F — Cross-profile boundary 未声明
 
@@ -118,6 +120,34 @@ Action:              [specific minimal action]
 
 When 「Principle claimed」 doesn't match 「Actual principle」, **do NOT
 use that principle as justification**. Re-derive from actual principle.
+
+## Banned-word language replacement (session-internal only)
+
+This section documents the **language habit shift** agreed upon at
+2026-07-20.  It is **session-internal** (not committed to source, no
+replacement table) because the replacement table itself would name
+the banned English word, re-introducing the trigger in a prompt
+surface that the project enforces to be 0-hit.
+
+**Habit shift**:
+
+When my own output (or any in-conversation reference to the banned
+English word) needs to be exact — including when explicitly
+naming the ban in conversation — use 中 文 equivalent.  The
+specific mapping is in session memory only (it cannot live in
+source tree, otherwise the reference itself becomes a 0-hit
+violation), but the **principle** is documented here:
+
+> "Whenever I would reflexively write the banned English word
+> in output, I instead write the 中 文 equivalent from my
+> language-default vocabulary.  This applies to commit messages,
+> documentation narrative, conversation reply, code comments."
+
+This is the durable mechanism that future agents can read on-
+demand via AGENTS_DETAIL cross-ref.  The actual mapping is in
+session memory and resets per session — that's by design (per
+OcCam: project source stays 0-hit, language habit lives in
+agent behaviour, not always-loaded rule).
 
 ## Cross-references
 
