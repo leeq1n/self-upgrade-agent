@@ -8,6 +8,14 @@
 > stable).  Per-task 段s are in `AGENTS.md` as
 > references (per P11 摘要+引用).
 >
+> **2026-07-20 architecture note**: SUA is the knowledge
+> library for the hermes-root family; siblings are
+> standalone (agent-reflection-skill since v1.0.0) or
+> frozen (knowledge-graph-seed MVP).  skill-incubator
+> was archived; its content consolidated into SUA's
+> `docs/SKILL_DESIGN.md`.  Cross-ref details in
+> AGENTS.md "Recent cross-project sync"段.
+>
 > Cross-ref: full content here.  AGENTS.md has
 > references, not duplicates.
 

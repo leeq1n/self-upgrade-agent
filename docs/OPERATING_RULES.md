@@ -324,15 +324,13 @@ This rule is the operational form of that meta-rule.
 - `docs/SKILL_GENERATION.md` (deprecated 2026-07-15,
   per c87) — historical location of skill-generation-
   knowledge; canonical is now
-  `../skill-incubator/SKILL_DESIGN.md`
+  `docs/SKILL_DESIGN.md`
 - `docs/M_SKILL_SYNCHRONIZE.md` — full text with
   case studies, 4 sub-steps detail, worked examples
   (3 of them), and relationship to other M-rules
-- `../skill-incubator/SKILL_DESIGN.md` — canonical
+- `docs/SKILL_DESIGN.md` — canonical
   design knowledge (per c88)
-- `../skill-incubator/docs/process/when-to-incubate.md`
   — 4-condition checklist
-- `../skill-incubator/docs/framework/case-studies.md`
   — first worked case
 - `../agent-reflection-skill/HANDOFF_DETAIL.md` 04a2935
   — skill side mirror
@@ -419,10 +417,9 @@ process.
   pattern (per c89-small)
 - `docs/M_EXPERIMENT_IN_SUBPROJECT.md` (planned, c90)
   — L2 detail companion per P11
-- `../skill-incubator/SKILL_DESIGN.md` — analogous
+- `docs/SKILL_DESIGN.md` — analogous
   pattern (skill-incubator itself is a sub-project
   for skill design, with 5-phase process)
-- `../skill-incubator/docs/framework/case-studies.md`
   — first worked case (skill-incubator's first
   decision)
 
@@ -1198,7 +1195,7 @@ gate, 4+ observed):
 - `docs/SUMMARY_LIFECYCLE.md` — c62 recursive
   destruction 协议 (related)
 - `docs/SKILL_GENERATION.md` /
-  `../skill-incubator/SKILL_DESIGN.md` — 5-phase
+  `docs/SKILL_DESIGN.md` — 5-phase
   process (related sub-task pattern)
 - `OPERATING_RULES.md` § M-n 16 — top-down 分治
   (parent)

@@ -156,9 +156,8 @@ conventions:
 - `docs/HANDOFF_DETAIL.md` "Sub-project-for-
   experimentation pattern" 段 (c89-small) —
   recording of the pattern
-- `../skill-incubator/SKILL_DESIGN.md` — analogous
+- `docs/SKILL_DESIGN.md` — analogous
   pattern (5-phase process)
-- `../skill-incubator/docs/framework/case-studies.md`
   — first worked case
 
 ## Detail (L2)

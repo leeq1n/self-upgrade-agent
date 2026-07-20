@@ -27,7 +27,7 @@ agent can apply.
 Does SUA already have a 段 about this skill topic?
 
 - Read `docs/SKILL_GENERATION.md` (deprecated 2026-07-15)
-  or `../skill-incubator/SKILL_DESIGN.md` (canonical
+  or `docs/SKILL_DESIGN.md` (canonical
   post-c87).
 - If yes, apply existing knowledge.
 - If no, consider whether the topic warrants new
@@ -54,7 +54,7 @@ Per sibling awareness protocol
 - **skill → SUA**: document the lesson in SUA's
   HANDOFF_DETAIL.md "Sibling project awareness" 段.
 - **skill-incubator → skill**: create / update skill
-  per `../skill-incubator/SKILL_DESIGN.md` 5-phase
+  per `docs/SKILL_DESIGN.md` 5-phase
   process.
 - **skill-incubator → SUA**: SUA 留 1 cross-ref 段
   to skill-incubator's canonical doc (per c87 pattern).
@@ -149,11 +149,9 @@ Invoke this M-rule when **any** of these triggers fire:
   L0/L1段 (in SUA)
 - `docs/SKILL_GENERATION.md` (deprecated per c87) —
   original location of SUA's skill-generation-knowledge
-- `../skill-incubator/SKILL_DESIGN.md` (canonical post-
+- `docs/SKILL_DESIGN.md` (canonical post-
   c87) — skill-incubator's design knowledge
-- `../skill-incubator/docs/process/when-to-incubate.md`
   — 4-condition checklist
-- `../skill-incubator/docs/framework/case-studies.md`
   — first worked case
 - `../agent-reflection-skill/docs/framework/skill-generation.md`
   — skill-side mirror
