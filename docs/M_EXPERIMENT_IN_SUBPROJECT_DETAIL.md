@@ -55,7 +55,7 @@ case yet.
 
 ## Prior art (per sciverse MCP search, 2026-07-15)
 
-Per 你 turn "如果要搜索资料，有几个MCP可以用来搜索",
+Per user message "如果要搜索资料，有几个MCP可以用来搜索",
 I used sciverse (academic literature) to verify the
 sub-project-for-experimentation pattern is consistent
 with established literature.  3 papers are

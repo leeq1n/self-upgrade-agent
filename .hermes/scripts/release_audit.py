@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""release_audit.py — pre-release check (M-n 36, per 你 turn 2026-07-16
+"""release_audit.py — pre-release check (M-n 36, per user message 2026-07-16
 retrospective audit).
 
-Per 你 turn "判断下问题在哪，怎么处理":
+Per user message "判断下问题在哪，怎么处理":
 - 5 checks codified for release preparation:
   1. Commit history cleanliness (suggest squash)
   2. Tag points at HEAD (suggest move forward)

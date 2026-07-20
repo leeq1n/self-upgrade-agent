@@ -62,6 +62,6 @@ When choosing a refined term, apply:
 | No jargon | P11 摘要+引用 |
 | Self-describing | reduces new-agent cognitive load (P26) |
 | Consistent with existing terminology | P14 + P22 |
-| Native (English or 中文, not mixed unless necessary) | 你 turn "中文回答，不要中英文混杂" |
+| Native (English or 中文, not mixed unless necessary) | user message "中文回答，不要中英文混杂" |
 | No metaphor (or metaphor with clear source domain) | M-n 12 application |
 | Verifiable (can be checked in code/docs) | P17 honest |

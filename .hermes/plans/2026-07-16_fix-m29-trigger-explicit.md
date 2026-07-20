@@ -1,6 +1,6 @@
 # Plan: 2026-07-16 Fix M-n 29 / M-n 31 self-referential trigger
 
-> L0: Per 你 turn 2026-07-16 directive: "我之前
+> L0: Per user message 2026-07-16 directive: "我之前
 > 说过，skill 最后的时候要验收，你验收了吗？
 > 你不知道要验收这件事，我认为这说明项目写
 > 的有问题".  Root cause = M-n 29 / M-n 31
@@ -10,7 +10,7 @@
 > 分治 (per M-n 13 layer-extension) + 自顶向下
 > (per M-n 16 observe-think-execute 6-stage).
 
-## 总目标 (per 你 turn 2026-07-16)
+## 总目标 (per user message 2026-07-16)
 
 让 **agent 在任何 "task done" / "验收" 触发时** 自动
 apply M-n 29 5-step protocol（Design 角度 → Execute 5
@@ -27,7 +27,7 @@ agent 自己的 self-judgment。
 | AGENTS.md 缺 task-done-notify reminder | -- | 入口 doc 没 reminder |
 | skill / v1.0.0 / skill-incubator / KG 缺 VERIFICATION.md (cold-start simulation) | -- | intended-accessibility 缺口 |
 
-## 节点 生命周期 (per M-n 18 + 你 turn 2026-07-15)
+## 节点 生命周期 (per M-n 18 + user message 2026-07-15)
 
 | Node | 状态 | Sub-tasks | Trigger → Next |
 |---|---|---|---|
@@ -63,14 +63,14 @@ root: 修 M-n 29 + M-n 31 trigger
 **File**: `docs/OPERATING_RULES.md` § M-acceptance-protocol 段
 **Action**:
 - 改 "**Trigger**: when agent 认为 任务 完成 (per M-n 21 self-audit
-  OR M-n 22 final 3W1H OR per 你 turn explicit "验收" OR after
+  OR M-n 22 final 3W1H OR per user message explicit "验收" OR after
   every major commit batch)" → 改 "**Trigger** (any ONE of these
   external signals)":
   - **S1**: Agent about to send "Task done" / "完成" / "PASS" /
     "all green" message to 你
   - **S2**: Agent about to make final commit in a planned commit
     batch (per M-n 18 sub-task summary "last commit" signal)
-  - **S3**: Agent 收到 你 turn "验收" / "verify" / "check" 关键词
+  - **S3**: Agent 收到 user message "验收" / "verify" / "check" 关键词
   - **S4**: After every N=5 commits in current session (per M-n 26
     context-decay periodic check)
   - **S5**: Before M-n 31 Phase 3 (task-done-notify) starts
@@ -174,7 +174,7 @@ analysis 强制逐 P-n / M-n 改：
 - **Anti-trap 5**: 每个 sibling VERIFICATION.md 不引用 SUA 内部 c-hash (per
   M-n 30 knowledge-context trade-off — sibling 只需引用 M-n / P-n 编号)
 
-## 销毁 (per M-n 18 节点 生命周期 + 你 turn "节点 生命周期管理")
+## 销毁 (per M-n 18 节点 生命周期 + user message "节点 生命周期管理")
 
 - 这个 plan 完成后，节点 总结 留 1 段 (verdict + 11 commits list)，
   详细 sub-task 销毁

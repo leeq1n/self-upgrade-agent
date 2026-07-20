@@ -124,8 +124,8 @@ SUA is part of a 3-project architecture:
 
 This project is designed for:
 - **Hermes** (current)
-- **Codex** (per 你 turn)
-- **Claude Code** (per 你 turn)
+- **Codex** (per user message)
+- **Claude Code** (per user message)
 - **Others** (auto-detected via AGENTS.md)
 
 File names avoid Hermes-specific terms (per M-n

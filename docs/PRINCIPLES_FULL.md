@@ -637,7 +637,7 @@ requires:
   periodic-re-analysis (c127)
 - SUA `docs/OPERATING_RULES.md` § M-n 24
   pace-continuity (c134)
-- 你 turn 2026-07-15 (3W1H + re-analysis +
+- user message 2026-07-15 (3W1H + re-analysis +
   pace-continuity explicit directives)
 
 
@@ -686,16 +686,16 @@ verification:
 
 
 
-### M-n 25 self-application: 你 turn-pattern-recognition (per c183 + P28 recursion)
+### M-n 25 self-application: user message-pattern-recognition (per c183 + P28 recursion)
 
-> L0: M-n 25 = "你 turn-pattern-recognition"
-> (per 你 turn 2026-07-15 explicit codify
+> L0: M-n 25 = "user message-pattern-recognition"
+> (per user message 2026-07-15 explicit codify
 > request).  This段 is M-n 25 applied to
 > itself (per P28 recursion + M-self-
 > application 4 levels).
 
 **M-n 25 in 1 sentence**: When agent receives
-a 你 turn, parse the parts (directive /
+a user message, parse the parts (directive /
 真问题 / 真意 / 隐含 codify / 隐含
 verification) and recognize which of 5
 patterns (A-E) it matches.
@@ -714,15 +714,15 @@ patterns (A-E) it matches.
 M-self-application 4 levels)**:
 
 - **L1 (object)**: M-n 25 rule = parse +
-  recognize 你 turn patterns.
+  recognize user message patterns.
 - **L2 (rule)**: M-n 25 rule = M-self-
-  application 4 levels applied to 你 turn
+  application 4 levels applied to user message
   recognition.
 - **L3 (memory)**: M-n 25 codified +
   persisted (entry 7 + M_TURN_PATTERN_
   RECOGNITION_DETAIL.md).
 - **L4 (behavior)**: Future agents apply
-  M-n 25 when receiving 你 turn.
+  M-n 25 when receiving user message.
 
 **Why M-n 25 is meta-meta-meta (per P28 +
 P29 cross-axiom)**:
@@ -730,11 +730,11 @@ P29 cross-axiom)**:
 - P22 case 3: principle about principles
 - P28 (recursion): applied to M-n 25 itself
 - P29 (agent 主动 reduce context): M-n 25
-  helps agent recognize 你 turn patterns,
+  helps agent recognize user message patterns,
   which reduces clarification back-and-forth
   (= context reduction)
 - M-n 25 IS M-self-application level 4
-  applied to a specific domain (你 turn
+  applied to a specific domain (user message
   recognition)
 
 **Cross-references**:
@@ -746,13 +746,13 @@ P29 cross-axiom)**:
 - SUA `docs/OPERATING_RULES.md` § M-self-
   application 4 levels (c18 origin)
 - SUA `docs/OPERATING_RULES.md` § M-n 12
-  terminology-clarity (refine 你 turn terms)
+  terminology-clarity (refine user message terms)
 - SUA `docs/OPERATING_RULES.md` § M-n 14
   two-track-reasoning (类比 find similar
-  你 turn vs 逻辑 parse 1 turn)
+  user message vs 逻辑 parse 1 turn)
 - SUA `docs/OPERATING_RULES.md` § M-n 22
-  3W1H-think-first (for 你 turn 真意)
-- 你 turn 2026-07-15 — origin (Pattern C)
+  3W1H-think-first (for user message 真意)
+- user message 2026-07-15 — origin (Pattern C)
 
 **Status**: M-n 25 self-application段
 codified (per c185 verification).  This

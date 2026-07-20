@@ -2,7 +2,7 @@
 """M-n 29 5-step acceptance protocol (programmatic).
 
 External trigger: replaces LLM-self-judgment with deterministic
-mechanical checklist.  Per 你 turn 2026-07-16 "按原则做决定" +
+mechanical checklist.  Per user message 2026-07-16 "按原则做决定" +
 M-n 32 self-learning-guardrail Guardrail #4 (pre-claim M-n 29 5-step)
 + retrospective 4-FAIL diagnosis.
 
@@ -59,7 +59,7 @@ def five_primitives(claim: str) -> dict[str, str]:
 
 def four_critical_thinking(claim: str) -> dict[str, str]:
     """Step 2a: 4 critical-thinking primitives (adversarial pair
-    to the 5 constructive primitives, per 你 turn 2026-07-16
+    to the 5 constructive primitives, per user message 2026-07-16
     + M-n 14 two-track reasoning).
 
     Full detail: docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md
@@ -105,7 +105,7 @@ def main() -> int:
     crits = design_criteria()
     print(f"  Designed {len(crits)} criteria.")
 
-    # Step 2a: critical-thinking (BEFORE constructive, per 你 turn)
+    # Step 2a: critical-thinking (BEFORE constructive, per user message)
     print("\n[Step 2a] Apply — 4 critical-thinking primitives (adversarial pair)")
     ct = four_critical_thinking(args.claim)
     for k, v in ct.items():
@@ -141,7 +141,7 @@ def main() -> int:
     print("\n[External trigger usage]")
     print("  Run this script BEFORE claiming task done.")
     print("  Per M-n 32 Guardrail #4 + AGENTS.md 'Task-done-notify reminder'.")
-    print("  Per 你 turn 2026-07-16 retrospective 4-FAIL diagnosis.")
+    print("  Per user message 2026-07-16 retrospective 4-FAIL diagnosis.")
 
     return 0
 

@@ -8,7 +8,7 @@ Last P20-verified: 2026-07-15
 > agent needs to reason about a problem and decides
 > which track to use.
 
-## Why both tracks (per 你 turn 2026-07-15)
+## Why both tracks (per user message 2026-07-15)
 
 > "思考包括两种，类比推理和逻辑推理"
 > "本质上就是'思考包括两种，类比推理和逻辑推理'
@@ -130,10 +130,10 @@ reordering).
 
 - **Track 1 (类比)**: project has M-n 14 (2 tracks)
   + skill b502577 6 primitives.  Find 类比 to
-  你 turn 6-stage chain.
+  user message 6-stage chain.
 - **Track 2 (逻辑)**: M_RULE_AUTHORING 3-condition
   gate.  Count uses of 6-stage chain: previous turns
-  (c97-c99, c100 itself) + 你 turn explicit = 3+
+  (c97-c99, c100 itself) + user message explicit = 3+
   ✅
 - **Combined**: M-n 16 codify succeeded
 
@@ -161,4 +161,4 @@ reordering).
 - `docs/OPERATING_RULES.md` § M-n 11/12/13/15/16
 - `../agent-reflection-skill/docs/framework/analogy-and-induction.md`
   — skill 6 primitives
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin

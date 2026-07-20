@@ -122,7 +122,7 @@ critical context.
 
 ### Anti-pattern 3: Don't skip sub-step 4 (memory persistence)
 
-Per 你 turn "这条需要记", memory persistence is
+Per user message "这条需要记", memory persistence is
 critical for cross-session continuity.
 
 ### Anti-pattern 4: Don't modify agent 原则 without M-n 20
@@ -185,7 +185,7 @@ This L2 doc IS M-n 20 applied to itself:
   sub-step 3)
 - `docs/HANDOFF.md` — entry file (M-n 20 sub-step
   3)
-- 你 turn 2026-07-15 — origin (你 ask 我
+- user message 2026-07-15 — origin (你 ask 我
   verification request)
 
 ## Changelog

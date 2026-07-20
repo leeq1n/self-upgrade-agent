@@ -1,4 +1,4 @@
-# M-n 36: M-release-audit (per 你 turn 2026-07-16 + retrospective)
+# M-n 36: M-release-audit (per user message 2026-07-16 + retrospective)
 
 > L2 detail.  Companion to `M_ACCEPTANCE_PROTOCOL_DETAIL.md`
 > (M-n 29) + `M_PRE_TASK_SCAN_DETAIL.md` (M-n 34) +
@@ -16,7 +16,7 @@ problems.
 
 ## Why needed
 
-Per 你 turn 2026-07-16 retrospective audit:
+Per user message 2026-07-16 retrospective audit:
 
 > "我需要将agent-reflection-skill推到github对吧？
 > 当我推的时候，能只推最后一个版本（1.0.0版本），
@@ -31,9 +31,9 @@ For a clean github push, these should be **collapsed**
 to 1 commit (the release commit) + a CHANGELOG.md that
 records the pre-release history.
 
-This was **discovered reactively** (你 turn challenge
+This was **discovered reactively** (user message challenge
 triggered the squash) — not proactively caught by
-existing infrastructure.  Per 你 turn 2026-07-16
+existing infrastructure.  Per user message 2026-07-16
 "判断下问题在哪，怎么处理" — **M-n 36 codifies this
 discovery into infrastructure**.
 
@@ -92,7 +92,7 @@ should match `git ls-tree v1.0.0` content exactly.  Use
 
 ## How to apply (mechanical layer)
 
-Per 你 turn 2026-07-16 codification pattern
+Per user message 2026-07-16 codification pattern
 (M-n 35 = critical-thinking, M-n 29 = 5-step):
 
 1. **Script**: `.hermes/scripts/release_audit.py`
@@ -132,7 +132,7 @@ Per 你 turn 2026-07-16 codification pattern
 
 ## Sources cited (per P14 / P29)
 
-- 你 turn 2026-07-16 retrospective 4-FAIL (per
+- user message 2026-07-16 retrospective 4-FAIL (per
   M-n 32 Guardrail #4)
 - npm publish convention (squash for first major)
 - Linux kernel stable release pattern (clean
@@ -159,7 +159,7 @@ verify), M-n 34 (pre-task-scan self-application),
 M-n 35 (critical-thinking primitives applied
 during codification).
 
-## Where to commit (heuristic — per 你 turn 2026-07-16)
+## Where to commit (heuristic — per user message 2026-07-16)
 
 **You turn 2026-07-16**: "下次你修改直接在
 commit 比较细的项目上改, 大版本的项目尽量少
@@ -218,7 +218,7 @@ heuristic = "minimize cross-project commits"
 
 **Sources cited**:
 
-- 你 turn 2026-07-16 explicit heuristic
+- user message 2026-07-16 explicit heuristic
 - Monorepo pattern (canonical + consumers)
 - DNS hierarchy (root → TLD → domain)
 - Single source of truth (M-n 27)

@@ -7,7 +7,7 @@ Last P20-verified: 2026-07-15
 > when the summary段 references detailed
 > 4-condition check + worked examples.
 
-**Origin**: per 你 turn 2026-07-15 explicit
+**Origin**: per user message 2026-07-15 explicit
 directive 1 + 2 ("不确定 → 规划; 清晰 →
 继续" + "如果你不知道 就 学习 下").
 
@@ -33,9 +33,9 @@ When applying M-n 28 to current task (c201):
   complete + 5 pending tasks identified)
 - Q2 (plan 混乱) = NO (PLAN_DETAIL well-
   structured)
-- Q3 (重大调整) = YES (你 turn codify
+- Q3 (重大调整) = YES (user message codify
   M-n 28 = new M-rule)
-- Q4 (user explicit) = YES (你 turn 1st
+- Q4 (user explicit) = YES (user message 1st
   directive)
 
 Result: Q3 + Q4 = YES → replan.  Plan:
@@ -106,7 +106,7 @@ applied to its own codification:
 - Q1 (agent 不确定) = YES (need to check)
 - Q2 (混乱) = NO (clear structure)
 - Q3 (重大调整) = YES (new M-n codify)
-- Q4 (user) = YES (你 turn explicit)
+- Q4 (user) = YES (user message explicit)
 
 → 先 plan, then codify.
 
@@ -120,4 +120,4 @@ M-n 28 in action).
 - `docs/OPERATING_RULES.md` § M-n 21/22/23/24
 - `docs/PRINCIPLES.md` P22 (case-3 meta)
 - `docs/PRINCIPLES.md` P29 (reduce context)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin

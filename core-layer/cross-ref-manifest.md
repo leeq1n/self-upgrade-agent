@@ -1,12 +1,12 @@
 # Cross-ref manifest — SUA 核心 layer exports
 
 > L0: Manifest of cross-refs from SUA 核心 layer to sibling
-> repos.  Per 你 turn 2026-07-16 "核心+用户 → skill 项目
+> repos.  Per user message 2026-07-16 "核心+用户 → skill 项目
 > (分开维护)" + M-n 21 cross-project.
 
 ## What is "exported" from 核心 layer
 
-Per 你 turn 3-layer architecture:
+Per user message 3-layer architecture:
 - 核心 layer = **agent behavior rules** (in SUA)
 - User + agent behavior = **shared** (in skill projects)
 - Project-specific = **in project** (KG, individual repos)

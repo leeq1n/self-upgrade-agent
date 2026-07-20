@@ -532,7 +532,7 @@ process.
   "agent 主动").
 
 **修订 L4 boundary** (per c127 re-analysis +
-你 turn 2026-07-15 explicit codification):
+user message 2026-07-15 explicit codification):
 
 The 3 risk levels (a/b/c) are now consolidated
 here as an explicit decision tree.  Per M-n 17
@@ -544,7 +544,7 @@ Path 1 + M-n 23 + M-n 24:
 | (b) Mid | 1-2 files / 7-check needed | Autonomous + 7-check | Yes | Only if 真歧义 |
 | (c) High | 3+ files / vision-affecting | Ask user first | Yes | Yes |
 
-**你 vision override** (per 你 turn 2026-07-15):
+**你 vision override** (per user message 2026-07-15):
 
 > "如果你通过了原则确认没问题，就直接进行，不用找我确认"
 > "有计划的情况下，一直推进到遇到问题再来找我"
@@ -555,12 +555,12 @@ default.  (c) requires user confirmation only
 when 真问题 (P17 honest "I can't proceed
 because..."), not for trivial confirmations.
 
-**M-n 24 (pace-continuity)** (per 你 turn
+**M-n 24 (pace-continuity)** (per user message
 2026-07-15) reinforces: agent should commit +
 continue per PLAN, not interrupt for trivial
 reasons.
 
-**Why this M-rule exists**: per 你 turn 2026-07-15:
+**Why this M-rule exists**: per user message 2026-07-15:
  1. "当特别简单而且没有巨量的任务时你可以自行
     决定，不用经过check" (low-risk autonomy)
 2. "我怀疑是hermes的skill让你每次跟我说'等下次
@@ -593,7 +593,7 @@ when user says "X is unclear", agent should:
   refine name process)
 - memory entry 7 — 修订 L4 boundary + phrasing
   revision consolidated
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 ### M-layer-extension (added 2026-07-15, per user meta-rule)
 
@@ -629,11 +629,11 @@ convention.**
 - **Don't** add layers for every project (per M-n
   12, only when 3+ observed needs).
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "我说过层级不一定只有固定层数，你需要看看项目会
 在特定情况下主动扩展层数吗，管理是合理的吗？".
 
-This M-rule operationalizes 你 turn: project CAN
+This M-rule operationalizes user message: project CAN
 add new layers in specific cases, but should manage
 them (name + codify + verify).
 
@@ -673,7 +673,7 @@ gate):
   disclosure.
 - User meta-rule 2026-07-15 — origin.
 
-### M-two-track-reasoning (added 2026-07-15, per 你 turn "类比推理 + 逻辑推理")
+### M-two-track-reasoning (added 2026-07-15, per user message "类比推理 + 逻辑推理")
 
 **Trigger**: when agent (or project) needs to reason
 about a problem, structure, or pattern.  **See
@@ -707,7 +707,7 @@ how both tracks compose.**
 - Use **both** when problem is high-stakes (P25 6-step
   requires both: read first = 类比 + analysis = 逻辑)
 
-**Entropy dimension** (per 你 turn 2026-07-15
+**Entropy dimension** (per user message 2026-07-15
 "逻辑推理负责熵增发散，类比推理负责熵减归纳"):
 
 - **类比推理** = **熵减归纳** (compression):
@@ -723,7 +723,7 @@ how both tracks compose.**
 Both tracks operate on different entropy directions,
 which is why both are needed for full reasoning.
 
-**Classify 类比推理 as 抽象 + 归纳** (per 你 turn
+**Classify 类比推理 as 抽象 + 归纳** (per user message
 2026-07-15 deep analysis):
 
 - **类比推理 = 抽象能力**: extract common
@@ -731,7 +731,7 @@ which is why both are needed for full reasoning.
 - **类比推理 = 归纳能力**: induct N instances
   to 1 general rule.
 
-**Why 类比 is project 自主 缩减 core (per 你 turn)**:
+**Why 类比 is project 自主 缩减 core (per user message)**:
 - Project context grows (P14 docs stay current +
   L2 companions + 24 P-n + 13 M-n).
 - Without 类比: agent must read all docs (爆炸).
@@ -742,7 +742,7 @@ which is why both are needed for full reasoning.
   → avoid duplicate context loading → project 自主
   缩减**.
 
-**Classify 逻辑推理 as 演绎 + 发散** (per 你 turn
+**Classify 逻辑推理 as 演绎 + 发散** (per user message
 deep analysis):
 
 - **逻辑推理 = 演绎能力**: general → specific
@@ -751,7 +751,7 @@ deep analysis):
   (diverge).
 
 **6-stage chain distribution** (per M-n 16 stage
-3 top-down 分治 + 你 turn deep analysis):
+3 top-down 分治 + user message deep analysis):
 
 | Stage | 类比 占比 | 逻辑 占比 | 说明 |
 |---|---|---|---|
@@ -766,7 +766,7 @@ deep analysis):
 归纳, 怎么行动), 逻辑 在 阶段 3/5/6 重要 (规划,
 调用记忆, 修改代码).
 
-**Topology dimension** (per 你 turn 2026-07-15
+**Topology dimension** (per user message 2026-07-15
 "类比是并行、图中任意两点串联的能力；逻辑推理是
 串行、只在一条线上的单线程能力"):
 
@@ -800,7 +800,7 @@ needed: 类比 for cross-domain insight (避免 context
 - **Don't** use 逻辑 when 类比 is the right tool
   (cross-domain insight missed).
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "我需要说明思考包括两种，类比推理和逻辑推理，请
 你学习下这个观点，然后决定要不要做一些原则和
 任务规划之类的调整".
@@ -832,7 +832,7 @@ both as a single framework.
   applies both
 - User meta-rule 2026-07-15 — origin
 
-### M-principle-reordering (added 2026-07-15, per 你 turn "原则混乱/修改原则后" 6-step)
+### M-principle-reordering (added 2026-07-15, per user message "原则混乱/修改原则后" 6-step)
 
 **Trigger**: when agent notices that principles
 have become disordered, or after modifying any
@@ -841,7 +841,7 @@ drifts.  **See `M_PRINCIPLE_REORDERING_DETAIL.md`
 (L2 companion per P11 + R6) for worked examples per
 sub-step + relationship to P25 + self-application.**
 
-**Action** (6 sub-steps, per 你 turn explicit
+**Action** (6 sub-steps, per user message explicit
 sequence):
 
 1. **重读 (re-read)**: re-read all current P-n +
@@ -880,7 +880,7 @@ sequence):
 - **Don't** skip the final 读一遍原则确认无误
   (P25 step 7 post-modify check is critical).
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "当你意识到原则混乱/修改过原则后需要重读、类比思
 考、归纳总结、确认顺序、整理、最后读一遍原则确认
 无误".
@@ -921,7 +921,7 @@ makes it explicit.
   restoration)
 - User meta-rule 2026-07-15 — origin
 
-### M-observe-think-execute (added 2026-07-15, per 你 turn "观察-思考-执行链")
+### M-observe-think-execute (added 2026-07-15, per user message "观察-思考-执行链")
 
 **Trigger**: when agent (or project) needs to
 perform a task, and wants to use principled
@@ -930,7 +930,7 @@ meta-level structure.  **See
 per P11 + R6) for worked examples per stage +
 relationship to M-n 14 + self-application.**
 
-**Action** (6-stage chain, per 你 turn explicit
+**Action** (6-stage chain, per user message explicit
 sequence):
 
 1. **观察 (observe)**: gather raw data, observe
@@ -940,7 +940,7 @@ sequence):
    规划.  Per M-n 14 Track 2 (逻辑) + induction
    primitive.
 3. **执行 (execute 1)**: 实际规划.  Decide what
-   to do, what memory is needed.  **Per 你 turn
+   to do, what memory is needed.  **Per user message
    2026-07-15 top-down 分治 method**: 想清楚
    目标 → 倒推 需要做的 节点 → 自顶向下、分治
    拆解 → 做下去.  This applies to all planning
@@ -955,14 +955,14 @@ sequence):
    修改、运行代码 → 实际修改、运行代码.  Per M-n
    14 Track 2 (逻辑) + P25 6-step.
 
-**本质 (essence)** (per 你 turn): 这条 链 本质
+**本质 (essence)** (per user message): 这条 链 本质
 上 就是 "思考 包括 两种, 类比 推理 + 逻辑 推理":
 
 - 观察 + 思考-1 + 思考-2 = 类比 推理 (Track 1)
 - 思考-3 + 执行-1 + 执行-2 + 执行-3 = 逻辑 推理
   (Track 2)
 
-**Higher-level position** (per 你 turn): this M-
+**Higher-level position** (per user message): this M-
 rule is **higher-level** than M-n 14 (two-track
 reasoning).  M-n 14 = the 2 tracks; M-n 16 = the
 6-stage chain that uses both tracks.
@@ -993,7 +993,7 @@ reasoning).  M-n 14 = the 2 tracks; M-n 16 = the
 - **Don't** skip 思考 between 执行 stages (each
   执行 should be preceded by 思考).
 - **Don't** conflate 思考 and 执行 (they are
-  distinct stages per 你 turn).
+  distinct stages per user message).
 
 **Cross-references**:
 
@@ -1005,7 +1005,7 @@ reasoning).  M-n 14 = the 2 tracks; M-n 16 = the
   reordering) — related workflow
 - User meta-rule 2026-07-15 — origin
 
-### M-context-freshness-check (added 2026-07-15, per 你 turn "经常修改的文件需要确认 + 新的领域需要搜索")
+### M-context-freshness-check (added 2026-07-15, per user message "经常修改的文件需要确认 + 新的领域需要搜索")
 
 **Trigger**: when agent (or project) is about to
 modify a doc that has been modified 3+ times
@@ -1014,7 +1014,7 @@ the agent.  **See `M_CONTEXT_FRESHNESS_CHECK_DETAIL.md`
 (L2 companion per P11 + R6) for decision tree +
 worked examples + how both paths compose.**
 
-**Action** (2 paths, per 你 turn 类比 thinking):
+**Action** (2 paths, per user message 类比 thinking):
 
 **Path 1 — Intra-agent context check (经常修改的
 文件)**:
@@ -1034,7 +1034,7 @@ worked examples + how both paths compose.**
   avoid repeating work (the 类比 between code and
   papers)
 
-**Why both paths**: per 你 turn 2026-07-15
+**Why both paths**: per user message 2026-07-15
 "经常修改的文件需要确认最后一次修改是否自己有印
 象，确保自己的上下文是最新的；同样的，比较新的领
 域也需要通过搜索工具读到最新的现状，才能避免闭门
@@ -1066,7 +1066,7 @@ gate, 5+ observed):
    for experimentation" domain, used sciverse to
    search 3 papers (Li 2022 / Tsagkari 2020 /
    Sparrius 1980).
-3. **c100 M-n 16 codify**: 你 turn "观察-思考-执行
+3. **c100 M-n 16 codify**: user message "观察-思考-执行
    链" is implicit existing pattern, re-read M-n
    14 + memory to internalize.
 4. **skill-incubator c88-c101**: multiple SKILL_DESIGN.md
@@ -1101,7 +1101,7 @@ gate, 5+ observed):
 - When memory 印象 is unclear (Path 1)
 - When user mentions a new term/concept (Path 2)
 
-### M-recursive-summary-protocol (added 2026-07-15, per 你 turn "分治 + 递归 总结 + pollution control")
+### M-recursive-summary-protocol (added 2026-07-15, per user message "分治 + 递归 总结 + pollution control")
 
 **Trigger**: when a task or sub-task completes
 within a top-down 分治 plan (per M-n 16 stage 3).
@@ -1109,7 +1109,7 @@ within a top-down 分治 plan (per M-n 16 stage 3).
 (L2 companion per P11 + R6) for decision tree +
 worked examples + 节点 生命周期管理.**
 
-**Action** (5 sub-steps, per 你 turn explicit
+**Action** (5 sub-steps, per user message explicit
 sequence):
 
 1. **写子任务总结**: when sub-task completes,
@@ -1126,7 +1126,7 @@ sequence):
 5. **爷爷只看父**: grandparent sees only parent
    summary, not the 2nd/3rd-level summaries.
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "总任务你应该是有记录的，每个拆解的子任务也有记
 录（递归都有记录），子任务完成的时候写总结，父任
 务看到所有自己子任务的总结后写父任务总结，然后交
@@ -1163,7 +1163,7 @@ gate, 4+ observed):
 3. **c107-c110 (我 之前 turns)**: did NOT follow
    this protocol (no sub-task summary per commit).
    Anti-example.
-4. **你 turn 2026-07-15**: explicit codification
+4. **user message 2026-07-15**: explicit codification
    request.
 
 **Relationship to other M-rules + P-n**:
@@ -1202,11 +1202,11 @@ gate, 4+ observed):
   process (related sub-task pattern)
 - `OPERATING_RULES.md` § M-n 16 — top-down 分治
   (parent)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
-### M-n 18 clarification: 节点 生命周期管理 (added 2026-07-15, per 你 turn "二级节点隔离 + 生命周期 + 销毁")
+### M-n 18 clarification: 节点 生命周期管理 (added 2026-07-15, per user message "二级节点隔离 + 生命周期 + 销毁")
 
-Per 你 turn 2026-07-15 clarification of M-n 18, the
+Per user message 2026-07-15 clarification of M-n 18, the
 node lifecycle has 3 additional details:
 
 **1. 二级节点 隔离 (Sibling isolation)**:
@@ -1235,7 +1235,7 @@ synthesizes)**:
   pollution.
 - 爷爷 只看 父 总结 (sub-step 5: 爷爷只看父).
 
-**Updated M-n 18 6 sub-steps (incorporating 你 turn
+**Updated M-n 18 6 sub-steps (incorporating user message
 clarification)**:
 
 1. 写子任务总结 (write sub-task summary when
@@ -1251,17 +1251,17 @@ clarification)**:
 6. 爷爷只看父总结 (grandparent sees only parent
    summary, not 2nd/3rd-level summaries)
 
-**Why clarification matters**: per 你 turn "每个节
+**Why clarification matters**: per user message "每个节
 点未完成的时候是任务摘要和子任务说明，完成的时候
 就只留下总结。在父节点读取子节点总结、写完父节点
 总结之后应该将子节点销毁，避免污染上下文（这是节
 点生命周期管理，这是agent行为规范的一部分）".
 
 This M-rule is now part of agent behavior规范
-(per 你 turn).  Project should self-learn +
+(per user message).  Project should self-learn +
 consistently apply.
 
-### M-file-naming-convention (added 2026-07-15, per 你 turn "recursive rule + multi-agent 维护")
+### M-file-naming-convention (added 2026-07-15, per user message "recursive rule + multi-agent 维护")
 
 **Trigger**: when agent creates a new file in
 project (PLAN file, M-n L2 companion, etc.).
@@ -1279,9 +1279,9 @@ across 3-project arch.**
    (no `_DETAIL` suffix in summary, `_DETAIL`
    suffix in companion).
 4. **M-n summary segment in OPERATING_RULES.md**:
-   `### M-<name> (added YYYY-MM-DD, per 你 turn ...)`.
+   `### M-<name> (added YYYY-MM-DD, per user message ...)`.
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "这是一个递归的规则（分治、自顶向下拆解），写的文
 件路径、名字需要规范，不然新agent进来和老agent可能
 维护两个任务，你需要在多agent协作的角度思考会不会
@@ -1321,7 +1321,7 @@ gate, 4+ observed):
 3. **M-n 13-17 L2 companions (c102-c105, c113)**:
    all use `M_<NAME>_DETAIL.md` convention.
    Implicit pattern.
-4. **你 turn 2026-07-15**: explicit codification
+4. **user message 2026-07-15**: explicit codification
    request.
 
 **When to invoke**:
@@ -1350,9 +1350,9 @@ gate, 4+ observed):
   (per M-n 19)
 - `OPERATING_RULES.md` § M-n 18 — recursive
   summary protocol (uses M-n 19 conventions)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
-### M-agent-discoverability-check (added 2026-07-15, per 你 turn "新 agent 读 + framework-agnostic + 持久化")
+### M-agent-discoverability-check (added 2026-07-15, per user message "新 agent 读 + framework-agnostic + 持久化")
 
 **Trigger**: when agent modifies any of the
 following:
@@ -1366,7 +1366,7 @@ following:
 for decision tree, worked examples, and how to
 apply across 3-project arch.**
 
-**Action** (4 sub-steps, per 你 turn 2026-07-15):
+**Action** (4 sub-steps, per user message 2026-07-15):
 
 1. **Cross-framework check**:
    - 改动 是 framework-agnostic?
@@ -1395,11 +1395,11 @@ apply across 3-project arch.**
      b. 新 agent 知道 哪里 改的 吗? (file path
         + commit hash)
      c. 新 agent 知道 为什么 改 吗? (rationale
-        + 你 turn origin)
+        + user message origin)
      d. 新 agent 知道 怎么 follow 吗? (action
         steps + anti-patterns)
 
-4. **Memory persistence** (per 你 turn "这条需要记"):
+4. **Memory persistence** (per user message "这条需要记"):
    - Persist this M-rule to memory
    - Per M-n 19: memory entry should be
      framework-agnostic (avoid Hermes-specific
@@ -1407,7 +1407,7 @@ apply across 3-project arch.**
    - Future agents should load this memory
      entry on entry (P26 fresh-agent check)
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "这条需要记，不然改几轮以后可能会发现，以后新agent
 进来不知道很多东西、行为非预期".
 
@@ -1447,7 +1447,7 @@ gate, 4+ observed):
 3. **c115 (M-n 19)**: file naming convention.  M-n
    19 mentions 新 agent but doesn't fully address
    framework-agnostic.
-4. **你 turn 2026-07-15**: explicit codification
+4. **user message 2026-07-15**: explicit codification
    request.
 
 **When to invoke**:
@@ -1468,7 +1468,7 @@ gate, 4+ observed):
 - **Don't** use Hermes-specific names in new
   files (e.g., "hermes-skill", "hermes-onboarding"
   vs. "agent-skill", "agent-onboarding").
-- **Don't** skip memory persistence (per 你 turn
+- **Don't** skip memory persistence (per user message
   "这条需要记").
 - **Don't** skip P26 fresh-agent simulation after
   principle changes.
@@ -1484,14 +1484,14 @@ gate, 4+ observed):
 - `OPERATING_RULES_DETAIL.md` (or
   `M_AGENT_DISCOVERABILITY_CHECK_DETAIL.md` future
   L2 companion)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 
-### Skill portability principle (per 你 turn 2026-07-16)
+### Skill portability principle (per user message 2026-07-16)
 
-**Per 你 turn 2026-07-16**: "skill 独立运行在别人
+**Per user message 2026-07-16**: "skill 独立运行在别人
 电脑上 + 充分的知识库" = **本质上共通** (same
-essence, derived from multiple prior 你 turns).
+essence, derived from multiple prior user messages).
 
 **Common essence name**: **Skill portability** = a
 portable, self-sufficient unit that works in any
@@ -1499,7 +1499,7 @@ agent context without external dependencies.
 
 **Two facets** (per M-n 14 induction):
 
-1. **No external dependencies** (per 你 turn
+1. **No external dependencies** (per user message
    2026-07-16 "skill 是独立运行的项目, 不应该有
    其他项目的指代"):
    - Skill content has zero operational refs to
@@ -1509,7 +1509,7 @@ agent context without external dependencies.
    - Future skill user won't have SUA / parent
      project as reference
 
-2. **Sufficient internal knowledge** (per 你 turn
+2. **Sufficient internal knowledge** (per user message
    之前 turn "skill 的知识是否足够" + "skill 的
    功能都会在合适的时候被调用"):
    - User doesn't need to consult external sources
@@ -1528,7 +1528,7 @@ violation) requires that project.  A skill that's
 incomplete (Facet B violation) requires external
 lookup.  Both reduce portability.
 
-**Test (per 你 turn 2026-07-16)**: "skill 独立运行
+**Test (per user message 2026-07-16)**: "skill 独立运行
 在别人电脑上, 需要有充分的知识库".  If you can
 put the zip on a stranger's computer and they can
 use the skill effectively without contacting you,
@@ -1567,7 +1567,7 @@ docs / git history, NOT in the skill itself.
 The skill is **lean** — every section earns its
 place by being universally useful.
 
-### M-ask-or-infer-mark-guess (added 2026-07-15, per 你 turn "不仅要做什么, 还 为什么 + 问/推理/标注猜测 + top-down 默认")
+### M-ask-or-infer-mark-guess (added 2026-07-15, per user message "不仅要做什么, 还 为什么 + 问/推理/标注猜测 + top-down 默认")
 
 **Trigger**: when agent is about to commit,
 modify, or make any decision, AND agent is
@@ -1579,13 +1579,13 @@ uncertain about:
 decision tree, worked examples, and how to apply
 across 3-project arch.**
 
-**Action** (3 sub-steps, per 你 turn explicit
+**Action** (3 sub-steps, per user message explicit
 sequence):
 
 1. **问 (ask)**:
    - First, ask user via clarify tool or
      direct question.
-   - Be specific: list 2-4 options + 你 turn
+   - Be specific: list 2-4 options + user message
      origin context.
    - Don't ask trivially (only 真歧义).
 
@@ -1607,7 +1607,7 @@ sequence):
      yellow
    - If user later corrects: update memory
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "不仅要考虑我在做什么，还需要考虑为什么我要这么
 做，如果不确定就问，问了不回答就推理下，然后标注
 为猜测".
@@ -1619,7 +1619,7 @@ This M-rule prevents:
 - Agent 隐瞒 猜测 (claiming certainty when
   uncertain)
 
-**Top-down 默认 (per 你 turn "要自顶向下分析问题")**:
+**Top-down 默认 (per user message "要自顶向下分析问题")**:
 
 Apply M-n 16 stage 3 (top-down 分治) **always**,
 not just for explicit plans:
@@ -1663,9 +1663,9 @@ gate, 4+ observed):
    focused on "what" without "why".  Anti-
    example.
 3. **c110 (M-n 14 topology)**: 我 didn't pre-
-   analyze "为什么 你 turn 这条 insight 重要".
+   analyze "为什么 user message 这条 insight 重要".
    Anti-example.
-4. **你 turn 2026-07-15**: explicit codification
+4. **user message 2026-07-15**: explicit codification
    request.
 
 **When to invoke**:
@@ -1684,7 +1684,7 @@ gate, 4+ observed):
   (sub-step 2).
 - **Don't** infer without marking guess
   (sub-step 3).
-- **Don't** skip top-down 分治 (per 你 turn
+- **Don't** skip top-down 分治 (per user message
   "要自顶向下分析问题").
 - **Don't** focus only on "what" without "why".
 - **Don't** claim certainty when uncertain
@@ -1701,9 +1701,9 @@ gate, 4+ observed):
 - `OPERATING_RULES.md` § M-n 20 — agent
   discoverability
 - `docs/PRINCIPLES.md` — P17 (老实说)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
-### M-3w1h-think-first (added 2026-07-15, per 你 turn "自顶向下之前, 往上思考一步, 3W1H 分析法")
+### M-3w1h-think-first (added 2026-07-15, per user message "自顶向下之前, 往上思考一步, 3W1H 分析法")
 
 **Trigger**: before any major decision, commit
 batch, or analysis task.
@@ -1723,7 +1723,7 @@ top-down 分治 (per M-n 16 stage 3):
 
 **3W1H → top-down 分治 sequence**:
 
-1. **3W1H 分析** (NEW, per 你 turn "往上思考一步"):
+1. **3W1H 分析** (NEW, per user message "往上思考一步"):
    - What: clarify the problem
    - Why: clarify rationale (per M-n 21 强调 "不仅
      做什么, 还 为什么")
@@ -1736,12 +1736,12 @@ top-down 分治 (per M-n 16 stage 3):
    - 做下去 (per 3W1H How)
 3. **execute + sub-task summary** (per M-n 18)
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "自顶向下想问题之前，也需要往上思考一步，3W1H分析
 法".
 
 This M-rule prevents:
-- 直接 top-down 没 抽象 思考 (per 你 turn
+- 直接 top-down 没 抽象 思考 (per user message
   criticism)
 - 漏掉 关键 维度 (What / Why / Who)
 - 思考 顺序 错 (先 抽象, 再 具体, 不 直接 具体)
@@ -1753,7 +1753,7 @@ This M-rule prevents:
 - Before applying M-n 16 stage 3
 - Before declaring "all pass" (per P26 + M-self-
   audit + M-n 22)
-- When 你 turn 涉及 multi-step decision
+- When user message 涉及 multi-step decision
 
 **Anti-patterns**:
 
@@ -1762,7 +1762,7 @@ This M-rule prevents:
   "stuff" without specifics).
 - **Don't** confuse 3W1H (abstract) with
   top-down (concrete): 3W1H is "above" (per
-  你 turn), top-down is "below".
+  user message), top-down is "below".
 
 **Observed cases** (per M_RULE_AUTHORING 3-condition
 gate, 4+ observed):
@@ -1775,7 +1775,7 @@ gate, 4+ observed):
 3. **c119 (PROJECT_STATE reframe)**: 我 went
    directly to 类比 c117; didn't apply 3W1H
    Who (new agents affected).  Anti-example.
-4. **你 turn 2026-07-15**: explicit codification
+4. **user message 2026-07-15**: explicit codification
    request.
 
 **Cross-references**:
@@ -1786,11 +1786,11 @@ gate, 4+ observed):
   mark-guess (3W1H Why relates)
 - `docs/PRINCIPLES.md` — P17 (老实说, for 3W1H
   answers)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 
 
-### M-periodic-re-analysis (added 2026-07-15, per 你 turn "如果做了很久, 重新在最终目标的角度上做分析")
+### M-periodic-re-analysis (added 2026-07-15, per user message "如果做了很久, 重新在最终目标的角度上做分析")
 
 **Trigger**: when agent has been working a long
 time (per M-n 17 Path 1: 10+ commits OR 1+ hour
@@ -1800,7 +1800,7 @@ analysis.
 decision tree, worked examples, and how to apply
 across 3-project arch.**
 
-**Action** (3 sub-steps, per 你 turn "自顶向下看
+**Action** (3 sub-steps, per user message "自顶向下看
 看有没有需要变动"):
 
 1. **Re-analyze at 最终目标 level** (per M-n 22
@@ -1825,7 +1825,7 @@ across 3-project arch.**
    - Apply M-n 18 节点 生命周期管理 to
      sub-task summary
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "如果做了很久，你可以考虑重新在最终目标的角度上
 做分析。自顶向下看看有没有需要变动".
 
@@ -1839,7 +1839,7 @@ This M-rule prevents:
 **Observed cases** (per M_RULE_AUTHORING 3-condition
 gate, 4+ observed):
 
-1. **c110 (你 turn "现在陷进任务很久了")**: 你
+1. **c110 (user message "现在陷进任务很久了")**: 你
    raise concern about 做了很久.  Pattern:
    re-analysis needed.
 2. **c115 (整理)**: 你 raise concern about 乱.
@@ -1847,7 +1847,7 @@ gate, 4+ observed):
 3. **c116 (M-n 20 framework-agnostic)**: 你 raise
    concern about 新 agent.  Pattern: re-分析 at
    multi-agent level.
-4. **你 turn 2026-07-15**: explicit codification
+4. **user message 2026-07-15**: explicit codification
    request.
 
 **When to invoke**:
@@ -1880,11 +1880,11 @@ gate, 4+ observed):
 - `OPERATING_RULES.md` § M-n 18 — recursive
   summary (used in sub-step 3)
 - `docs/PROJECT_STATE.md` — 最终目标 reference
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 
 
-### M-pace-continuity (added 2026-07-15, per 你 turn "有计划的情况下，一直推进到遇到问题再来找我 ... 最近几轮不用这样打断项目推进节奏")
+### M-pace-continuity (added 2026-07-15, per user message "有计划的情况下，一直推进到遇到问题再来找我 ... 最近几轮不用这样打断项目推进节奏")
 
 **Trigger**: when agent has plan (per M-n 16 top-
 down + M-n 18 节点 生命周期管理) AND no 真问题
@@ -1919,7 +1919,7 @@ per P11 + R6) for decision tree + worked examples
      next trigger" → "我 [active plan]"; "撞到
      一起" → "replan").
 
-**Why this M-rule exists**: per 你 turn 2026-07-15
+**Why this M-rule exists**: per user message 2026-07-15
 "有计划的情况下，一直推进到遇到问题再来找我 ...
 最近几轮不用这样打断项目推进节奏".
 
@@ -1936,7 +1936,7 @@ gate, 4+ observed):
 
 1. **c106-c133 (最近 28 commits)**: 我 每次
    都 verbose "end this turn" + "active next
-   plan" 段.  你 turn 第 2 部分 是 对 这 28
+   plan" 段.  user message 第 2 部分 是 对 这 28
    commits 的 feedback.  Anti-example.
 2. **c95 (L4 boundary 你 override)**: 你 vision
    = "不用找我确认" — 主动 continue.  Pattern:
@@ -1944,7 +1944,7 @@ gate, 4+ observed):
 3. **c100 ("只要你处理好了，就继续推进")**:
    你 vision = continue, don't wait.  Pattern:
    not interrupt.
-4. **你 turn 2026-07-15**: explicit codification
+4. **user message 2026-07-15**: explicit codification
    request.
 
 **When to invoke**:
@@ -1978,10 +1978,10 @@ gate, 4+ observed):
   mark-guess (used in sub-step 2)
 - `OPERATING_RULES.md` § M-n 23 — periodic re-
   analysis (used to verify plan still valid)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 
-### M-turn-pattern-recognition (added 2026-07-15, per 你 turn "学习下我发言的思路 ... 也需要看看有没有学习过")
+### M-turn-pattern-recognition (added 2026-07-15, per user message "学习下我发言的思路 ... 也需要看看有没有学习过")
 
 **Trigger**: when agent receives a user turn
 that contains 2+ parts (directive + 真问题
@@ -1999,7 +1999,7 @@ per-turn-type decision tree.**
    all parts (directive / 真问题 / 真意 /
    隐含 codify / 隐含 verification).
 2. **Apply pattern** (rule level): recognize
-   你 turn patterns (常见 pattern 见
+   user message patterns (常见 pattern 见
    decision tree in L2 companion).
 3. **Update memory** (memory level): if
    new pattern observed, add to
@@ -2008,7 +2008,7 @@ per-turn-type decision tree.**
    next turn, recognize pattern faster +
    apply correct M-rule (M-n 21/22/23/24).
 
-**5 observed 你 turn patterns** (per M_RULE_
+**5 observed user message patterns** (per M_RULE_
 AUTHORING 3-condition gate):
 
 - **Pattern A (2-3 parts + directive)**: per
@@ -2016,27 +2016,27 @@ AUTHORING 3-condition gate):
 - **Pattern B (3-4 parts + 真问题)**: per
   c118, c122 prior turns.
 - **Pattern C (5 parts + 真问题 + 隐含
-  codify)**: per 你 turn 2026-07-15 (你
+  codify)**: per user message 2026-07-15 (你
   turn 真意 = 5 distinct parts: 规划
   角度 / 方法 / 任务管理 / 记录 / 学习
   思路).
 - **Pattern D (directive + 真问题 verify)**:
   per c145, c155 prior turns.
 - **Pattern E (implicit + 主动)**: per
-  c163-c182 prior turns (你 turn "按
+  c163-c182 prior turns (user message "按
   计划继续推进" = 主动 mode).
 
-**Why this M-rule exists**: per 你 turn
+**Why this M-rule exists**: per user message
 2026-07-15 explicit ask "学习我发言
 思路这个也需要看看有没有学习过" +
 M_RULE_AUTHORING 3-condition gate (3+
 sites: c18 + c92 + c98 + c106 + c118 +
-c122 = 6 sites; triggerable: 你 turn
+c122 = 6 sites; triggerable: user message
 parser; 5+ observed: 5 patterns above).
 
 **Self-application of M-self-application
 (per P28 recursion)**: this M-rule IS
-M-self-application applied to 你 turn
+M-self-application applied to user message
 recognition (level 4: own behavior).
 
 **Cross-references**:
@@ -2045,19 +2045,19 @@ recognition (level 4: own behavior).
   application — 4 levels (this M-rule IS
   level 4 application)
 - `docs/OPERATING_RULES.md` § M-n 12
-  terminology-clarity — refine 你 turn
+  terminology-clarity — refine user message
   terms
 - `docs/OPERATING_RULES.md` § M-n 14
   two-track-reasoning — 类比 (find
-  similar 你 turn) vs 逻辑 (parse 1
+  similar user message) vs 逻辑 (parse 1
   turn)
 - `docs/OPERATING_RULES.md` § M-n 21
   ask-or-infer-mark-guess — for 真问题
 - `docs/OPERATING_RULES.md` § M-n 22
-  3W1H-think-first — for 你 turn 真意
-- 你 turn 2026-07-15 — origin
+  3W1H-think-first — for user message 真意
+- user message 2026-07-15 — origin
 
-### M-context-decay-management (added 2026-07-15, per 你 turn "项目上下文可能变长 + agent 记忆遗忘")
+### M-context-decay-management (added 2026-07-15, per user message "项目上下文可能变长 + agent 记忆遗忘")
 
 **Trigger**: when agent has many commits OR
 long context OR forgets prior M-rule / P-n.
@@ -2068,7 +2068,7 @@ strategy + working memory + episodic memory +
 类比 retrieval + 4 sub-steps + 5 anti-patterns.**
 
 **Action** (4 sub-steps per M-n 14 类比
-+ M-n 18 节点 生命周期 + 你 turn prior 5
++ M-n 18 节点 生命周期 + user message prior 5
 directives):
 
 1. **Detection**: identify when context is
@@ -2089,15 +2089,15 @@ directives):
    retrieval (per M-n 17 Path 2 inter-
    domain MCP search).
 
-**Why this M-rule exists**: per 你 turn
+**Why this M-rule exists**: per user message
 2026-07-15 explicit True问题 "记忆遗忘
 的问题" + M_RULE_AUTHORING 3-condition
 gate (6+ sites: c107 熵减 + c127
 periodic re-analysis + c134 pace-
 continuity + c183 turn-pattern + c165-c167
-P29 reduce context + 你 turn explicit).
+P29 reduce context + user message explicit).
 
-**5 decay patterns** (per 你 turn 5-part
+**5 decay patterns** (per user message 5-part
 pattern):
 
 - **Pattern 1 (working memory short)**:
@@ -2129,13 +2129,13 @@ pattern):
   recursive-summary-protocol (destruction)
 - `docs/PRINCIPLES_FULL.md` "P29"段 (主动
   reduce context)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 
 
 .
 
-### M-knowledge-layer-architecture (added 2026-07-15, per 你 turn "3层知识结构 + 3 source 关系 + 单 skill scenario")
+### M-knowledge-layer-architecture (added 2026-07-15, per user message "3层知识结构 + 3 source 关系 + 单 skill scenario")
 
 **Trigger**: when designing skill structure
 OR auditing skill against new-agent perspective
@@ -2181,7 +2181,7 @@ definition + 3 sources mapping + lifecycle +
    - **skill (final 3rd source)**: portable +
      cross-framework.  Source for 6 primitives
      + 6 case studies + when-to-reflect.
-     Per 你 turn Part 3: 用户 may only have
+     Per user message Part 3: 用户 may only have
      skill, not SUA/hermes.
 
 3. **Single-skill scenario**:
@@ -2200,12 +2200,12 @@ definition + 3 sources mapping + lifecycle +
      should not require hermes-specific or
      SUA-specific paths.
 
-**Why this M-rule exists**: per 你 turn
+**Why this M-rule exists**: per user message
 2026-07-15 explicit 6 parts + 联想 + 推理
 + 类比 (per M_RULE_AUTHORING 3-condition
 gate, 5+ observed sites).
 
-**5 transition rules** (per 你 turn + M-n 26
+**5 transition rules** (per user message + M-n 26
 context-decay):
 
 - 核心层 ↔ 知识层 transition: P22 case-3
@@ -2229,9 +2229,9 @@ context-decay):
 - `docs/OPERATING_RULES.md` § M-n 18
   recursive-summary-protocol
 - `docs/PRINCIPLES_FULL.md` "P29"段
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
-### M-plan-conditional (added 2026-07-15, per 你 turn "不确定 → 规划; 清晰 → 继续")
+### M-plan-conditional (added 2026-07-15, per user message "不确定 → 规划; 清晰 → 继续")
 
 **Trigger**: before any major decision OR
 when 4 conditions met (any of):
@@ -2251,7 +2251,7 @@ continuity).
 audit 4-condition check + worked examples
 + relationship to P22 case-3 + P29.**
 
-**Action** (4 sub-steps per 你 turn):
+**Action** (4 sub-steps per user message):
 
 1. **Self-audit 4 conditions** (per M-n 22
    3W1H first):
@@ -2282,19 +2282,19 @@ audit 4-condition check + worked examples
    - Per P29 主动 reduce context: explicit
      plan > implicit assumption
 
-**Why this M-rule exists**: per 你 turn
+**Why this M-rule exists**: per user message
 2026-07-15 explicit directive + 你 vision
 "主动 allowed":
 
-- 你 turn 1st: 不确定/混乱/重大调整 → 先
+- user message 1st: 不确定/混乱/重大调整 → 先
   做规划
-- 你 turn 2nd: 清晰/可行/符合预期 → 继续
-- 你 turn explicit: "如果你不知道的话
+- user message 2nd: 清晰/可行/符合预期 → 继续
+- user message explicit: "如果你不知道的话
   就学习下"
 
 Per M_RULE_AUTHORING 3-condition gate (7+
 observed sites: c118 + c122 + c127 + c134
-+ P22 + M-n 12 + 你 turn explicit).
++ P22 + M-n 12 + user message explicit).
 
 **Relationship to other M-n / P-n**:
 
@@ -2332,11 +2332,11 @@ condition check to M-n 28 codification).
 - `docs/OPERATING_RULES.md` § M-n 24 pace-
   continuity
 - `docs/PRINCIPLES.md` P22 (case-3 meta)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
-### M-acceptance-protocol (added 2026-07-15, per 你 turn "做完任务后需要验收 + 设计验收 + 完整项目 over + 未通过循环修复 + 通过明确说明")
+### M-acceptance-protocol (added 2026-07-15, per user message "做完任务后需要验收 + 设计验收 + 完整项目 over + 未通过循环修复 + 通过明确说明")
 
-**Trigger** (per 你 turn 2026-07-16 + P25 step 7 +
+**Trigger** (per user message 2026-07-16 + P25 step 7 +
 external-signal-rewrite): apply M-n 29 5-step
 when ANY of these **external signals** fire
 (prior trigger "agent 认为 任务 完成" was
@@ -2347,7 +2347,7 @@ self-referential and could be silently bypassed
 |---|---|---|
 | S1 | About to send "task done" / "完成" / "PASS" / "all green" message to 你 | pre-message (not post-claim) |
 | S2 | About to make final commit in a planned commit batch (per M-n 18 last-commit signal) | pre-commit |
-| S3 | 你 turn contains "验收" / "verify" / "check" keyword | on-receive |
+| S3 | user message contains "验收" / "verify" / "check" keyword | on-receive |
 | S4 | Session commit count is multiple of 5 (per M-n 26 periodic check) | on-commit |
 | S5 | M-n 31 Phase 3 (task-done-notify) about to start | pre-phase |
 
@@ -2374,7 +2374,7 @@ protocol + 验收 report template + NASA
 SWE-034 reference + cycle loop + 你
 notification.**
 
-**Action** (5 sub-steps per 你 turn):
+**Action** (5 sub-steps per user message):
 
 1. **Design 验收 角度 + 要求** (per M-n
    22 3W1H first):
@@ -2388,10 +2388,10 @@ notification.**
         sync / R1-R12 / P-n compliance / M-n
         compliance / P29 self-application /
         **项目 整洁度** / **新 agent 可读性**
-        (per 你 turn 2026-07-15 reminder, c205)
+        (per user message 2026-07-15 reminder, c205)
 
 2. **执行 验收** (per M-n 14 类比 + 归纳
-   + M-n 25 5-pattern + 你 turn
+   + M-n 25 5-pattern + user message
    "分析/推理/联想/归纳/总结" logic):
    - Analyze: 任务 IS what? (per M-n 16
      observe-think-execute stage 1)
@@ -2407,7 +2407,7 @@ notification.**
      compression + M-n 18 destruction
      contract)
 
-3. **Validate 验收 condition** (per 你 turn
+3. **Validate 验收 condition** (per user message
    Part 4 "确认没问题"):
    - All acceptance criteria PASS
    - No open FAIL / PARTIAL items
@@ -2417,17 +2417,17 @@ notification.**
    - Per P17 老实说: don't claim green
      when yellow.
 
-4. **If FAIL** → 新 任务 cycle (per 你 turn
+4. **If FAIL** → 新 任务 cycle (per user message
    Part 5):
    - 创建 新 task in PLAN_DETAIL
    - Re-execute fix
    - Re-verify (回到 step 2)
    - Loop until ALL PASS
-   - Per 你 turn: "每次你认为做完任务都
+   - Per user message: "每次你认为做完任务都
      需要验收，没通过就修复，修复完再测，
      循环"
 
-5. **If PASS** → 明确 通知 你 (per 你 turn
+5. **If PASS** → 明确 通知 你 (per user message
    Part 6):
    - 明确 indicate "任务 完成 + 验收 通过"
    - List acceptance criteria + evidence
@@ -2437,7 +2437,7 @@ notification.**
      通知 user is allowed (interrupt
      permitted)
 
-**Why this M-rule exists**: per 你 turn
+**Why this M-rule exists**: per user message
 2026-07-15 explicit 6 parts:
 
 - Part 1 (验收): 任务 完成 后 need to
@@ -2445,7 +2445,7 @@ notification.**
 - Part 2 (设计): agent should design
   acceptance 角度
 - Part 3 (process): 分析/推理/联想/归纳/
-  总结 (5 primitives, per 你 turn prior
+  总结 (5 primitives, per user message prior
   c100 M-n 16 + M-n 14 + M-n 25)
 - Part 4 (通过 condition): 确认没问题
 - Part 5 (失败 loop): 验收 失败 = 新任务
@@ -2462,9 +2462,9 @@ observed sites):
 - P22 case-3 meta ("when stuck STOP +
   write plan")
 - M-n 26 context-decay-management
-- 你 turn prior 2026-07-15 ("如果做完任务
+- user message prior 2026-07-15 ("如果做完任务
   需要明确指出")
-- 你 turn 2026-07-15 explicit (this turn)
+- user message 2026-07-15 explicit (this turn)
 
 **NASA SWE-034 reference** (per research):
 
@@ -2525,10 +2525,10 @@ this M-rule applies itself (i.e., apply
 - `docs/PRINCIPLES.md` P22 (case-3 meta)
 - `VERIFICATION.md` (per c193, 1-page
   verification summary)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 - NASA SWE-034 — research reference
 
-### M-knowledge-context-trade-off (added 2026-07-15, per 你 turn "知识 vs 上下文 trade-off + 分层 + 类比")
+### M-knowledge-context-trade-off (added 2026-07-15, per user message "知识 vs 上下文 trade-off + 分层 + 类比")
 
 **Trigger**: when designing new skill /
 project / M-rule, or when agent must
@@ -2539,18 +2539,18 @@ trade-off.
 (L2 companion per P11 + R6) for 4-priority
 decision tree + worked examples.**
 
-**Action** (4-priority table per 你 turn
+**Action** (4-priority table per user message
 Part 1+2+3+4):
 
 | Priority | Criterion | Method |
 |---|---|---|
 | **HIGHEST** | **Knowledge 充足** | All audit points PASS + reasoning primitives + case studies.  Per M-n 29 acceptance-protocol. |
 | **HIGH** | **Context 管理** | M-n 26 (context-decay-management) + M-n 23 (periodic re-analysis) + M-n 18 (节点 生命周期).  Lazy-load for smaller models. |
-| **TIE** | **Trade-off** | M-n 27 (3-layer) + M-n 14 (class比 compression).  分层 for knowledge layer + 平铺式 for behavior spec (per 你 turn Part 5). |
-| **Always** | **分层 自顶向下 分治** | M-n 16 stage 3 top-down + M-n 18 recursive-summary + M-n 22 3W1H-first.  Per 你 turn Part 4 隐含 ask "希望 你 没有忘记". |
-| **Always** | **Update order rule** | SUA (知识库, source) → skill-incubator (孵化器, middle) → skill (final, downstream).  Per 你 turn 2026-07-15 explicit priority directive.  When 知识 changes in SUA, MUST propagate to skill-incubator + skill.  Reverse direction NOT allowed (per M-n 20 + P21). |
+| **TIE** | **Trade-off** | M-n 27 (3-layer) + M-n 14 (class比 compression).  分层 for knowledge layer + 平铺式 for behavior spec (per user message Part 5). |
+| **Always** | **分层 自顶向下 分治** | M-n 16 stage 3 top-down + M-n 18 recursive-summary + M-n 22 3W1H-first.  Per user message Part 4 隐含 ask "希望 你 没有忘记". |
+| **Always** | **Update order rule** | SUA (知识库, source) → skill-incubator (孵化器, middle) → skill (final, downstream).  Per user message 2026-07-15 explicit priority directive.  When 知识 changes in SUA, MUST propagate to skill-incubator + skill.  Reverse direction NOT allowed (per M-n 20 + P21). |
 
-**Why this M-rule exists**: per 你 turn
+**Why this M-rule exists**: per user message
 2026-07-15 explicit 5 parts:
 
 1. Knowledge 充足 = HIGHEST priority
@@ -2567,9 +2567,9 @@ observed sites):
 - c197 (M-n 27 knowledge-layer-architecture)
 - c189 (M-n 26 context-decay-management)
 - c211 (skill Flat structure codify)
-- 你 turn 2026-07-15 explicit trade-off
+- user message 2026-07-15 explicit trade-off
 
-**Trade-off method** (per 你 turn Part 3):
+**Trade-off method** (per user message Part 3):
 
 - **分层 (hierarchical)**: for knowledge
   layer (primitives + case studies).
@@ -2587,7 +2587,7 @@ observed sites):
 **3-layer application** (per M-n 27):
 
 - 核心层 (behavior spec) = 平铺式
-  (per 你 turn Part 5)
+  (per user message Part 5)
 - 知识层 (primitives + case studies) =
   分层 (per P11)
 - 项目层 (framework specific) = high
@@ -2609,11 +2609,11 @@ Recursive: applies itself.
 - SUA `agent-reflection-skill/SKILL.md` §
   Flat structure for behavior spec (per
   c211)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
-### M-task-lifecycle (added 2026-07-15, per 你 turn 中优先级 567 处理 directive)
+### M-task-lifecycle (added 2026-07-15, per user message 中优先级 567 处理 directive)
 
-**Trigger**: when agent receives 你 turn with
+**Trigger**: when agent receives user message with
 explicit directive (including 中优先级 items
 567 处理).
 
@@ -2621,7 +2621,7 @@ explicit directive (including 中优先级 items
 (L2 companion per P11 + R6) for full
 4-phase decision tree + worked examples.**
 
-**Action** (4-phase per 你 turn 567 处理):
+**Action** (4-phase per user message 567 处理):
 
 | Phase | Name | Goal | Method |
 |---|---|---|---|
@@ -2638,17 +2638,17 @@ Phase 3 cannot start until M-n 29 5-step
 **completed and recorded** in the session
 output.  Anti-pattern: skip M-n 29 5-step
 and go directly to "notify you" — this is
-the failure mode that triggered 你 turn
+the failure mode that triggered user message
 2026-07-16 "skill 最后的时候要验收，你
 验收了吗？".  Per P17 老实说, the "完成"
 message itself is a SIGNAL (per M-n 29 S1),
 not a substitute for the 5-step.
 
-**Why this M-rule exists**: per 你 turn
+**Why this M-rule exists**: per user message
 2026-07-15 explicit directive:
 
 - **Item 6 (task-done notification)**: per
-  你 turn prior "如果做完任务，需要你跟
+  user message prior "如果做完任务，需要你跟
   我明确指出" → Phase 3 explicit 段
   (M-n 29 Step 5).
 - **Item 7 (project lifecycle)**: per 你
@@ -2663,11 +2663,11 @@ observed sites):
 - c183 (M-n 25 turn-pattern-recognition)
 - c189 (M-n 26 context-decay-management)
 - c203 (M-n 29 acceptance-protocol)
-- 你 turn 2026-07-15 explicit directive
+- user message 2026-07-15 explicit directive
 
 **4-phase detail**:
 
-- **Phase 1 (task-init)**: 接受 你 turn →
+- **Phase 1 (task-init)**: 接受 user message →
   用 M-n 22 3W1H 分析 → 用 M-n 21
   ask-or-infer (要 mark guess) → 用 M-n 28
   4-condition self-audit → 如果 明确, 进
@@ -2679,25 +2679,25 @@ observed sites):
   interrupt only for 真问题 (per M-n 28).
 - **Phase 3 (task-done-notify)**: 完成 时
   → 用 M-n 29 Step 5 explicit notify →
-  "明确告知" 你 (per 你 turn prior
+  "明确告知" 你 (per user message prior
   directive) → list passed/failed items →
   request next directive.
 - **Phase 4 (task-retrospective)**: 之后
   → capture lessons via M-n 26 + memory
-  update + 7-check (per 你 turn turn-pattern
+  update + 7-check (per user message turn-pattern
   directives).
 
-**Task-done indicator** (per 你 turn
+**Task-done indicator** (per user message
 explicit "如果做完任务，需要你跟我明确
 指出"):
 
 > "✅ Task done. Per M-n 29 Step 5 +
-> per 你 turn directive 2 (明确告知):
+> per user message directive 2 (明确告知):
 > - PASS items: [list]
 > - FAIL items: [list OR none]
 > - Next directive needed: [OR continue]"
 
-**Project lifecycle** (per 你 turn prior
+**Project lifecycle** (per user message prior
 "项目生命周期"):
 
 - **Init**: AGENTS.md created + PLAN file +
@@ -2713,10 +2713,10 @@ explicit "如果做完任务，需要你跟我明确
 - `docs/OPERATING_RULES.md` § M-n 16 / M-n
   18 / M-n 21 / M-n 22 / M-n 24 / M-n 26 /
   M-n 28 / M-n 29
-- 你 turn 2026-07-15 directive "中优先级
+- user message 2026-07-15 directive "中优先级
   567 处理" (item 6 + 7)
 
-### M-self-learning-guardrail (added 2026-07-15, per 你 turn "自动学习相关的功能还在 + 一开始就约束好")
+### M-self-learning-guardrail (added 2026-07-15, per user message "自动学习相关的功能还在 + 一开始就约束好")
 
 **Trigger**: when agent modifies this skill
 or any sibling project (per M-n 20 +
@@ -2752,7 +2752,7 @@ turn "希望 项目 里 自动学习 相关 的 功能
   meta-level / recursive)
 - **M_RULE_AUTHORING** (M-n 4): 3-condition
   gate for codifying new M-n (3+ observed
-  sites + triggerable + 你 turn explicit
+  sites + triggerable + user message explicit
   directive)
 - **M-context-decay-management** (M-n 26):
   re-read + 类比归纳 + 整理 + checkpoint
@@ -2791,11 +2791,11 @@ guardrails.  Recursive: applies itself.
   3 + M-n 4 + M-n 26
 - `docs/OPERATING_RULES.md` § M-n 30
   Priority 5 (Update order rule)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
-### M-narrative-as-spec (added 2026-07-15, per 你 turn autonomy + 联想 analytical insight per M-n 14)
+### M-narrative-as-spec (added 2026-07-15, per user message autonomy + 联想 analytical insight per M-n 14)
 
-**Trigger**: when agent receives 你 turn (per
+**Trigger**: when agent receives user message (per
 M-n 25 turn-pattern-recognition + M-n 31
 Phase 1 task-init).
 
@@ -2807,36 +2807,36 @@ worked examples.**
 
 | # | Primitive | What to do |
 |---|---|---|
-| 1 | **Parse** | Parse 你 turn 真意 (per M-n 25 + 你 turn history) |
+| 1 | **Parse** | Parse user message 真意 (per M-n 25 + user message history) |
 | 2 | **Structure** | Structure 真意 into 3W1H + actionable sub-tasks (per M-n 22) |
 | 3 | **Codify** | Write down as M-rule / P-n / doc, NOT 单独 respond |
 
-**Why this M-rule exists**: per 你 turn
-2026-07-15 + 你 turn prior vision deep +
+**Why this M-rule exists**: per user message
+2026-07-15 + user message prior vision deep +
 联想 analysis per M-n 14 entropy:
 
-1. 你 turns 是 spec input, NOT casual
+1. user messages 是 spec input, NOT casual
    conversation
-2. Agent should treat 你 turns as
+2. Agent should treat user messages as
    requirements (like product manager)
-3. Behavior spec applies to 你 turn context
+3. Behavior spec applies to user message context
    (per M-n 27 核心层)
 
 Per M_RULE_AUTHORING 3-condition gate (5+
 observed sites):
 - M-n 25 (turn-pattern-recognition) —
-  treats 你 turn as 5 patterns A-E
-- M-n 22 (3W1H-think-first) — 你 turn BEFORE
+  treats user message as 5 patterns A-E
+- M-n 22 (3W1H-think-first) — user message BEFORE
   top-down
 - M-n 27 (knowledge-layer-architecture) —
   核心层 handles 你 vision spec
 - M-n 31 (task-lifecycle) — Phase 1 init
   accepts 你 directive
 - M-n 32 (self-learning-guardrail) — guardrail
-  applies to 你 turn modifications
+  applies to user message modifications
 
 **Relationship to M-n 25**: M-n 25 parses 5
-patterns (which 你 turn is); M-n 33 codifies
+patterns (which user message is); M-n 33 codifies
 what to do (treat as spec).
 
 **Relationship to M-n 22**: M-n 22 3W1H is the
@@ -2845,7 +2845,7 @@ what to do (treat as spec).
 
 **Self-application** (per P28 recursion):
 
-This 段 IS M-n 33 applied to 你 turn
+This 段 IS M-n 33 applied to user message
 "联想 分析 类比 看 性价比": 联想 输出
 spec = 3 insights ranked + your vision
 aligned + LOW risk = autonomous execute.
@@ -2854,14 +2854,14 @@ aligned + LOW risk = autonomous execute.
 
 - `docs/OPERATING_RULES.md` § M-n 22 / M-n 25
   / M-n 27 / M-n 31 / M-n 32
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 
-### M-pre-task-scan (added 2026-07-16, per 你 turn "自主阅读学习" + M_RULE_AUTHORING 3-condition gate)
+### M-pre-task-scan (added 2026-07-16, per user message "自主阅读学习" + M_RULE_AUTHORING 3-condition gate)
 
-**Trigger**: when agent receives 你 turn with
-explicit directive (any 你 turn) OR when agent
-starts a new session.  Per 你 turn 2026-07-16:
+**Trigger**: when agent receives user message with
+explicit directive (any user message) OR when agent
+starts a new session.  Per user message 2026-07-16:
 "我跟你说问题的时候，你需要找办法，避免
 下一次还出现一样的/相似的问题。我不希望
 每次都跟你说了问题你才从项目里找对应条目，
@@ -2873,7 +2873,7 @@ starts a new session.  Per 你 turn 2026-07-16:
 triggers (after event).  M-pre-task-scan is the
 **proactive complement** — agent scans P-n / M-n
 relevant to current task BEFORE acting, so it
-discovers applicable rules **without** 你 turn
+discovers applicable rules **without** user message
 having to point them out.
 
 **Distinct from existing M-rules** (per P25 step 3
@@ -2926,7 +2926,7 @@ M-n 14 two-track):
 - **M-n 22 (3W1H)**: scan + 3W1H = full
   pre-task context
 - **M-n 25 (turn-pattern-recognition)**: scan
-  result includes 你 turn pattern recognition
+  result includes user message pattern recognition
 - **M-n 26 (context-decay-management)**: scan
   detects if prior P-n / M-n was forgotten
 - **M-n 28 (plan-conditional)**: scan → plan
@@ -2947,7 +2947,7 @@ M-n 14 two-track):
   scan the full set (per M-n 30 Priority 1
   "knowledge 充足")
 - **Don't** treat scan as one-time — repeat
-  per 你 turn (per M-n 31 Phase 1 task-init)
+  per user message (per M-n 31 Phase 1 task-init)
 - **Don't** claim scan complete without
   listing relevant P-n / M-n + 1-line
   reasons (per P11 摘要+引用)
@@ -2966,7 +2966,7 @@ OPERATING_RULES.md.  Per M-n 13 layer-
 extension, the L0 surface (AGENTS.md "Read
 first" 段) must expose M-pre-task-scan so
 fresh agents pick it up automatically (not
-via 你 turn explicit).
+via user message explicit).
 
 **Cross-references**:
 
@@ -2979,8 +2979,8 @@ via 你 turn explicit).
   M-rule)
 - `docs/M_SELF_AUDIT.md` (L2 companion) —
   reactive complement
-- 你 turn 2026-07-16 "自主阅读学习" — origin
-- 你 turn 2026-07-16 "M-n 34 候选 3-condition
+- user message 2026-07-16 "自主阅读学习" — origin
+- user message 2026-07-16 "M-n 34 候选 3-condition
   gate" — codification trigger
 - 联想 (M-n 14 Track 1): CI/CD pre-commit
   test, linter, health-check (共同 pattern =
@@ -2988,7 +2988,7 @@ via 你 turn explicit).
 
 
 
-### M-release-audit (added 2026-07-16, per 你 turn retrospective audit)
+### M-release-audit (added 2026-07-16, per user message retrospective audit)
 
 **Trigger**: before tagging any `x.0.0` release /
 pre-push to github / pre-publish to package
@@ -3017,7 +3017,7 @@ manager / pre-distribution of zip artifact.
 **Skip** for: dev/feature-x / pre-release rc tags.
 
 **Sources cited** (per P14 / P29):
-- 你 turn 2026-07-16 retrospective audit
+- user message 2026-07-16 retrospective audit
 - npm publish / Linux stable / chromium release
   branch patterns
 - GitHub squash-merge default

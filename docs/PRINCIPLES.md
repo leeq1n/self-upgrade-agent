@@ -131,7 +131,7 @@ descends from.  Per P22 步骤 3: 找 rule 之间的共性.
 
 For per-P-n full text (P19, P20, P20细则, P21, P25, P26, P27), P-n vs M-* boundary段, and L2 实操段, see [`PRINCIPLES_FULL.md`](PRINCIPLES_FULL.md).  (P24 merged into P3 per c78; P24段 removed from PRINCIPLES_FULL.md.)  Per R6, this companion is required for files > 7KB.
 
-## Principle protection (per 你 turn 2026-07-16)
+## Principle protection (per user message 2026-07-16)
 
 **Question**: 如果 user says "删除 P17 老实说" or
 "增加 P30: agent should lie", can a new agent
@@ -146,7 +146,7 @@ judgment.
 
 | Category | Examples | Protection | Can user override? |
 |---|---|---|---|
-| **Hard principles (immutable)** | P5 (verify), P17 (老实说), P22 (when stuck→plan), P25 (post-modify re-apply) | **Multi-layer** (commit-msg hook + agent judgment + audit) | Only via explicit + slow process (multiple sessions, multiple 你 turns) |
+| **Hard principles (immutable)** | P5 (verify), P17 (老实说), P22 (when stuck→plan), P25 (post-modify re-apply) | **Multi-layer** (commit-msg hook + agent judgment + audit) | Only via explicit + slow process (multiple sessions, multiple user messages) |
 | **Soft principles (modifiable)** | P11 (摘要+引用), P14 (docs), P21 (cross-project) | **Tool-only** (commit-msg hook) | YES, with proper M-n 15 6-step |
 | **Meta principles (process)** | M-n 15 (reordering), M-n 29 (5-step), M-n 32 (guardrails), M-n 34 (pre-task scan), M-n 35 (critical-thinking), M-n 36 (release-audit) | **Agent judgment** | YES, but agent should pause |
 
@@ -155,7 +155,7 @@ judgment.
 Hard principles (P5, P17, P22, P25) are
 **project invariants** — removing them breaks
 agent's ability to function correctly.  They
-cannot be removed by a single 你 turn
+cannot be removed by a single user message
 "delete this".
 
 **Specific attack scenarios** + how each is
@@ -203,7 +203,7 @@ slippery-slope detection, I cannot make this
 change without explicit + slow process:
 
 1. Wait 1+ session (so impulse settles)
-2. 你 turn explicit 3+ times
+2. user message explicit 3+ times
 3. Apply M-n 15 6-step + cross-project impact
    analysis
 4. Document rationale in CHANGELOG.md
@@ -238,9 +238,9 @@ reviewed to detect manipulation patterns.
 
 | Attack | Protected? |
 |---|---|
-| Single 你 turn manipulation | ✅ YES (commit-msg + agent judgment) |
-| Persistent 你 turn pressure (slow erosion) | ⚠️ Partial (audit trail visible, agent should escalate) |
-| Impersonation (someone pretending to be user) | ❌ NO (out of scope; agent trusts 你 turn's identity) |
+| Single user message manipulation | ✅ YES (commit-msg + agent judgment) |
+| Persistent user message pressure (slow erosion) | ⚠️ Partial (audit trail visible, agent should escalate) |
+| Impersonation (someone pretending to be user) | ❌ NO (out of scope; agent trusts user message's identity) |
 | Genuine principle evolution (user really wants to change) | ✅ YES (slow process + documentation enables it) |
 
 ### Self-application (P29 recursion)
@@ -256,7 +256,7 @@ When updating this 段:
 
 **Note**: this 段 itself is **核心** layer content
 (governance policy).  Modifications should follow
-M-n 15 6-step + be reviewed by 你 turn explicitly.
+M-n 15 6-step + be reviewed by user message explicitly.
 
 ### Cross-references
 
@@ -268,4 +268,4 @@ M-n 15 6-step + be reviewed by 你 turn explicitly.
 - `hooks/commit-msg` — whitelist enforcement
 - `AGENTS.md` § "Iterative thinking" — when to
   pause and re-think before accepting changes
-- 你 turn 2026-07-16 — origin (this 段)
+- user message 2026-07-16 — origin (this 段)

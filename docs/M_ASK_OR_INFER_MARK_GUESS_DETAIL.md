@@ -65,12 +65,12 @@ Per M-n 21 (per c118) + M-n 14 (类比+逻辑):
 When M-n 21 was codified (c118), the 3 sub-
 steps were applied:
 
-- **Sub-step 1 (问)**: 你 turn explicit codify
+- **Sub-step 1 (问)**: user message explicit codify
   request → no clarify needed
 - **Sub-step 2 (推理)**: M_RULE_AUTHORING gate
   (4 observed cases: c86-r87 + c106-c117 anti-
-  examples + 你 turn)
-- **Sub-step 3 (标注 猜测)**: not needed (你 turn
+  examples + user message)
+- **Sub-step 3 (标注 猜测)**: not needed (user message
   explicit, not a guess)
 
 This demonstrates M-n 21 applied to itself.
@@ -79,7 +79,7 @@ This demonstrates M-n 21 applied to itself.
 
 When c119 was committed, M-n 21 was applied:
 
-- **Sub-step 1**: 你 turn "继续按规划推进任务" =
+- **Sub-step 1**: user message "继续按规划推进任务" =
   directive, no clarify
 - **Sub-step 2**: 类比 c117 AGENTS.md + M-n 14
   (类比 Track 1)
@@ -94,7 +94,7 @@ This demonstrates M-n 21 in action.
 When M-n 23 was codified (c127), M-n 21 was
 applied:
 
-- **Sub-step 1**: 你 turn "如果做了很久, 重新
+- **Sub-step 1**: user message "如果做了很久, 重新
   分析" = directive, no clarify
 - **Sub-step 2**: 类比 to M-n 15 (principle-
   reordering) + M-n 17 (context-freshness-check)
@@ -107,9 +107,9 @@ composition.
 ## Worked example: c130 (M-n 20 L2)
 
 When M-n 20 L2 was created (c130), M-n 21 was
-applied to verification (你 turn):
+applied to verification (user message):
 
-- **Sub-step 1**: 你 turn "对吧？" = verification
+- **Sub-step 1**: user message "对吧？" = verification
   request
 - **Sub-step 2**: M-n 17 Path 1 (intra-agent
   re-read) to verify M-n 20 4 sub-steps
@@ -164,7 +164,7 @@ unverified".  Per P17 老实说.
 ## Self-application (per P28 recursion)
 
 This L2 doc IS M-n 21 applied to itself:
-- **Sub-step 1**: 你 turn explicit directive →
+- **Sub-step 1**: user message explicit directive →
   no clarify
 - **Sub-step 2**: 类比 to c118 + c119 + c127
   + c130 worked examples
@@ -183,7 +183,7 @@ This L2 doc IS M-n 21 applied to itself:
   M-n 18 L2 companion (M-n 21 sub-step 3)
 - `docs/M_3W1H_THINK_FIRST_DETAIL.md` (future,
   c132) — M-n 22 L2 companion
-- 你 turn 2026-07-15 — origin (你 turn explicit
+- user message 2026-07-15 — origin (user message explicit
   codify request)
 
 ## Changelog

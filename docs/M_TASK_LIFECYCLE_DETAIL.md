@@ -5,14 +5,14 @@ Last P20-verified: 2026-07-15
 > M-task-lifecycle段 (M-n 31).
 > Per P11 摘要+引用 + R6.
 
-**Origin**: per 你 turn 2026-07-15 directive
+**Origin**: per user message 2026-07-15 directive
 "中优先级 567 需要处理" (item 6 + item 7).
 
 ## 4-phase decision tree
 
 ### Phase 1: task-init
 
-**Trigger**: agent receives 你 turn with
+**Trigger**: agent receives user message with
 explicit directive.
 
 **Methods**:
@@ -41,7 +41,7 @@ explicit directive.
 
 **Methods**:
 - M-n 29 Step 5 (5-step protocol notify)
-- 你 turn directive: "明确告知"
+- user message directive: "明确告知"
 - Format: ✅ Task done + PASS items list
   + next directive or continue
 
@@ -49,13 +49,13 @@ explicit directive.
 
 ### Phase 4: task-retrospective
 
-**Trigger**: notify sent + 你 turn next.
+**Trigger**: notify sent + user message next.
 
 **Methods**:
 - M-n 26 (4 sub-steps: re-read + 类比归纳
   + 整理 + checkpoint)
 - Memory update (per session)
-- 7-check (per 你 turn turn-pattern
+- 7-check (per user message turn-pattern
   directives)
 
 **Output**: lessons captured + memory
@@ -63,9 +63,9 @@ current.
 
 ## Worked example (c228 self-application)
 
-Apply M-n 31 to 你 turn "中优先级 567 处理":
+Apply M-n 31 to user message "中优先级 567 处理":
 
-- **Phase 1 (task-init)**: 你 turn directive
+- **Phase 1 (task-init)**: user message directive
   clear (处理 5+6+7), scope = 3 items.
 - **Phase 2 (task-execute)**: 
   - c227 (skill): 3-layer architecture in
@@ -78,16 +78,16 @@ Apply M-n 31 to 你 turn "中优先级 567 处理":
 - **Phase 4 (task-retrospective)**: per
   M-n 26 → memory update if 必要.
 
-## Task-done indicator (per 你 turn)
+## Task-done indicator (per user message)
 
-Per 你 turn prior directive "如果做完任务，
+Per user message prior directive "如果做完任务，
 需要你跟我明确指出":
 
 ### Template
 
 ```
 ✅ Task done (per M-n 31 Phase 3 + M-n 29
-   Step 5 + 你 turn directive 2):
+   Step 5 + user message directive 2):
 - PASS items: [list]
 - FAIL items: [list OR none]
 - Next directive: [OR continue per 你]
@@ -103,7 +103,7 @@ Per 你 turn prior directive "如果做完任务，
 - c228 (this turn): ✅ Task done — 3
   layers in skill + M-n 31 codify PASS.
 
-## Project lifecycle (per 你 turn prior)
+## Project lifecycle (per user message prior)
 
 ### Init phase
 
@@ -131,5 +131,5 @@ Per 你 turn prior directive "如果做完任务，
   lifecycle段 (M-n 31 main段)
 - `docs/OPERATING_RULES.md` § M-n 7 + 16
   + 18 + 21 + 22 + 24 + 26 + 28 + 29
-- 你 turn 2026-07-15 directive "中优先
+- user message 2026-07-15 directive "中优先
   级 567 处理"

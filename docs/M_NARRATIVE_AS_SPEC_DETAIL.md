@@ -5,7 +5,7 @@ Last P20-verified: 2026-07-15
 > M-narrative-as-spec段 (M-n 33).
 > Per P11 摘要+引用 + R6.
 
-**Origin**: per 你 turn 2026-07-15 autonomy
+**Origin**: per user message 2026-07-15 autonomy
 directive ("如果能直接做决定就直接做") +
 联想 analytical insight per M-n 14 + M-n
 21 (ask-or-infer-mark-guess).
@@ -14,19 +14,19 @@ directive ("如果能直接做决定就直接做") +
 
 ### Primitive 1: Parse
 
-**Trigger**: agent receives 你 turn.
+**Trigger**: agent receives user message.
 
 **Methods**:
 - M-n 25 (turn-pattern-recognition) —
   classify into 5 patterns A-E
-- 你 turn history analysis
+- user message history analysis
 - 你 vision keywords extraction
 
-**Output**: 你 turn 真意 summary.
+**Output**: user message 真意 summary.
 
 ### Primitive 2: Structure
 
-**Trigger**: 你 turn parsed 真意 clear.
+**Trigger**: user message parsed 真意 clear.
 
 **Methods**:
 - M-n 22 (3W1H-think-first) — apply
@@ -55,13 +55,13 @@ directive ("如果能直接做决定就直接做") +
 
 ## Worked examples (c237 self-application)
 
-Apply M-n 33 to 你 turn "如果能直接做决定
+Apply M-n 33 to user message "如果能直接做决定
 就直接做 + 联想 valuable insight":
 
-### Phase 1: Parse (你 turn 真意)
+### Phase 1: Parse (user message 真意)
 
-- 你 turn 真意 = "autonomy + 联想"
-- 你 turn 真意 per M-n 25 = Pattern E
+- user message 真意 = "autonomy + 联想"
+- user message 真意 per M-n 25 = Pattern E
   variant + 你 vision deep + Pattern D
   variant
 
@@ -78,7 +78,7 @@ Apply M-n 33 to 你 turn "如果能直接做决定
 - Q1 (agent 不确定): NO (clear 3W1H)
 - Q2 (plan 混乱): NO
 - Q3 (重大调整): YES (new M-n 33 codify)
-- Q4 (user explicit): YES (你 turn
+- Q4 (user explicit): YES (user message
   "如果能直接做决定就直接做")
 
 → enter 自主 mode + execute (per M-n 28 +
@@ -100,7 +100,7 @@ skill downstream propagation per M-n 30.
 | HIGH 性价比 + LOW risk | YES |
 | M_RULE_AUTHORING 3-condition met | YES |
 | M-n 32 5 guardrails satisfied | YES |
-| 你 turn 真意 Parse + Structure clear | YES |
+| user message 真意 Parse + Structure clear | YES |
 
 ### When to ask 你 (NOT autonomous):
 
@@ -109,12 +109,12 @@ skill downstream propagation per M-n 30.
 | 你 vision ambiguity | YES (need clarification) |
 | Multiple valid options | YES (selection needed) |
 | HIGH risk + you impact | YES (need 你 approval) |
-| 你 turn 真意 conflict with prior turns | YES (resolve conflict) |
+| user message 真意 conflict with prior turns | YES (resolve conflict) |
 | 你 vision impact MAJOR (e.g., vision drift) | YES (need 你 vision reframe) |
 
 ## Relationship to other M-n
 
-- **M-n 25**: parses 你 turn 5 patterns
+- **M-n 25**: parses user message 5 patterns
 - **M-n 22**: 3W1H-first structure
 - **M-n 21**: ask-or-infer-mark-guess (fallback)
 - **M-n 28**: 4-condition self-audit
@@ -128,5 +128,5 @@ skill downstream propagation per M-n 30.
   spec (M-n 33 main段)
 - `docs/OPERATING_RULES.md` § M-n 21 / M-n 22
   / M-n 25 / M-n 28 / M-n 30 / M-n 31 / M-n 32
-- 你 turn 2026-07-15 — origin (autonomy
+- user message 2026-07-15 — origin (autonomy
   directive + 联想 insight)

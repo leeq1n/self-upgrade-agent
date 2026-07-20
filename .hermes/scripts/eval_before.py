@@ -2,7 +2,7 @@
 """eval_before.py — pre-commit check (eval-before gate, per M-n 32
 Guardrail #1).
 
-Per 你 turn 2026-07-16: "核心层只能由 agent 自己主动修改
+Per user message 2026-07-16: "核心层只能由 agent 自己主动修改
 （修改时需要评估，修改后需要验收）".
 
 This script runs BEFORE commit.  It checks:

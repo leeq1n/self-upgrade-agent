@@ -2,7 +2,7 @@
 
 > L2 detail.  Companion to `M_ACCEPTANCE_PROTOCOL_DETAIL.md`
 > (which defines **5 constructive primitives** = Analyze /
-> Reason / 联想 / 归纳 / 总结).  Per 你 turn 2026-07-16
+> Reason / 联想 / 归纳 / 总结).  Per user message 2026-07-16
 > "思考除了正向思考，也需要批判性思考，你看看项目是不是
 > 在这方面有欠缺？如果要加，应该加在哪几个步骤？" — this
 > document codifies the 4 critical-thinking primitives that
@@ -23,7 +23,7 @@ constructive + adversarial tracks.
 
 ## Why needed
 
-Per 你 turn audit (2026-07-16): SUA has **5 constructive
+Per user message audit (2026-07-16): SUA has **5 constructive
 primitives** but **0 adversarial primitives**.  This is a
 **structural gap** in thinking methodology:
 - Constructs plans + analyses

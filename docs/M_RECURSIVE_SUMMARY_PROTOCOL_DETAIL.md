@@ -16,7 +16,7 @@ the 6 sub-steps.  This L2 doc provides decision
 tree, worked examples, and 节点 生命周期管理
 (sibling isolation, lifecycle states, destruction).
 
-## 6 sub-steps (per M-n 18 + 你 turn clarification)
+## 6 sub-steps (per M-n 18 + user message clarification)
 
 1. **写子任务总结**: when sub-task completes,
    write summary.
@@ -31,7 +31,7 @@ tree, worked examples, and 节点 生命周期管理
 6. **爷爷只看父总结**: grandparent sees only
    parent summary, not 2nd/3rd-level summaries.
 
-## 节点 状态 生命周期 (per 你 turn clarification)
+## 节点 状态 生命周期 (per user message clarification)
 
 | State | Content |
 |---|---|
@@ -42,7 +42,7 @@ tree, worked examples, and 节点 生命周期管理
 Transition: sub-task 完成 → 总结 written → 任务
 摘要 + 子任务 说明 replaced by 总结.
 
-## 兄弟 隔离 (per 你 turn clarification)
+## 兄弟 隔离 (per user message clarification)
 
 二级节点 should NOT see other 二级兄弟节点's 子
 总结.  Each 父 only sees OWN children.
@@ -69,7 +69,7 @@ Q2: Are sub-tasks completed (any of them)?
 ## Worked example: c112 (PLAN file)
 
 When c112 was committed (`.hermes/plans/2026-07-
-15_160000-replan.md` created per M-n 18 + 你 turn
+15_160000-replan.md` created per M-n 18 + user message
 "写下来"):
 
 - **Sub-task done**: PLAN file written
@@ -77,7 +77,7 @@ When c112 was committed (`.hermes/plans/2026-07-
   - Sub-task 7 summary written in PLAN (not in
     response, to avoid pollution)
   - Parent summary future (after c114-c118 done)
-  - Grandparent (你 turn) sees only PLAN summary,
+  - Grandparent (user message) sees only PLAN summary,
     not all sub-task details
 - **Per M-n 19 (file naming)**: file path is
   `.hermes/plans/2026-07-15_160000-replan.md`
@@ -128,7 +128,7 @@ them.
 
 ### Anti-pattern 2: Forward all child summaries to grandparent
 
-Causes context pollution (per 你 turn "不然一堆二级
+Causes context pollution (per user message "不然一堆二级
 三级节点的总结会污染上下文").
 
 ### Anti-pattern 3: Skip parent synthesis
@@ -166,7 +166,7 @@ This L2 doc IS M-n 18 applied to itself:
   (节点 生命周期管理)
 - `.hermes/plans/2026-07-15_160000-replan.md` —
   M-n 18 applied
-- 你 turn 2026-07-15 (multiple) — origin
+- user message 2026-07-15 (multiple) — origin
 
 ## Changelog
 

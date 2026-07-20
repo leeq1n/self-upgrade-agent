@@ -7,8 +7,8 @@ Last P20-verified: 2026-07-15
 > required when the summary 段 references
 > detailed strategy + worked examples.
 
-**Origin**: per 你 turn 2026-07-15 explicit
-True问题 "记忆遗忘的问题" + 你 turn "项目
+**Origin**: per user message 2026-07-15 explicit
+True问题 "记忆遗忘的问题" + user message "项目
 上下文可能变长" + M_RULE_AUTHORING 3-condition
 gate (6+ observed sites).
 
@@ -25,7 +25,7 @@ grows; both decay patterns.
 Per P29 主动 reduce context: agent should
 not be passive about memory decay.
 
-## 4 sub-steps (per 你 turn 5 directives)
+## 4 sub-steps (per user message 5 directives)
 
 ### Step 1: Detection
 
@@ -145,4 +145,4 @@ behave).
 - `docs/OPERATING_RULES.md` § M-n 24
 - `docs/OPERATING_RULES.md` § M-n 25
 - `docs/PRINCIPLES_FULL.md` "P29"段
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin

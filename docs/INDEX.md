@@ -1,7 +1,7 @@
 # INDEX — full navigation map (rewritten 2026-07-16)
 
 > L0: Real navigation index for all 88 docs in /docs/.  Per
-> 你 turn audit Phase 1-3 (2026-07-16) — AGENTS.md L0 surface
+> user message audit Phase 1-3 (2026-07-16) — AGENTS.md L0 surface
 > only listed 8 docs; fresh agents could not find 79 others.
 >
 > How to use: browse the table below by domain, OR jump
@@ -58,7 +58,7 @@ Total: ~35 min to full orientation.
 | [MEMORY_TOOLS.md](MEMORY_TOOLS.md) | (within file) | Memory system usage patterns |
 | [MODEL_STRATEGY.md](MODEL_STRATEGY.md) | [MODEL_STRATEGY_DETAIL.md](MODEL_STRATEGY_DETAIL.md) | Which LLM, why, deployment notes |
 | [LITERATURE.md](LITERATURE.md) | [LITERATURE_DETAIL.md](LITERATURE_DETAIL.md) | Papers read + how they constrain design |
-| [HANDOFF.md](HANDOFF.md) | [HANDOFF_DETAIL.md](HANDOFF_DETAIL.md) | Project handoff template (per 你 turn) |
+| [HANDOFF.md](HANDOFF.md) | [HANDOFF_DETAIL.md](HANDOFF_DETAIL.md) | Project handoff template (per user message) |
 | [AUDIT_PHASE_1_2_3_2026_07_16.md](AUDIT_PHASE_1_2_3_2026_07_16.md) | (within file) | Phase 1-3 audit (reachability, M-n coverage, doc gaps) — this session |
 | [OBSERVATIONS.md](OBSERVATIONS.md) | [OBSERVATIONS_DETAIL.md](OBSERVATIONS_DETAIL.md) | Accumulated observations / behavioral patterns (73KB) |
 
@@ -81,7 +81,7 @@ Total: ~35 min to full orientation.
 | M-n 20 | [M_AGENT_DISCOVERABILITY_CHECK_DETAIL.md](M_AGENT_DISCOVERABILITY_CHECK_DETAIL.md) | Cross-framework discoverability |
 | M-n 21 | [M_ASK_OR_INFER_MARK_GUESS_DETAIL.md](M_ASK_OR_INFER_MARK_GUESS_DETAIL.md) | 3 sub-steps + top-down default |
 | M-n 22 | [M_3W1H_THINK_FIRST_DETAIL.md](M_3W1H_THINK_FIRST_DETAIL.md) | (alias) |
-| M-n 25 | [M_TURN_PATTERN_RECOGNITION_DETAIL.md](M_TURN_PATTERN_RECOGNITION_DETAIL.md) | Parse 你 turn + 5 patterns + M-n self-application |
+| M-n 25 | [M_TURN_PATTERN_RECOGNITION_DETAIL.md](M_TURN_PATTERN_RECOGNITION_DETAIL.md) | Parse user message + 5 patterns + M-n self-application |
 | M-n 26 | [M_CONTEXT_DECAY_MANAGEMENT_DETAIL.md](M_CONTEXT_DECAY_MANAGEMENT_DETAIL.md) | Detection + classification + compression |
 | M-n 27 | [M_KNOWLEDGE_LAYER_ARCHITECTURE_DETAIL.md](M_KNOWLEDGE_LAYER_ARCHITECTURE_DETAIL.md) | 3-layer core/knowledge/project taxonomy |
 | M-n 28 | [M_PLAN_CONDITIONAL_DETAIL.md](M_PLAN_CONDITIONAL_DETAIL.md) | 4-condition check (uncertain→plan, clear→continue) |
@@ -157,7 +157,7 @@ These don't have summaries — read only if relevant to your task:
 - **trigger: skill lifecycle planning** → [SKILLS.md](SKILLS.md) + SkillOpt paper
 - **trigger: knowledge graph / Q&A** → `../knowledge-graph-seed/SEED.md` +
   [TODO_KNOWLEDGE_GRAPH.md](TODO_KNOWLEDGE_GRAPH.md) (linker)
-- **trigger: 3-layer architecture** (per 你 turn 2026-07-16) → see
+- **trigger: 3-layer architecture** (per user message 2026-07-16) → see
   [AUDIT_PHASE_1_2_3_2026_07_16.md](AUDIT_PHASE_1_2_3_2026_07_16.md)
   + Plan: `hermes-plan-3-layer-architecture-2026-07-16.md`
   + SUA `[../core-layer/README.md](../core-layer/README.md)`

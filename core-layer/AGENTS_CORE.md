@@ -3,7 +3,7 @@
 > L0: Always-loaded subset of SUA's AGENTS.md
 > for cache-stable prefix + minimal input tokens.
 >
-> Per 你 turn 2026-07-16 cache optimization:
+> Per user message 2026-07-16 cache optimization:
 > this file = ~6.4K chars (100% cache hit when
 > stable).  Per-task 段s are in `AGENTS.md` as
 > references (per P11 摘要+引用).
@@ -21,25 +21,25 @@
 | What NOT to do | (P11 ref) |
 | Commit message contract | (P11 ref) |
 | When in doubt | (P11 ref) |
-| (P11 ref) | "继续" protocol (per 你 turn 2026-07-16) |
-| (P11 ref) | "学习一下" protocol (per 你 turn 2026-07-16) |
-| (P11 ref) | "主动修改 skill" (per 你 turn 2026-07-16) |
-| (P11 ref) | Iterative thinking (per 你 turn 2026-07-16) |
-| (P11 ref) | Recursive test-verify (per 你 turn 2026-07-16) |
-| (P11 ref) | Skill context cleanliness (per 你 turn 2026-07-16) |
-| (P11 ref) | Multi-perspective audit angles (per 你 turn 2026-07-16) |
-| (P11 ref) | Task-done-notify reminder (per 你 turn 2026-07-16) |
-| (P11 ref) | Post-completion verification suggestion (per 你 turn 2026-07-16) |
+| (P11 ref) | "继续" protocol (per user message 2026-07-16) |
+| (P11 ref) | "学习一下" protocol (per user message 2026-07-16) |
+| (P11 ref) | "主动修改 skill" (per user message 2026-07-16) |
+| (P11 ref) | Iterative thinking (per user message 2026-07-16) |
+| (P11 ref) | Recursive test-verify (per user message 2026-07-16) |
+| (P11 ref) | Skill context cleanliness (per user message 2026-07-16) |
+| (P11 ref) | Multi-perspective audit angles (per user message 2026-07-16) |
+| (P11 ref) | Task-done-notify reminder (per user message 2026-07-16) |
+| (P11 ref) | Post-completion verification suggestion (per user message 2026-07-16) |
 | (P11 ref) | Operating rules (M-n 1-34, per c95-c237 + M-pre-task-scan) |
-| (P11 ref) | Recent cross-project sync (per 你 turn 2026-07-15) |
+| (P11 ref) | Recent cross-project sync (per user message 2026-07-15) |
 | (P11 ref) | Detail (L2) |
 
 ## Sections (always-loaded content follows)
 
 ## Pre-task scan (M-n 34, added 2026-07-16)
 
-**Per 你 turn 2026-07-16 "自主阅读学习" + M_RULE_AUTHORING
-3-condition gate**: before any 你 turn response, before any
+**Per user message 2026-07-16 "自主阅读学习" + M_RULE_AUTHORING
+3-condition gate**: before any user message response, before any
 commit, before any "task done" message — agent MUST run
 **M-n 34 pre-task scan** (4 sub-steps per
 `docs/OPERATING_RULES.md` § M-pre-task-scan):
@@ -51,20 +51,32 @@ commit, before any "task done" message — agent MUST run
 4. Document scan result in plan / commit message (3-5
    most relevant P-n / M-n + 1-line reason each).
 
-**Why this 段 is BEFORE "Read first"**: per M-n 13
+**Reasoning checklists are internal by default.** Run the scan and the
+5 constructive / 4 critical primitives internally. Do not print the
+full checklist, quote the user's message repeatedly, or narrate every
+reasoning stage unless the user asks for that trace. A normal reply
+should lead with the conclusion and the evidence needed to act.
+
+**Response readability gate:** before sending any reply, scan the draft
+for repeated role labels, repeated short phrases, unfinished equations,
+or templated sections that no longer carry meaning. If any appear,
+discard the draft and rewrite it once in plain language. Do not diagnose
+a malformed draft inside that same draft.
+
+**Why this section is BEFORE "Read first"**: per M-n 13
 layer-extension, L0 surface must expose M-pre-task-scan
-so fresh agents pick it up **without** 你 turn having to
-point it out (per 你 turn "我跟你说问题的时候，你需要
+so fresh agents pick it up **without** user message having to
+point it out (per user message "我跟你说问题的时候，你需要
 找办法，避免下一次还出现一样的/相似的问题").
 
-**Trigger** (per M-n 34): any 你 turn (including "fix
+**Trigger** (per M-n 34): any user message (including "fix
 this" / "explain" / "commit" / "task done" / "verify") OR
 new session start.  Per AGENTS.md "Read first" 段 below
 + M-n 31 Phase 1 task-init + M-n 16 stage 1-2 观察+归纳.
 
 **Anti-pattern** (per M-n 32 self-learning-guardrail +
-你 turn 2026-07-16): skip the scan, rely on memory alone,
-be told by 你 turn what to read.  This is the **exact**
+user message 2026-07-16): skip the scan, rely on memory alone,
+be told by user message what to read.  This is the **exact**
 failure mode M-n 34 is designed to prevent.
 
 
@@ -92,7 +104,7 @@ failure mode M-n 34 is designed to prevent.
    applicable to your current task).  Read when task
    needs M-rule application OR per M-n 34 step 2.
 8. `core-layer/README.md` — L0 marker for the **3-layer
-   governance** (per 你 turn 2026-07-16).  Read when
+   governance** (per user message 2026-07-16).  Read when
    modifying AGENTS.md / hooks/ / .hermes/scripts/ /
    OPERATING_RULES.md — these are the 核心 layer (agent
    self-edit only, with eval-before + verify-after gate).
@@ -100,13 +112,13 @@ failure mode M-n 34 is designed to prevent.
    template.
 9. `docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md` — L2
    detail for the **4 critical-thinking primitives**
-   (质疑/逆向/预演失败/对立论证 — per 你 turn 2026-07-16).
+   (质疑/逆向/预演失败/对立论证 — per user message 2026-07-16).
    Read alongside items 1-5 primitives.  Constructive
    thinking (5 primitives) + adversarial thinking
    (4 critical primitives) = full thinking pair (per
    M-n 14 two-track).
 10. `docs/M_PRE_RELEASE_AUDIT_DETAIL.md` — L2 detail
-    for **release preparation** (M-n 36, per 你 turn
+    for **release preparation** (M-n 36, per user message
     2026-07-16 retrospective).  Read when tagging x.0.0
     release, pushing to github, publishing to package
     manager, or distributing zip.  Contains 5 checks
@@ -119,7 +131,7 @@ fresh agents can find all rules, not just P-n.  Per
 P21 cross-project, this list stays SUA-specific
 (sibling repos have their own entry docs).
 
-Item 8 added per 3-layer architecture (你 turn
+Item 8 added per 3-layer architecture (user message
 2026-07-16) — the core-layer/ directory has its own
 governance template separate from docs/ because
 modification rules differ (核心 = agent-only).

@@ -137,7 +137,7 @@ P28 recursion).
 
 ### Anti-pattern 1: Continue mechanical queue mode without re-analysis
 
-Per 你 turn: "如果做了很久, 重新分析".  Don't
+Per user message: "如果做了很久, 重新分析".  Don't
 mechanical follow queue.
 
 ### Anti-pattern 2: Skip 3W1H first
@@ -201,7 +201,7 @@ This L2 doc IS M-n 23 applied to itself:
 - `docs/M_AGENT_DISCOVERABILITY_CHECK_DETAIL.md`
   — M-n 20 L2 companion (M-n 23 sub-step 2)
 - `docs/PROJECT_STATE.md` — 最终目标 reference
-- 你 turn 2026-07-15 — origin (你 turn explicit
+- user message 2026-07-15 — origin (user message explicit
   codify request)
 
 ## Changelog

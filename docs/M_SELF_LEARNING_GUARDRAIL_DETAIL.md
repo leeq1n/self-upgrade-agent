@@ -89,7 +89,7 @@ M-n 20 + P14 docs stay current
 
 **Worked example**:
 - ✅ PASS: "✅ Task done, per M-n 29 Step
-  5 + 你 turn directive 2" (explicit notify)
+  5 + user message directive 2" (explicit notify)
 - ❌ FAIL: "task done" without explicit
   notification
 
@@ -107,7 +107,7 @@ Priority 5 (SUA → skill-incubator → skill)
 - ❌ FAIL: SUA change without
   propagation to 2 sibling projects
 
-## Auto-learning functionality status (per 你 turn)
+## Auto-learning functionality status (per user message)
 
 ### Verified EXISTS (per audit 2026-07-15):
 
@@ -157,5 +157,5 @@ codified.  Future new agents will have:
   learning-guardrail (M-n 32 main段)
 - `docs/OPERATING_RULES.md` § M-n 2 / M-n
   3 / M-n 4 / M-n 26 / M-n 29 / M-n 30
-- 你 turn 2026-07-15 — origin (新 agent
+- user message 2026-07-15 — origin (新 agent
   修改 约束 + 自动学习)

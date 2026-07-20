@@ -5,7 +5,7 @@ Last P20-verified: 2026-07-15
 > M-knowledge-context-trade-off段 (M-n 30).
 > Per P11 摘要+引用 + R6.
 
-**Origin**: per 你 turn 2026-07-15 explicit
+**Origin**: per user message 2026-07-15 explicit
 5 parts + Part 3 trade-off directive.
 
 ## 4-priority decision tree
@@ -46,7 +46,7 @@ explosion, performance degradation.
 **Methods**:
 - 分层 (hierarchical) for knowledge layer
 - 平铺式 (flat) for behavior spec (per
-  你 turn Part 5)
+  user message Part 5)
 - 类比 (analogy) for compression
 - 自顶向下 分治 for decomposition
 
@@ -57,7 +57,7 @@ vice versa).
 ### Priority 4 (Always): 分层 自顶向下 分治
 
 **Definition**: 永远 apply 分层 自顶向下 分治
-方法 (per 你 turn Part 4 隐含 ask).
+方法 (per user message Part 4 隐含 ask).
 
 **Methods**:
 - M-n 16 stage 3 top-down 分治
@@ -68,7 +68,7 @@ vice versa).
 **Failure if violated**: 没 分层, project
 混乱, hard to maintain.
 
-## Trade-off method (per 你 turn Part 3)
+## Trade-off method (per user message Part 3)
 
 ### 分层 (hierarchical)
 
@@ -103,7 +103,7 @@ When to apply:
 
 Example: 5 logic primitives (analyze /
 reason / 联想 / 归纳 / 总结) per M-n 29
-Step 2 + 你 turn.
+Step 2 + user message.
 
 ### 自顶向下 分治
 
@@ -162,17 +162,17 @@ Result: trade-off 4-priority PASS.
   18 / M-n 22 / M-n 26 / M-n 27 / M-n 29
 - SUA `agent-reflection-skill/SKILL.md` §
   Flat structure (per c211)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 ---
 
-## UPDATE ORDER RULE (added per 你 turn 2026-07-15 priority directive)
+## UPDATE ORDER RULE (added per user message 2026-07-15 priority directive)
 
 ### Priority 5 (Always): Update order rule
 
 **Trigger**: when 知识 changes in SUA (P-n, M-n, R-n, docs, etc.).
 
-**Rule** (per 你 turn 4 parts):
+**Rule** (per user message 4 parts):
 1. **SUA** (知识库) = **source** — change 起源.
 2. **skill-incubator** (孵化器) = **middle** — process propagation.
 3. **skill** (final) = **downstream** — receives change.
@@ -197,6 +197,6 @@ Result: trade-off 4-priority PASS.
 
 **Worked example (c222 self-application)**:
 
-This 段 IS M-n 30 self-application: codify Update order rule as Priority 5 (Always), per 你 turn 2026-07-15 explicit directive.
+This 段 IS M-n 30 self-application: codify Update order rule as Priority 5 (Always), per user message 2026-07-15 explicit directive.
 
 SUA c222 codify → THEN propagate to skill-incubator (c223) → THEN propagate to skill (c224).

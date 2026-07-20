@@ -23,7 +23,7 @@ how to apply conventions across 3-project arch
 | 1 | **PLAN directory** | `.hermes/plans/` (plural) | `.hermes/plans/2026-07-15_160000-replan.md` |
 | 2 | **PLAN file naming** | `YYYY-MM-DD_HHMMSS-topic.md` | `2026-07-15_160000-replan.md` |
 | 3 | **M-n L2 companion** | `M_<NAME>_DETAIL.md` | `M_FILE_NAMING_CONVENTION_DETAIL.md` |
-| 4 | **M-n summary segment** | `### M-<name> (added YYYY-MM-DD, per 你 turn ...)` | `### M-file-naming-convention (added 2026-07-15, per 你 turn "...")` |
+| 4 | **M-n summary segment** | `### M-<name> (added YYYY-MM-DD, per user message ...)` | `### M-file-naming-convention (added 2026-07-15, per user message "...")` |
 
 ## Decision tree: when to use which convention
 
@@ -63,7 +63,7 @@ renamed to follow M-n 19 conventions:
 - After: `.hermes/plans/2026-07-15_160000-replan.md`
   (plural, with HHMMSS)
 
-This was an 整理 process (per 你 turn "recursive
+This was an 整理 process (per user message "recursive
 rule + multi-agent 维护") that detected
 inconsistency and applied M-n 19 conventions.
 
@@ -127,7 +127,7 @@ in OPERATING_RULES.md (per M-n 20 discoverability).
 
 `.hermes/` is OK (it's the directory, not the
 file name); but file names should be framework-
-agnostic (per M-n 20 + 你 turn 2026-07-15).
+agnostic (per M-n 20 + user message 2026-07-15).
 
 ## Relationship to other M-rules + P-n
 
@@ -185,7 +185,7 @@ This L2 doc IS M-n 19 applied to itself:
   M-n 18 L2 companion
 - `.hermes/plans/2026-07-15_160000-replan.md` —
   PLAN file (M-n 19 Convention 1 + 2 example)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 ## Changelog
 

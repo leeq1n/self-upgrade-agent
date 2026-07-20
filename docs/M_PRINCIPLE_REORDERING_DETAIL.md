@@ -11,7 +11,7 @@ Last P20-verified: 2026-07-15
 ## Why this L2 doc exists
 
 The OPERATING_RULES.md § M-principle-reordering段
-(c99, per 你 turn "原则混乱后 6-step") provides the
+(c99, per user message "原则混乱后 6-step") provides the
 6 sub-steps.  This L2 doc provides worked examples
 per sub-step, decision tree, and how this M-rule
 relates to P25 6-step.
@@ -212,4 +212,4 @@ Recursion depth = 2 (per M-n 12 boundary + memory 9).
 - `docs/PRINCIPLES.md` P25 — principle modification
   discipline
 - `docs/OPERATING_RULES.md` § M-n 11/12/13/14/16
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin

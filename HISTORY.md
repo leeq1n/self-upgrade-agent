@@ -1,13 +1,13 @@
 # History
 
 > L0: SUA 项目 版本历史 (per M-n 31 project
-> lifecycle段 + 你 turn 2026-07-15
+> lifecycle段 + user message 2026-07-15
 > "联想分析类比" item 4).
 
 This file records SUA project milestones
 at version granularity (NOT per-commit).
 
-Per 你 turn prior: "项目生命周期，以及跨
+Per user message prior: "项目生命周期，以及跨
 项目记忆管理".
 
 ## Versions

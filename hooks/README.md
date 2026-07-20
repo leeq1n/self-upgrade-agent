@@ -1,4 +1,4 @@
-# Hooks inventory (per 你 turn 2026-07-16 + M-n 18 destruction)
+# Hooks inventory (per user message 2026-07-16 + M-n 18 destruction)
 
 > L0: Living inventory of hooks/ in SUA.  Updated 2026-07-16
 > after Phase A (commit `80cad53`) added 4 critical-thinking

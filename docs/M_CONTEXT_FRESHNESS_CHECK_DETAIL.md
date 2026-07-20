@@ -11,7 +11,7 @@ Last P20-verified: 2026-07-15
 ## Why this L2 doc exists
 
 The OPERATING_RULES.md § M-context-freshness-check
-段 (c106, per 你 turn "经常修改的文件 + 新的领域")
+段 (c106, per user message "经常修改的文件 + 新的领域")
 provides the 2-path action.  This L2 doc provides
 decision tree, worked examples, and how both paths
 compose.
@@ -46,7 +46,7 @@ that modifications align with current state.
 **Worked example**: c112 (M-n 18 PLAN file) — before
 creating `.hermes/plan/2026-07-15-replan.md`, agent
 re-read PROJECT_STATE.md + OPERATING_RULES.md M-n
-18段 + 你 turn "写下来" directive.  This ensured
+18段 + user message "写下来" directive.  This ensured
 PLAN file aligned with current 3-project arch and
 M-n 18 protocol.
 
@@ -147,7 +147,7 @@ This L2 doc IS M-n 17 applied to itself:
 - `docs/M_EXPERIMENT_IN_SUBPROJECT_DETAIL.md` —
   Path 2 worked example (c94)
 - `OPERATING_RULES.md` § M-n 14/15/16/18 — related
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
 
 ## Changelog
 

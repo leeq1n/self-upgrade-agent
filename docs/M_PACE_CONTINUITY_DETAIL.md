@@ -67,7 +67,7 @@ were applied:
 When c106-c133 were committed (28 commits), M-n
 24 was NOT yet codified.  Each commit had
 verbose "end this turn" + "active next plan"
-段, which 你 turn 第 2 部分 identified as
+段, which user message 第 2 部分 identified as
 打断 项目 节奏.
 
 This is the anti-example that motivated M-n 24
@@ -139,7 +139,7 @@ This L2 doc IS M-n 24 applied to itself:
   M-n 21 L2 companion (M-n 24 sub-step 2)
 - `docs/M_PERIODIC_RE_ANALYSIS_DETAIL.md` — M-n
   23 L2 companion (M-n 24 uses M-n 23)
-- 你 turn 2026-07-15 — origin (你 turn explicit
+- user message 2026-07-15 — origin (user message explicit
   codify request)
 
 ## Changelog

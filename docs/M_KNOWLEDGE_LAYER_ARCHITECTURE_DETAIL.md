@@ -7,7 +7,7 @@ Last P20-verified: 2026-07-15
 > required when the summary段 references
 > detailed 3-layer + 3 sources + lifecycle.
 
-**Origin**: 你 turn 2026-07-15 (6 parts: 3-layer + 3 sources + single-skill + new-agent perspective + lifecycle + 联想).
+**Origin**: user message 2026-07-15 (6 parts: 3-layer + 3 sources + single-skill + new-agent perspective + lifecycle + 联想).
 
 ## 3-layer knowledge structure (detailed)
 
@@ -91,7 +91,7 @@ config.
 
 **Single-skill scenario**: hermes =
 ABSENT.  Skill must work without hermes
-(per 你 turn Part 3).
+(per user message Part 3).
 
 ### Source B: SUA 项目知识库
 
@@ -162,7 +162,7 @@ hermes (since hermes absent, SUA absent).
 
 project-agnostic memory (skill + general M-n) should NOT bleed into project-specific memory (project layer).
 
-## 10 open questions (per 你 turn Part 6 联想)
+## 10 open questions (per user message Part 6 联想)
 
 | # | Question | Status (per current 段) |
 |---|---|---|
@@ -192,4 +192,4 @@ This L2 IS M-n 27 self-application (P28 recursion): 3-layer codified in OPERATIN
 - OPERATING_RULES.md § M-n 26 / M-self-application / M-n 18
 - PRINCIPLES_FULL.md "P29"段
 - skill/HANDOFF_DETAIL.md "SUA cross-ref" (c195)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin

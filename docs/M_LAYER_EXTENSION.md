@@ -177,4 +177,4 @@ proceeding.
   (applies to layer naming)
 - `docs/OPERATING_RULES.md` § M-n 14 — two-track
   reasoning
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin

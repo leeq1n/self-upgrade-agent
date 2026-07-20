@@ -1,6 +1,6 @@
-# SUA 3-layer governance (per 你 turn 2026-07-16)
+# SUA 3-layer governance (per user message 2026-07-16)
 
-> L0 marker for the SUA **核心 layer** boundary.  Per 你 turn
+> L0 marker for the SUA **核心 layer** boundary.  Per user message
 > 2026-07-16: "核心层只能由 agent 自己主动修改，规划 agent
 > 的行为和 skill 的行为（修改时需要评估，修改后需要验收）".
 
@@ -19,7 +19,7 @@ in similar-named paths.
 
 | Layer | Modifier | Where it lives (SUA) | Cross-repo location |
 |---|---|---|---|
-| **核心** (core) | Agent-only (with eval-before + verify-after) | `core-layer/` directory + `AGENTS.md` + `hooks/` + `.hermes/scripts/` + `docs/OPERATING_RULES.md` L1 | Future: skill project (per 你 turn 提案) |
+| **核心** (core) | Agent-only (with eval-before + verify-after) | `core-layer/` directory + `AGENTS.md` + `hooks/` + `.hermes/scripts/` + `docs/OPERATING_RULES.md` L1 | Future: skill project (per user message 提案) |
 | **用户** (user) | User (habits) + shared (general) | Currently implicit in memory system; needs codification | Future: skill project |
 | **项目** (project) | Project owner | `docs/PRINCIPLES.md` + `docs/PROJECT_STATE.md` + project-specific docs | Per project (intra-repo) |
 
@@ -34,7 +34,7 @@ in similar-named paths.
 | Cold-start simulation method | Knowledge graph data |
 | `m_n29_5step.py` script | `docs/PRINCIPLES_FULL.md` content |
 
-## Modification governance (per 你 turn)
+## Modification governance (per user message)
 
 1. **Eval-Before**: 5 primitives applied + `python .hermes/scripts/m_n29_5step.py --self`
 2. **Commit**: cite P-n + M-n in commit body
@@ -50,14 +50,14 @@ in similar-named paths.
 
 ---
 
-**P-n cited**: P11, P14, P20, P22, P25 (per 你 turn audit).
+**P-n cited**: P11, P14, P20, P22, P25 (per user message audit).
 **M-n cited**: M-n 30 (knowledge-context-trade-off
 Priority 1), M-n 32 (self-learning-guardrail Guardrail #1),
 M-n 34 (pre-task scan, self-application).
 
-## 3-layer modification policy (per 你 turn 2026-07-16)
+## 3-layer modification policy (per user message 2026-07-16)
 
-Per 你 turn "skill 在别人电脑上还会主动修改
+Per user message "skill 在别人电脑上还会主动修改
 skill, 但是核心层修改需要尽可能少, 主要修改
 用户层 (根据学到的知识判断改哪一层), 而项目层
 知识随着项目变化而变化":
@@ -119,7 +119,7 @@ am I modifying?
 
 ### Project knowledge = latest version + lessons (NOT log)
 
-Per 你 turn "项目层知识随着项目变化而变化 (这
+Per user message "项目层知识随着项目变化而变化 (这
 不是日志而是知识库. 过去的知识只保留经验, 不
 保留细节, 主要有最新版本的项目知识)":
 
@@ -157,7 +157,7 @@ If any answer is NO, defer or reclassify.
 ### Cross-references
 
 - `AGENTS.md` (L0 operating rules + 继续
-  protocol — per 你 turn "继续 = 推进 + 思考 + 验收")
+  protocol — per user message "继续 = 推进 + 思考 + 验收")
 - `docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md`
   (M-n 35 — apply when deciding layer modifications)
 - `docs/M_PRE_TASK_SCAN_DETAIL.md` (M-n 34 — pre-modify scan)

@@ -8,7 +8,7 @@ Last P20-verified: 2026-07-15
 > 5-step protocol + 验收 report template +
 > cycle loop.
 
-**Origin**: per 你 turn 2026-07-15 explicit
+**Origin**: per user message 2026-07-15 explicit
 6 parts + 你 implicit research directive
 (project acceptance + agent acceptance +
 harness references).
@@ -35,17 +35,17 @@ acceptance-criteria-verification skill:
 | **P-n compliance** | 25 P-n all cited + applied |
 | **M-n compliance** | 28 M-n all applied per context |
 | **P29 self-application** | agent 主动 reduce context |
-| **项目 整洁度 (per 你 turn 2026-07-15 reminder)** | 路径 + 命名 + 文档结构 consistent (per M-n 19 file-naming-convention + c149-c151 .gitignore + c191 整理 + c115 整理 process) |
-| **新 agent 可读性 (per 你 turn 2026-07-15 reminder)** | 项目 内容 可读 + 充分 (per M-n 20 agent-discoverability + P26 fresh-agent + VERIFICATION.md per c193 + 你 turn prior 7 docs in sync) |
+| **项目 整洁度 (per user message 2026-07-15 reminder)** | 路径 + 命名 + 文档结构 consistent (per M-n 19 file-naming-convention + c149-c151 .gitignore + c191 整理 + c115 整理 process) |
+| **新 agent 可读性 (per user message 2026-07-15 reminder)** | 项目 内容 可读 + 充分 (per M-n 20 agent-discoverability + P26 fresh-agent + VERIFICATION.md per c193 + user message prior 7 docs in sync) |
 
 ## Step 2: Execute 验收 (5 constructive + 4 critical primitives)
 
-Per 你 turn Part 3 explicit: "按照规范分析、
+Per user message Part 3 explicit: "按照规范分析、
 推理、联想、归纳、总结的逻辑过一遍完整的
 项目".  This is 5 constructive primitives (M-n 16 +
 M-n 14 + M-n 25 + M-n 26).
 
-**Per 你 turn 2026-07-16 + M-n 14 two-track**: complete
+**Per user message 2026-07-16 + M-n 14 two-track**: complete
 thinking needs BOTH constructive + adversarial.  Add 4
 critical-thinking primitives (per
 `docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md`):
@@ -78,7 +78,7 @@ critical-thinking primitives (per
    - Apply 节点 生命周期 (destroy redundant
      details)
 
-### 4 critical-thinking primitives (per 你 turn 2026-07-16)
+### 4 critical-thinking primitives (per user message 2026-07-16)
 
 Apply AFTER each corresponding constructive, per
 M-n 14 two-track.  Default-on for high-stakes
@@ -107,7 +107,7 @@ refactors; skip for trivial fixes.  Full details:
 
 ## Step 3: Validate 验收 condition
 
-Per 你 turn Part 4 "确认没问题":
+Per user message Part 4 "确认没问题":
 
 | Check | PASS criteria |
 |---|---|
@@ -123,7 +123,7 @@ Per 你 turn Part 4 "确认没问题":
 
 ### Step 4: If FAIL → 新 任务 cycle
 
-Per 你 turn Part 5: "如果验收没通过，就需
+Per user message Part 5: "如果验收没通过，就需
 要当作新任务继续修改（每次你认为做完任务
 都需要验收，没通过就修复，修复完再测，循环）":
 
@@ -134,7 +134,7 @@ Per 你 turn Part 5: "如果验收没通过，就需
 
 ### Step 5: If PASS → 明确 通知 你
 
-Per 你 turn Part 6: "通过了得跟用户明确说明":
+Per user message Part 6: "通过了得跟用户明确说明":
 
 - 明确 indicate "任务 完成 + 验收 通过"
 - List acceptance criteria + evidence
@@ -207,7 +207,7 @@ P-n (per 25 P-n) + M-n (per 28 M-n).
 **Step 2 (Execute 验收)**:
 - Analyze: M-n 29 段 IS 5-step protocol
   (defined in OPERATING_RULES.md 83323 → 78618).
-- Reason: 5 primitives match 你 turn Part 3
+- Reason: 5 primitives match user message Part 3
   explicit + M-n 16 stage 1-2 + M-n 14 class比
   induction + M-n 18 recursive summary + M-n
   26 compression.
@@ -256,4 +256,4 @@ P14 docs stay current).
 - NASA SWE-034 (research reference)
 - Claude acceptance-criteria-verification
   skill (research reference)
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin

@@ -2,7 +2,7 @@
 """verify_after.py — post-commit check (verify-after gate, per M-n 32
 Guardrail #1 + core-layer/governance-template.md).
 
-Per 你 turn 2026-07-16: "修改时需要评估，修改后需要验收".
+Per user message 2026-07-16: "修改时需要评估，修改后需要验收".
 Per core-layer/governance-template.md "Verify-After Step 1"
 + "Step 2" + "Step 3".
 

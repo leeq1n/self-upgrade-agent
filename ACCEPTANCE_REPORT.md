@@ -2,7 +2,7 @@
 
 > L0: 验收 report for c207 (current project
 > status).  Per M-n 29 5-step protocol +
-> 你 turn 2026-07-15 explicit directive
+> user message 2026-07-15 explicit directive
 > "通过了明确告知".
 
 **Run**: 2026-07-15
@@ -41,7 +41,7 @@
 
 ## 5 primitives applied (per M-n 29 Step 2)
 
-- [x] **Analyze**: 14 验收 角度 table defined (per c205 你 turn reminder)
+- [x] **Analyze**: 14 验收 角度 table defined (per c205 user message reminder)
 - [x] **Reason**: 25 P-n + 29 M-n + R1-R12 + 3-project arch 全部 met
 - [x] **联想**: per M-n 14 类比 + NASA SWE-034 + Claude acceptance-criteria-verification skill
 - [x] **归纳**: per M-n 14 归纳 + M-n 18 recursive summary
@@ -69,9 +69,9 @@
   - Task 3: HANDOFF.md project 段 update
   - Task 4: Cross-project sync (KG + skill-incubator)
 
-## Notification (per 你 turn 2026-07-15 directive 2)
+## Notification (per user message 2026-07-15 directive 2)
 
-> **你 turn 真意**: "如果通过了验收，就明确告知我"
+> **user message 真意**: "如果通过了验收，就明确告知我"
 >
 > **Status**: ✅ ALL PASS (14/14 验收 角度)
 >
@@ -86,4 +86,4 @@
 - `docs/OPERATING_RULES.md` § M-n 29 acceptance-protocol
 - `docs/M_ACCEPTANCE_PROTOCOL_DETAIL.md` L2 companion
 - `VERIFICATION.md` per c193
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin

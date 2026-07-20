@@ -79,7 +79,7 @@ twice commit once)
 
 ## Mechanical enforcement layer (per retrospective 2026-07-16)
 
-Per 你 turn "根据原则做决定" + retrospective 4-FAIL
+Per user message "根据原则做决定" + retrospective 4-FAIL
 diagnosis (M-n 32 Guardrail #4 violation across
 multiple turns — claimed DONE without applying
 5-step), this project adds mechanical external
@@ -97,7 +97,7 @@ trigger layer:
 
 ## What's NOT yet enforced
 
-Per 你 turn "怎么样才能保证自主阅读学习" + M-n 32
+Per user message "怎么样才能保证自主阅读学习" + M-n 32
 Guardrail #5 (auto-learning): LLM self-invocation
 of M-n 29 5-step is NOT 100% guaranteed.  AGENTS.md
 reminder + commit-time trailer + external script
@@ -118,9 +118,9 @@ trigger), M-self-learning-guardrail (M-n 32
 Guardrail #4 mechanical enforcement), M-knowledge-
 context-trade-off (M-n 30 Priority 1).
 
-## 3-layer governance (per 你 turn 2026-07-16)
+## 3-layer governance (per user message 2026-07-16)
 
-Per 你 turn 3-layer architecture proposal +
+Per user message 3-layer architecture proposal +
 M-n 30 Priority 1 (knowledge 充足) +
 retrospective failure mode (e7c9072 → c681e0b
 revert + a447b0b redo using `core-layer/`):
@@ -149,9 +149,9 @@ VERIFICATION.md (commits `08ed89e`, `274ad5d`,
 `7438fc4`).  See each repo's VERIFICATION.md
 "3-layer governance cross-ref" 段.
 
-## 4 critical-thinking primitives (per 你 turn 2026-07-16)
+## 4 critical-thinking primitives (per user message 2026-07-16)
 
-Per 你 turn 3-layer + critical-thinking injection:
+Per user message 3-layer + critical-thinking injection:
 SUA now codifies **9 primitives** for
 self-correction (5 constructive + 4 adversarial):
 
@@ -183,9 +183,9 @@ thinking needs BOTH constructive + adversarial.
 **Optional**: single-file refactors.
 **Skip**: trivial fixes (typo / formatting).
 
-## M-n 36 release-audit (per 你 turn 2026-07-16)
+## M-n 36 release-audit (per user message 2026-07-16)
 
-Per 你 turn retrospective + 自顶向下原则:
+Per user message retrospective + 自顶向下原则:
 SUA codified **M-n 36 (release-audit)** for
 release-time cleanliness.
 
@@ -222,7 +222,7 @@ commits `c37c443` + `18e893e`):
 **Optional**: per-commit dry-run.
 **Skip**: WIP / draft commits.
 
-**Self-application**: per 你 turn heuristic "细项目
+**Self-application**: per user message heuristic "细项目
 直接改 + 大项目少提交" + M-n 18 destruction, this
 project (SUA) = big project = minimize commits; but
 codification M-n-n requires cross-ref here.

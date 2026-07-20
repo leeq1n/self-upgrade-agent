@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # pre-commit hook — invokes eval_before.py + verify_after.py gates
 # per core-layer/governance-template.md "Verify-After"
-# + 你 turn 2026-07-16 "修改时需要评估，修改后需要验收".
+# + user message 2026-07-16 "修改时需要评估，修改后需要验收".
 #
 # Per M-n 32 Guardrail #1 retrofitted (verify target state
 # before commit).  Per M-n 35 critical-thinking primitive 3

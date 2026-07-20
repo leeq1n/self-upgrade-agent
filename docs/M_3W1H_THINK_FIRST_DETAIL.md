@@ -60,7 +60,7 @@ When M-n 22 was codified (c122), 3W1H was
 applied first:
 
 - **What**: Codify 3W1H 分析法 BEFORE top-down
-- **Why**: Per 你 turn "自顶向下之前, 往上思考
+- **Why**: Per user message "自顶向下之前, 往上思考
   一步"
 - **Who**: Agent (any framework) doing major
   decision
@@ -76,7 +76,7 @@ When M-n 23 was codified (c127), M-n 22 was
 applied:
 
 - **What**: Codify M-periodic-re-analysis
-- **Why**: Per 你 turn "如果做了很久, 重新分析"
+- **Why**: Per user message "如果做了很久, 重新分析"
 - **Who**: Agent (me) + future agents
 - **How**: 3 sub-steps (re-analyze / compare /
   plan) + M-n 16 top-down
@@ -101,7 +101,7 @@ This demonstrates M-n 22 systematic application.
 ## Worked example: c130 (verification request)
 
 When c130 was committed, M-n 22 was applied to
-你 turn verification request:
+user message verification request:
 
 - **What**: 你 ask 我 确认 M-n 20 已 codified +
   apply
@@ -116,7 +116,7 @@ This demonstrates M-n 22 applied to verification.
 
 ### Anti-pattern 1: Skip 3W1H, go directly to top-down
 
-Per 你 turn: "需要往上思考一步".  Don't skip
+Per user message: "需要往上思考一步".  Don't skip
 the 3W1H abstract level.
 
 ### Anti-pattern 2: Answer 3W1H trivially
@@ -126,12 +126,12 @@ Don't say "What: stuff" without specifics.
 
 ### Anti-pattern 3: Confuse 3W1H (abstract) with top-down (concrete)
 
-3W1H is "above" (per 你 turn), top-down is
+3W1H is "above" (per user message), top-down is
 "below".  Different abstraction levels.
 
 ### Anti-pattern 4: Apply 3W1H AFTER top-down
 
-3W1H must be BEFORE top-down (per 你 turn +
+3W1H must be BEFORE top-down (per user message +
 M-n 22 sequence).
 
 ### Anti-pattern 5: Apply 3W1H only for explicit plans
@@ -176,7 +176,7 @@ This L2 doc IS M-n 22 applied to itself:
 - `docs/M_PERIODIC_RE_ANALYSIS_DETAIL.md` (future,
   c133) — M-n 23 L2 companion (M-n 22 sub-step
   1)
-- 你 turn 2026-07-15 — origin (你 turn explicit
+- user message 2026-07-15 — origin (user message explicit
   codify request)
 
 ## Changelog

@@ -2,7 +2,7 @@
 
 > L0: Per Phase A codification (commits 35a25d3 through
 > 6a26b7c, tag `v2.0.0-critical-thinking-injection`).
-> Per 你 turn 2026-07-16 + M-n 14 two-track-reasoning.
+> Per user message 2026-07-16 + M-n 14 two-track-reasoning.
 
 ## What changed (per Phase A)
 
@@ -52,7 +52,7 @@ After Phase A:
 
 ## Why this is in 核心 layer
 
-Per 你 turn 2026-07-16 3-layer architecture:
+Per user message 2026-07-16 3-layer architecture:
 - 核心 layer = agent behavior + skill behavior rules
 - 修改 governance: agent-self-edit only with eval-
   before + verify-after gate

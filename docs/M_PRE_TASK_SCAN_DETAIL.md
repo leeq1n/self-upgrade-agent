@@ -6,7 +6,7 @@ Last P20-verified: 2026-07-16
 > + R6, this companion provides worked examples
 > for the 4 sub-steps + scan output template.
 
-**Origin**: per 你 turn 2026-07-16 "我跟你说
+**Origin**: per user message 2026-07-16 "我跟你说
 问题的时候，你需要找办法，避免下一次还
 出现一样的/相似的问题. 我不希望每次都
 跟你说了问题你才从项目里找对应条目，你
@@ -22,14 +22,14 @@ the 4 sub-steps.  This L2 companion provides:
 2. **Scan output template** for plan +
    commit message
 3. **Decision tree** for "which P-n / M-n
-   to apply" given a 你 turn pattern
+   to apply" given a user message pattern
 4. **Anti-pattern case studies** (what scan
    misses when applied incorrectly)
 
 ## Worked example 1: c237 M-n 33 codify (narrative-as-spec)
 
 Applying M-n 34 to the task "codify M-n 33
-narrative-as-spec based on 你 turn '联想 分析
+narrative-as-spec based on user message '联想 分析
 类比 看 性价比'":
 
 **Sub-step 1**: Read AGENTS.md (already done
@@ -43,7 +43,7 @@ via Pre-task scan段).
 | M-n 14 (two-track) | YES | 联想 + 分析 = two-track |
 | M-n 16 (observe-think-execute) | YES | Standard 6-stage chain |
 | M-n 22 (3W1H) | YES | What/Why/Who/How = M-n 33 trigger / action / 4 elements / 5 relationship |
-| M-n 25 (turn-pattern) | YES | 你 turn explicit "联想 分析 类比" = Pattern C (5 parts + 真问题 + 隐含 codify) |
+| M-n 25 (turn-pattern) | YES | user message explicit "联想 分析 类比" = Pattern C (5 parts + 真问题 + 隐含 codify) |
 | M-n 30 (knowledge-context trade-off) | MAYBE | 4-priority + flat vs layered decision |
 | P-n 1-24 (other) | NO | Not directly applicable to codification task |
 | M-n 1-32 (other) | NO | Standard task, no special rule |
@@ -51,7 +51,7 @@ via Pre-task scan段).
 **Sub-step 3**: Apply 5 primitives:
 - **Analyze**: 任务是 codify M-n 33 = 1 new
   M-n + 1 L2 companion doc + 1 commit.
-- **Reason**: 为什么 this codify? 你 turn
+- **Reason**: 为什么 this codify? user message
   explicit directive; M_RULE_AUTHORING
   3-condition gate met (3+ occurrences).
 - **联想**: 类似 prior pattern = c100 M-n
@@ -86,7 +86,7 @@ Applying M-n 34 to itself (per P28 recursion):
 | M-n 14 (two-track) | YES | Scan uses both tracks |
 | M-n 16 (observe-think-execute) | YES | Scan = Stage 1-2 |
 | M-n 22 (3W1H) | YES | Standard 3W1H |
-| M-n 25 (turn-pattern) | YES | 你 turn Pattern D + B |
+| M-n 25 (turn-pattern) | YES | user message Pattern D + B |
 | M-n 31 (task-lifecycle) | YES | Phase 1 task-init integrates scan |
 | M-n 32 (self-learning-guardrail) | YES | Anti-pattern is "skip scan, rely on memory" |
 | M-self-audit | MAYBE | M-n 34 is proactive (not reactive post-audit) |
@@ -126,7 +126,7 @@ Anti-patterns avoided (per M-n 32):
 
 ## Decision tree: "which P-n / M-n to apply"
 
-| 你 turn pattern | Scan priority |
+| user message pattern | Scan priority |
 |---|---|
 | Pattern A (2-3 parts + directive) | M-n 22 3W1H + M-n 12 + direct execute |
 | Pattern B (3-4 parts + 真问题) | M-n 22 + M-n 21 答 (P17 老实说) + M-n 25 |
@@ -138,7 +138,7 @@ Anti-patterns avoided (per M-n 32):
 
 ### Case 1: Skip scan, rely on memory
 
-你 turn: "fix this bug"
+user message: "fix this bug"
 Agent: applies memory of past bug fixes, ignores
 P5 (verify before commit) + P17 (老实说) +
 P22 (when stuck→plan).
@@ -149,7 +149,7 @@ would have surfaced P5 + P17 + M-n 29.
 
 ### Case 2: Scan only 1-2 P-n / M-n
 
-你 turn: "refactor this doc"
+user message: "refactor this doc"
 Agent: scans only P11 (摘要+引用), ignores
 P20 (L0 line) + P14 (docs stay current) + M-n
 19 (file-naming).
@@ -160,11 +160,11 @@ scan must cover ALL P-n / M-n, not 1-2.
 ### Case 3: Treat scan as one-time
 
 Agent runs scan at session start, never
-re-scans.  Mid-session 你 turn introduces
+re-scans.  Mid-session user message introduces
 new context (M-n codification).
 **Result**: mid-session task violates P25 6-step
 because agent didn't re-scan.  Per M-n 34
-trigger, scan is per 你 turn (not session-once).
+trigger, scan is per user message (not session-once).
 
 ## Self-application (per P28 recursion)
 
@@ -173,7 +173,7 @@ recursive structure:
 - M-n 34 L1 段 defines 4 sub-steps
 - M-n 34 L2 段 (this file) provides worked
   examples using M-n 34 on itself
-- M-n 34 trigger is "any 你 turn" — so this
+- M-n 34 trigger is "any user message" — so this
   doc itself was written by applying M-n 34
 
 ## Cross-references
@@ -189,4 +189,4 @@ recursive structure:
 - `docs/OPERATING_RULES.md` § M-knowledge-
   context-trade-off (M-n 30) — Priority 1
   (knowledge 充足)
-- 你 turn 2026-07-16 "自主阅读学习" — origin
+- user message 2026-07-16 "自主阅读学习" — origin

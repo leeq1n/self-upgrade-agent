@@ -14,7 +14,7 @@ v2.1.0-lifecycle-scripts)
 
 ## Phase timeline
 
-### Phase 4: 3-layer architecture (你 turn 2026-07-16 directive)
+### Phase 4: 3-layer architecture (user message 2026-07-16 directive)
 
 | Batch | Commits | Result |
 |---|---|---|
@@ -24,7 +24,7 @@ v2.1.0-lifecycle-scripts)
 
 **Total Phase 4**: 9 commits
 
-### Phase A: M-n 35 critical-thinking primitives (你 turn 2026-07-16 directive)
+### Phase A: M-n 35 critical-thinking primitives (user message 2026-07-16 directive)
 
 | Batch | Commits | Result |
 |---|---|---|
@@ -47,7 +47,7 @@ v2.1.0-lifecycle-scripts)
 
 ## Critical-thinking primitives applied (M-n 35)
 
-**Per 你 turn 2026-07-16**: critical-thinking alongside constructive.  Applied:
+**Per user message 2026-07-16**: critical-thinking alongside constructive.  Applied:
 
 1. **质疑 (Challenge)**: identified weaknesses in 8+ plans/commits
 2. **逆向 (Invert)**: reduced B2 scope (extract → cross-ref) per M-n 35 #2; reduced this Phase E from 5 → 2 commits

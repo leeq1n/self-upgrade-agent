@@ -1,4 +1,4 @@
-# 核心 layer governance template (per 你 turn 2026-07-16)
+# 核心 layer governance template (per user message 2026-07-16)
 
 > L1 governance template for modifying SUA 核心 layer
 > content.  Defines the eval-before / verify-after gate.

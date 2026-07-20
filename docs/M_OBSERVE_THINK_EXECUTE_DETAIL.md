@@ -11,7 +11,7 @@ Last P20-verified: 2026-07-15
 ## Why this L2 doc exists
 
 The OPERATING_RULES.md § M-observe-think-execute
-段 (c100, per 你 turn "观察-思考-执行链") provides
+段 (c100, per user message "观察-思考-执行链") provides
 the 6-stage chain.  This L2 doc provides worked
 examples for each stage, decision tree, and how this
 M-rule relates to M-n 14 (two-track reasoning) and
@@ -118,7 +118,7 @@ per memory 9).
 
 ### Anti-pattern 3: Conflate 思考 and 执行
 
-They are distinct stages per 你 turn.  Don't merge
+They are distinct stages per user message.  Don't merge
 them.
 
 ### Anti-pattern 4: Use for trivial tasks
@@ -129,16 +129,16 @@ when high-stakes (mid-risk or high-risk).
 
 ## Worked example: c100 M-n 16 (this rule)
 
-- **观察**: 你 turn "观察-思考-执行链" + essence
+- **观察**: user message "观察-思考-执行链" + essence
   statement.
 - **思考-1**: project already has M-n 14 (2 tracks);
   M-n 16 is higher-level 6-stage chain using both.
-  归纳总结: this is "higher-level" per 你 turn.
+  归纳总结: this is "higher-level" per user message.
 - **执行-1**: plan: write M-n 16 段 in OPERATING_RULES.md
   with 6-stage chain + essence + relationship.
 - **思考-2**: similar past: M-n 14 (c98) structure;
   apply same pattern + add higher-level position note.
-- **执行-2**: write 段 based on c98 structure + 你 turn.
+- **执行-2**: write 段 based on c98 structure + user message.
 - **思考-3 + 执行-3**: 7-check + P25 6-step + commit.
 
 ## Relationship to other M-rules + P-n
@@ -173,4 +173,4 @@ to self.
 - `OPERATING_RULES.md` § M-n 14 — two-track foundation
 - `OPERATING_RULES.md` § M-n 11/12/13/15 — related
 - `docs/PRINCIPLES.md` — P22 + P25 + P28
-- 你 turn 2026-07-15 — origin
+- user message 2026-07-15 — origin
