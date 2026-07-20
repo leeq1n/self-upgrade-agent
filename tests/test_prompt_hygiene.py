@@ -1,18 +1,13 @@
-"""Regression tests for prompt hygiene and readable user-facing responses.
+"""提示词卫生与可读响应的回归测试。
 
-Per the 2026-07-20 simplification (M-n 35 + P7 Occam): this
-file is intentionally minimal.  It bans a *very specific*
-phrase family — the role labels followed by an English noun
-that has been observed to prime a decoder repetition loop
-in agent output.  Other uses of that noun as a normal
-English word (e.g., in literary quotes, technical docs
-about round-based reasoning, etc.) are NOT banned.
+按 2026-07-20 的奥卡姆简化（M-n 35 + P7）：本文件刻意保持极简。
+它禁用一组非常具体的短语——角色标签后接那个会引发 agent 解码
+循环重复的英文单词。本测试之外，单词作为普通英文用法
+（比如文学引语、技术文档中关于回合制推理的内容）不受限制。
 
-The exact banned phrases are listed verbatim in the BANNED
-tuple below.  The test file itself is the only file that
-holds them as literals — structural necessity (you cannot
-ban a phrase without naming it).  Every other prompt
-surface is audited and must be free of those literals.
+被禁用的具体短语原样列在 BANNED 元组中。本测试文件是唯一必须
+持有这些字面量的文件——结构必需（要禁一个短语就得先命名它）。
+其他提示词面一律审计，命中即失败。
 """
 
 from pathlib import Path
