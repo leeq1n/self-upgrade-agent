@@ -63,8 +63,8 @@ shorthand phrase hits across 86 user-level skill files. Final state:
 0 hits across Layer 1-4 audit.
 
 **Files affected** (sample):
-- agent-onboarding/references/2026-07-15-turn-pattern-recognition.md (13 hits fixed)
-- agent-self-discipline/references/2026-07-15-m-n-25-turn-pattern-recognition.md (33 hits)
+- agent-onboarding/references/2026-07-15-<redacted-M-n-25>.md (13 hits fixed)
+- agent-self-discipline/references/2026-07-15-<redacted-M-n-25>.md (33 hits)
 - agent-self-discipline/references/2026-07-15-acceptance-report-pattern-and-14-angles.md (18 hits)
 - ~83 more files, all .md under hermes skills
 
