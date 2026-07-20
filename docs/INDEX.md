@@ -104,7 +104,7 @@ Total: ~35 min to full orientation.
 | [M_SELF_APPLICATION.md](M_SELF_APPLICATION.md) | (within file) | M-self-application patterns |
 | [M_SKILL_SYNCHRONIZE.md](M_SKILL_SYNCHRONIZE.md) | (within file) | Skill synchronization |
 | [M_LAYER_EXTENSION.md](M_LAYER_EXTENSION.md) | (within file) | Layer extension rules |
-| [SKILL_GENERATION.md](SKILL_GENERATION.md) | (within file) | Skill generation guide |
+| [SKILL_DESIGN.md](SKILL_DESIGN.md) | [SKILL_DESIGN_DETAIL.md](SKILL_DESIGN_DETAIL.md) | Skill design + incubation framework (4 conditions, 5-phase process, 5 preservation rules; consolidated from skill-incubator on 2026-07-20) |
 | [RECURSIVE_QUALITY.md](RECURSIVE_QUALITY.md) | (within file) | Recursive quality loop (拆解+类比+自指) |
 
 ## L2: Project audit / decisions / plans (10)
@@ -153,8 +153,12 @@ Total: ~35 min to full orientation.
 These don't have summaries — read only if relevant to your task:
 
 - **trigger: cross-project work** → [EXTENSIONS.md](EXTENSIONS.md) + consider
-  `../skill-incubator/`, `../agent-reflection-skill/`, `../knowledge-graph-seed/`
-- **trigger: skill lifecycle planning** → [SKILLS.md](SKILLS.md) + SkillOpt paper
+  `../agent-reflection-skill/` (standalone since v1.0.0, NOT a downstream
+  of SUA) and `../knowledge-graph-seed/` (frozen MVP, see its README for
+  current status).  skill-incubator was archived on 2026-07-20; its
+  content was consolidated back into [SKILL_DESIGN.md](SKILL_DESIGN.md).
+- **trigger: skill lifecycle planning** → [SKILLS.md](SKILLS.md) +
+  [SKILL_DESIGN.md](SKILL_DESIGN.md) + SkillOpt paper
 - **trigger: knowledge graph / Q&A** → `../knowledge-graph-seed/SEED.md` +
   [TODO_KNOWLEDGE_GRAPH.md](TODO_KNOWLEDGE_GRAPH.md) (linker)
 - **trigger: 3-layer architecture** (per user message 2026-07-16) → see
