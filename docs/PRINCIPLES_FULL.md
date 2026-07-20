@@ -739,7 +739,7 @@ P29 cross-axiom)**:
 
 **Cross-references**:
 
-- SUA `docs/OPERATING_RULES.md` § M-turn-
+- SUA `docs/OPERATING_RULES.md` § M-message-
   pattern-recognition段 (M-n 25 main 段)
 - SUA `docs/M_TURN_PATTERN_RECOGNITION_DETAIL.md`
   (L2 companion)
