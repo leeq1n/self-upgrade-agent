@@ -1,34 +1,47 @@
 # Self-Upgrade Agent (SUA)
 
 > L0: SUA project README — orientation, current state,
-> recent commits.  Per user meta-rule 2026-07-15: SUA
-> 维护 2 类知识 — agent 行为规范 (per `docs/PRINCIPLES.md`)
-> + skill 生成规范 (per `docs/SKILL_GENERATION.md`).
-> Goal (per c73 sync): "一个能约束 agent 行为的项目,
+> recent commits.  Per 2026-07-20 consolidation:
+> SUA is the **knowledge library** for the hermes-root
+> family.  Goal: "一个能约束 agent 行为的项目,
 > 让 agent 不依赖 hermes 也能按好规则行动".
 
-## 2 个项目身份 (per information topology 方案 C, c81)
+## Project identity (per 2026-07-20 re-architecture)
 
-SUA has **2 aspects** — they're both real and live in
-the same repo:
+SUA is the **knowledge library** for the hermes-root
+family.  It holds 3 categories of knowledge:
 
-1. **Docs project** (active since 2026-07-14 turn reset):
-   - 25 P-n (P1-P29 minus P6/P15/P16/P24,
-     per c96 P28 lift + c167 P29 lift)
-   - 25 M-n (M-n 1-25, per c95-c183)
-   - 6 reasoning primitives (mirrored in
-     `../agent-reflection-skill/`)
-   - Sibling project: `../agent-reflection-skill/`
-   - 3-project arch: SUA + skill-incubator
-     + agent-reflection-skill
-2. **Self-improving agent** (legacy, v1.x-v3.x history):
-   - Code: `core/`, `tests/`, `upgrades/`
-   - CLI: `python -m self_upgrade <subcommand>`
-   - Status: dormant (per c73 vision pivot)
+1. **Agent behavior rules** — 25 P-n (P1-P29 minus
+   P6/P15/P16/P24, per c96 P28 lift + c167 P29 lift)
+   + 27 M-n (M-n 1-27, per c95-c183).
+2. **Skill generation guidance** — `docs/SKILL_DESIGN.md`
+   (4 conditions to incubate, 5-phase process, 5
+   self-preservation rules; consolidated back from
+   skill-incubator on 2026-07-20).
+3. **Project self-coordination** — README, AGENTS,
+   PROJECT_STATE, INDEX, HANDOFF (per the 3-layer
+   architecture in [AUDIT_PHASE_1_2_3_2026_07_16.md](docs/AUDIT_PHASE_1_2_3_2026_07_16.md)).
 
-Both are real; the docs project is now the **active
-focus**, while the code project is **maintained** but
-not extended.
+**Siblings** (not downstream of SUA):
+
+- `../agent-reflection-skill/` — **standalone skill** since
+  v1.0.0 (2026-07-16).  Reasoning primitives (analogy,
+  induction, reflection, etc.) live there as a portable
+  skill, NOT as a downstream consumer of SUA.  SUA does
+  not actively push updates to it.
+- `../knowledge-graph-seed/` — **frozen MVP** (75 PASS
+  tests, 0 active dev).  See its README for current status.
+
+**Archived**:
+
+- `../skill-incubator/` — archived 2026-07-20.  Content
+  consolidated into SUA's [SKILL_DESIGN.md](docs/SKILL_DESIGN.md).
+  Directory retained for git history.
+
+**Legacy code** (maintained, not extended):
+
+- `core/`, `tests/`, `upgrades/` — v1.x-v3.x self-improving
+  agent code.  Functional but dormant.  Per c73 pivot.
 
 ## Quick start (new agent)
 
@@ -37,8 +50,8 @@ not extended.
 3. Read `docs/HANDOFF.md` (project-specific onboarding)
 4. Read `docs/PROJECT_STATE.md` Goal段 (current state)
 5. Read `docs/PRINCIPLES.md` (L0 + L1 layer only)
-6. Optional: `docs/SKILL_GENERATION.md` (if working on
-   sibling project sync)
+6. Optional: `docs/SKILL_DESIGN.md` (if designing or
+   incubating a new skill)
 
 Total: ~30 min onboarding.
 
@@ -54,11 +67,13 @@ latest M-turn-pattern-recognition per c183).
 
 ## Sibling project (skill)
 
-`../agent-reflection-skill/` — sibling project for
-**portable reasoning primitives**.  Pattern extraction
-flow: SUA commit demonstrates pattern → skill commit
-codifies it.  Per `M-skill-synchronize` (c83) +
-sibling awareness 段 (HANDOFF_DETAIL.md 61aab30).
+`../agent-reflection-skill/` is a **standalone sibling**,
+NOT a downstream of SUA.  Its v1.0.0 release (2026-07-16)
+froze it as a portable, framework-agnostic skill.  SUA does
+not actively synchronize with it; the skill preserves its
+own lineage via `M-skill-synchronize` (c83) + its internal
+self-preservation contract (5 rules in
+`docs/SKILL_DESIGN.md`).
 
 ## Detailed content (L2)
 
