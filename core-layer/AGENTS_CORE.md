@@ -176,6 +176,17 @@ that motivated the change).
 - Do not stuff conditional content into always-read files
   (per "storage layered / read flat" principle — see
   `docs/RECURSIVE_DECOMPOSITION.md`).
+- When describing a banned word or workaround, **prefer
+  Chinese over English indirection** (per 2026-07-20
+  directive "用中文, 而不是那个英文词").  Three-paragraph
+  English circumlocutions ("an English noun", "that noun",
+  "round-based reasoning") violate P7 Occam — they re-
+  introduce the mental model the ban was meant to prevent,
+  and they are unreadable.  Direct Chinese phrasing
+  ("那个会引发解码循环的英文单词", "回合制推理") is shorter,
+  clearer, and avoids re-priming the decoder.  This note
+  is what makes the rule durable for new agents entering
+  this codebase.
 
 
 ## Commit message contract
