@@ -407,7 +407,7 @@ Per user message "我之前说过，skill 最后的时候要验收，你验收
 
 **Before any commit / before sending "task done" message**,
 agent MUST apply **5 primitives** (per M-n 16 stage 1-2
-+ M-n 14 two-track + M-n 25 turn-pattern + M-n 26
++ M-n 14 two-track + M-n 25 message-pattern + M-n 26
 context-decay; codified in M-n 29 Step 2):
 
 **Per user message 2026-07-16 + M-n 14 two-track**: complete
@@ -641,7 +641,7 @@ not operational).):
 - **M-n 22**: 3w1h-think-first (3W1H 分析法 BEFORE top-down)
 - **M-n 23**: periodic-re-analysis (re-分析 at 最终目标)
 - **M-n 24**: pace-continuity (commit + continue, no verbose ending)
-- **M-n 25**: turn-pattern-recognition (parse user message + 5 patterns + M-n self-application 4 levels)
+- **M-n 25**: message-pattern-recognition (parse user message + 5 patterns + M-n self-application 4 levels)
 - **M-n 26**: context-decay-management (detection + classification + compression + refresh)
 - **M-n 27**: knowledge-layer-architecture (3-layer core/knowledge/project + 3 sources hermes/SUA/skill + single-skill fallback)
 - **M-n 28**: plan-conditional (4-condition check: uncertain → plan; clear → continue)

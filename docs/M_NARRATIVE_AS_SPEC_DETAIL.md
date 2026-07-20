@@ -17,7 +17,7 @@ directive ("如果能直接做决定就直接做") +
 **Trigger**: agent receives user message.
 
 **Methods**:
-- M-n 25 (turn-pattern-recognition) —
+- M-n 25 (message-pattern-recognition) —
   classify into 5 patterns A-E
 - user message history analysis
 - 你 vision keywords extraction

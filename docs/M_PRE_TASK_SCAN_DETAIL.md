@@ -43,7 +43,7 @@ via Pre-task scan段).
 | M-n 14 (two-track) | YES | 联想 + 分析 = two-track |
 | M-n 16 (observe-think-execute) | YES | Standard 6-stage chain |
 | M-n 22 (3W1H) | YES | What/Why/Who/How = M-n 33 trigger / action / 4 elements / 5 relationship |
-| M-n 25 (turn-pattern) | YES | user message explicit "联想 分析 类比" = Pattern C (5 parts + 真问题 + 隐含 codify) |
+| M-n 25 (message-pattern) | YES | user message explicit "联想 分析 类比" = Pattern C (5 parts + 真问题 + 隐含 codify) |
 | M-n 30 (knowledge-context trade-off) | MAYBE | 4-priority + flat vs layered decision |
 | P-n 1-24 (other) | NO | Not directly applicable to codification task |
 | M-n 1-32 (other) | NO | Standard task, no special rule |
@@ -86,7 +86,7 @@ Applying M-n 34 to itself (per P28 recursion):
 | M-n 14 (two-track) | YES | Scan uses both tracks |
 | M-n 16 (observe-think-execute) | YES | Scan = Stage 1-2 |
 | M-n 22 (3W1H) | YES | Standard 3W1H |
-| M-n 25 (turn-pattern) | YES | user message Pattern D + B |
+| M-n 25 (message-pattern) | YES | user message Pattern D + B |
 | M-n 31 (task-lifecycle) | YES | Phase 1 task-init integrates scan |
 | M-n 32 (self-learning-guardrail) | YES | Anti-pattern is "skip scan, rely on memory" |
 | M-self-audit | MAYBE | M-n 34 is proactive (not reactive post-audit) |

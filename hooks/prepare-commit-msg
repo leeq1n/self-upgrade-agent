@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # prepare-commit-msg hook: when commit message mentions 'task done' /
 # 'PASS' / '完成' / 'all green', append a reminder checklist line.
-# Per 你 turn 2026-07-16 retrospective 4-FAIL + M-n 32 Guardrail #4.
+# Per 用户回合 2026-07-16 retrospective 4-FAIL + M-n 32 Guardrail #4.
 #
 # TEMPLATE — install with: cp hooks/prepare-commit-msg .git/hooks/prepare-commit-msg
 #                    then: chmod +x .git/hooks/prepare-commit-msg
@@ -49,7 +49,7 @@ if echo "$MSG" | grep -qiE 'Analyze.*Reason.*联想.*归纳.*总结|5 primitives
     exit 0
 fi
 
-# Per 你 turn 2026-07-16 + M-n 14 two-track: ALSO check for at
+# Per 用户回合 2026-07-16 + M-n 14 two-track: ALSO check for at
 # least one critical-thinking primitive keyword (质疑 / 逆向 /
 # pre-mortem / steelman — Chinese + English).  Default-on for
 # high-stakes commits; agents may use any 1 of 4 to satisfy.
@@ -76,14 +76,14 @@ fi
     echo "# M-n 35 critical-thinking: see docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md"
 } >> "$COMMIT_MSG_FILE"
 
-# Per 你 turn 2026-07-16 + M-n 36 (M-release-audit): also detect
+# Per 用户回合 2026-07-16 + M-n 36 (M-release-audit): also detect
 # release-related keywords.  If commit message contains 'release',
 # 'tag', 'v' followed by digits, or 'CHANGELOG', remind about
 # release_audit.py 5 checks.  Non-blocking by default.
 if echo "$MSG" | grep -qiE 'release|tag v[0-9]|\.0\.0|CHANGELOG|github push|npm publish'; then
     {
         echo ""
-        echo "# M-n 36 release-audit detected.  Per 你 turn 2026-07-16 +"
+        echo "# M-n 36 release-audit detected.  Per 用户回合 2026-07-16 +"
         echo "# AGENTS.md Read first item 10.  Run before tagging x.0.0:"
         echo "#   python .hermes/scripts/release_audit.py"
         echo "# Checks: history cleanliness / tag at HEAD / CHANGELOG /"

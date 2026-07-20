@@ -1978,7 +1978,7 @@ gate, 4+ observed):
 - user message 2026-07-15 — origin
 
 
-### M-turn-pattern-recognition (added 2026-07-15, per user message "学习下我发言的思路 ... 也需要看看有没有学习过")
+### M-message-pattern-recognition (added 2026-07-15, per user message "学习下我发言的思路 ... 也需要看看有没有学习过")
 
 **Trigger**: when agent receives a user message
 that contains 2+ parts (directive + 真问题
@@ -2091,7 +2091,7 @@ directives):
 的问题" + M_RULE_AUTHORING 3-condition
 gate (6+ sites: c107 熵减 + c127
 periodic re-analysis + c134 pace-
-continuity + c183 turn-pattern + c165-c167
+continuity + c183 message-pattern + c165-c167
 P29 reduce context + user message explicit).
 
 **5 decay patterns** (per user message 5-part
@@ -2657,7 +2657,7 @@ observed sites):
 - c100-c108 (M-n 16 + M-n 17 + M-n 18 codify)
 - c122-c132 (M-n 22 + M-n 23 codify)
 - c134 (M-n 24 pace-continuity)
-- c183 (M-n 25 turn-pattern-recognition)
+- c183 (M-n 25 message-pattern-recognition)
 - c189 (M-n 26 context-decay-management)
 - c203 (M-n 29 acceptance-protocol)
 - user message 2026-07-15 explicit directive
@@ -2681,7 +2681,7 @@ observed sites):
   request next directive.
 - **Phase 4 (task-retrospective)**: 之后
   → capture lessons via M-n 26 + memory
-  update + 7-check (per user message turn-pattern
+  update + 7-check (per user message message-pattern
   directives).
 
 **Task-done indicator** (per user message
@@ -2793,7 +2793,7 @@ guardrails.  Recursive: applies itself.
 ### M-narrative-as-spec (added 2026-07-15, per user message autonomy + 联想 analytical insight per M-n 14)
 
 **Trigger**: when agent receives user message (per
-M-n 25 turn-pattern-recognition + M-n 31
+M-n 25 message-pattern-recognition + M-n 31
 Phase 1 task-init).
 
 **See `M_NARRATIVE_AS_SPEC_DETAIL.md`
@@ -2821,7 +2821,7 @@ worked examples.**
 
 Per M_RULE_AUTHORING 3-condition gate (5+
 observed sites):
-- M-n 25 (turn-pattern-recognition) —
+- M-n 25 (message-pattern-recognition) —
   treats user message as 5 patterns A-E
 - M-n 22 (3W1H-think-first) — user message BEFORE
   top-down
@@ -2922,7 +2922,7 @@ M-n 14 two-track):
   Stage 1-2 (观察 + 思考-1 归纳)
 - **M-n 22 (3W1H)**: scan + 3W1H = full
   pre-task context
-- **M-n 25 (turn-pattern-recognition)**: scan
+- **M-n 25 (message-pattern-recognition)**: scan
   result includes user message pattern recognition
 - **M-n 26 (context-decay-management)**: scan
   detects if prior P-n / M-n was forgotten

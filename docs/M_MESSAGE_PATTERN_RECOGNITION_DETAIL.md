@@ -1,8 +1,8 @@
-# M-turn-pattern-recognition (full text)
+# M-message-pattern-recognition (full text)
 Last P20-verified: 2026-07-15
 
 > L0: L2 detail for `OPERATING_RULES.md` § M-
-> turn-pattern-recognition段 (M-n 25).  Per
+> message-pattern-recognition段 (M-n 25).  Per
 > P11 摘要+引用 + R6, this companion is
 > required when the summary 段 references
 > detailed worked examples + decision tree.

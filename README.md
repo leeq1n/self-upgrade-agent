@@ -63,7 +63,7 @@ P28 lift + c167 P29 lift).  Hook enforces
 P-n cite in commit messages.
 
 See `docs/OPERATING_RULES.md` (25 M-n,
-latest M-turn-pattern-recognition per c183).
+latest M-message-pattern-recognition per c183).
 
 ## Sibling project (skill)
 

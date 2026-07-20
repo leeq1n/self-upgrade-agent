@@ -10,7 +10,7 @@
 **Total tags**: 2 (v2.0.0-critical-thinking-injection,
 v2.1.0-lifecycle-scripts)
 **Session duration**: 1 day (2026-07-16)
-**Total 你-turn-rounds**: ~12 (estimate)
+**Total user-round-rounds**: ~12 (estimate)
 
 ## Phase timeline
 
@@ -63,7 +63,7 @@ v2.1.0-lifecycle-scripts)
 - **Redo**: a447b0b using `core-layer/` instead
 - **Lesson**: M-n 32 Guardrail #1 ("verify target before commit") retrofitted permanently.  Per P22 + 你 directive "找办法避免下次再出现" — root-cause fix = **always pre-flight verify target file/dir state**
 
-### Failure 2: 你-turn-Python ad-hoc verify hit Windows bash sandbox
+### Failure 2: user-round-Python ad-hoc verify hit Windows bash sandbox
 
 - **Cause**: subprocess.run + bash in Python sandbox can't reach Windows host files
 - **Mitigation**: documented blocker explicitly per system directive.  Use Python AST + content checks + terminal-level bash (already confirmed working per commit `f11b145` + `458b0ee`)
@@ -104,7 +104,7 @@ current), P17 (老实说 — honest retrospective), P22
 
 M-n 14 (两 track), M-n 16 (observe-think-execute),
 M-n 18 (destruction — record before over-engineering),
-M-n 22 (3W1H), M-n 25 (turn-pattern), M-n 28
+M-n 22 (3W1H), M-n 25 (message-pattern), M-n 28
 (plan-conditional), M-n 29 (acceptance-protocol),
 M-n 31 (task-lifecycle Phase 4 retrospective),
 M-n 32 (self-learning-guardrail), M-n 34

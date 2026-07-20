@@ -55,7 +55,7 @@ explicit directive.
 - M-n 26 (4 sub-steps: re-read + 类比归纳
   + 整理 + checkpoint)
 - Memory update (per session)
-- 7-check (per user message turn-pattern
+- 7-check (per user message message-pattern
   directives)
 
 **Output**: lessons captured + memory

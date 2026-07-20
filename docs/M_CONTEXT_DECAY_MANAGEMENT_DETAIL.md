@@ -91,7 +91,7 @@ Load from MEMORY.md + 类比 retrieval:
 | Working memory overflow | Many in-context | M-n 18 + P29 | SUA c165: PRINCIPLES.md 8329 → 7030 bytes (R5) |
 | Episodic retrieval fail | session_search no result | M-n 17 Path 2 MCP | prior turns (c155 prior): used session_search for history |
 | 类比 inaccessible | Class类比找不到 | M-n 14 类比 compression | SUA c110: 类比=topology (parallel + graph) |
-| L0 rule dropped | Forget P-n | M-n self level 3 + MEMORY.md | SUA c183: codified M-n 25 turn-pattern-recognition |
+| L0 rule dropped | Forget P-n | M-n self level 3 + MEMORY.md | SUA c183: codified M-n 25 message-pattern-recognition |
 
 ## 5 anti-patterns
 
@@ -118,7 +118,7 @@ Load from MEMORY.md + 类比 retrieval:
   detection trigger (10+ commits).
 - **M-n 24 (pace-continuity)**: reduces
   risk of working memory overflow.
-- **M-n 25 (turn-pattern-recognition)**:
+- **M-n 25 (message-pattern-recognition)**:
   provides Pattern A-E matching.
 - **P29 (reduce context)**: provides
   compression ethos.

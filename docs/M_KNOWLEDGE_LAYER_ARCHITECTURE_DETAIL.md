@@ -22,7 +22,7 @@ Last P20-verified: 2026-07-15
 - **M-n**: M-n 12 (terminology), M-n 14
   (two-track), M-n 18 (recursive-summary),
   M-n 21 (ask/infer/guess), M-n 22 (3W1H),
-  M-n 25 (turn-pattern), M-n 26 (context-
+  M-n 25 (message-pattern), M-n 26 (context-
   decay), M-n 27 (knowledge-layer)
 
 **Why case-3 = 核心**: per P22 case-3, principles about principles apply to agent itself (regardless of project).
