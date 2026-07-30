@@ -1,0 +1,69 @@
+{
+  "_meta": {
+    "purpose": "Single source of truth for principle registry used by hooks (commit-msg, pre-commit) and audit scripts. Edit here, not in hook scripts. Per decision doc IMPLEMENTATION_PLAN 2026-07-30 T3 (Q2 closure).",
+    "last_updated": "2026-07-30",
+    "schema_version": "1.0",
+    "owner": "core-layer (modification requires M-n 15 multi-session + user explicit)"
+  },
+  "principles": {
+    "active": ["P1", "P2", "P3", "P4", "P5", "P7", "P8", "P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20", "P21", "P22", "P23", "P24", "P25", "P26", "P27", "P28", "P29"],
+    "merged": {
+      "P6": "merged into P5 (occam + verify)",
+      "P24": "merged into P3 (cleanup principle)"
+    },
+    "demoted": {
+      "P15": "demoted to P5 (operational)",
+      "P16": "demoted to P5 (operational)"
+    },
+    "lifted": {
+      "P28": "lifted to L0 axiom",
+      "P29": "lifted to L0 axiom"
+    }
+  },
+  "m_rules": {
+    "total_count": 34,
+    "codified_count": 28,
+    "l2_detail_count": 22,
+    "principle_layer_excluded": ["M-n 1", "M-n 5", "M-n 6", "M-n 9", "M-n 10"]
+  },
+  "l4_boundary": {
+    "version": "1.0",
+    "last_updated": "2026-07-20",
+    "tiers": {
+      "low_risk_autonomous": {
+        "description": "1 line / typo / cross-ref edit; skip 7-check",
+        "examples": ["AGENTS.md typo fix", "docs/ link update"],
+        "requires_user_authorization": false
+      },
+      "mid_risk_ask": {
+        "description": "1-2 files / 7-check needed",
+        "examples": ["new script in .hermes/scripts/", "new test file"],
+        "requires_user_authorization": true
+      },
+      "high_risk_multi_session": {
+        "description": "core-layer / 3+ files / protocol change",
+        "examples": ["AGENTS_CORE.md change", "hook behavior change", "3-layer policy change"],
+        "requires_user_authorization": true,
+        "requires_multi_session": true
+      }
+    }
+  },
+  "pre_task_vocabulary": {
+    "M-n 34": {
+      "trigger": "any user message OR new session start",
+      "substeps": [
+        "Read AGENTS.md (L0 entry doc)",
+        "Scan docs/PRINCIPLES.md L0 axioms + docs/OPERATING_RULES.md all M-n",
+        "Apply 5 primitives (Analyze / Reason / 联想 / 归纳 / 总结)",
+        "Document scan result in plan / commit message"
+      ]
+    }
+  },
+  "commit_msg_contract": {
+    "require_p_reference": true,
+    "require_mn34_vocabulary": true,
+    "allow_no_verify": true,
+    "enforcement_layer": "commit-msg hook (hard) + self_health_check (advisory)",
+    "strict_mode_env": "STRICT_EVAL=1"
+  }
+}

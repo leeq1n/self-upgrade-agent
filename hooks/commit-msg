@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # commit-msg hook: enforce that commit message references at least one
-# P-n (P1-P28) from docs/PRINCIPLES.md.  Per AGENTS.md "Commit
-# message contract".
+# P-n from .hermes/hook_principles.json (single source of truth).
+# Per AGENTS.md "Commit message contract" + decision doc Q2 closure.
 #
 # TEMPLATE — install with: cp hooks/commit-msg .git/hooks/commit-msg
 #                    then: chmod +x .git/hooks/commit-msg
@@ -29,25 +29,41 @@ fi
 
 MSG=$(cat "$COMMIT_MSG_FILE")
 
-# Look for a P<n> reference (P1-P29, except P6 merged into P5 per c47a).
-# Whitelist approach to avoid matching P6.
-if ! echo "$MSG" | grep -qE 'P(1|2|3|4|5|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29)'; then
-    cat >&2 <<'EOF'
-ERROR: commit message must reference at least one P-n (P1-P29, except P6).
+# Get active P-n whitelist from registry (per Q2 closure - T3).
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+LOADER="$REPO_ROOT/.hermes/scripts/hook_principles_loader.py"
+
+if [ ! -f "$LOADER" ]; then
+    echo "ERROR: hook_principles_loader.py not found at $LOADER" >&2
+    echo "  Per Q2 closure, principles registry is the single source of truth." >&2
+    exit 2
+fi
+
+# Load active P-n list (whitelist excluding merged/demoted per registry)
+ACTIVE_P_LIST="$(python "$LOADER" --active-list 2>/dev/null)"
+if [ -z "$ACTIVE_P_LIST" ]; then
+    echo "ERROR: failed to load active P-n list from registry" >&2
+    exit 2
+fi
+
+# Build regex from active list (pipe-separated alternation)
+P_REGEX="$(echo "$ACTIVE_P_LIST" | sed 's/ /|/g; s/^/(/; s/$/)/')"
+
+# Check message for at least one P-n reference
+if ! echo "$MSG" | grep -qE "$P_REGEX"; then
+    cat >&2 <<EOF
+ERROR: commit message must reference at least one P-n from registry.
 
   Per AGENTS.md 'Commit message contract' and docs/PRINCIPLES.md,
   every commit must cite the principle that motivated the change.
+
+  Active P-n values (loaded from .hermes/hook_principles.json):
+    $ACTIVE_P_LIST
 
   Examples of valid messages:
     "docs: clarify interlock (P14, P17)"
     "feat(kg): add kg_arbiter (P9)"
     "chore: add AGENTS.md (P14, P17)"
-
-  Allowed P-n values: P1 P2 P3 P4 P5 P7 P8 P9 P10 P11 P12
-                     P13 P14 P15 P16 P17 P18 P19 P20 P21 P22
-                     P23 P24 P25 P26 P27 P28 P29
-                     (P6 merged into P5 per c47a;
-                      P28 lifted per c96, P29 lifted per c167)
 
   To skip this check (NOT recommended), pass --no-verify.
 EOF
