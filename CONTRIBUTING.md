@@ -48,9 +48,9 @@ Cite P## here with a one-line reason. For example:
 - P22 (when stuck, plan)
 ```
 
-Allowed P-n values: P1-P29 (minus P6/P15/P16/P24, demoted per c47
-plan + c96 P28 lift + c167 P29 lift). See `docs/PRINCIPLES.md` for
-the complete list.
+Allowed P-n values: P1-P29 (minus P6/P15/P16/P24, demoted
+during early project consolidation). See `docs/PRINCIPLES.md`
+for the complete list.
 
 ## Self-Contained Mandate (per P-14)
 
@@ -59,8 +59,9 @@ internal identifiers:
 
 - ✅ Reference public standards (AAIF, Linux Foundation, Anthropic,
   OpenAI, GitHub, etc.)
-- ❌ Do NOT reference internal `hermes` / `jmp` / `SUA` / `memory`
-  / local paths in user-facing files
+- ❌ Do NOT reference internal sibling project paths
+  (e.g., `../sibling-name/`) in user-facing files
+- ❌ Do NOT reference internal chat / session identifiers
 - ❌ Do NOT reference round numbers (internal session history)
 - ❌ Do NOT include dev-session retrospectives in user docs
 
@@ -68,8 +69,8 @@ internal identifiers:
 
 1. Open a pull request against `main`.
 2. The `commit-msg` hook validates P-n cite locally.
-3. CI runs `pytest tests/ --ignore=tests/test_e2e.py` (per c50
-   audit baseline).
+3. CI runs `pytest tests/ --ignore=tests/test_e2e.py` (per
+   the test suite baseline).
 4. Maintainer reviews against:
    - P-n alignment (does the change follow existing principles?)
    - 3-layer policy (is the right layer being modified?)

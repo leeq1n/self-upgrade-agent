@@ -14,7 +14,7 @@
 ### Cross-runtime support
 - **docs/CROSS_RUNTIME_SKILL_BRIDGE.md** — Agent Skills open standard bridge
   (works in Hermes / Codex / Claude Code / Cursor / Antigravity / GitHub Copilot per
-  Anthropic Agent Skills spec 2025-12-18)
+  the public Agent Skills standard 2025-12-18)
 - **README badges** — MIT / PRs Welcome / AAIF / Agent Skills compatibility
 
 ### Documentation
