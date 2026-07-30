@@ -152,6 +152,38 @@ def audit_recent_commits_cite_tradeoff(n=10):
     return {"commits_claim_without_tradeoff_language": suspicious}
 
 
+def audit_recent_commits_cite_mn34_pre_task(n=10):
+    """Detect commits that lack M-n 34 pre-task scan language.
+
+    Per early SUA AGENTS_CORE.md M-n 34, agent must document
+    pre-task scan result (relevant P-n / M-n + 1-line reason)
+    in plan / commit message before any "task done" claim.
+    This check surfaces commits whose body omits the canonical
+    M-n 34 vocabulary. Advisory, not blocking.
+    """
+    mn34_pat = re.compile(
+        r"\b(M-?n\s*34|pre-?task|scan\s+result|5\s+primitives|"
+        r"PRINCIPLES\.md|OPERATING_RULES\.md|preflight)\b",
+        re.IGNORECASE,
+    )
+    out = _git("log", f"-{n}", "--pretty=%H%n%s%n---BODY---%n%B")
+    blocks = out.split("---BODY---")
+    missing = []
+    for block in blocks[1:]:
+        lines = block.strip().splitlines()
+        if len(lines) < 2:
+            continue
+        body = "\n".join(lines[1:])
+        if not mn34_pat.search(body):
+            sha_match = re.search(r"\b([a-f0-9]{7,40})\b", lines[0])
+            sha = sha_match.group(1)[:10] if sha_match else "?"
+            missing.append({
+                "sha": sha,
+                "title": lines[0],
+            })
+    return {"commits_without_mn34_pre_task_vocabulary": missing}
+
+
 def main():
     report = {
         "audit_target": str(SUA),
@@ -163,6 +195,7 @@ def main():
             "no_self_referential_noise": audit_no_self_referential_noise(),
             "no_verbal_commitment_in_commits": audit_no_verbal_commitment_in_commits(),
             "recent_commits_cite_tradeoff": audit_recent_commits_cite_tradeoff(),
+            "recent_commits_cite_mn34_pre_task": audit_recent_commits_cite_mn34_pre_task(),
         },
     }
     failures = []
