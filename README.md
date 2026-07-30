@@ -55,6 +55,13 @@ family.  It holds 3 categories of knowledge:
 
 Total: ~30 min onboarding.
 
+**For non-canonical runtimes** (Hermes / Cursor / Codex / Antigravity
+that prefer the Agent Skills `SKILL.md` format, or stateless sessions
+that need a one-line entry point), see
+[`docs/CROSS_RUNTIME_SKILL_BRIDGE.md`](docs/CROSS_RUNTIME_SKILL_BRIDGE.md).
+The bridge is a convenience layer; the 6-step workflow above is the
+canonical SUA onboarding.
+
 ## Working principles (P-n) + workflow (M-n)
 
 See `docs/PRINCIPLES.md` (25 P-n working,
