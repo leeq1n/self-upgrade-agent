@@ -21,6 +21,7 @@ set -e
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 EVAL_BEFORE="$REPO_ROOT/.hermes/scripts/eval_before.py"
 VERIFY_AFTER="$REPO_ROOT/.hermes/scripts/verify_after.py"
+SELF_HEALTH="$REPO_ROOT/.hermes/scripts/self_health_check.py"
 
 echo "[pre-commit] Running eval_before gate..."
 
@@ -37,6 +38,26 @@ if [ -f "$EVAL_BEFORE" ]; then
     fi
 else
     echo "[pre-commit] eval_before.py not found — skipping"
+fi
+
+# self_health_check.py: SUA self-audit per R137 wordy-trap defense.
+# Fail-open by default (advisory, exit 0). STRICT_EVAL=1 promotes
+# to block. Pre-existing commits may have a body wordy-trap warning;
+# that is informational, not a regression.
+echo "[pre-commit] Running self_health_check audit..."
+if [ -f "$SELF_HEALTH" ]; then
+    if python "$SELF_HEALTH" 2>&1; then
+        echo "[pre-commit] self_health_check: PASS"
+    else
+        sh_rc=$?
+        if [ "${STRICT_EVAL:-0}" = "1" ]; then
+            echo "[pre-commit] self_health_check: FAIL (strict mode)" >&2
+            exit $sh_rc
+        fi
+        echo "[pre-commit] self_health_check: WARN (non-blocking, set STRICT_EVAL=1 for strict)"
+    fi
+else
+    echo "[pre-commit] self_health_check.py not found — skipping"
 fi
 
 # Note: verify_after.py is intentionally NOT called from pre-commit

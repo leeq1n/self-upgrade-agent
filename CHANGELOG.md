@@ -7,6 +7,35 @@
 
 ## 2026-07-30 — re-open-source and self-contained mandate
 
+### v2.4.4 — roll back canonical-source paragraph (2026-07-30)
+
+Commit: `231691f`. Tag: `v2.4.4`.
+
+**Docs-only PATCH.** Removed the 'this repository is the
+canonical source of truth' paragraph from `README.md` header.
+The paragraph was self-referential agent noise with no terminal-user
+value. The actual upstream URL stays in `CHANGELOG.md` (where it
+matters for release traceability).
+
+No code or protocol changes. Behavior identical to v2.4.3.
+
+### v2.4.3 — post-release CHANGELOG + canonical pointer (2026-07-30)
+
+Commit: `01840dd`. Tag: `v2.4.3`.
+
+**Docs-only PATCH.** Two self-application fixes after
+post-release audit:
+
+1. CHANGELOG.md was missing the v2.4.2 entry that the v2.4.2
+   release point `c26d042` had already shipped. Now added.
+2. README.md header lacked an explicit canonical pointer.
+
+Both reflect the kind of post-release catches R137 / R159
+warn against: agent reports 'release done' without verifying
+downstream artifacts agree.
+
+No code or protocol changes. Behavior identical to v2.4.2.
+
 ### v2.4.2 — CHANGELOG.md update (2026-07-30)
 
 Commit: `c26d042`. Tag: `v2.4.2`.
