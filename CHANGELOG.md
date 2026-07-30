@@ -5,6 +5,39 @@
 > the actual released state of the project on
 > [github.com/leeq1n/self-upgrade-agent](https://github.com/leeq1n/self-upgrade-agent).
 
+## 2026-07-30 — cross-repo enforcement
+
+### v2.6.0 — cross_repo_audit + tests (2026-07-30)
+
+Commit: `60142e6`. Tag: `v2.6.0`.
+
+**Feature MINOR.** Ships the cross-repo enforcement layer
+per docs/PRINCIPLE_COLLAPSE_PREVENTION.md:
+
+- `.hermes/scripts/cross_repo_audit.py` (8248 B) — audits
+  sibling repos from upstream's perspective. Checks: Leaf-Only
+  contract (adapter/ present), mirror pollution (top-level
+  core-layer/ / docs/ / hooks/ / src/ / benchmarks/),
+  self-contained AGENTS.md / README.md / TASK_HANDOVER.md
+  (no per-user-message / R-number / c-number / hermes-root
+  refs), submodule tag-pinning (prefer tag = over branch =).
+- `tests/test_cross_repo_audit.py` (7085 B) — 15 unit tests
+  covering all 4 check categories + CLI integration
+  (advisory vs --strict exit codes).
+
+**Audit run on real sibling (`../sua-start/self-upgrade-agent`)**:
+7 failures detected (94 files in docs/, 117 in src/, internal
+refs in AGENTS.md / README.md). The audit would have caught
+those mirror problems before they shipped.
+
+Advisory by default; `STRICT_EVAL=1` (or `--strict`) promotes
+to nonzero exit. Hook integration point: `hooks/pre-commit` can
+add a `cross_repo_audit` invocation in a follow-up commit.
+
+**Decision artifact**: `docs/IMPLEMENTATION_PLAN_2026-07-30.md`
+(v2.5.4) ranks 17 scenarios; v2.6.0 implements A2 (cross_repo_audit)
+as the prerequisite for A4 (weekly cron).
+
 ## 2026-07-30 — self-audit integration
 
 ### v2.5.1 — M-n 34 pre-task vocabulary check (2026-07-30)
