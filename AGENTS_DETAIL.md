@@ -10,7 +10,7 @@
 These sections are the canonical live content referenced by the compact
 `AGENTS.md` index. Read only the section whose trigger matches the task.
 
-## "继续" protocol (per user message 2026-07-16)
+## "继续" protocol
 
 Per user message "我说继续的时候, 一般都和我之前说的
 那段是一个意思":
@@ -36,7 +36,7 @@ generic continuation.
 - DON'T claim "task done" without M-n 29 5-step
   (per M-n 32 Guardrail #4).
 
-## "学习一下" protocol (per user message 2026-07-16)
+## "学习一下" protocol
 
 Per user message "我说学习一下的时候, 指的是不仅仅
 是hermes学习, 也是这几个项目里 agent 的核心层
@@ -67,7 +67,7 @@ user had.
 enough 核心 + 用户 knowledge to use this skill
 effectively?"  If NO, the skill isn't portable.
 
-## "主动修改 skill" (per user message 2026-07-16)
+## "主动修改 skill" protocol
 
 Per user message "我希望这skill在别人电脑上还会主动
 修改skill, 但是核心层修改需要尽可能少, 主要
@@ -94,7 +94,7 @@ See `core-layer/README.md` § "3-layer modification
 policy" for trigger conditions + audit checks
 per layer.
 
-## Iterative thinking (per user message 2026-07-16)
+## Iterative thinking protocol
 
 Per user message "有的时候, 一层思考不够充分, 执行
 阶段可以判断需要额外轮的思考, 下一轮继续":
@@ -155,7 +155,7 @@ This rule applies to itself. When updating this
 - If you're tempted to escalate → check user
   signal first (per 继续 protocol above).
 
-## Recursive test-verify (per user message 2026-07-16)
+## Recursive test-verify protocol
 
 Per user message "我希望你能在修改后主动验收" + "自顶
 向下分治法做任务的时候, 子任务做完的时候也需要
@@ -266,7 +266,7 @@ This rule applies to itself:
   tasks → the parent is at risk of cascade
   failure.
 
-## Skill context cleanliness (per user message 2026-07-16)
+## Skill context cleanliness (P-14 self-contained mandate)
 
 Per user message "skill 库是最终面向用户的库, 需要
 为新agent保持项目上下文干净":
@@ -275,7 +275,7 @@ When working on skills (or any user-facing
 artifact):
 
 - **NO dev-session references** in skill content
-  (e.g., "per user message 2026-07-16 retrospective" =
+  (e.g., dev history retrospective = not user-facing)
   dev history; not user-facing).
 - **NO SUA-specific examples** in skill content
   (e.g., "in SUA, we have Y" = project-specific;
@@ -310,7 +310,7 @@ time.  Would they understand and use it?  If
 NO, simplify or remove context-specific
 references.
 
-## Multi-perspective audit angles (per user message 2026-07-16)
+## Multi-perspective audit angles
 
 Per user message "我教过的那几个角度" + "或许你需
 要学习下这个" + "你说学习的时候要考虑本地的
@@ -399,7 +399,7 @@ This rule applies to itself:
 - **Recursive test-verify**: A1/A2 audit = a
   verify step that must pass before "task done".
 
-## Task-done-notify reminder (per user message 2026-07-16)
+## Task-done-notify reminder
 
 Per user message "我之前说过，skill 最后的时候要验收，你验收
 了吗？你不知道要验收这件事" + user message 2026-07-16
@@ -430,7 +430,7 @@ trivial fixes; per
     acknowledge valid opposing points
 
 1. **Analyze** (M-n 16 stage 1): 任务 IS what? 范围
-   (per R11) + components / files / commits involved?
+   components / files / commits involved?
 2. **Reason** (M-n 16 stage 2 + M-n 22 3W1H): Why
    this design? Trade-offs? Alternatives considered?
 3. **联想 (analogize)** (M-n 14 class比 + M-n 17
@@ -477,7 +477,7 @@ Then MUST apply **M-n 29 5-step protocol**:
    - **Step 4**: If FAIL → fix → re-verify (loop)
    - **Step 5**: Notify (this is the "完成" message)
 
-2. **Hard external trigger**: per user message 2026-07-16
+2. **Hard external trigger**: per direct user instruction with explicit authorization
    retrospective 4-FAIL diagnosis (M-n 29 pre-claim
    + M-n 32 #4 violations across multiple turns),
    mechanical enforcement is required.  Run the
@@ -522,7 +522,7 @@ See:
 - `.hermes/scripts/m_n29_5step.py` (mechanical external
   trigger, per retrospective fix)
 
-## Post-completion verification suggestion (per user message 2026-07-16)
+## Post-completion verification suggestion
 
 Per user message "因为有了更改, 现在应该再次验收"
 + "做完任务后, 跟用户明确说明的同时, 也需要
@@ -615,7 +615,7 @@ This rule applies to itself:
   meta-application of recursive test-verify
   (verify the verification-suggestion itself).
 
-## Operating rules (M-n 1-34, per c95-c237 + M-pre-task-scan)
+## Operating rules (M-n 1-34)
 
 **34 M-n** in `docs/OPERATING_RULES.md` (per Phase 3 audit
 2026-07-16: 28 M-n codified with L1段, 22 with L2 _DETAIL.md
@@ -656,7 +656,7 @@ not operational).):
   4 sub-steps: Read AGENTS / Scan P-n+M-n / Apply 5 primitives
   / Document scan result.  Per `docs/M_PRE_TASK_SCAN_DETAIL.md`.)
 
-## Recent cross-project sync (per user message 2026-07-20)
+## Recent cross-project sync
 
 Per the 2026-07-20 re-architecture: **SUA is the knowledge
 library for the hermes-root family; siblings are standalone
@@ -668,7 +668,7 @@ Archived: `../skill-incubator/` (content consolidated into
 SUA's docs/SKILL_DESIGN.md on 2026-07-20).
 
 
-**修订 L4 boundary (per c95 + memory 7)**:
+**L4 boundary revision**:
 
 - (a) 1 line / typo / cross-ref = low-risk autonomous, skip 7-check
 - (b) 1-2 files / 7-check needed = mid-risk, run 7-check + ask
