@@ -3,16 +3,16 @@
 > L0: Always-loaded subset of SUA's AGENTS.md
 > for cache-stable prefix + minimal input tokens.
 >
-> Per user message 2026-07-16 cache optimization:
-> this file = ~6.4K chars (100% cache hit when
-> stable).  Per-task 段s are in `AGENTS.md` as
-> references (per P11 摘要+引用).
+> Per cache optimization protocol (per docs/PRINCIPLES.md
+> + docs/OPERATING_RULES.md): this file = ~6.4K chars
+> (100% cache hit when stable).  Per-task 段s are in
+> `AGENTS.md` as references (per P11 摘要+引用).
 >
 > **2026-07-20 architecture note**: SUA is the knowledge
 > library for the hermes-root family; siblings are
-> standalone (agent-reflection-skill since v1.0.0) or
-> frozen (knowledge-graph-seed MVP).  skill-incubator
-> was archived; its content consolidated into SUA's
+> standalone (agent-reflection-skill) or frozen
+> (knowledge-graph-seed MVP).  skill-incubator was
+> archived; its content consolidated into SUA's
 > `docs/SKILL_DESIGN.md`.  Cross-ref details in
 > AGENTS.md "Recent cross-project sync"段.
 >
@@ -23,30 +23,30 @@
 
 | Here (always-loaded) | AGENTS.md (per-task) |
 |---|---|
-| Pre-task scan (M-n 34, added 2026-07-16) | (P11 ref) |
+| Pre-task scan (M-n 34) | (P11 ref) |
 | Read first (in order) | (P11 ref) |
 | Hard rules (top 6 from PRINCIPLES.md, binding) | (P11 ref) |
-| What NOT to do | (P11 ref) |
+| What NOT TO DO | (P11 ref) |
 | Commit message contract | (P11 ref) |
 | When in doubt | (P11 ref) |
-| (P11 ref) | "继续" protocol (per user message 2026-07-16) |
-| (P11 ref) | "学习一下" protocol (per user message 2026-07-16) |
-| (P11 ref) | "主动修改 skill" (per user message 2026-07-16) |
-| (P11 ref) | Iterative thinking (per user message 2026-07-16) |
-| (P11 ref) | Recursive test-verify (per user message 2026-07-16) |
-| (P11 ref) | Skill context cleanliness (per user message 2026-07-16) |
-| (P11 ref) | Multi-perspective audit angles (per user message 2026-07-16) |
-| (P11 ref) | Task-done-notify reminder (per user message 2026-07-16) |
-| (P11 ref) | Post-completion verification suggestion (per user message 2026-07-16) |
-| (P11 ref) | Operating rules (M-n 1-34, per c95-c237 + M-pre-task-scan) |
-| (P11 ref) | Recent cross-project sync (per user message 2026-07-15) |
+| (P11 ref) | "继续" protocol |
+| (P11 ref) | "学习一下" protocol |
+| (P11 ref) | "主动修改 skill" protocol |
+| (P11 ref) | Iterative thinking protocol |
+| (P11 ref) | Recursive test-verify protocol |
+| (P11 ref) | Skill context cleanliness |
+| (P11 ref) | Multi-perspective audit angles |
+| (P11 ref) | Task-done-notify reminder |
+| (P11 ref) | Post-completion verification suggestion |
+| (P11 ref) | Operating rules (M-n 1-34) |
+| (P11 ref) | Recent cross-project sync |
 | (P11 ref) | Detail (L2) |
 
 ## Sections (always-loaded content follows)
 
-## Pre-task scan (M-n 34, added 2026-07-16)
+## Pre-task scan (M-n 34)
 
-**Per user message 2026-07-16 "自主阅读学习" + M_RULE_AUTHORING
+**Per "自主阅读学习" protocol + M_RULE_AUTHORING
 3-condition gate**: before any user message response, before any
 commit, before any "task done" message — agent MUST run
 **M-n 34 pre-task scan** (4 sub-steps per
@@ -73,25 +73,26 @@ a malformed draft inside that same draft.
 
 **Why this section is BEFORE "Read first"**: per M-n 13
 layer-extension, L0 surface must expose M-pre-task-scan
-so fresh agents pick it up **without** user message having to
-point it out (per user message "我跟你说问题的时候，你需要
-找办法，避免下一次还出现一样的/相似的问题").
+so fresh agents pick it up **without** external instruction
+(per P7 Occam — avoid repetition in working memory).
 
 **Trigger** (per M-n 34): any user message (including "fix
 this" / "explain" / "commit" / "task done" / "verify") OR
 new session start.  Per AGENTS.md "Read first" 段 below
 + M-n 31 Phase 1 task-init + M-n 16 stage 1-2 观察+归纳.
 
-**Anti-pattern** (per M-n 32 self-learning-guardrail +
-user message 2026-07-16): skip the scan, rely on memory alone,
-be told by user message what to read.  This is the **exact**
+**Anti-pattern** (per M-n 32 self-learning-guardrail):
+skip the scan, rely on memory alone,
+be told by external instruction what to read.  This is the **exact**
 failure mode M-n 34 is designed to prevent.
 
 
 ## Read first (in order)
 
-1. `docs/PRINCIPLES.md` — operating principles (P1-P29, 25 working per c47a/c78/c79/c80 + c96 P28 lift + c167 P29 lift).  Read
-   the FULL file (~11 KB).  Do not skim.
+1. `docs/PRINCIPLES.md` — operating principles (P1-P29, 25 working
+   per docs/OPERATING_RULES.md version notes — see lift/demote history
+   in PRINCIPLES_DETAIL.md).  Read the FULL file (~11 KB).
+   Do not skim.
 2. `docs/INDEX.md` — orientation map (8-step reading order
    + conditional stealth loads).  Follow the numbered steps
    until you have a project overview.
@@ -103,7 +104,7 @@ failure mode M-n 34 is designed to prevent.
    protocol (consulted before every user-message response;
    see conditional load below for trigger reminder).
 6. `docs/HOW_TO_READ_GRAPH.md` — read pattern for new
-   agents (per c57, the 3-step pattern: L0 → L1 → L2,
+   agents (per 3-step pattern: L0 → L1 → L2,
    with cross-ref traversal rules + 5 essence families
    + 7-check self-org).  Read when entering the project
    or when stuck on graph traversal.
@@ -112,7 +113,7 @@ failure mode M-n 34 is designed to prevent.
    applicable to your current task).  Read when task
    needs M-rule application OR per M-n 34 step 2.
 8. `core-layer/README.md` — L0 marker for the **3-layer
-   governance** (per user message 2026-07-16).  Read when
+   governance**.  Read when
    modifying AGENTS.md / hooks/ / .hermes/scripts/ /
    OPERATING_RULES.md — these are the 核心 layer (agent
    self-edit only, with eval-before + verify-after gate).
@@ -120,28 +121,24 @@ failure mode M-n 34 is designed to prevent.
    template.
 9. `docs/M_CRITICAL_THINKING_PRIMITIVES_DETAIL.md` — L2
    detail for the **4 critical-thinking primitives**
-   (质疑/逆向/预演失败/对立论证 — per user message 2026-07-16).
-   Read alongside items 1-5 primitives.  Constructive
-   thinking (5 primitives) + adversarial thinking
-   (4 critical primitives) = full thinking pair (per
-   M-n 14 two-track).
+   (质疑/逆向/预演失败/对立论证).  Read alongside items 1-5
+   primitives.  Constructive thinking (5 primitives)
+   + adversarial thinking (4 critical primitives) = full
+   thinking pair (per M-n 14 two-track).
 10. `docs/M_PRE_RELEASE_AUDIT_DETAIL.md` — L2 detail
-    for **release preparation** (M-n 36, per user message
-    2026-07-16 retrospective).  Read when tagging x.0.0
+    for **release preparation** (M-n 36).  Read when tagging x.0.0
     release, pushing to github, publishing to package
     manager, or distributing zip.  Contains 5 checks
     (commit cleanliness / tag at HEAD / CHANGELOG /
     artifact / docs) to prevent "github commit
     confusion" pattern.
 
-**Note**: items 5-7 are added per M-n 34 (2026-07-16) so
-fresh agents can find all rules, not just P-n.  Per
-P21 cross-project, this list stays SUA-specific
-(sibling repos have their own entry docs).
+**Note**: items 5-7 added per M-n 34 so fresh agents can find
+all rules, not just P-n.  Per P21 cross-project, this list
+stays SUA-specific (sibling repos have their own entry docs).
 
-Item 8 added per 3-layer architecture (user message
-2026-07-16) — the core-layer/ directory has its own
-governance template separate from docs/ because
+Item 8 added per 3-layer architecture — the core-layer/ directory
+has its own governance template separate from docs/ because
 modification rules differ (核心 = agent-only).
 
 
@@ -220,9 +217,10 @@ Detailed body.
 
 Allowed `P##` values: P1, P2, P3, P4, P5, P7, P8, P9, P10,
 P11, P12, P13, P14, P17, P18, P19, P20, P21, P22, P23,
-P15 (demoted to P5 实操 per c79), P16 (demoted to P5 实操 per c80),
-P24 (merged into P3 per c78), P25, P26, P27, P28, P29
-(lifted per c167).  See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
+P15 (demoted to P5 实操), P16 (demoted to P5 实操),
+P24 (merged into P3), P25, P26, P27, P28, P29
+(lifted per docs/OPERATING_RULES.md version notes).
+See PRINCIPLES.md / PRINCIPLES_DETAIL.md for the complete
 list.
 
 

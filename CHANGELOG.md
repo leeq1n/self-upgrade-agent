@@ -5,6 +5,57 @@
 > the actual released state of the project on
 > [github.com/leeq1n/self-upgrade-agent](https://github.com/leeq1n/self-upgrade-agent).
 
+## 2026-07-30 — core-layer self-contained
+
+### v2.9.0 — core-layer AGENTS_CORE.md cleanup (2026-07-30)
+
+Commit: `f3c9372`. Tag: `v2.9.0`.
+
+**MINOR cleanup of core layer.** Per user explicit
+authorization + M-n 15 multi-session rule (core layer
+modification requires user turn 3+), this commit cleans
+`core-layer/AGENTS_CORE.md` (the always-loaded L0 contract
+that future agents see first).
+
+**Removed**: 48 P-14 self-contained mandate violations
+(19 strict + 29 loose):
+- 12 per-user-message date references
+- 7 per-c-number references
+- 15 user-message ref variants (loose match)
+- (full list in commit body)
+
+**Replaced with**:
+- "per cache optimization protocol (per docs/PRINCIPLES.md + docs/OPERATING_RULES.md)"
+- "per 自主阅读学习 protocol + M_RULE_AUTHORING 3-condition gate"
+- "per docs/OPERATING_RULES.md version notes" (was "per docs/OPERATING_RULES.md (P15 demote history)/c80/c78/c167")
+- "per P7 Occam — avoid repetition in working memory" (was user-message quote)
+
+**Preserved**: All M-n / P-n / R-n protocol content,
+hooks references, hard rules, "What NOT TO DO" section,
+commit message contract, "When in doubt" section.
+
+**File size**: 9625B → 9146B (-479B).
+
+**Risk**: Core-layer modification = per M-n 15, requires
+multi-session + user explicit. This commit ships under
+explicit user authorization.
+
+### v2.8.0 — AGENTS.md P-14 cleanup (2026-07-30)
+
+Commit: `b8ab638`. Tag: `v2.8.0`.
+
+**PATCH cleanup of AGENTS.md (user layer).** Removed
+P-14 self-contained mandate violations from the main
+entry doc. Replaced 11 per-user-message + 27
+AGENTS_DETAIL cross-refs + 2 RETROSPECTIVE refs with
+generic protocol references.
+
+**File size**: 7660B → 6686B (-974B).
+
+This was the first round of P-14 cleanup; v2.9.0
+completes the loop with core-layer modification
+(authorized by user).
+
 ## 2026-07-30 — cross-repo enforcement
 
 ### v2.6.1 — CHANGELOG v2.6.0 entry (2026-07-30)
