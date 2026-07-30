@@ -1,5 +1,7 @@
 # AGENTS Core (always-loaded)
 
+> **LAYER**: 核心 (L0 cache-stable — always-loaded, M-n 15 modification rule)
+>
 > L0: Always-loaded subset of SUA's AGENTS.md
 > for cache-stable prefix + minimal input tokens.
 >

@@ -1,5 +1,7 @@
 # AGENTS — Operating Rules for AI Agents in This Project
 
+> **LAYER**: project (L1 index — see "3-layer architecture" below)
+>
 > L0: AI agents entering this repo MUST read
 > `core-layer/AGENTS_CORE.md` FIRST (always-loaded
 > subset, ~6K chars, cache-stable), then this
@@ -158,6 +160,29 @@ Archived: `../skill-incubator/` (consolidated into SUA's
 - (a) 1 line / typo / cross-ref = low-risk autonomous, skip 7-check
 
 **Live detail**: see AGENTS_DETAIL.md § Recent cross-project sync.
+
+
+### 3-layer architecture
+
+This project uses a **3-layer policy** to govern documentation
+and modification rules (per `docs/THREE_LAYER_DECISION_2026-07-30.md`):
+
+| Layer | Marker | Files | Modification rule |
+|---|---|---|---|
+| **核心层** (core) | `LAYER: 核心` | `core-layer/AGENTS_CORE.md`, `hooks/*`, `.hermes/scripts/*` | M-n 15 multi-session + user explicit authorization |
+| **项目层** (project) | `LAYER: project` | `AGENTS.md`, `AGENTS_DETAIL.md`, `docs/*`, `README.md`, `CONTRIBUTING.md`, `LICENSE`, `tests/*` | Update as project evolves |
+| **用户层** (user) | `LAYER: user` | local-only (e.g., `~/.config/sua/USER_LAYER.md` or repo-local gitignored file) | Per-user customization, never committed to upstream |
+
+**Why**: per tua-start `AGENTS.md` "主动修改 skill" protocol,
+核心层修改需要尽可能少 (modify core only when absolutely necessary),
+用户层主要改 (most edits happen in user layer), 项目层随项目变
+(project layer changes with project).
+
+**For fresh agents**: always read the LAYER marker at the top of
+any doc to know which layer it belongs to and what modification
+rules apply.
+
+**Live detail**: see AGENTS_DETAIL.md § 3-layer architecture.
 
 
 ### Detail (L2)

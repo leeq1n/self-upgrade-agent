@@ -1,5 +1,7 @@
 # AGENTS — Operating Rules (detail)
 
+> **LAYER**: project (L2 detail — see `AGENTS.md` "3-layer architecture")
+>
 > L0: Live L2 source for the per-task rules indexed by `AGENTS.md`,
 > plus conditional project-document loading guidance.
 
