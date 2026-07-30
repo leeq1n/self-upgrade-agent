@@ -7,6 +7,18 @@
 
 ## 2026-07-30 — cross-repo enforcement
 
+### v2.6.1 — CHANGELOG v2.6.0 entry (2026-07-30)
+
+Commit: `0ad78e8`. Tag: `v2.6.1`.
+
+**Doc-only PATCH.** Adds the v2.6.0 entry that the
+`self_health_check` audit's `changelog_covers_recent_tags`
+check flagged. This is the audit validating itself end-to-end:
+v2.6.0 shipped the cross-repo audit, the audit caught the
+missing changelog entry, v2.6.1 closes the gap.
+
+No code or protocol changes. Behavior identical to v2.6.0.
+
 ### v2.6.0 — cross_repo_audit + tests (2026-07-30)
 
 Commit: `60142e6`. Tag: `v2.6.0`.
