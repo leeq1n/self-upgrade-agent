@@ -1,5 +1,11 @@
 # Self-Upgrade Agent (SUA)
 
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)](CONTRIBUTING.md)
+[![AAIF Compatible](https://img.shields.io/badge/AAIF-AGENTS.md%20compatible-blueviolet)](AGENTS.md)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-open%20standard%202025--12--18-success)](docs/CROSS_RUNTIME_SKILL_BRIDGE.md)
+
 > L0: SUA project README — orientation, current state,
 > recent commits.  Per 2026-07-20 consolidation:
 > SUA is the **knowledge library** for the hermes-root
@@ -97,3 +103,18 @@ self-improving agent that modifies `core/planner.py`.
 The code still exists and is functional, but is no
 longer the project's focus.  For code documentation
 and CLI usage, see `README_DETAIL.md` § Code legacy.
+
+## Changelog
+
+For the full history of SUA development, see
+[`CHANGELOG.md`](CHANGELOG.md).
+
+## Code of conduct
+
+Participation in this project is governed by the
+[Contributor Covenant](CODE_OF_CONDUCT.md), version 2.1.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) (c) 2026
+LiQin.
