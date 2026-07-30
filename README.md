@@ -10,6 +10,12 @@
 > SUA is an **agent discipline knowledge library** — agent
 > behavior rules, reasoning primitives, and operating principles
 > that you can carry into any agent runtime.
+>
+> **This repository is the canonical source of truth** for SUA:
+> [github.com/leeq1n/self-upgrade-agent](https://github.com/leeq1n/self-upgrade-agent).
+> Per R92 (0 drift), other copies are not maintained; this URL
+> is what the commit-msg hook enforces as the upstream pin for
+> adapters and runtime integrations.
 
 ## What is SUA?
 
