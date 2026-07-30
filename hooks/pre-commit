@@ -22,6 +22,7 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 EVAL_BEFORE="$REPO_ROOT/.hermes/scripts/eval_before.py"
 VERIFY_AFTER="$REPO_ROOT/.hermes/scripts/verify_after.py"
 SELF_HEALTH="$REPO_ROOT/.hermes/scripts/self_health_check.py"
+CROSS_REPO_AUDIT="$REPO_ROOT/.hermes/scripts/cross_repo_audit.py"
 
 echo "[pre-commit] Running eval_before gate..."
 
@@ -58,6 +59,28 @@ if [ -f "$SELF_HEALTH" ]; then
     fi
 else
     echo "[pre-commit] self_health_check.py not found — skipping"
+fi
+
+# cross_repo_audit.py: per docs/POST_SEARCH_EVALUATION_2026-07-30.md
+# (Option C), audit sibling repos for mirror pollution before
+# committing in upstream SUA. Fail-open by default; STRICT_EVAL=1
+# promotes to block. Detects: missing adapter/ (Leaf-Only contract),
+# mirror pollution (top-level core-layer/ / docs/ / hooks/ / src/),
+# internal refs in AGENTS.md / README.md, branch-pinned submodules.
+echo "[pre-commit] Running cross_repo_audit..."
+if [ -f "$CROSS_REPO_AUDIT" ]; then
+    if python "$CROSS_REPO_AUDIT" 2>&1; then
+        echo "[pre-commit] cross_repo_audit: PASS"
+    else
+        cra_rc=$?
+        if [ "${STRICT_EVAL:-0}" = "1" ]; then
+            echo "[pre-commit] cross_repo_audit: FAIL (strict mode)" >&2
+            exit $cra_rc
+        fi
+        echo "[pre-commit] cross_repo_audit: WARN (non-blocking, set STRICT_EVAL=1 for strict)"
+    fi
+else
+    echo "[pre-commit] cross_repo_audit.py not found — skipping"
 fi
 
 # Note: verify_after.py is intentionally NOT called from pre-commit
