@@ -1,14 +1,82 @@
-# CHANGELOG — SUA + cross-project
+# CHANGELOG — Self-Upgrade Agent (SUA)
 
-> Consolidated audit log of 2026-07-20 session work. Per user catch
-> 「将相关的修改 commit 在一起, 不要太散」 — instead of multiple
-> scattered commits, this single SUA commit captures the unified
-> state of all related actions taken today across the hermes-root
-> family + hermes user-level skills.
+> Canonical log of SUA releases and significant changes.
+> Per P-14 docs current + P-17 no fabricate, this file documents
+> the actual released state of the project on
+> [github.com/leeq1n/self-upgrade-agent](https://github.com/leeq1n/self-upgrade-agent).
+
+## 2026-07-30 — re-open-source and self-contained mandate
+
+### v2.3.1 — self-contained mandate compliance (2026-07-30)
+
+Commit: `4a5b76d`. Tag: `v2.3.1`.
+
+**Doc-only release**. Removes internal cross-references
+(sibling project paths, dev commit numbers, round numbers)
+from user-facing files (`README.md`, `CONTRIBUTING.md`,
+`RELEASE_NOTES_v2.3.0.md`). Public standards (Anthropic
+Agent Skills, AAIF) and SUA's own protocol names are kept.
+
+No code or protocol changes. All v2.3.1 behavior is
+identical to v2.3.0.
+
+### v2.3.0 — open-source compliance (2026-07-30)
+
+Commit: `049e768`. Tag: `v2.3.0`.
+
+First re-open-source release. Adds:
+
+- **LICENSE** (MIT, 1061 B) — first time added
+- **CONTRIBUTING.md** (3419 B) — contribution workflow and
+  P-n commit-msg convention
+- **CODE_OF_CONDUCT.md** (5485 B) — Contributor Covenant v2.1
+- **docs/CROSS_RUNTIME_SKILL_BRIDGE.md** (4483 B) — Agent
+  Skills open standard bridge for non-canonical runtimes
+- **README badges** — MIT / PRs Welcome / AAIF / Agent Skills
+- **README sections** — Changelog / Code of conduct / License
+- Cleanup — removed 18.1 MB chromedriver artifact
+
+No breaking changes.
+
+### v2.4.1 — runtime artifact cleanup (2026-07-09)
+
+Commit: `a5d3029`. Not officially tagged at the time.
+
+Removes runtime artifacts (`upgrades/*.json`, `*.db`,
+`*.jsonl`, `archive/*.json`) from git. Adds `upgrades/*`
+catch-all to `.gitignore` (with `!.gitkeep` exception so
+the directory stays tracked if needed). Files remain on
+disk; only git tracking changed.
+
+Verification: `git check-ignore` confirms runtime files
+are ignored.
+
+### v2.4.0 — unified CLI entry point (2026-07-08)
+
+Commit: `2442d09`. Not officially tagged at the time.
+
+Refactor merging v1.x's `run_1round.py` /
+`run_3rounds_manual.py` / `run_stable.py` into a single
+CLI entry. v1.x entry points remain in tree for
+backward compatibility but are no longer the canonical
+path.
+
+### Earlier history
+
+The following tags predate the re-open-source release and
+remain on orphan commits in git history (preserved per
+P-17, not reachable from `main`):
+
+- `v1.6.0`, `v1.7.0`, `v1.7.1`, `v1.8.1-alpha`, `v1.8.2-alpha`
+- `v2.0.0-critical-thinking-injection`, `v2.1.0-lifecycle-scripts`,
+  `v2.2.0-session-final-2026-07-16`
+
+For development-history context, see
+[`docs/RETROSPECTIVE_2026-07-20.md`](docs/RETROSPECTIVE_2026-07-20.md).
 
 ## 2026-07-20 — major session
 
-### Self-Upgrade Agent (SUA) — hermes-root/self-upgrade-agent
+### Self-Upgrade Agent (SUA)
 
 **16 commits today** (master branch, HEAD = `ea3069d`):
 
