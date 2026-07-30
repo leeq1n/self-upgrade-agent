@@ -1,0 +1,29 @@
+# .gitattributes — force line endings per file type.
+#
+# Per v2.14.1 fix: git's core.autocrlf=true was converting
+# bash scripts to CRLF on checkout, breaking bash -n in
+# Python subprocess contexts. This file overrides autocrlf
+# per file type.
+
+# Shell scripts MUST use LF (Unix line endings).
+# bash -n + Python subprocess.run + cross-platform hooks
+# all require LF for reliable parsing.
+hooks/* text eol=lf
+.hermes/scripts/*.sh text eol=lf
+*.sh text eol=lf
+
+# Python — keep LF (PEP 8)
+*.py text eol=lf
+
+# Markdown / docs — LF
+*.md text eol=lf
+*.txt text eol=lf
+
+# JSON — LF (no CRLF inside)
+*.json text eol=lf
+
+# Binary — do not modify
+*.png binary
+*.jpg binary
+*.ico binary
+*.pdf binary
