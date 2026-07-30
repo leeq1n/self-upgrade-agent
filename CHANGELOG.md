@@ -7,6 +7,16 @@
 
 ## 2026-07-30 — re-open-source and self-contained mandate
 
+### v2.4.2 — CHANGELOG.md update (2026-07-30)
+
+Commit: `c26d042`. Tag: `v2.4.2`.
+
+**Doc-only PATCH release** (per P-127 version policy). Documents
+v2.3.0 / v2.3.1 / v2.4.0 / v2.4.1 in CHANGELOG so the canonical
+release log matches what was actually shipped to GitHub.
+
+Behavior is identical to v2.3.1. No code or protocol changes.
+
 ### v2.3.1 — self-contained mandate compliance (2026-07-30)
 
 Commit: `4a5b76d`. Tag: `v2.3.1`.
