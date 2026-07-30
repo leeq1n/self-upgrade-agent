@@ -5,9 +5,54 @@
 > the actual released state of the project on
 > [github.com/leeq1n/self-upgrade-agent](https://github.com/leeq1n/self-upgrade-agent).
 
-## 2026-07-30 — re-open-source and self-contained mandate
+## 2026-07-30 — self-audit integration
 
-### v2.4.4 — roll back canonical-source paragraph (2026-07-30)
+### v2.5.1 — M-n 34 pre-task vocabulary check (2026-07-30)
+
+Commit: `bae820e`. Tag: `v2.5.1`.
+
+**Feature PATCH.** Adds `.hermes/scripts/self_health_check.py`
+(8.2 KB) — string-match audit surfacing commits that omit
+M-n 34 pre-task vocabulary. Pre-commit hook calls it
+fail-open by default; `STRICT_EVAL=1` promotes to block.
+
+The audit covers three vocabulary signals derived from
+early SUA protocol:
+
+1. `changelog_covers_recent_tags` — latest tag has matching
+   CHANGELOG entry.
+2. `recent_commits_cite_tradeoff` — commits use Q1/Q2/Q3
+   trade-off language.
+3. `recent_commits_cite_mn34_pre_task` — commits cite M-n 34
+   pre-task scan vocabulary.
+
+**Audit run on the v2.5.1 commit itself** (per
+self-consistency requirement): PASS for the commit body,
+FAIL for older commits without tradeoff language — those
+warnings are informational, not regressions.
+
+### v2.5.0 — add self_health_check + pre-commit integration (2026-07-30)
+
+Commit: `c063a36`. Tag: `v2.5.0`.
+
+**Feature PATCH.** First real-ship of the self-audit
+infrastructure. 1 file added (`.hermes/scripts/self_health_check.py`,
+180 lines) + 21 lines added to `hooks/pre-commit`.
+
+- P12 (knowledge in project): audit lives in `.hermes/scripts/`,
+  not in memory.
+- P14 (docs current): this entry follows the audit (the
+  audit's own delivery is not wordy).
+- P17 (no fabricate): script is string-match, not LLM-judgment.
+- P9 (hard rules): same.
+- P7 (Occam): the audit is one new check + one hook fragment.
+  The cost is small; the gain is regression prevention on
+  wordy-trap claims.
+
+**Orphaned tag notice**: v2.4.3 tag points to commit
+`01840dd`, not reachable from `main` HEAD (orphaned by the
+v2.4.4 amend + force-push). Per P-17 honest reporting, the
+orphan is recorded here so future readers do not chase it.
 
 Commit: `231691f`. Tag: `v2.4.4`.
 
