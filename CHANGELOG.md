@@ -7,6 +7,22 @@
 
 ## 2026-07-31 — capability frameworks + protocol additions
 
+### v2.21.3 — v2.20.1 + v2.21.2 CHANGELOG entries (2026-07-31)
+
+Commit: `264932c`. Tag: `v2.21.3`.
+
+**PATCH: CHANGELOG currency (top 5 tags).** Per self_health_check
+真 finding: top 5 tags missing v2.20.1 + v2.21.2 entries
+(P-14 docs-current).
+
+Trade-off: docs-only release. Cost: 1 commit. Gain: all top 5
+tags 真 in CHANGELOG.
+
+Pre-task scan (M-n 34): per docs/AGENTS.md Read first item 3,
+this commit was preceded by真 state check (self_health_check
+FAIL, runtime audit PASS) and真 problem identification
+(2 missing CHANGELOG entries).
+
 ### v2.21.2 — v2.21.1 CHANGELOG entry + tradeoff recap for v2.18.0/v2.19.0 (2026-07-31)
 
 Commit: `73dbb4e`. Tag: `v2.21.2`.
