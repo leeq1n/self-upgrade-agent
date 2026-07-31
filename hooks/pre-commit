@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # pre-commit hook — invokes eval_before.py + verify_after.py gates
 # per core-layer/governance-template.md "Verify-After"
-# + user message 2026-07-16 "修改时需要评估，修改后需要验收".
+# + docs/OPERATING_RULES.md (修改时需要评估，修改后需要验收).
 #
 # Per M-n 32 Guardrail #1 retrofitted (verify target state
 # before commit).  Per M-n 35 critical-thinking primitive 3
@@ -41,7 +41,8 @@ else
     echo "[pre-commit] eval_before.py not found — skipping"
 fi
 
-# self_health_check.py: SUA self-audit per R137 wordy-trap defense.
+# self_health_check.py: SUA self-audit per docs/OPERATING_RULES.md
+# wordy-trap defense rule.
 # Fail-open by default (advisory, exit 0). STRICT_EVAL=1 promotes
 # to block. Pre-existing commits may have a body wordy-trap warning;
 # that is informational, not a regression.
