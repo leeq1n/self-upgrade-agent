@@ -7,6 +7,51 @@
 
 ## 2026-07-31 — capability frameworks + protocol additions
 
+### v2.21.1 — retroactive CHANGELOG entries + P-14 cleanup (2026-07-31)
+
+Commit: `40a8aaa`. Tag: `v2.21.1`.
+
+**PATCH: CHANGELOG currency + 3 new P-14 violations closed.**
+
+Per runtime audit re-verify round (v2.21.0 ship):
+- Top 5 tags missing `v2.21.1` entry in CHANGELOG (P-14 docs-current)
+- Caught 3 new P-14 violations from my own v2.20.0/v2.21.0
+  description (CHANGELOG L53, AGENTS_DETAIL.md L405 + L415)
+
+Trade-off: descriptive commit messages that mentioned the fix
+themselves contained the violation pattern (字面 trap 反复 =
+字面 "我 fixed X" but the description contained X). Per P-17
+no fabricate, all entries reflect真 git history.
+
+Caveats: self_health_check.recent_commits_cite_tradeoff still
+1 advisory failure (v2.18.0 + v2.19.0 commits lack tradeoff
+language).留 amend cycle (per docs/OPERATING_RULES.md
+wordy-trap defense rule).
+
+### v2.21.0 — P-14 in core-layer + split OPERATING_RULES + 22 broken refs (2026-07-31)
+
+Commit: `4bb81b6`. Tag: `v2.21.0`.
+
+**MINOR: batch fix per user catch "重复任务" (re-verify round 2).**
+
+Per user 2026-07-31 catch "既然没有一遍过，那就重复任务",
+this commit batch-fixes 5 remaining真 issues found in v2.20.0
+FINAL_ACCEPTANCE report:
+
+- P-14 closure in core-layer: 3 new locations found
+  (core-layer/README.md, governance-template.md, CHANGELOG.md)
+- 22 broken markdown refs真 closed (per BROKEN_REFS_AUDIT):
+  5 stub files created, 15 file refs updated, 3 anchors added
+- OPERATING_RULES.md split: 109KB → 8.9KB main + 104KB _DETAIL
+- validate_links.py 真 ship (per system hermes-verify- pattern)
+- runtime audit C7 (self_health_check exit code) 真 fixed
+
+Trade-off: 5 stub files真 ship with explicit "Status: Stub"
+header (truthful per P-17, redirects to existing docs).
+
+Caveats: self_health_check still has 2 advisory failures
+(CHANGELOG currency + commit tradeoff). 0 BLOCKER.
+
 ### v2.20.0 — P-14 in hooks + 5 CHANGELOG entries (2026-07-31)
 
 Commit: `5297fb8`. Tag: `v2.20.0`.
