@@ -694,7 +694,7 @@ directive.)
   without Hermes-specific knowledge.
 
 **2026-07-20 retrospective** (per M-n 33 close-loop): see
-[`docs/RETROSPECTIVE_2026-07-20.md`](RETROSPECTIVE_2026-07-20.md)
+[`docs/RETROSPECTIVE_2026-07-20.md`](docs/RETROSPECTIVE_2026-07-20.md)
 for the 5 self-audit questions that close the loop on this
 session's 7 miss-patterns.  Apply at every commit / audit /
 cross-project decision; not encoded as always-loaded rule

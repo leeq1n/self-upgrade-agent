@@ -215,7 +215,7 @@ should fall back to AGENTS.md (per P22).
 For session-specific learnings (5-question audit pattern, banned-
 word language habit shift, "OcCam ≠ Stop" meta-insight, project
 layer > agent layer, audit scope declaration), see
-`docs/RETROSPECTIVE.md`.
+`docs/RETROSPECTIVE_2026-07-20.md`.
 
 AGENTS_DETAIL.md already cross-refs it for per-task loaders; this
 top-level pointer ensures cold-start agents find it without

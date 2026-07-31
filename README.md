@@ -104,3 +104,18 @@ This project is licensed under the [MIT License](LICENSE)
 This repo is the default direct-use path: clone it into your
 project, point your agent at `AGENTS.md`, and the agent absorbs
 the operating contract on session start.
+
+## Uninstall
+
+If you installed SUA into another project and want to remove it:
+
+```bash
+# Remove hooks only (keeps .hermes/, AGENTS.md, etc.)
+bash .hermes/scripts/uninstall.sh
+
+# Or remove everything (--dry-run first to preview)
+bash .hermes/scripts/uninstall.sh --dry-run
+bash .hermes/scripts/uninstall.sh --full
+```
+
+See `.hermes/scripts/uninstall.sh --help` for all options.
