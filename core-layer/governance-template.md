@@ -10,7 +10,7 @@ Any modification to:
 - `AGENTS.md` (L0 surface)
 - `hooks/` (mechanical enforcement layer)
 - `.hermes/scripts/` (programmatic baseline scripts)
-- `docs/OPERATING_RULES.md` (M-n codification)
+- `../docs/OPERATING_RULES.md` (M-n codification)
 - `docs/M_*_DETAIL.md` (M-n L2 details)
 
 ## Eval-Before (steps BEFORE commit)
@@ -61,7 +61,7 @@ If verification fails:
 ## Lifecycle (per M-n 18 destruction principle)
 
 - Apply, verify, **then optionally destroy related obsolete state**
-- E.g., if modifying `OPERATING_RULES.md` M-n section, OLD section text
+- E.g., if modifying `../docs/OPERATING_RULES.md` M-n section, OLD section text
   should be moved to archive or deleted if fully superseded
 - Never destroy **before** verifying replacement is in place
 
@@ -77,7 +77,7 @@ rights** (核心 / 用户 / 项目).  Both coexist:
 
 - `core-layer/README.md` (L0 marker)
 - `AGENTS.md` (L0 operating rules)
-- `docs/OPERATING_RULES.md` (M-n codification)
+- `../docs/OPERATING_RULES.md` (M-n codification)
 - `.hermes/scripts/m_n29_5step.py` (deterministic baseline)
 
 ---

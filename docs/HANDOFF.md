@@ -76,7 +76,7 @@ orientation.
 | c82 | README vision sync (R5-safe) | sync vision to 4th doc (still stale per c73 follow-up) | README.md |
 | c83 | parent verify batch | verify c73-c82 per SUMMARY_LIFECYCLE | plan |
 | -- (hermes-root project, separate repo) -- |
-| skill | process triggers | `docs/process/when-to-reflect.md` with trigger phrases | `agent-reflection-skill/SKILL.md` reference |
+| skill | process triggers | `../agent-reflection-skill/docs/process/when-to-reflect.md` with trigger phrases | `agent-reflection-skill/SKILL.md` reference |
 | skill | case studies | 1 case study each: analogy/induction/reflection/abduction | skill project plan step 3 |
 | skill | port-test | verify works in 2+ agent frameworks | plan step 5 |
 

@@ -183,7 +183,7 @@ This file:
 | `run_acceptance.sh` | **核心层** (`.hermes/scripts/`) | Single entrypoint |
 | ACCEPTANCE_PROTOCOL.md | **项目层** (`docs/`) | Per-project protocol |
 | Acceptance reports | **用户层** (`~/.config/sua/acceptance/`) | Per-state ephemeral |
-| Acceptance criteria | **项目层** (`docs/ACCEPTANCE_CRITERIA.md`) | Per-project spec |
+| Acceptance criteria | **项目层** (`docs/ACCEPTANCE_PROTOCOL.md`) | Per-project spec |
 
 ## 6. Acceptance 4-phase process (per ATDD)
 

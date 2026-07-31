@@ -50,7 +50,7 @@ hermes learning.
 
 | Layer | Where | What | Persistence |
 |---|---|---|---|
-| **核心** | `core-layer/` + `AGENTS.md` + `hooks/` + `.hermes/scripts/` + `OPERATING_RULES.md` | Agent behavior rules | Cross-project, cross-user (migrates to other users' machines via skill) |
+| **核心** | `core-layer/` + `AGENTS.md` + `hooks/` + `.hermes/scripts/` + `docs/OPERATING_RULES.md` | Agent behavior rules | Cross-project, cross-user (migrates to other users' machines via skill) |
 | **用户** | `memory/` system + user-specific files | User habits / preferences | Cross-session (per user) |
 | **项目** | `docs/PRINCIPLES.md` + `docs/PROJECT_STATE.md` + project docs | Project-specific knowledge | Per project (NOT cross-project) |
 

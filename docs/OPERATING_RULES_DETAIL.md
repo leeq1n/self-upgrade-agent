@@ -1270,7 +1270,7 @@ gate, 4+ observed):
 - `OPERATING_RULES.md` § M-n 19 — file naming
   convention
 - `docs/PRINCIPLES.md` — P-n list (24 P-n)
-- `docs/AGENTS.md` — agent entry point (per P26)
+- `../AGENTS.md` — agent entry point (per P26)
 - `OPERATING_RULES_DETAIL.md` (or
   `M_AGENT_DISCOVERABILITY_CHECK_DETAIL.md` future
   L2 companion)

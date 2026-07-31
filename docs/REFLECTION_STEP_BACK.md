@@ -75,7 +75,7 @@ After E, decide on A or B based on observed need:
 
 ## What "Option E" looks like in practice
 
-A document like `docs/HOW_TO_READ_THIS_GRAPH.md`
+A document like `docs/HOW_TO_READ_GRAPH.md`
 (or similar) that:
 1. Lists the 5 essence families of docs (per c44)
 2. Shows the recommended reading order (per P20)

@@ -127,5 +127,5 @@ KNOWLEDGE_ORG (c81), and other 11 docs (c60-c83 batch).
 - `docs/HOW_TO_READ_GRAPH.md` — 3-step read pattern
 - `docs/HANDOFF.md` — project-specific onboarding
 - `docs/PROJECT_STATE.md` — current state snapshot
-- `docs/SKILL_GENERATION.md` — SUA 维护的 skill-generation-knowledge
+- `docs/SKILL_DESIGN.md` — SUA 维护的 skill-generation-knowledge
 - `../agent-reflection-skill/` — sibling project

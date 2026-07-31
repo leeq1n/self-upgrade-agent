@@ -57,11 +57,14 @@ it at the directory once.
 
 ## Working principles (P-n) + workflow (M-n)
 
-See `docs/PRINCIPLES.md` (25 P-n working, P1-P29 minus 4
-demoted). The commit-message hook enforces P-n cite in commit
-messages.
+See `docs/PRINCIPLES.md` (P1-P29 working principles, with
+P1-P30 referenced across docs). The commit-message hook
+enforces P-n cite in commit messages.
 
-See `docs/OPERATING_RULES.md` (M-n 1-27).
+See `docs/OPERATING_RULES.md` (M-* operating workflow rules:
+M-task-summary, M-must-read, M-context-snapshot,
+M-subtask-summary, M-intent-parsing, M-learn,
+M-add-then-reduce, M-self-audit, M-self-application).
 
 ## Contributing
 
@@ -106,6 +109,38 @@ This project is licensed under the [MIT License](LICENSE)
 This repo is the default direct-use path: clone it into your
 project, point your agent at `AGENTS.md`, and the agent absorbs
 the operating contract on session start.
+
+## Install
+
+**Clone 用法（推荐，任何 agent 通用）**: SUA 不需要"安装"，
+直接放进项目目录即可：
+
+```bash
+# 在你的项目里 (如科研项目 satellite-security/)
+git clone https://github.com/leeq1n/self-upgrade-agent.git .sua/
+
+# 对 agent 说：用 .sua/ 约束你的行为
+# agent 自动读 .sua/AGENTS.md + core-layer/AGENTS_CORE.md
+```
+
+**跨 agent 使用教程**：
+
+| Agent | 用法 |
+|---|---|
+| **Hermes / Cursor** | 项目内 clone `.sua/`，agent 自动读 AGENTS.md（本 README Quick start 6-step） |
+| **Codex / Claude Code / Antigravity** | 见 [`docs/CROSS_RUNTIME_SKILL_BRIDGE.md`](docs/CROSS_RUNTIME_SKILL_BRIDGE.md)（Agent Skills `SKILL.md` 格式桥接） |
+| **任意 stateless 会话** | 用 bridge 的 system-prompt 注入方式 |
+| **科研项目** | 见 [`docs/RESEARCH_USAGE.md`](docs/RESEARCH_USAGE.md)（适配器模式 + 工作流） |
+
+**Hook 安装（可选）**: 想让 SUA 的 commit-msg / pre-commit
+hooks 在你的项目生效：
+
+```bash
+# 复制 hooks 到项目 .git/hooks/ (一次性, 每个 clone)
+cp .sua/hooks/commit-msg .git/hooks/commit-msg
+cp .sua/hooks/pre-commit .git/hooks/pre-commit
+cp .sua/hooks/pre-push .git/hooks/pre-push
+```
 
 ## Uninstall
 
