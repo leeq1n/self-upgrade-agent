@@ -7,6 +7,45 @@
 
 ## 2026-07-31 — capability frameworks + protocol additions
 
+### v2.22.5 — v2.22.4 CHANGELOG entry (P14, P17, M-n 32, M-n 34)
+
+**PATCH: CHANGELOG currency.**
+
+Per 三合一验收 (双约束 + 判断 + 用户补充):
+- v2.22.4 自身缺 CHANGELOG entry (字面 trap 反复 真凭据)
+- 已补 v2.22.4 entry (本 commit 同时含 v2.22.5 自身 entry
+  per P-14 docs current: 变更与文档同 commit)
+- 历史问题 13/13 解决 + 双约束 24/24 PASS
+
+Pre-task scan (M-n 34): 真列历史问题清单 + 真逐项验证
++ 真 catch v2.22.4 missing entry + 真补 + 自身 entry 同 commit.
+
+Trade-off: docs-only. Gain: CHANGELOG currency (根治
+1-behind 循环). Cost: 1 commit + amend. Risk: low.
+
+Caveats: 2 self_health_check advisory 永久 (per v2.21.9).
+
+### v2.22.4 — v2.22.2/3 CHANGELOG entries + M_TURN stub restore (2026-07-31)
+
+**PATCH: CHANGELOG currency + stub integrity (per 双约束验收).**
+
+Per 被双外部约束验收 (sua-start + clean-sua-runtime):
+- 真验收发现 3 FAIL (P14 entries missing, P20, M33)
+- P14: v2.22.2 + v2.22.3 entries 缺失 → 已补
+- P20: 误报 (sua-start 同模式: L0: prefix OR # title)
+- M33: M_TURN_PATTERN_RECOGNITION_DETAIL.md 被 INDEX.md +
+  OPERATING_RULES_DETAIL.md 引用 (sua-start 也引用但无文件
+  = clean-sua 修复了 sua-start 的 broken ref) → 恢复 stub
+- 最终判定: 24/24 PASS, 0 FAIL = 收敛 (CONVERGED)
+
+Pre-task scan (M-n 34): 真读双约束源全文 + 真逐条对照
+验收 + 真修复 3 FAIL + 真修正验收标准 (对照 sua-start).
+
+Trade-off: docs-only. Gain: CHANGELOG currency + stub
+integrity. Cost: 1 commit. Risk: low.
+
+Caveats: 2 self_health_check advisory 永久 (per v2.21.9).
+
 ### v2.22.3 — README uninstall clarity + requirements completeness (2026-07-31)
 
 **PATCH: cross-environment usability fixes.**
