@@ -24,17 +24,19 @@ set -e
 
 # MSYS self-bootstrap: when bash is launched from Windows cmd
 # (via install-hooks.bat), PATH lacks git's /usr/bin (sed, cp,
-# etc. are not found). Derive git root from our own location.
+# etc. are not found). Derive git root from $BASH (bash always
+# points $BASH at itself; `command -v bash` from cmd PATH may
+# resolve WSL bash instead — unreliable).
 # NOTE: avoid external cmds here (dirname etc. may be missing too).
 case "$PATH" in
   */usr/bin*)
     ;;
   *)
-    BASH_SELF="$(command -v bash 2>/dev/null || echo "$0")"
+    BASH_SELF="${BASH:-$0}"
     BASH_DIR="${BASH_SELF%/*}"          # bash's dir (pure expansion)
-    for CAND in "$BASH_DIR/.." "$BASH_DIR/../.."; do
-      if [ -d "$CAND/usr/bin" ]; then
-        export PATH="$CAND/usr/bin:$PATH"
+    for CAND in "$BASH_DIR" "$BASH_DIR/.." "$BASH_DIR/../.."; do
+      if [ -d "$CAND" ] && [ -x "$CAND/sed" ]; then
+        export PATH="$CAND:$PATH"
         break
       fi
     done
