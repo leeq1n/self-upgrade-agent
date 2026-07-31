@@ -137,21 +137,21 @@ git clone https://github.com/leeq1n/self-upgrade-agent.git .sua/
 处理，目标项目零污染 — 不会出现 `.hermes/` 目录）：
 
 ```bash
-# 一键安装（hooks 路径自动重写到 .sua/ 内部）
+# macOS / Linux / Git Bash:
 bash .sua/install-hooks.sh
 
-# 覆盖已存在的 hooks
-bash .sua/install-hooks.sh --force
-
-# 显式指定 SUA 位置（从目标项目运行）
-SUA_DIR=/path/to/.sua bash .sua/install-hooks.sh
+# Windows (cmd / PowerShell，无需 bash):
+.sua\install-hooks.bat
+# 或双击 install-hooks.bat
 ```
 
-> 注：install-hooks.sh 会把 hook 内的脚本路径重写到 SUA
-> clone 内部（`.sua/.hermes/scripts/`），你的项目只增加
-> `.git/hooks/` 条目，不产生任何 `.hermes/` 目录（对
-> codex / claude 等非 hermes agent 友好）。Windows 下自动
-> 处理路径转换（cygpath）。
+覆盖已存在的 hooks 加 `--force`；预览加 `--dry-run`。
+
+> 注：install-hooks.sh / .bat 会把 hook 内的脚本路径重写
+> 到 SUA clone 内部（`.sua/.hermes/scripts/`），你的项目只
+> 增加 `.git/hooks/` 条目，不产生任何 `.hermes/` 目录（对
+> codex / claude 等非 hermes agent 友好）。Windows 下 .bat
+> 自动定位 git 自带的 bash 并处理路径转换（cygpath）。
 
 ## Uninstall
 
