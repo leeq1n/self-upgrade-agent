@@ -22,6 +22,25 @@
 
 set -e
 
+# MSYS self-bootstrap: when bash is launched from Windows cmd
+# (via install-hooks.bat), PATH lacks git's /usr/bin (sed, cp,
+# etc. are not found). Derive git root from our own location.
+# NOTE: avoid external cmds here (dirname etc. may be missing too).
+case "$PATH" in
+  */usr/bin*)
+    ;;
+  *)
+    BASH_SELF="$(command -v bash 2>/dev/null || echo "$0")"
+    BASH_DIR="${BASH_SELF%/*}"          # bash's dir (pure expansion)
+    for CAND in "$BASH_DIR/.." "$BASH_DIR/../.."; do
+      if [ -d "$CAND/usr/bin" ]; then
+        export PATH="$CAND/usr/bin:$PATH"
+        break
+      fi
+    done
+    ;;
+esac
+
 # --- Resolve SUA_DIR (source of hooks) ---
 # 1. $SUA_DIR env var
 # 2. $1 positional arg (dir containing hooks/)

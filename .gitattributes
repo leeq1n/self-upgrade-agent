@@ -27,3 +27,8 @@ hooks/* text eol=lf
 *.jpg binary
 *.ico binary
 *.pdf binary
+
+# Windows .bat MUST be CRLF (cmd.exe cannot parse LF line endings)
+# Per v2.22.11 fix: git autocrlf stored .bat as LF on commit,
+# breaking cmd parsing (fragment errors 'm'/'tlocal'/'9009').
+*.bat text eol=crlf
