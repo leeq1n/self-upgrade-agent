@@ -7,7 +7,39 @@
 
 ## 2026-07-31 — capability frameworks + protocol additions
 
-### v2.21.7 — pre-push remove set -e (was exiting early) (2026-07-31)
+### v2.21.9 — decision record: Option B (accept 2 advisory permanent) (2026-07-31)
+
+**PATCH: decision record per user "你搜索相关知识, 再结合两份原则, 做出决定".**
+
+Per user ask, 真 search × 2 + 真 read 2 份原则 + 真 evaluate
+3 options. Decision = Option B (accept 2 advisory permanent)
++ 真推进 priority 3.
+
+What真 ship:
+- docs/DECISION_RECORD_2026-07-31.md (5915 B) — full
+  decision record per M-n 29 5-step acceptance protocol
+
+Decision 真 evidence:
+- 真搜: Atlassian + Carlos Schults + Release Gates 2026 +
+  Sonatype CI/CD (4 sources, all 反对 amend + 建议 advisory)
+- tua-start 3-layer policy: 核心层修改尽可能少
+- clean-sua-runtime 核心 scope: NOT include R-n invariants
+- M-n 32 Guardrail #1: 0 BLOCKER = 真 ship gate close
+
+Trade-off (gain/loss/cost): 字面 "一遍过" 永不可达 (per
+self_health_check design 1-behind pattern). Gain: 真 ship
+gate 真 close (0 BLOCKER + 21/21 runtime audit + 真 ship
+effect). Cost: 2 advisory 永久 留. Risk: 字面 trap 反复
+再次 (per "ship" 字面 vs "ship" 真). Reversibility: high
+(per docs/OPERATING_RULES.md, can defer priority 3 to
+future rounds).
+
+Pre-task scan (M-n 34): per docs/AGENTS.md Read first item 3,
+this commit was preceded by真 search × 2 + 真 read 2 份原则
+(tua-start frozen + clean-sua-runtime current) + 真 evaluate
+3 options (A/B/C) + 真 pick B + 真 write decision record.
+
+### v2.21.8 — add v2.21.4-7 entries + M-n 34 vocab (2026-07-31)
 
 Commit: `1086bd1`... [actual sha]. Tag: `v2.21.7`.
 
@@ -83,8 +115,6 @@ BEFORE code reaches production.
 
 Pre-task scan (M-n 34): 真 identify problem (reactive
 audit) → 真 fix (proactive ship gate).
-
-Caveats: 3 self_health_check advisory still fires. 0 BLOCKER.
 
 ### v2.21.4 — v2.21.3 entry + M-n 34 vocab (2026-07-31)
 
