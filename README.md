@@ -133,13 +133,35 @@ git clone https://github.com/leeq1n/self-upgrade-agent.git .sua/
 | **科研项目** | 见 [`docs/RESEARCH_USAGE.md`](docs/RESEARCH_USAGE.md)（适配器模式 + 工作流） |
 
 **Hook 安装（可选）**: 想让 SUA 的 commit-msg / pre-commit
-hooks 在你的项目生效：
+等 hooks 在你的项目生效。**必须同时安装 hooks 依赖的
+`.hermes/scripts/*.py` + `hook_principles.json`**（只复制
+hooks 会导致 commit-msg 报
+`hook_principles_loader.py not found`）。
+
+```bash
+# 一键安装（hooks + 依赖 scripts + 原则注册表）
+bash .sua/install-hooks.sh
+
+# 或显式指定 SUA 位置（从目标项目运行）
+SUA_DIR=/path/to/.sua bash .sua/install-hooks.sh
+
+# 覆盖已存在的 hooks
+bash .sua/install-hooks.sh --force
+```
+
+**手动安装（不推荐，易漏依赖）**:
 
 ```bash
 # 复制 hooks 到项目 .git/hooks/ (一次性, 每个 clone)
 cp .sua/hooks/commit-msg .git/hooks/commit-msg
 cp .sua/hooks/pre-commit .git/hooks/pre-commit
 cp .sua/hooks/pre-push .git/hooks/pre-push
+
+# 同时必须复制依赖 (漏了会报 hook_principles_loader.py not found)
+cp .sua/.hermes/scripts/hook_principles_loader.py .hermes/scripts/
+cp .sua/.hermes/scripts/self_health_check.py .hermes/scripts/
+cp .sua/.hermes/scripts/validate_links.py .hermes/scripts/
+cp .sua/.hermes/hook_principles.json .hermes/
 ```
 
 ## Uninstall
