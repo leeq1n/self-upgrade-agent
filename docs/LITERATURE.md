@@ -50,6 +50,6 @@ For the long form (full TL;DR, key quotes, applicability analysis), see
 - Constraints: [CONSTRAINTS.md](CONSTRAINTS.md)
 - Model strategy: [MODEL_STRATEGY.md](MODEL_STRATEGY.md)
 - User intent: [USER_INSIGHTS.md](USER_INSIGHTS.md)
-- Pending tasks: [../../TODO.md](../../TODO.md)
-- Done tasks: [../../DONE.md](../../DONE.md)
+- Pending tasks: [../TODO.md](../TODO.md)
+- Done tasks: [../DONE.md](../DONE.md)
 - Full paper notes: [LITERATURE_DETAIL.md](LITERATURE_DETAIL.md)

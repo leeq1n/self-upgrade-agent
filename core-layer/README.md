@@ -1,10 +1,10 @@
-# SUA 3-layer governance (per user message 2026-07-16)
+# SUA 3-layer governance (per SUA 3-layer modification policy)
 
-> L0 marker for the SUA **核心 layer** boundary.  Per user message
-> 2026-07-16: "核心层只能由 agent 自己主动修改，规划 agent
+> L0 marker for the SUA **核心 layer** boundary.  Per 3-layer
+> modification policy: "核心层只能由 agent 自己主动修改，规划 agent
 > 的行为和 skill 的行为（修改时需要评估，修改后需要验收）".
 
-## Path naming rationale (per M-n 32 retrospective 2026-07-16)
+## Path naming rationale (per docs/OPERATING_RULES.md M-n 32 retrospective)
 
 This directory is at SUA root (`./core-layer/`), NOT `./core/`,
 because `core/` was already in use as SUA's **runtime agent
@@ -19,7 +19,7 @@ in similar-named paths.
 
 | Layer | Modifier | Where it lives (SUA) | Cross-repo location |
 |---|---|---|---|
-| **核心** (core) | Agent-only (with eval-before + verify-after) | `core-layer/` directory + `AGENTS.md` + `hooks/` + `.hermes/scripts/` + `docs/OPERATING_RULES.md` L1 | Future: skill project (per user message 提案) |
+| **核心** (core) | Agent-only (with eval-before + verify-after) | `core-layer/` directory + `AGENTS.md` + `hooks/` + `.hermes/scripts/` + `docs/OPERATING_RULES.md` L1 | Future: skill project (per 3-layer architecture decision) |
 | **用户** (user) | User (habits) + shared (general) | Currently implicit in memory system; needs codification | Future: skill project |
 | **项目** (project) | Project owner | `docs/PRINCIPLES.md` + `docs/PROJECT_STATE.md` + project-specific docs | Per project (intra-repo) |
 
@@ -34,7 +34,7 @@ in similar-named paths.
 | Cold-start simulation method | Knowledge graph data |
 | `m_n29_5step.py` script | `docs/PRINCIPLES_FULL.md` content |
 
-## Modification governance (per user message)
+## Modification governance (per docs/OPERATING_RULES.md modification policy)
 
 1. **Eval-Before**: 5 primitives applied + `python .hermes/scripts/m_n29_5step.py --self`
 2. **Commit**: cite P-n + M-n in commit body
@@ -50,14 +50,14 @@ in similar-named paths.
 
 ---
 
-**P-n cited**: P11, P14, P20, P22, P25 (per user message audit).
+**P-n cited**: P11, P14, P20, P22, P25 (per docs/OPERATING_RULES.md audit).
 **M-n cited**: M-n 30 (knowledge-context-trade-off
 Priority 1), M-n 32 (self-learning-guardrail Guardrail #1),
 M-n 34 (pre-task scan, self-application).
 
-## 3-layer modification policy (per user message 2026-07-16)
+## 3-layer modification policy (per SUA 3-layer modification protocol)
 
-Per user message "skill 在别人电脑上还会主动修改
+Per 3-layer modification policy: "skill 在别人电脑上还会主动修改
 skill, 但是核心层修改需要尽可能少, 主要修改
 用户层 (根据学到的知识判断改哪一层), 而项目层
 知识随着项目变化而变化":

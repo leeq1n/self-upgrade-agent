@@ -117,7 +117,7 @@ constraints change rarely; that file is the source of truth.
 
 ## Next step
 
-See [../../TODO.md](../../TODO.md) for pending work.  Top priority
+See [../TODO.md](../TODO.md) for pending work.  Top priority
 is **v3.0.3 — autonomous daily loop** (per user 2026-07-10
 "我希望这个项目之后可以自己独立运行"):
 
@@ -135,7 +135,7 @@ is **v3.0.3 — autonomous daily loop** (per user 2026-07-10
 - LLM choice: [MODEL_STRATEGY.md](MODEL_STRATEGY.md)
 - Working principles: [PRINCIPLES.md](PRINCIPLES.md)
 - Real-run data: [OBSERVATIONS.md](OBSERVATIONS.md)
-- Pending tasks: [../../TODO.md](../../TODO.md)
-- Done tasks: [../../DONE.md](../../DONE.md)
+- Pending tasks: [../TODO.md](../TODO.md)
+- Done tasks: [../DONE.md](../DONE.md)
 - **Detailed technical history** (the long form): [PROJECT_STATE_DETAIL.md](PROJECT_STATE_DETAIL.md)
 - **Knowledge Graph (P1, deferred)**: [TODO_KNOWLEDGE_GRAPH.md](TODO_KNOWLEDGE_GRAPH.md)

@@ -153,11 +153,11 @@ permanent regression test.
 We just need to persist these and turn them into test cases.
 
 **Use it for**: Driving v2.3 design — failure → regression test
-pipeline.  See [TODO.md top item](../../TODO.md).
+pipeline.  See [TODO.md top item](../TODO.md).
 
 ---
 
-## SkillOpt — Microsoft 2026
+## SkillOpt — Microsoft 2026 {#skillopt-paper}
 
 **TL;DR**: Skills are trainable external state.  +20 point accuracy
 on multimodal tasks.  Skills transfer across model families
