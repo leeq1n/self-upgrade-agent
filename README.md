@@ -48,7 +48,9 @@ the canonical SUA onboarding.
 
 - `AGENTS.md` — operating rules (always-loaded contract)
 - `core-layer/AGENTS_CORE.md` — cache-stable subset (~10 KB)
-- `core/AGENTS_L0.md` — L0 contract that ships to runtime
+- `.hermes/scripts/` — self-audit + verification tooling
+  (self_health_check, validate_links, validate_structure,
+  token_budget, cross_repo_audit, run_acceptance)
 
 The agent reads these on session start. You only need to point
 it at the directory once.
