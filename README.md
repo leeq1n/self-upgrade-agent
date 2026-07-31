@@ -133,36 +133,25 @@ git clone https://github.com/leeq1n/self-upgrade-agent.git .sua/
 | **科研项目** | 见 [`docs/RESEARCH_USAGE.md`](docs/RESEARCH_USAGE.md)（适配器模式 + 工作流） |
 
 **Hook 安装（可选）**: 想让 SUA 的 commit-msg / pre-commit
-等 hooks 在你的项目生效。**必须同时安装 hooks 依赖的
-`.hermes/scripts/*.py` + `hook_principles.json`**（只复制
-hooks 会导致 commit-msg 报
-`hook_principles_loader.py not found`）。
+等 hooks 在你的项目生效。**一条命令**（hooks + 依赖自动
+处理，目标项目零污染 — 不会出现 `.hermes/` 目录）：
 
 ```bash
-# 一键安装（hooks + 依赖 scripts + 原则注册表）
+# 一键安装（hooks 路径自动重写到 .sua/ 内部）
 bash .sua/install-hooks.sh
-
-# 或显式指定 SUA 位置（从目标项目运行）
-SUA_DIR=/path/to/.sua bash .sua/install-hooks.sh
 
 # 覆盖已存在的 hooks
 bash .sua/install-hooks.sh --force
+
+# 显式指定 SUA 位置（从目标项目运行）
+SUA_DIR=/path/to/.sua bash .sua/install-hooks.sh
 ```
 
-**手动安装（不推荐，易漏依赖）**:
-
-```bash
-# 复制 hooks 到项目 .git/hooks/ (一次性, 每个 clone)
-cp .sua/hooks/commit-msg .git/hooks/commit-msg
-cp .sua/hooks/pre-commit .git/hooks/pre-commit
-cp .sua/hooks/pre-push .git/hooks/pre-push
-
-# 同时必须复制依赖 (漏了会报 hook_principles_loader.py not found)
-cp .sua/.hermes/scripts/hook_principles_loader.py .hermes/scripts/
-cp .sua/.hermes/scripts/self_health_check.py .hermes/scripts/
-cp .sua/.hermes/scripts/validate_links.py .hermes/scripts/
-cp .sua/.hermes/hook_principles.json .hermes/
-```
+> 注：install-hooks.sh 会把 hook 内的脚本路径重写到 SUA
+> clone 内部（`.sua/.hermes/scripts/`），你的项目只增加
+> `.git/hooks/` 条目，不产生任何 `.hermes/` 目录（对
+> codex / claude 等非 hermes agent 友好）。Windows 下自动
+> 处理路径转换（cygpath）。
 
 ## Uninstall
 
@@ -170,17 +159,10 @@ cp .sua/.hermes/hook_principles.json .hermes/
 移除 = 删除 `.sua/` 目录即可（无残留，因为 clone 不改动
 项目自身的 git hooks）。
 
-**Hook 安装用法**: 仅当你用脚本把 SUA 的 commit-msg /
-pre-commit hooks 复制进过项目的 `.git/hooks/` 时，才需要
-卸载脚本：
+**Hook 安装用法**: 仅当你用 install-hooks.sh 安装过 hooks，
+才需要清理：
 
 ```bash
-# Remove hooks only (keeps .hermes/, AGENTS.md, etc.)
-bash .hermes/scripts/uninstall.sh
-
-# Or remove everything (--dry-run first to preview)
-bash .hermes/scripts/uninstall.sh --dry-run
-bash .hermes/scripts/uninstall.sh --full
+# 移除 hooks（目标项目没有 .hermes/，无需清理其他）
+rm .git/hooks/commit-msg .git/hooks/pre-commit .git/hooks/prepare-commit-msg .git/hooks/pre-push
 ```
-
-See `.hermes/scripts/uninstall.sh --help` for all options.

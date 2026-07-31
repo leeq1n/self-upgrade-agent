@@ -46,21 +46,6 @@ agent-agnostic (codex / claude / hermes all fine).
 to native Windows paths before calling python. Requires git-for-windows
 (which ships cygpath) — standard on Windows.
 
-## Manual install (not recommended — easy to miss deps)
-
-```bash
-# Copy hooks to .git/hooks/ (NOT auto-installed by design)
-cp hooks/commit-msg .git/hooks/commit-msg
-cp hooks/pre-commit .git/hooks/pre-commit
-cp hooks/prepare-commit-msg .git/hooks/prepare-commit-msg
-cp hooks/pre-push .git/hooks/pre-push
-chmod +x .git/hooks/commit-msg .git/hooks/pre-commit .git/hooks/prepare-commit-msg .git/hooks/pre-push
-
-# Hooks reference $REPO_ROOT/.hermes/scripts/*.py + hook_principles.json
-# — copy those too, or commit-msg will fail with
-# "hook_principles_loader.py not found".
-```
-
 ## Uninstall
 
 ```bash
