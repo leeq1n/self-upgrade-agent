@@ -84,6 +84,29 @@ else
     echo "[pre-commit] cross_repo_audit.py not found — skipping"
 fi
 
+# validate_links.py: per docs/PLANS/PLAN_2026-07-30.md + ATDD,
+# validate all markdown cross-references (file + anchor) before
+# commit. Catches broken refs before they ship. Fail-open by
+# default; STRICT_EVAL=1 promotes to block. Per
+# docs/BROKEN_REFS_AUDIT_2026-07-30.md, broken refs were a
+# systemic issue caught only in audit (not pre-commit).
+echo "[pre-commit] Running validate_links..."
+VALIDATE_LINKS="$REPO_ROOT/.hermes/scripts/validate_links.py"
+if [ -f "$VALIDATE_LINKS" ]; then
+    if python "$VALIDATE_LINKS" 2>&1; then
+        echo "[pre-commit] validate_links: PASS"
+    else
+        vl_rc=$?
+        if [ "${STRICT_EVAL:-0}" = "1" ]; then
+            echo "[pre-commit] validate_links: FAIL (strict mode)" >&2
+            exit $vl_rc
+        fi
+        echo "[pre-commit] validate_links: WARN (non-blocking, set STRICT_EVAL=1 for strict)"
+    fi
+else
+    echo "[pre-commit] validate_links.py not found — skipping"
+fi
+
 # Note: verify_after.py is intentionally NOT called from pre-commit
 # because the commit hasn't happened yet.  Run it manually after
 # commit (or in CI) per core-layer/governance-template.md.
