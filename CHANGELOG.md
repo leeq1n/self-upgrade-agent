@@ -7,19 +7,53 @@
 
 ## 2026-07-31 — capability frameworks + protocol additions
 
+### v2.21.0 — P-14 in core-layer + split OPERATING_RULES + 22 broken refs (2026-07-31)
+
+Commit: `4bb81b6`. Tag: `v2.21.0`.
+
+**MINOR: batch fix per user catch "重复任务" (re-verify round 2).**
+
+Per user 2026-07-31 catch "既然没有一遍过，那就重复任务",
+this commit batch-fixes 5 remaining真 issues found in v2.20.0
+FINAL_ACCEPTANCE report:
+
+- P-14 closure in core-layer: 3 new locations found
+  (core-layer/README.md, governance-template.md, CHANGELOG.md)
+- 22 broken markdown refs真 closed (per BROKEN_REFS_AUDIT):
+  5 stub files created, 15 file refs updated, 3 anchors added
+- OPERATING_RULES.md split: 109KB → 8.9KB main + 104KB _DETAIL
+- validate_links.py 真 ship (per system hermes-verify- pattern)
+- runtime audit C7 (self_health_check exit code) 真 fixed
+
+Trade-off: 5 stub files真 ship with explicit "Status: Stub"
+header (truthful per P-17, redirects to existing docs).
+
+Caveats: self_health_check still has 2 advisory failures
+(CHANGELOG currency + commit tradeoff). 0 BLOCKER.
+
+### v2.20.1 — final acceptance report (2026-07-31)
+
+Commit: `3a57808`. Tag: `v2.20.1`.
+
+**PATCH: project-level acceptance report.** Per user "至少一轮
+验收" ask, this commit ships `docs/FINAL_ACCEPTANCE_2026-07-31.md`
+documenting the verify round 1 results + 5 deferred issues.
+
+Trade-off: docs-only release, no code changes.
+
 ### v2.20.0 — P-14 in hooks + 5 CHANGELOG entries (2026-07-31)
 
-Commit: `5297fb8`. Tag: `v2.20.0`.
+Commit: `5297fb8` (amended to `5bce428`, force-pushed to
+`b262685`/`3503279`). Tag: `v2.20.0`.
 
 **PATCH: P-14 closure in core layer hooks + CHANGELOG currency.**
 
-Per user final ask "最后确认一遍... clean-sua 都能一遍过" + runtime
-audit 真 catches:
+Per user final ask + runtime audit真 catches:
 
 - `hooks/pre-commit` L4: removed `user message 2026-07-16` ref →
   `docs/OPERATING_RULES.md (修改时需要评估，修改后需要验收)`
-- `hooks/pre-commit` L44: removed internal round-number ref →
-  docs/OPERATING_RULES.md wordy-trap defense rule
+- `hooks/pre-commit` L44: removed `per R137` ref → `per
+  docs/OPERATING_RULES.md wordy-trap defense rule`
 - `CHANGELOG.md`: added 5 entries for v2.15.0-v2.19.0 (previously
   missing per self_health_check 真 finding)
 
@@ -27,12 +61,9 @@ Trade-off: retrospective CHANGELOG entries (5 commits already
 shipped before their CHANGELOG entries existed). Per P-17 no
 fabricate, all entries document actual git commits, not future plans.
 
-Caveats (per ATDD Phase 4 = next verify round):
-- 22 broken markdown refs in docs/ (per BROKEN_REFS_AUDIT)
-- OPERATING_RULES.md 109KB (token budget)
-- Commits v2.18.0 + v2.19.0 lack tradeoff language in body
-  (would require amend to fix)
-- self_health_check + runtime audit checker bugs (C7, C10-12)
+Caveats (deferred to v2.21.0): 22 broken markdown refs in docs/
+(per BROKEN_REFS_AUDIT), OPERATING_RULES.md 109KB (token budget),
+self_health_check + runtime audit checker bugs (C7, C10-12).
 
 ### v2.19.0 — planning + acceptance frameworks (core layer) (2026-07-31)
 
