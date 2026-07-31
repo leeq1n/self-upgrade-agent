@@ -107,4 +107,11 @@ SUA 的 5 primitives（Analyze / Reason / 联想 / 归纳 / 总结）
 git clone <sua-url> .sua/
 cp .sua/docs/RESEARCH_USAGE.md .sua-usage.md  # 这份指南
 # 然后对 agent 说："用 .sua/ 约束你的行为，我要做 <研究任务>"
+
+# 可选：安装 git hooks（行为强制，一条命令，目标项目零污染）
+bash .sua/install-hooks.sh
 ```
+
+**注**: hooks 是可选强化（commit 时强制 P-n 引用）。不装 hooks
+完全不影响行为约束（AGENTS.md 是主要机制）。Windows 下
+install-hooks.sh 已处理 cygpath 路径转换。

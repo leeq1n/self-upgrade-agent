@@ -1,69 +1,76 @@
 # Hooks inventory
 
-> L0: Living inventory of hooks/ in SUA. Updated 2026-07-30 after
-> v2.7.0 (cross_repo_audit integration) + v2.14.1 (LF normalization).
+> L0: Living inventory of hooks/ in SUA. Updated 2026-07-31 after
+> v2.22.7 (install-hooks.sh one-click installer + Windows cygpath
+> path handling).
 
-## Current hooks (3 files)
+## Current hooks (4 files)
 
 | File | Purpose | Installed at | Trigger |
 |---|---|---|---|
 | `commit-msg` | Validate commit message has P1-P29 cite (via hook_principles.json loader) | `.git/hooks/commit-msg` | every commit |
-| `pre-commit` | Run 6 audit gates (eval_before + self_health_check + cross_repo_audit) | `.git/hooks/pre-commit` | every commit |
+| `pre-commit` | Run 4 audit gates (eval_before + self_health_check + cross_repo_audit + validate_links) | `.git/hooks/pre-commit` | every commit |
 | `prepare-commit-msg` | Append M-n 29 5-step trailer when "task done" / "完成" / "PASS" detected | `.git/hooks/prepare-commit-msg` | every commit prep |
+| `pre-push` | BLOCKER-only ship gate (self_health_check + validate_links) | `.git/hooks/pre-push` | every push |
 
-## Why 3 hooks (not 1 or 2)
+## Why 4 hooks (not 1 or 2)
 
 Per P7 奥卡姆 + M-n 18 destruction:
 - **commit-msg** = hard validator (rejects if no P## cite)
-- **pre-commit** = multi-gate audit (cross_repo_audit + self_health_check + eval_before)
+- **pre-commit** = multi-gate audit (eval_before + self_health_check + cross_repo_audit + validate_links)
 - **prepare-commit-msg** = soft reminder (appends trailer if missing)
+- **pre-push** = proactive ship gate (BLOCKER-only blocking, per RCA)
 - Each hook has single responsibility
-- Combined = hard validation + audit + soft reminder = complete mechanical layer
+- Combined = hard validation + audit + soft reminder + ship gate
 
-## Install (after clone)
+## Install (after clone) — one command
+
+```bash
+# From the TARGET project (SUA cloned at .sua/):
+bash .sua/install-hooks.sh
+
+# Overwrite existing hooks:
+bash .sua/install-hooks.sh --force
+
+# Explicit SUA source:
+SUA_DIR=/path/to/.sua bash .sua/install-hooks.sh
+```
+
+**Design note (v2.22.7)**: install-hooks.sh rewrites hook script
+paths to point INSIDE the SUA clone (`<sua>/.hermes/scripts/`).
+The target project gets ONLY `.git/hooks/` entries — no `.hermes/`
+directory, no script copies. This keeps target projects clean and
+agent-agnostic (codex / claude / hermes all fine).
+
+**Windows**: hooks use `cygpath -w` to convert MSYS paths (`/c/...`)
+to native Windows paths before calling python. Requires git-for-windows
+(which ships cygpath) — standard on Windows.
+
+## Manual install (not recommended — easy to miss deps)
 
 ```bash
 # Copy hooks to .git/hooks/ (NOT auto-installed by design)
 cp hooks/commit-msg .git/hooks/commit-msg
 cp hooks/pre-commit .git/hooks/pre-commit
 cp hooks/prepare-commit-msg .git/hooks/prepare-commit-msg
-chmod +x .git/hooks/commit-msg .git/hooks/pre-commit .git/hooks/prepare-commit-msg
-```
+cp hooks/pre-push .git/hooks/pre-push
+chmod +x .git/hooks/commit-msg .git/hooks/pre-commit .git/hooks/prepare-commit-msg .git/hooks/pre-push
 
-On Windows (MSYS / git-bash), line endings must be LF (not CRLF).
-The repo `.gitattributes` enforces this for `*.sh` and `hooks/*`.
-If you see `bash: syntax error: unexpected end of file`, run:
-
-```bash
-dos2unix hooks/* .hermes/scripts/*.sh
+# Hooks reference $REPO_ROOT/.hermes/scripts/*.py + hook_principles.json
+# — copy those too, or commit-msg will fail with
+# "hook_principles_loader.py not found".
 ```
 
 ## Uninstall
 
 ```bash
-bash .hermes/scripts/uninstall.sh          # remove hooks only
-bash .hermes/scripts/uninstall.sh --full   # remove everything
-bash .hermes/scripts/uninstall.sh --dry-run # preview
+# Remove hooks only (target project has no .hermes/ to clean)
+rm .git/hooks/commit-msg .git/hooks/pre-commit .git/hooks/prepare-commit-msg .git/hooks/pre-push
 ```
 
-## P-n / M-n cited
+## Notes
 
-P5 (tests pass — hooks installable + testable), P11
-(摘要+引用), P14 (docs stay current), P17 (老实说),
-P25 (post-modify re-apply), P29 (recursion).
-
-M-n 18 (destruction — record inventory before
-over-engineering), M-n 32 (self-learning-guardrail
-Guardrail #1+5).
-
-## Cross-references
-
-- `core-layer/governance-template.md` — eval-before +
-  verify-after gate template
-- `core-layer/phase-A-9-primitives-record.md` — 9
-  primitives integration record
-- `AGENTS.md` "Commit message contract"段 — hook contract
-- `docs/OPERATING_RULES.md` § M-self-learning-guardrail —
-  M-n 32 detail
-- `.hermes/hook_principles.json` — single source of truth
-  for P-n whitelist (used by commit-msg hook via loader)
+- Hooks are NOT auto-installed by design (users opt in).
+- Python must be on PATH for hooks to run.
+- pre-commit is fail-open (warnings, exit 0) unless STRICT_EVAL=1.
+- pre-push blocks only on BLOCKER-level findings.

@@ -18,6 +18,16 @@
 
 set -e
 
+# Windows: python (native exe) cannot open MSYS paths (/c/...).
+# Convert script path via cygpath when running under git-for-windows.
+py() {
+    local script="$1"; shift
+    if command -v cygpath >/dev/null 2>&1; then
+        script="$(cygpath -w "$script")"
+    fi
+    python "$script" "$@"
+}
+
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 EVAL_BEFORE="$REPO_ROOT/.hermes/scripts/eval_before.py"
 VERIFY_AFTER="$REPO_ROOT/.hermes/scripts/verify_after.py"
@@ -27,7 +37,7 @@ CROSS_REPO_AUDIT="$REPO_ROOT/.hermes/scripts/cross_repo_audit.py"
 echo "[pre-commit] Running eval_before gate..."
 
 if [ -f "$EVAL_BEFORE" ]; then
-    if python "$EVAL_BEFORE" --strict 2>&1; then
+    if py "$EVAL_BEFORE" --strict 2>&1; then
         echo "[pre-commit] eval_before: PASS"
     else
         rc=$?
@@ -48,7 +58,7 @@ fi
 # that is informational, not a regression.
 echo "[pre-commit] Running self_health_check audit..."
 if [ -f "$SELF_HEALTH" ]; then
-    if python "$SELF_HEALTH" 2>&1; then
+    if py "$SELF_HEALTH" 2>&1; then
         echo "[pre-commit] self_health_check: PASS"
     else
         sh_rc=$?
@@ -70,7 +80,7 @@ fi
 # internal refs in AGENTS.md / README.md, branch-pinned submodules.
 echo "[pre-commit] Running cross_repo_audit..."
 if [ -f "$CROSS_REPO_AUDIT" ]; then
-    if python "$CROSS_REPO_AUDIT" 2>&1; then
+    if py "$CROSS_REPO_AUDIT" 2>&1; then
         echo "[pre-commit] cross_repo_audit: PASS"
     else
         cra_rc=$?
@@ -93,7 +103,7 @@ fi
 echo "[pre-commit] Running validate_links..."
 VALIDATE_LINKS="$REPO_ROOT/.hermes/scripts/validate_links.py"
 if [ -f "$VALIDATE_LINKS" ]; then
-    if python "$VALIDATE_LINKS" 2>&1; then
+    if py "$VALIDATE_LINKS" 2>&1; then
         echo "[pre-commit] validate_links: PASS"
     else
         vl_rc=$?

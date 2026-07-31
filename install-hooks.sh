@@ -1,28 +1,32 @@
 #!/usr/bin/env bash
-# install-hooks.sh — install SUA hooks + their script dependencies
-# into the CURRENT project's .git/hooks/ + .hermes/.
+# install-hooks.sh — install SUA hooks into the CURRENT project's
+# .git/hooks/, with script paths rewritten to point INSIDE the SUA
+# clone (.sua/.hermes/scripts/). Target project stays clean: no
+# .hermes/ dir, no script copies, one command.
 #
-# WHY: hooks/commit-msg and hooks/pre-commit reference
-# .hermes/scripts/*.py + .hermes/hook_principles.json. Copying
-# only the hooks (as older README suggested) breaks commit-msg
-# with "hook_principles_loader.py not found". This script
-# installs hooks AND dependencies atomically.
+# WHY: hooks/commit-msg + pre-commit reference .hermes/scripts/*.py
+# + hook_principles.json. Copying only the hooks breaks commit-msg
+# ("hook_principles_loader.py not found"). Copying scripts into the
+# target's .hermes/ pollutes the project and looks alien to codex /
+# claude (hermes-specific dir name). Instead: rewrite paths to
+# $SUA_DIR (wherever SUA lives), so the target project only gains
+# .git/hooks/ entries — nothing else.
 #
-# Usage (run from the TARGET project, not from SUA):
-#   bash .sua/install-hooks.sh            # install hooks + deps
-#   bash .sua/install-hooks.sh --dry-run  # preview only
+# Usage (run from the TARGET project):
+#   bash .sua/install-hooks.sh            # install (path-rewritten)
+#   bash .sua/install-hooks.sh --dry-run  # preview
 #   bash .sua/install-hooks.sh --force    # overwrite existing hooks
+#   SUA_DIR=/path/to/.sua bash .sua/install-hooks.sh  # explicit source
 #
-# Requires: bash, git, python (for loader validation)
+# Requires: bash, git. Python only needed at runtime (commit hooks).
 
 set -e
 
-# SUA_DIR: source of hooks + scripts. Resolve order:
-#   1. $SUA_DIR env var (explicit, e.g. SUA_DIR=/path/to/.sua)
-#   2. $1 positional arg (bash install-hooks.sh /path/to/.sua)
-#   3. Parent of this script IF hooks/ exists beside it
-#      (running from inside SUA: bash .sua/install-hooks.sh)
-#   4. Common clone location: ./.sua
+# --- Resolve SUA_DIR (source of hooks) ---
+# 1. $SUA_DIR env var
+# 2. $1 positional arg (dir containing hooks/)
+# 3. This script's own dir IF hooks/ sits beside it (bash .sua/install-hooks.sh)
+# 4. Common clone location: ./.sua
 if [ -n "$SUA_DIR" ]; then
     SUA_DIR="$(cd "$SUA_DIR" && pwd)"
 elif [ -n "${1:-}" ] && [ -d "${1%/}/hooks" ]; then
@@ -40,7 +44,6 @@ else
 fi
 
 TARGET="$(git rev-parse --show-toplevel 2>/dev/null || echo '')"
-
 if [ -z "$TARGET" ]; then
     echo "ERROR: run this script inside a git repository (target project)." >&2
     exit 1
@@ -54,7 +57,9 @@ for arg in "$@"; do
         --force) FORCE=true ;;
         --help|-h)
             echo "Usage: $0 [--dry-run] [--force]"
-            echo "  Install SUA hooks + script dependencies into this project."
+            echo "  Install SUA hooks into this project's .git/hooks/."
+            echo "  Hook script paths are rewritten to point into SUA's"
+            echo "  own .hermes/scripts/ — target project stays clean."
             exit 0
             ;;
     esac
@@ -66,77 +71,66 @@ echo "  Target repo:  $TARGET"
 echo "  Dry run:      $DRY_RUN"
 echo ""
 
-# 1. Install hook scripts (commit-msg / pre-commit / prepare-commit-msg / pre-push)
-HOOKS=(commit-msg pre-commit prepare-commit-msg pre-push)
-for h in "${HOOKS[@]}"; do
-    if [ -f "$SUA_DIR/hooks/$h" ]; then
-        dest="$TARGET/.git/hooks/$h"
-        if [ -f "$dest" ] && [ "$FORCE" != "true" ]; then
-            echo "  ⚠️  hook $h already exists — use --force to overwrite"
-            continue
-        fi
-        if [ "$DRY_RUN" = "true" ]; then
-            echo "  [dry-run] would copy hooks/$h → .git/hooks/$h"
-        else
-            cp "$SUA_DIR/hooks/$h" "$dest"
-            chmod +x "$dest"
-            echo "  ✅ hooks/$h installed"
-        fi
-    fi
-done
+# --- Path rewrite ---
+# Hooks reference $REPO_ROOT/.hermes/scripts/... and
+# $REPO_ROOT/.hermes/hook_principles.json. Rewrite to SUA's own dir
+# so the target project needs NO .hermes/ at all.
+# Windows: SUA_DIR may be an MSYS path (/c/...); hooks run under git
+# bash (git for windows), so /c/... paths work. Keep POSIX form.
+SUA_SCRIPTS="$SUA_DIR/.hermes/scripts"
+SUA_JSON="$SUA_DIR/.hermes/hook_principles.json"
 
-# 2. Install script dependencies (.hermes/scripts/*.py referenced by hooks)
-NEEDED_SCRIPTS=(
-    hook_principles_loader.py
-    eval_before.py
-    self_health_check.py
-    cross_repo_audit.py
-    validate_links.py
-    verify_after.py
-    m_n29_5step.py
-    release_audit.py
-)
-mkdir -p "$TARGET/.hermes/scripts"
-for s in "${NEEDED_SCRIPTS[@]}"; do
-    src="$SUA_DIR/.hermes/scripts/$s"
-    dest="$TARGET/.hermes/scripts/$s"
-    if [ -f "$src" ]; then
-        # Skip if source and dest are the same file (running from SUA itself)
-        if [ "$src" = "$dest" ] || [ "$(cd "$(dirname "$src")" && pwd)/$(basename "$src")" = "$dest" ]; then
-            echo "  ✅ .hermes/scripts/$s (already in place)"
-            continue
-        fi
-        if [ "$DRY_RUN" = "true" ]; then
-            echo "  [dry-run] would copy .hermes/scripts/$s"
-        else
-            cp "$src" "$dest"
-            echo "  ✅ .hermes/scripts/$s installed"
-        fi
-    fi
-done
-
-# 3. Install principles registry (single source of truth per Q2 closure)
-if [ -f "$SUA_DIR/.hermes/hook_principles.json" ]; then
-    if [ "$DRY_RUN" = "true" ]; then
-        echo "  [dry-run] would copy .hermes/hook_principles.json"
-    else
-        cp "$SUA_DIR/.hermes/hook_principles.json" "$TARGET/.hermes/hook_principles.json"
-        echo "  ✅ .hermes/hook_principles.json installed"
-    fi
+if [ ! -d "$SUA_SCRIPTS" ]; then
+    echo "ERROR: $SUA_SCRIPTS not found — is this a SUA clone?" >&2
+    exit 1
 fi
 
-# 4. Validate loader works (skip in dry-run)
+# --- Install hooks (rewritten) ---
+HOOKS=(commit-msg pre-commit prepare-commit-msg pre-push)
+for h in "${HOOKS[@]}"; do
+    src_hook="$SUA_DIR/hooks/$h"
+    dest_hook="$TARGET/.git/hooks/$h"
+    if [ ! -f "$src_hook" ]; then
+        continue  # optional hook not in this SUA version
+    fi
+    if [ -f "$dest_hook" ] && [ "$FORCE" != "true" ]; then
+        echo "  ⚠️  hook $h already exists — use --force to overwrite"
+        continue
+    fi
+    if [ "$DRY_RUN" = "true" ]; then
+        echo "  [dry-run] would install hooks/$h (paths → $SUA_DIR)"
+        continue
+    fi
+    # Rewrite .hermes/scripts references to SUA's own location
+    sed -e "s|\$REPO_ROOT/.hermes/scripts|$SUA_SCRIPTS|g" \
+        -e "s|\$REPO_ROOT/.hermes/hook_principles.json|$SUA_JSON|g" \
+        "$src_hook" > "$dest_hook"
+    chmod +x "$dest_hook"
+    echo "  ✅ hooks/$h installed (paths → SUA clone)"
+done
+
+# --- Validate loader (only when not dry-run) ---
 if [ "$DRY_RUN" != "true" ]; then
     echo ""
     echo "=== Validation ==="
-    if python "$TARGET/.hermes/scripts/hook_principles_loader.py" --active-list >/dev/null 2>&1; then
-        echo "  ✅ hook_principles_loader.py works (P-n registry loaded)"
-    else
-        echo "  ⚠️  loader validation failed — check python availability" >&2
+    if [ -f "$SUA_SCRIPTS/hook_principles_loader.py" ]; then
+        # Windows: python needs a native path, not MSYS /c/... form.
+        # Convert via cygpath when available; fall back to POSIX.
+        LOADER="$SUA_SCRIPTS/hook_principles_loader.py"
+        if command -v cygpath >/dev/null 2>&1; then
+            LOADER="$(cygpath -w "$LOADER")"
+        fi
+        if python "$LOADER" --active-list >/dev/null 2>&1; then
+            echo "  ✅ hook_principles_loader.py works (P-n registry loaded)"
+        else
+            echo "  ⚠️  loader validation failed — python not on PATH?" >&2
+            echo "      Hooks need python available when git runs them." >&2
+        fi
     fi
 fi
 
 echo ""
 echo "=== Done. Hooks active on next commit. ==="
 echo "  Test: git commit -m \"test (P7)\""
-echo "  Remove: bash .hermes/scripts/uninstall.sh (in target project)"
+echo "  Remove: rm .git/hooks/commit-msg .git/hooks/pre-commit .git/hooks/prepare-commit-msg .git/hooks/pre-push"
+echo "  (Target project has NO .hermes/ — SUA scripts stay in $SUA_DIR)"

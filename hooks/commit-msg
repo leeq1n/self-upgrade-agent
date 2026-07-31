@@ -21,6 +21,16 @@
 
 set -e
 
+# Windows: python (native exe) cannot open MSYS paths (/c/...).
+# Convert script path via cygpath when running under git-for-windows.
+py() {
+    local script="$1"; shift
+    if command -v cygpath >/dev/null 2>&1; then
+        script="$(cygpath -w "$script")"
+    fi
+    python "$script" "$@"
+}
+
 COMMIT_MSG_FILE="${1:-}"
 if [ -z "$COMMIT_MSG_FILE" ] || [ ! -f "$COMMIT_MSG_FILE" ]; then
     echo "ERROR: commit-msg hook called without a message file" >&2
@@ -40,7 +50,7 @@ if [ ! -f "$LOADER" ]; then
 fi
 
 # Load active P-n list (whitelist excluding merged/demoted per registry)
-ACTIVE_P_LIST="$(python "$LOADER" --active-list 2>/dev/null)"
+ACTIVE_P_LIST="$(py "$LOADER" --active-list 2>/dev/null)"
 if [ -z "$ACTIVE_P_LIST" ]; then
     echo "ERROR: failed to load active P-n list from registry" >&2
     exit 2
