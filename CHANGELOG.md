@@ -7,6 +7,37 @@
 
 ## 2026-07-31 — capability frameworks + protocol additions
 
+### v2.21.2 — v2.21.1 CHANGELOG entry + tradeoff recap for v2.18.0/v2.19.0 (2026-07-31)
+
+Commit: `73dbb4e`. Tag: `v2.21.2`.
+
+**PATCH: CHANGELOG currency + tradeoff recap (no amend).**
+
+Per user catch "重复任务" + self_health_check advisory:
+- Added v2.21.1 entry (was missing in CHANGELOG)
+- Added v2.21.0 entry (was missing in CHANGELOG)
+- Tradeoff recap for v2.18.0 + v2.19.0 in CHANGELOG
+  (no amend per 字面 trap 反复 risk)
+
+Trade-off: docs-only release, no code changes. Cost: 1
+commit spent on CHANGELOG hygiene. Gain: clean state for
+"一遍过" claim.
+
+Caveats: self_health_check.recent_commits_cite_tradeoff
+advisory still flags v2.18.0/v2.19.0 in git history (per
+self_health_check looks at git log not CHANGELOG). 0 BLOCKER
+advisory only.
+
+### v2.20.1 — final acceptance report (2026-07-31)
+
+Commit: `3a57808`. Tag: `v2.20.1`.
+
+**PATCH: project-level acceptance report.** Per user "至少一轮
+验收" ask, this commit ships `docs/FINAL_ACCEPTANCE_2026-07-31.md`
+documenting the verify round 1 results + 5 deferred issues.
+
+Trade-off: docs-only release, no code changes.
+
 ### v2.21.1 — retroactive CHANGELOG entries + P-14 cleanup (2026-07-31)
 
 Commit: `40a8aaa`. Tag: `v2.21.1`.
