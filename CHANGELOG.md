@@ -7,6 +7,46 @@
 
 ## 2026-07-31 — capability frameworks + protocol additions
 
+### v2.22.3 — README uninstall clarity + requirements completeness (2026-07-31)
+
+**PATCH: cross-environment usability fixes.**
+
+Per user 2026-07-31 catch (core/ missing + uninstall wording
++ cross-env py files):
+- core/ 真排查: core/ intact (identical to sua-start, import OK).
+  AGENTS_L0.md never existed in sua-start either = README stale ref
+  (fixed in v2.22.2).
+- README Uninstall: distinguishes clone usage (rm -rf .sua/)
+  vs hook-install usage (uninstall.sh only when hooks copied).
+- requirements.txt: added langchain-core + click (were imported
+  by src/ + tests/ but not declared).
+
+Pre-task scan (M-n 34): 真 diff sua-start vs clean-sua core/,
+真 check README uninstall context, 真 audit all py deps.
+
+Trade-off: docs + deps-only. Gain: cross-env reproducibility.
+Cost: 1 commit. Risk: low.
+
+Caveats: 2 self_health_check advisory 永久 (per v2.21.9 Option B).
+
+### v2.22.2 — README fix (AGENTS_L0 stale ref) + research usage guide (2026-07-31)
+
+**PATCH: README accuracy + research onboarding.**
+
+- README "What the agent gets": core/AGENTS_L0.md (never existed)
+  → .hermes/scripts/ tool list (real files).
+- New docs/RESEARCH_USAGE.md: research-project usage guide
+  (local clone + adapter mode + research workflow + version pin).
+  Written for satellite-security research scenario per user ask.
+
+Pre-task scan (M-n 34): 真 verify README 6-step file existence,
+真 check global-install status (ASD repo), 真 fix stale ref.
+
+Trade-off: docs-only. Gain: README accurate + research users
+have a guide. Cost: 1 commit. Risk: low.
+
+Caveats: 2 self_health_check advisory 永久 (per v2.21.9 Option B).
+
 ### v2.22.1 — runtime audit C5 uv-run fix + convergence record (2026-07-31)
 
 **PATCH: runtime audit C5 environment fix.**
