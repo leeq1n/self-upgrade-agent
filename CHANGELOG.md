@@ -5,6 +5,114 @@
 > the actual released state of the project on
 > [github.com/leeq1n/self-upgrade-agent](https://github.com/leeq1n/self-upgrade-agent).
 
+## 2026-07-31 — capability frameworks + protocol additions
+
+### v2.20.0 — P-14 in hooks + 5 CHANGELOG entries (2026-07-31)
+
+Commit: `5297fb8`. Tag: `v2.20.0`.
+
+**PATCH: P-14 closure in core layer hooks + CHANGELOG currency.**
+
+Per user final ask "最后确认一遍... clean-sua 都能一遍过" + runtime
+audit 真 catches:
+
+- `hooks/pre-commit` L4: removed `user message 2026-07-16` ref →
+  `docs/OPERATING_RULES.md (修改时需要评估，修改后需要验收)`
+- `hooks/pre-commit` L44: removed `per R137` ref → `per
+  docs/OPERATING_RULES.md wordy-trap defense rule`
+- `CHANGELOG.md`: added 5 entries for v2.15.0-v2.19.0 (previously
+  missing per self_health_check 真 finding)
+
+Trade-off: retrospective CHANGELOG entries (5 commits already
+shipped before their CHANGELOG entries existed). Per P-17 no
+fabricate, all entries document actual git commits, not future plans.
+
+Caveats (per ATDD Phase 4 = next verify round):
+- 22 broken markdown refs in docs/ (per BROKEN_REFS_AUDIT)
+- OPERATING_RULES.md 109KB (token budget)
+- Commits v2.18.0 + v2.19.0 lack tradeoff language in body
+  (would require amend to fix)
+- self_health_check + runtime audit checker bugs (C7, C10-12)
+
+### v2.19.0 — planning + acceptance frameworks (core layer) (2026-07-31)
+
+Commit: `7c4734f`. Tag: `v2.19.0`.
+
+**MINOR: capability frameworks shipped in core layer.**
+
+Per user 2026-07-31 priority: 1) planning first, 2) acceptance next,
+3) specific tasks last. Shipped two core-layer frameworks:
+
+- `core-layer/PLANNING_FRAMEWORK.md` (5512 B) — codifies how to plan
+  before doing (4-phase ATDD protocol, planning template, anti-patterns)
+- `core-layer/ACCEPTANCE_FRAMEWORK.md` (6967 B) — codifies how to
+  verify (criteria catalog, new tools, layer mapping)
+
+Trade-off: doc-heavy release (no specific tasks this turn) per user
+explicit priority ordering.
+
+### v2.18.0 — PLAN_2026-07-30 (ATDD planning-first protocol) (2026-07-31)
+
+Commit: `e195141`. Tag: `v2.18.0`.
+
+**MINOR: project-layer plan doc.** Per user catch 字面 ship ≠ 真
+ship 意图 (字面 trap 反复). Shipped `docs/PLANS/PLAN_2026-07-30.md`
+(8246 B) with:
+- ATDD 4-phase protocol (accept → plan → ship → verify)
+- 真搜资料 evidence (TDD + LLM planning)
+- 真承认之前 ship 多轮 redundant
+
+Trade-off: more planning, less shipping — per user explicit "做好
+规划再行动".
+
+### v2.17.0 — ACCEPTANCE_PROTOCOL (verify/fix separation) (2026-07-31)
+
+Commit: `a92fd35`. Tag: `v2.17.0`.
+
+**MINOR: acceptance protocol.** Per user "一边验收一边改不对":
+shipped `docs/ACCEPTANCE_PROTOCOL.md` (8087 B) defining:
+- Phase 1 acceptance (verify only, NO fix)
+- Phase 2 fix (after acceptance report)
+- Phase 3 re-verify (new acceptance on fixed state)
+
+Trade-off: more turns per change, but acceptance results become
+stable + auditable.
+
+### v2.16.0 — comprehensive fix + broken refs audit (2026-07-31)
+
+Commit: `c0cb039`. Tag: `v2.16.0`.
+
+**PATCH: docs/REFs cleanup + audit.** Per runtime audit found 22
+broken markdown cross-refs (per 真 fresh hermes-verify-comprehensive
+script). Shipped:
+
+- `AGENTS.md` — broken `RETROSPECTIVE.md` ref → `RETROSPECTIVE_2026-07-20.md`
+- `README.md` — added ## Uninstall section (A4 angle closure)
+- `hooks/README.md` — updated for 3 hooks + Install/Uninstall +
+  `.gitattributes` note
+- `AGENTS_DETAIL.md` — fixed relative path for RETROSPECTIVE link
+- `docs/BROKEN_REFS_AUDIT_2026-07-30.md` — documents remaining 21
+  broken refs (TODO/DONE/DETAIL split deferred)
+
+Trade-off: 5 file changes (~170 lines), audit exposed link-integrity
+gap in existing audit infrastructure (self_health_check /
+cross_repo_audit don't check link validity).
+
+### v2.15.0 — project acceptance report (2026-07-31)
+
+Commit: `b9c10b8`. Tag: `v2.15.0`.
+
+**PATCH: project-level acceptance report.** Per user "做整个项目
+验收" ask + system requirement for hermes-verify- prefix tempfiles:
+
+- Ran comprehensive hermes-verify-project-acceptance.py (12 checks)
+- Found 22 broken refs + OPERATING_RULES.md 109KB
+- Shipped `docs/PROJECT_ACCEPTANCE_2026-07-30.md` (7953 B)
+
+Trade-off: report lives in project layer, but per v2.17.0 +
+v2.18.0 acceptance protocol, should migrate to user layer
+(`~/.config/sua/acceptance/`) in future session.
+
 ## 2026-07-30 — core-layer self-contained
 
 ### v2.9.0 — core-layer AGENTS_CORE.md cleanup (2026-07-30)
