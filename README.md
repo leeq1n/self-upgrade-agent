@@ -109,7 +109,13 @@ the operating contract on session start.
 
 ## Uninstall
 
-If you installed SUA into another project and want to remove it:
+**Clone 用法（推荐）**: SUA 通过 `git clone` 放进项目目录，
+移除 = 删除 `.sua/` 目录即可（无残留，因为 clone 不改动
+项目自身的 git hooks）。
+
+**Hook 安装用法**: 仅当你用脚本把 SUA 的 commit-msg /
+pre-commit hooks 复制进过项目的 `.git/hooks/` 时，才需要
+卸载脚本：
 
 ```bash
 # Remove hooks only (keeps .hermes/, AGENTS.md, etc.)
