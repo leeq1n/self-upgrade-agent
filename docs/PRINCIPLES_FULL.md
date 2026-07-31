@@ -870,4 +870,4 @@ principle.  See [PRINCIPLES_DETAIL.md](PRINCIPLES_DETAIL.md) for the
 full list.  L2 is the third layer of progressive disclosure
 (L0 = root axioms, L1 = principles, L2 = how to follow).
 
-- Done tasks: [../../DONE.md](../../DONE.md)
+- Done tasks: [../DONE.md](../DONE.md)

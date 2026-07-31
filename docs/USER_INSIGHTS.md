@@ -47,6 +47,6 @@ Full verbatim quotes (long form) are in
 - Project state: [PROJECT_STATE.md](PROJECT_STATE.md)
 - Constraints (hard rules): [CONSTRAINTS.md](CONSTRAINTS.md)
 - LLM choice: [MODEL_STRATEGY.md](MODEL_STRATEGY.md)
-- Pending tasks: [../../TODO.md](../../TODO.md)
-- Done tasks: [../../DONE.md](../../DONE.md)
+- Pending tasks: [../TODO.md](../TODO.md)
+- Done tasks: [../DONE.md](../DONE.md)
 - Full quotes: [USER_INSIGHTS_DETAIL.md](USER_INSIGHTS_DETAIL.md)

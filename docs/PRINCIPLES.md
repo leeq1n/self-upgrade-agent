@@ -125,7 +125,7 @@ descends from.  Per P22 步骤 3: 找 rule 之间的共性.
 - Constraints: [CONSTRAINTS.md](CONSTRAINTS.md)
 - LLM choice: [MODEL_STRATEGY.md](MODEL_STRATEGY.md)
 - Literature: [LITERATURE.md](LITERATURE.md)
-- Pending tasks: [../../TODO.md](../../TODO.md)
+- Pending tasks: [../TODO.md](../TODO.md)
 
 ## Detail (L2)
 

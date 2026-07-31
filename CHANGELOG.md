@@ -18,8 +18,8 @@ audit 真 catches:
 
 - `hooks/pre-commit` L4: removed `user message 2026-07-16` ref →
   `docs/OPERATING_RULES.md (修改时需要评估，修改后需要验收)`
-- `hooks/pre-commit` L44: removed `per R137` ref → `per
-  docs/OPERATING_RULES.md wordy-trap defense rule`
+- `hooks/pre-commit` L44: removed internal round-number ref →
+  docs/OPERATING_RULES.md wordy-trap defense rule
 - `CHANGELOG.md`: added 5 entries for v2.15.0-v2.19.0 (previously
   missing per self_health_check 真 finding)
 

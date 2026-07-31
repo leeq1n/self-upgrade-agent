@@ -36,6 +36,6 @@ and verification in
 - Project state: [PROJECT_STATE.md](PROJECT_STATE.md)
 - User intent: [USER_INSIGHTS.md](USER_INSIGHTS.md)
 - LLM choice: [MODEL_STRATEGY.md](MODEL_STRATEGY.md)
-- Pending tasks: [../../TODO.md](../../TODO.md)
-- Done tasks: [../../DONE.md](../../DONE.md)
+- Pending tasks: [../TODO.md](../TODO.md)
+- Done tasks: [../DONE.md](../DONE.md)
 - Full constraint list: [CONSTRAINTS_DETAIL.md](CONSTRAINTS_DETAIL.md)

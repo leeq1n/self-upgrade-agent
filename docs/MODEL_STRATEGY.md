@@ -40,6 +40,6 @@ port mappings, MXFP4 vs Q8 tradeoffs) is in
 - Project state: [PROJECT_STATE.md](PROJECT_STATE.md)
 - User intent: [USER_INSIGHTS.md](USER_INSIGHTS.md)
 - Constraints: [CONSTRAINTS.md](CONSTRAINTS.md)
-- Pending tasks: [../../TODO.md](../../TODO.md)
-- Done tasks: [../../DONE.md](../../DONE.md)
+- Pending tasks: [../TODO.md](../TODO.md)
+- Done tasks: [../DONE.md](../DONE.md)
 - Full deployment notes: [MODEL_STRATEGY_DETAIL.md](MODEL_STRATEGY_DETAIL.md)
