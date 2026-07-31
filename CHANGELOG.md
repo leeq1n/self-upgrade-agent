@@ -7,6 +7,39 @@
 
 ## 2026-07-31 — capability frameworks + protocol additions
 
+### v2.22.1 — runtime audit C5 uv-run fix + convergence record (2026-07-31)
+
+**PATCH: runtime audit C5 environment fix.**
+
+Per 双源约束验收 (sua-start early baseline + clean-sua-runtime
+latest constraint source):
+- C5 (pytest) failed in runtime audit because pytest not in
+  default python (per R115/R131 python env migration)
+- Fixed: review_clean_sua.py C5 uses `uv run --with pytest`
+  instead of `sys.executable -m pytest`
+- 真 verified: runtime audit 21/21 PASS, VERDICT: PASS
+- clean-sua-runtime synced to clean-sua v2.22.0 (02ac3be)
+
+Convergence record (per user: 通过 = 收敛 = 任务完成):
+- sua-start 原则: 全部硬约束保留 (M-n 34, P5/P11/P14/P17/
+  P20/P22, 3-layer, M-n 29) ✅
+- clean-sua-runtime 约束: 21/21 PASS ✅
+- 完整套件: pytest 15/15 + validate_links + validate_structure
+  23/23 + pre-push PASSED ✅
+- P-14: 0 violations (sua-start 18 → clean-sua 0) ✅
+- 自指排除: review_clean_sua.py 在 runtime (外部约束源) ✅
+
+Trade-off: uv run adds ~2s to audit. Gain: pytest 真 runs in
+this env. Cost: uv dependency. Risk: low.
+
+Pre-task scan (M-n 34): per docs/AGENTS.md Read first item 3,
+this commit was preceded by 真读双源原则 (sua-start +
+clean-sua-runtime) + 真全面验收 (7 checks) + 真 identify C5
+env issue + 真 fix uv run + 真 convergence judgment.
+
+Caveats: 2 self_health_check advisory 永久 留 (per v2.21.9
+Option B decision). 0 BLOCKER per current state.
+
 ### v2.21.9 — decision record: Option B (accept 2 advisory permanent) (2026-07-31)
 
 **PATCH: decision record per user "你搜索相关知识, 再结合两份原则, 做出决定".**
