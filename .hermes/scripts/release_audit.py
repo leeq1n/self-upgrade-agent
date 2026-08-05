@@ -35,7 +35,8 @@ def git(*args, cwd: Path) -> tuple[int, str, str]:
     """Run git command in cwd, return (rc, stdout, stderr)."""
     r = subprocess.run(
         ["git", *args],
-        capture_output=True, text=True, cwd=cwd, timeout=15,
+        capture_output=True, text=True, encoding="utf-8",
+        errors="replace", cwd=cwd, timeout=15,
     )
     return r.returncode, r.stdout, r.stderr
 
