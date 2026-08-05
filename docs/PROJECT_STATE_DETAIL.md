@@ -1,3 +1,4 @@
+> L0: PROJECT_STATE_DETAIL stub — 断链 target; 真实内容见 PROJECT_STATE.md.
 # PROJECT_STATE_DETAIL — Project State Detail
 
 > **Status**: Stub file. Created 2026-07-31 to resolve broken cross-references

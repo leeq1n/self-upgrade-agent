@@ -1,3 +1,4 @@
+> L0: M-n 35 L2 detail — 4 个对抗性思维原语 (质疑/逆向/预演失败/对立论证).
 # M-n 35: Critical-thinking primitives (4 adversarial primitives)
 
 > L2 detail.  Companion to `M_ACCEPTANCE_PROTOCOL_DETAIL.md`

@@ -1,3 +1,4 @@
+> L0: PRINCIPLES_DETAIL stub — 断链 target (#p19); 真实内容见 PRINCIPLES.md / PRINCIPLES_FULL.md.
 # PRINCIPLES_DETAIL — Principles Detail
 
 > **Status**: Stub file. Created 2026-07-31 to resolve broken cross-references

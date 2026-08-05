@@ -1,3 +1,4 @@
+> L0: M-n 25 stub — 断链 target; 真实内容见 M_MESSAGE_PATTERN_RECOGNITION_DETAIL.md.
 # M_TURN_PATTERN_RECOGNITION_DETAIL — Turn Pattern Recognition
 
 > **Status**: Stub file. Created 2026-07-31 to resolve broken cross-references

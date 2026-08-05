@@ -1,3 +1,4 @@
+> L0: 验收协议 — Verify/Fix/Re-Verify 分离 (M-n 29 实操).  Load when: 验收任务.
 # Acceptance Protocol — Verify / Fix / Re-Verify Separation
 
 > **Trigger**: User 2026-07-30 final ask: "验收和修改是不是应该分开？验收只找问题，找完了再集体返修，这样有很多好处".

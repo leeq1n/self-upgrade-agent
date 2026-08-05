@@ -1,3 +1,4 @@
+> L0: OPERATING_RULES L2 detail — 各 M-rule 澄清/元数据/示例.
 # OPERATING_RULES_DETAIL — Per-rule clarifications
 
 > **Companion to** [`OPERATING_RULES.md`](OPERATING_RULES.md).

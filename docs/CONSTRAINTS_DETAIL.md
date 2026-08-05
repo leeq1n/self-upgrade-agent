@@ -1,3 +1,4 @@
+> L0: CONSTRAINTS stub — 断链修复 target; 真实内容见 CONSTRAINTS.md.
 # CONSTRAINTS_DETAIL — Constraint Summary
 
 > **Status**: Stub file. Created 2026-07-31 to resolve broken cross-references

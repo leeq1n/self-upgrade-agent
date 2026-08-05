@@ -1,3 +1,4 @@
+> L0: 原则防崩塌 — root goal 使原则系统永不自毁.
 # Root Goal: 使原则系统永不自毁 (avoid principle collapse)
 
 > **Trigger**: User 2026-07-30 catch — 当前原则系统可被字面遵守

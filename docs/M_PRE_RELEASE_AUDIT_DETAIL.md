@@ -1,3 +1,4 @@
+> L0: M-n 36 L2 detail — 发布前 5 项检查 (release-audit).
 # M-n 36: M-release-audit (per user message 2026-07-16 + retrospective)
 
 > L2 detail.  Companion to `M_ACCEPTANCE_PROTOCOL_DETAIL.md`
