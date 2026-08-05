@@ -23,7 +23,7 @@ Self-protection:
 """
 import os, sys, time, json, hashlib, subprocess, sqlite3, traceback
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT)
 os.chdir(PROJECT)
 
@@ -299,9 +299,6 @@ def main():
         json.dump(out, f, indent=2, default=str)
     print(f"Results saved to {out_path}")
 
-    subprocess.run([sys.executable, "-m", "self_upgrade", "unlock"],
-                   cwd=PROJECT, capture_output=True)
-    print("Quota unlocked")
     print("DONE")
 
     if consecutive_kept_with_harness >= target:

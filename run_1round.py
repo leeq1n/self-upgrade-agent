@@ -19,7 +19,7 @@ Usage:
 """
 import os, sys, time, json, hashlib, subprocess, sqlite3
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT)
 os.chdir(PROJECT)
 
@@ -170,10 +170,6 @@ def run_one_round(paper):
         json.dump(out, f, indent=2, default=str)
     print(f"\nResults saved to {out_path}")
 
-    # Auto-unlock
-    subprocess.run([sys.executable, "-m", "self_upgrade", "unlock"],
-                   cwd=PROJECT, capture_output=True)
-    print("Quota unlocked")
     print("DONE")
 
 

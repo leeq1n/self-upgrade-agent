@@ -8,7 +8,7 @@ Verifies:
 import os, sys, ast
 import pytest
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def test_run_1round_py_exists():
@@ -19,7 +19,7 @@ def test_run_1round_py_exists():
 def test_run_1round_py_imports_clean():
     """run_1round.py must import as a module without side effects."""
     p = os.path.join(PROJECT, "run_1round.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     # Static check: no LLM call at module level
     assert "if __name__" in content
@@ -35,7 +35,7 @@ def test_run_1round_py_imports_clean():
 def test_run_1round_py_argparse_or_sys_argv():
     """The script should support sys.argv for paper_id and title."""
     p = os.path.join(PROJECT, "run_1round.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "sys.argv" in content
     assert "len(sys.argv)" in content
@@ -44,25 +44,28 @@ def test_run_1round_py_argparse_or_sys_argv():
 def test_run_1round_py_saves_results_to_upgrades():
     """run_1round.py should save results to upgrades/run_1round_<ts>.json."""
     p = os.path.join(PROJECT, "run_1round.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "upgrades/run_1round_" in content
     assert ".json" in content
 
 
 def test_run_1round_py_auto_unlocks_at_end():
-    """run_1round.py should call self_upgrade unlock at the end."""
+    """run_1round.py resets quota dead-marks in preflight (no dead CLI call)."""
     p = os.path.join(PROJECT, "run_1round.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
-    assert "self_upgrade" in content
-    assert "unlock" in content
+    # preflight() resets quota_state.json dead-marks directly
+    assert "quota_state.json" in content
+    assert "dead_until" in content
+    # no call to the non-existent `self_upgrade unlock` subcommand
+    assert "self_upgrade\", \"unlock" not in content
 
 
 def test_run_1round_py_uses_harness_and_audit():
     """run_1round.py should report both harness and audit results."""
     p = os.path.join(PROJECT, "run_1round.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "HARNESS" in content
     assert "AUDIT" in content
@@ -71,7 +74,7 @@ def test_run_1round_py_uses_harness_and_audit():
 def test_run_1round_py_syntax_valid():
     """run_1round.py must be syntactically valid Python."""
     p = os.path.join(PROJECT, "run_1round.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         source = f.read()
     ast.parse(source)
 
