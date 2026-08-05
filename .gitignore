@@ -74,6 +74,9 @@ upgrades/*
 # ad-hoc verification scripts
 verify_p0_fixes.sh
 
+# Reasonix desktop session metadata
+.reasonix/
+
 # core/planner.py runtime DB (harness persistence)
 data/
 

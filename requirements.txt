@@ -1,14 +1,11 @@
-# Core dependencies (per src/ + tests/ actual imports, 2026-07-31 audit)
+# Core dependencies (per src/ + tests/ actual imports)
 # Cross-environment note: .hermes/scripts/*.py are stdlib-only and
 # run anywhere. src/ (SUA runtime core) needs these:
 pyyaml>=6.0
 httpx>=0.27.0
 langgraph>=0.2
 langchain-core>=0.2          # required by src/ (langchain_core imports)
-openai>=1.0
-numpy>=1.26
+python-dotenv>=1.0           # optional .env loading (src/llm.py try/except)
 selenium>=4.15               # optional: browser automation
 pytest>=8.0                  # tests
 click>=8.0                   # tests/test_*.py (CliRunner)
-
-# Optional: pip install -r requirements-dev.txt for CI/CD
