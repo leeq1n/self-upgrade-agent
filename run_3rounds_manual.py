@@ -15,7 +15,7 @@ Uses claude-sonnet-4-5 on api.minimaxi.com/anthropic endpoint.
 """
 import os, sys, time, json, hashlib, subprocess, sqlite3, traceback
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT)
 os.chdir(PROJECT)
 
