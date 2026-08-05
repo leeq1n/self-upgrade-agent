@@ -27,8 +27,8 @@ does not depend on sibling repositories.
 
 Latest CHANGELOG entry: **v2.22.x** (see `CHANGELOG.md`).  Release
 history is documented there; `README_DETAIL.md` covers the legacy
-code (v1.x-v3.x) and `docs/LEGACY_STATUS.md` records why the legacy
-code is kept.
+code (v1.x-v3.x), which is kept because tests and CLI scripts
+exercise `src/` (removing it would break CI).
 
 ## Tests
 

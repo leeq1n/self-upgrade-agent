@@ -202,14 +202,13 @@ and acceptance are thinking-capability cycles.
 
 ## 7. Migration plan (from current state)
 
-Current state: PROJECT_ACCEPTANCE_<DATE>.md docs in `docs/` (project layer)
-should be in user layer (per v2.17.0 + v2.18.0 PLAN).
+Current state: acceptance reports should live in the user layer,
+not in `docs/` (project layer).
 
 Migration:
 1. Create `~/.config/sua/acceptance/` (user layer dir)
-2. Move `docs/PROJECT_ACCEPTANCE_2026-07-30.md` → user layer
-3. Move `docs/BROKEN_REFS_AUDIT_2026-07-30.md` → user layer (was audit report)
-4. Update acceptance tools to write to user layer by default
+2. Move acceptance reports → user layer
+3. Update acceptance tools to write to user layer by default
 
 ## 8. References
 

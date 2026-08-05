@@ -147,6 +147,4 @@ If yes to all 4, you can start.  If no, go back.
 - `docs/PROJECT_STATE.md` — current state snapshot
 - `docs/HOW_TO_READ_GRAPH.md` — 3-step reading pattern
 - `docs/SELF_ORG.md` — P27 candidate (project self-org)
-- `docs/MERGE_EVAL.md` — c47 P-n merge candidates (47c/47d pending)
-- `docs/PLAN_TOPDOWN_REORG.md` — recent plan iterations
 - `../agent-reflection-skill/README.md` — sibling project (downstream)

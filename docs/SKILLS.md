@@ -77,5 +77,4 @@ between patches and reuse.  This file IS that interface layer.
 
 See also:
 - [PRINCIPLES_DETAIL.md P19 (data flow observability)](PRINCIPLES_DETAIL.md#p19)
-- [OBSERVATIONS.md 2026-07-11 entries](OBSERVATIONS.md)
 - [LITERATURE_DETAIL.md SkillOpt entry](LITERATURE_DETAIL.md#skillopt-paper)

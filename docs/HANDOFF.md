@@ -66,26 +66,6 @@ orientation.
 - **Skill relationship**: SUA is upstream; skill is downstream
   — see "Sibling projects" below
 
-## Active plan (next ~10 commits)
-
-| # | Commit | Action | Source |
-|---|---|---|---|
-| c79 | 47c | demote P15 (stage gate) to P5 实操 | `docs/MERGE_EVAL.md` (c47 4 candidates, 2 done so far) |
-| c80 | 47d | demote P16 (ad-hoc verify) to P5 实操 | same |
-| c81 | knowledge_org 信息拓扑段 | codify 方案 C (graph index + flat content) per user audit | this turn's plan + `docs/KNOWLEDGE_ORG.md` |
-| c82 | README vision sync (R5-safe) | sync vision to 4th doc (still stale per c73 follow-up) | README.md |
-| c83 | parent verify batch | verify c73-c82 per SUMMARY_LIFECYCLE | plan |
-| -- (hermes-root project, separate repo) -- |
-| skill | process triggers | `../agent-reflection-skill/docs/process/when-to-reflect.md` with trigger phrases | `agent-reflection-skill/SKILL.md` reference |
-| skill | case studies | 1 case study each: analogy/induction/reflection/abduction | skill project plan step 3 |
-| skill | port-test | verify works in 2+ agent frameworks | plan step 5 |
-
-**Why SUA is the priority, not skill**: SUA is the source of
-patterns (per user meta-rule 2026-07-14 + c53 KNOWLEDGE_ORG).
-Skill is downstream — extracting patterns only works after
-SUA stabilizes them.  Skill can wait until SUA's 47c/47d are
-done (so P-n reduction is final), then skill extraction
-follows.
 
 ## Sibling projects
 
@@ -105,20 +85,8 @@ for its scope, then `SKILL.md` for invocation contract.
 | **L0** (entry) | `AGENTS.md`, `docs/PROJECT_STATE.md`, `docs/HOW_TO_READ_GRAPH.md` |
 | **L1** (operational) | `docs/PRINCIPLES.md`, `docs/OPERATING_RULES.md` |
 | **L2** (detail) | `docs/PRINCIPLES_FULL.md`, `docs/PRINCIPLES_DETAIL_DETAIL.md`, `docs/PRINCIPLES_DETAIL.md` (root axioms), `docs/OPERATING_RULES_DETAIL.md` |
-| **Audit / plan** | `docs/PROJECT_TOPDOWN_AUDIT.md` (last full audit, c50), `docs/PLAN_TOPDOWN_REORG.md`, `docs/MERGE_EVAL.md` (c47 4 candidates) |
 | **Contracts** | `docs/SUMMARY_LIFECYCLE.md` (recursive destroy contract, c62), `docs/MCP_TOOLS.md`, `docs/EXTENSIONS.md` (+ `_DETAIL.md`) |
 | **Self-ref** | `docs/SELF_ORG.md` (P27 candidate, c52), `docs/HOW_TO_READ_GRAPH.md` (3-step pattern, c57) |
-
-## 3-project arch (per c83 + c85 + round 82)
-
-SUA is part of a 3-project architecture:
-
-- **SUA** (`self-upgrade-agent/`) = 原则库
-  (24 P-n + 21 M-n + 8 L2 companions + HANDOFF)
-- **skill-incubator** (`../skill-incubator/`) =
-  skill 孵化器 (designs + incubates skills)
-- **agent-reflection-skill** (`../agent-reflection-skill/`) =
-  自我改进 skill (6 reasoning primitives + recursion)
 
 ## Framework-agnostic (per M-n 20)
 

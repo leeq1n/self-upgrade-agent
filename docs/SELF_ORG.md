@@ -97,9 +97,7 @@ The M-* trigger rule is in commit 53.
   obvious is where gaps hide (per c26 + c35).
 
 **实操 (L2)**: per commit + per P-n modification
-+ per batch end, apply the 7 checks above.  Use
-PROJECT_TOPDOWN_AUDIT.md (c50) as the canonical
-checklist.
++ per batch end, apply the 7 checks above.
 
 **Self-application**:
 
@@ -194,9 +192,5 @@ trigger in this commit.  Commit 52 = P27 proposal
 
 ## See also
 
-- `docs/PLAN_TOPDOWN_REORG.md` (plan file)
-- `docs/PROJECT_TOPDOWN_AUDIT.md` (c50 audit, the
-  7-check framework this principle codifies)
 - `docs/PRINCIPLES.md` class framework (c44)
-- `docs/SELF_AUDIT_P20.md` (c48 self-audit)
-- `docs/MERGE_EVAL.md` (c47 P-n merge proposal)
+- `docs/OPERATING_RULES.md` M-self-audit (operational rule)

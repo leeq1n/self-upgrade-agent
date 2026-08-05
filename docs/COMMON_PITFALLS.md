@@ -31,8 +31,7 @@ This project has 2 TODO items that are *not* in AGENTS.md:
 Both are explicit-future, not immediate.  Don't start them
 without user prompt.
 
-See `docs/TODO_KNOWLEDGE_LIFECYCLE.md` and
-`docs/TODO_SESSION_PERSISTENCE.md` for full TODO proposals
+See `docs/TODO_SESSION_PERSISTENCE.md` for full TODO proposal
 (both written 2026-07-13; implementation deferred).
 
 ### 2. Snapshot location convention
@@ -104,8 +103,6 @@ responsibility.  Document but don't fix unless asked.
 
 ## Open work categories
 
-- **Task 7 (TODO)**: `docs/TODO_KNOWLEDGE_LIFECYCLE.md` —
-  proposal for KG priority scoring + pruning + search bypass.
   User signaled: "knowledge base grows, need priority marking".
   Written 2026-07-13; implementation deferred (KG frozen).
 - **Task 8 (TODO)**: `docs/TODO_SESSION_PERSISTENCE.md` —

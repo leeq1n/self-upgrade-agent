@@ -11,8 +11,8 @@
 
 This project was originally a self-improving agent that modifies
 `core/planner.py`.  The code still exists and is functional, but is
-no longer the project's focus.  See `docs/LEGACY_STATUS.md` for why
-it is kept (74 tests + 5 CLI scripts exercise `src/`).
+no longer the project's focus.  It is kept because 74 tests and 5
+CLI scripts exercise `src/` (removing it would break CI).
 
 ### 工作流程
 

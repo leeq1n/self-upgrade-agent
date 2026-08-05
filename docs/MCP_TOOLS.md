@@ -164,10 +164,6 @@ When you don't know which tool to use:
 
 ## See also
 
-- `docs/PLAN_TOPDOWN_REORG.md` (plan file that
-  scheduled this commit)
-- `docs/PROJECT_TOPDOWN_AUDIT.md` (c50 audit that
-  found the hermes-runtime-only gap)
 - `docs/PRINCIPLES.md` P2 (搜资料 principle)
 - `docs/OPERATING_RULES.md` M-intent-parsing (when
   to ask vs guess)

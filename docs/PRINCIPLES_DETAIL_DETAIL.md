@@ -180,7 +180,6 @@ test naming — all mechanical, not LLM-judged.  Per 奥卡姆 root.
 **Auto-commit boundary (per user 2026-07-10)**: test pass ≠
 acceptable if production breaks.  When auto-committing patches,
 callers of the modified module must still resolve.  Per
-OBSERVATIONS.md 2026-07-10 entry: LLM rename of plan_task
 broke 24 tests because production callers (core/agent.py,
 core/__init__.py, src/patchgen.py) still referenced the old
 name.  Auto-commit now runs caller validation before commit

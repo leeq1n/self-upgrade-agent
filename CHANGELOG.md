@@ -290,7 +290,7 @@ advisory only.
 Commit: `3a57808`. Tag: `v2.20.1`.
 
 **PATCH: project-level acceptance report.** Per user "至少一轮
-验收" ask, this commit ships `docs/FINAL_ACCEPTANCE_2026-07-31.md`
+验收" ask, this commit ships docs/FINAL_ACCEPTANCE_2026-07-31.md
 documenting the verify round 1 results + 5 deferred issues.
 
 Trade-off: docs-only release, no code changes.
@@ -419,12 +419,12 @@ Commit: `c0cb039`. Tag: `v2.16.0`.
 broken markdown cross-refs (per 真 fresh hermes-verify-comprehensive
 script). Shipped:
 
-- `AGENTS.md` — broken `RETROSPECTIVE.md` ref → `RETROSPECTIVE_2026-07-20.md`
+- `AGENTS.md` — broken RETROSPECTIVE.md ref → RETROSPECTIVE_2026-07-20.md
 - `README.md` — added ## Uninstall section (A4 angle closure)
 - `hooks/README.md` — updated for 3 hooks + Install/Uninstall +
   `.gitattributes` note
 - `AGENTS_DETAIL.md` — fixed relative path for RETROSPECTIVE link
-- `docs/BROKEN_REFS_AUDIT_2026-07-30.md` — documents remaining 21
+- docs/BROKEN_REFS_AUDIT_2026-07-30.md — documents remaining 21
   broken refs (TODO/DONE/DETAIL split deferred)
 
 Trade-off: 5 file changes (~170 lines), audit exposed link-integrity
@@ -440,7 +440,7 @@ Commit: `b9c10b8`. Tag: `v2.15.0`.
 
 - Ran comprehensive hermes-verify-project-acceptance.py (12 checks)
 - Found 22 broken refs + OPERATING_RULES.md 109KB
-- Shipped `docs/PROJECT_ACCEPTANCE_2026-07-30.md` (7953 B)
+- Shipped docs/PROJECT_ACCEPTANCE_2026-07-30.md (7953 B)
 
 Trade-off: report lives in project layer, but per v2.17.0 +
 v2.18.0 acceptance protocol, should migrate to user layer
@@ -538,7 +538,7 @@ Advisory by default; `STRICT_EVAL=1` (or `--strict`) promotes
 to nonzero exit. Hook integration point: `hooks/pre-commit` can
 add a `cross_repo_audit` invocation in a follow-up commit.
 
-**Decision artifact**: `docs/IMPLEMENTATION_PLAN_2026-07-30.md`
+**Decision artifact**: docs/IMPLEMENTATION_PLAN_2026-07-30.md
 (v2.5.4) ranks 17 scenarios; v2.6.0 implements A2 (cross_repo_audit)
 as the prerequisite for A4 (weekly cron).
 
@@ -635,7 +635,7 @@ Commit: `4a5b76d`. Tag: `v2.3.1`.
 **Doc-only release**. Removes internal cross-references
 (sibling project paths, dev commit numbers, round numbers)
 from user-facing files (`README.md`, `CONTRIBUTING.md`,
-`RELEASE_NOTES_v2.3.0.md`). Public standards (Anthropic
+RELEASE_NOTES_v2.3.0.md). Public standards (Anthropic
 Agent Skills, AAIF) and SUA's own protocol names are kept.
 
 No code or protocol changes. All v2.3.1 behavior is
@@ -693,7 +693,7 @@ P-17, not reachable from `main`):
   `v2.2.0-session-final-2026-07-16`
 
 For development-history context, see
-[`docs/RETROSPECTIVE_2026-07-20.md`](docs/RETROSPECTIVE_2026-07-20.md).
+RETROSPECTIVE_2026-07-20.md.
 
 ## 2026-07-20 — major session
 
@@ -718,7 +718,7 @@ For development-history context, see
 
 **Net effect**: pytest 4/4 PASS · eval_before --strict PASS · 5/5
 projects working tree clean · 0 banned-phrase hits across Layer 1-4
-audit · retro file in place (`docs/RETROSPECTIVE_2026-07-20.md`).
+audit · retro file in place (docs/RETROSPECTIVE_2026-07-20.md).
 
 ### agent-reflection-skill — pushed to origin
 

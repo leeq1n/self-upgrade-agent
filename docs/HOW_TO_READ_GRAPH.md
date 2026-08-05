@@ -44,9 +44,7 @@ task fits.
 - Task is "organize work" → `docs/OPERATING_RULES.md`
 - Task is "modify principles" → `docs/PRINCIPLES_DETAIL.md` P25段
 - Task is "add new docs" → `docs/PRINCIPLES_DETAIL.md` P11/P13段
-- Task is "audit project" → `docs/PROJECT_TOPDOWN_AUDIT.md`
-- Task is "create new tool" → `docs/GRAPH_TO_SKILL_ANALYSIS.md` first!
-- Task is "decide between options" → `docs/REFLECTION_STEP_BACK.md`
+- Task is "decide between options" → `docs/SWITCH_SIGNALS.md`
 
 **Why**: L1 gives **operational detail** without
 full L2 depth.
@@ -218,9 +216,7 @@ as sequence.  Not a tool — a **read pattern**.
 
 ## See also
 
-- `docs/REFLECTION_STEP_BACK.md` (c56, decision matrix)
 - `docs/PRINCIPLES.md` 类比联想段 (5 families)
-- `docs/PROJECT_TOPDOWN_AUDIT.md` (c50, 7-check)
 - `docs/OPERATING_RULES.md` (M-rules for workflow)
 - `docs/PRINCIPLES_DETAIL.md` (P20 + P22 detail)
 - `AGENTS.md` "Read first" (parent reference)

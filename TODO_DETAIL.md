@@ -68,8 +68,8 @@
         rationale in M_SELF_AUDIT.md line 23 + remove
         1 weak ref
       - 3 (commit bfeb185): consolidate 4 weak refs in
-        M_SELF_APPLICATION.md / TODO_KNOWLEDGE_LIFECYCLE.md /
-        TODO_SESSION_PERSISTENCE.md / TODO_SESSION_PERSISTENCE_DETAIL.md
+        M_SELF_APPLICATION.md / TODO_SESSION_PERSISTENCE.md /
+        TODO_SESSION_PERSISTENCE_DETAIL.md
       - 4 (commit e7a0c1f + parent verification):
         M-task-summary per SUMMARY_LIFECYCLE contract
       After: 0 scattered "agent-onboarding skill" refs;

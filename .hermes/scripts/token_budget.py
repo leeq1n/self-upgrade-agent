@@ -4,7 +4,7 @@ Per core-layer/ACCEPTANCE_FRAMEWORK.md section 3.3 +
 docs/ACCEPTANCE_PROTOCOL.md, this script flags files
 that exceed size budgets (per P-7 Occam token budget).
 
-Per docs/POST_SEARCH_EVALUATION_2026-07-30.md + R132
+Per R132
 entropy audit, large files = entropy signal.
 
 Usage:

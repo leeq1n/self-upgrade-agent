@@ -730,11 +730,6 @@ matches the trigger.  Default: don't load.
   pattern; holds open questions + implementation steps).
   Load when: implementing the proposal or resolving the
   questions.
-- `docs/TODO_KNOWLEDGE_LIFECYCLE.md` — proposal for KG
-  priority scoring + 3-tier pruning + search bypass
-  (composite priority score, active/stale/dead policy,
-  top-N by priority at search).  Implementation
-  deferred (KG frozen; last activity 2026-07-13).
 - `docs/ADD_THEN_REDUCE.md` — load when planning a multi-leaf
   task or applying M-learn (Add phase + Reduce phase, signal
   triggers, anti-patterns).
@@ -769,14 +764,11 @@ These are project-wide pointers; load if your task type matches.
 - `docs/PROJECT_STATE.md` — current state (1-paragraph).
 - `docs/PROJECT_STATE_DETAIL.md` — version history + vision.
 - `docs/PRINCIPLES_DETAIL.md` — full text of each P-n.
-- `docs/OBSERVATIONS.md` — empirical context from past runs
-  (68KB, use `search_files` to find specific items, don't
-  load fully).
 - `docs/LITERATURE.md` + `docs/LITERATURE_DETAIL.md` — past
   research citations (per P2 搜资料 workflow).
-- `DONE.md` — project log (51KB, use `search_files` to find
+- `DONE.md` — project log (use `search_files` to find
   specific items, don't load fully).
-- `README.md`, `PROJECT_BRIEF.md`, `ISSUES.md`, `TODO.md` —
+- `README.md`, `TODO.md` —
   root project docs (load when starting broad project work).
 - `docs/CONSTRAINTS.md` + `docs/CONSTRAINTS_DETAIL.md` — hard
   must-not-violate rules (C1, C2...).

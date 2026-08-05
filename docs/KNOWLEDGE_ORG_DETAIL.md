@@ -191,10 +191,7 @@ to provide the flat view.
 
 ## See also
 
-- `docs/PLAN_TOPDOWN_REORG.md` (plan file, will be
-  updated by commit 53)
 - `docs/MCP_TOOLS.md` (c51, graph view in SUA)
 - `docs/SELF_ORG.md` (c52, P27 candidate)
-- `docs/PROJECT_TOPDOWN_AUDIT.md` (c50 audit)
 - `docs/EXTENSIONS.md` (X1 = KG, X2 = skill — will
   be updated by commit 56)

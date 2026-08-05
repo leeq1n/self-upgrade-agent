@@ -1,8 +1,7 @@
 # DONE — Completed Tasks
 
-> **Status**: Stub file. Created 2026-07-31 to resolve broken cross-references
-> (per ATDD batch fix). Replaces historical DONE.md that was archived
-> per docs/LEGACY_STATUS.md.
+> **Status**: Stub file. Created to resolve broken cross-references
+> (per ATDD batch fix). Replaces the historical DONE.md.
 
 ## Completed
 
