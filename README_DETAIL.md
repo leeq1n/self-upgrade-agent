@@ -2,20 +2,19 @@
 
 > L0: L2 detail for `README.md`.  Per P11 摘要+引用,
 > the README file is the L0/L1 layer (≤ 7KB); this
-> file is the L2 layer (code legacy + project history).
+> file is the L2 layer (code legacy + CLI + history).
 > Per R6, this companion is referenced from the README.
 
 ---
 
-## Self-improving agent — Code legacy (v1.x-v3.x)
+## Code legacy (v1.x-v3.x)
 
-Per c73 pivot note: this project was originally a
-self-improving agent that modifies `core/planner.py`.
-The code still exists and is functional, but is no
-longer the project's focus (c73 + c81 + c83 explicitly
-shifted focus to docs + skill generation).
+This project was originally a self-improving agent that modifies
+`core/planner.py`.  The code still exists and is functional, but is
+no longer the project's focus.  See `docs/LEGACY_STATUS.md` for why
+it is kept (74 tests + 5 CLI scripts exercise `src/`).
 
-### 工作流程 (per c50 audit archived)
+### 工作流程
 
 ```
 1. RESEARCH  → 多源搜索 (arXiv + Semantic Scholar + PwC + GitHub, 可选)
@@ -29,7 +28,7 @@ shifted focus to docs + skill generation).
 9. LIFECYCLE → 版本追踪、使用统计、定期修剪
 ```
 
-### 架构 (per c50 audit archived)
+### 架构
 
 ```
 self-upgrade-agent/
@@ -41,33 +40,33 @@ self-upgrade-agent/
 │   ├── evaluate.py          # A/B benchmark
 │   ├── reflector.py         # 失败反思
 │   └── config.py            # 配置
-├── benchmarks/tasks.json    # 21 个 benchmark 任务 (6 类别)
-├── tests/                   # 78+ 测试
+├── benchmarks/tasks.json    # 22 个 benchmark 任务
+├── tests/                   # ~875 测试
 ├── upgrades/                # 运行时产出 (candidates/backups/manifest)
 └── config.yaml              # 配置
 ```
 
-### 统一入口 (v1.8.0)
-
-| Subcommand | 等价于旧 | 用途 |
-|------------|---------|------|
-| `run "task"` | `python -m core.agent "task"` | 使用 agent 解决任务 |
-| `evolve [--live]` | `python run.py [--live]` | 自我进化 (7 阶段) |
-| `status` | `python run.py --stats` | 查看历史/版本 |
-| `unlock` | `python run.py --unlock-keys` | 恢复 quota_state |
-| `cull` | `python run.py --cull` | 修剪低效 skill |
-
-### CLI 详细参数
+## 当前 CLI (python -m self_upgrade)
 
 ```
---live              真实评估模式 (运行完整 LLM benchmark)
---stats             显示升级历史统计
---cull              归档低效/过期 skill
+python -m self_upgrade improve [--single --paper <id>] [--count N] [--auto-commit]
+python -m self_upgrade replay [--live]        # inspect (fast) or replay failures
+python -m self_upgrade test-scale N           # N consecutive single-paper rounds
+python -m self_upgrade daily-loop [--interval N] [--max-rounds N]
+python -m self_upgrade chat                   # interactive chat
+python -m self_upgrade cron [--install|--apply|--show]
 ```
 
-(更多参数见 `python -m self_upgrade --help`)
+- `improve`: 跑一轮自我改进（默认 multi-paper + harness 2 retries）。
+- `replay`: 查看/重放 `upgrades/failures.jsonl` 中的失败（P18）。
+- `test-scale`: 连续 N 轮（调试/负载/稳定性）。
+- `daily-loop`: 自主循环，每 `--interval` 秒一轮，Ctrl-C 停止。
+- `chat`: 交互式对话。
+- `cron`: v4.0.0 定时部署（dry-run 默认，P9）。
 
-### 配置说明
+完整参数见 `python -m self_upgrade <subcommand> --help`。
+
+## 配置说明
 
 ```bash
 # 1. 安装 + 配置
@@ -75,37 +74,31 @@ pip install -r requirements.txt
 cp .env.example .env  # 编辑填入 LLM_API_KEY 和 LLM_MODEL
 
 # 2. 使用 agent (日常)
-python -m self_upgrade run "Plan a 3-day trip to Tokyo"
-python -m self_upgrade run "Write a palindrome check in Python"
+python -m core.agent "Plan a 3-day trip to Tokyo"
 
 # 3. 自我进化 (自主)
-python -m self_upgrade evolve          # dry-run, 秒级
-python -m self_upgrade evolve --live   # 真实 LLM benchmark
+python -m self_upgrade improve --count 5     # 5 rounds
+python -m self_upgrade daily-loop            # 自主循环
 
 # 4. 维护
-python -m self_upgrade status          # 看 history.db + manifest + planner 版本
-python -m self_upgrade unlock          # 重置 quota_state (key 被 mark dead 时用)
-python -m self_upgrade cull            # 修剪低效 skill
+python -m self_upgrade replay                # 查看失败记录
 ```
 
-### 测试
+## 测试
 
 ```
-pytest tests/  # 78+ tests (per c50 audit: 621+ tests pass + 6 skip + 0 fail)
+pytest tests/  # ~875 tests
 ```
 
-### 项目历史 (per c50 audit, partial)
+## 项目历史
 
 - v1.0-v1.5: initial self-improving agent
-- v1.6.0: ISS-013/012 fixes (filter LLM wiring)
+- v1.6.0: quota/key management fixes
 - v1.7.0-v1.8.x: scaling, MCP tools, LangGraph
-- v2.0.0: minimal v2 with intent to focus on rules project
-- v2.0.0-minimal (current branch): docs + P-n + M-n +
-  sibling project + skill-generation-knowledge
+- v2.x: docs + P-n + M-n + skill-generation-knowledge
+  (agent discipline knowledge library focus)
 
-### Last P20-verified
-
-2026-07-15 (per c85 README vision sync).
+完整发布日志见 `CHANGELOG.md`。
 
 ---
 
@@ -117,15 +110,10 @@ orientation, current state, links).  Code legacy detail
 (workflow, architecture, CLI, config, testing, history)
 goes to L2 detail companion.
 
-This split is the **R5 fix for README** — same pattern
-applied to PROJECT_TOPDOWN_AUDIT (c60), PRINCIPLES (c72),
-KNOWLEDGE_ORG (c81), and other 11 docs (c60-c83 batch).
-
 ## Cross-references
 
 - `AGENTS.md` — operating rules for new agents
 - `docs/HOW_TO_READ_GRAPH.md` — 3-step read pattern
 - `docs/HANDOFF.md` — project-specific onboarding
 - `docs/PROJECT_STATE.md` — current state snapshot
-- `docs/SKILL_DESIGN.md` — SUA 维护的 skill-generation-knowledge
-- `../agent-reflection-skill/` — sibling project
+- `docs/SKILL_DESIGN.md` — skill-generation knowledge

@@ -1,4 +1,4 @@
-# Operating workflow rules (per user 2026-07-13)
+# Operating workflow rules
 Last P20-verified: 2026-07-13
 
 |> L0: 9 operating rules (M-task-summary, M-must-read,
@@ -13,7 +13,7 @@ Last P20-verified: 2026-07-13
 > **Every task completion = automatic M-task-summary** (this
 > is the workflow's invariant, not a choice).  Multi-leaf
 > tasks additionally fire M-subtask-summary per leaf.
-> Per user 2026-07-13 '做完大任务记得自动写总结': the rule
+> Per user directive '做完大任务记得自动写总结': the rule
 > fires on task-end, not on user request.
 
 ## When to use this
@@ -57,7 +57,7 @@ After every task completion, briefly state what went well
 should be updated based on what you learned; if yes, include
 the doc fix in the same task (per P14 docs-stay-current).
 
-**Child-summary destroy contract** (per user 2026-07-13):
+**Child-summary destroy contract**:
 when M-task-summary completes for a parent task that has
 N child tasks, the summary commit MUST pull N child
 summaries, write the parent summary, then destroy the
@@ -89,7 +89,7 @@ silently breaks the agent.  Implementation details
 (snapshot format, restore mechanism) are in
 `docs/TODO_SESSION_PERSISTENCE.md` (proposal — t8).
 
-**Switch signals** (per user 2026-07-13): a "switch" is any
+**Switch signals**: a "switch" is any
 of these, regardless of perceived size or duration:
 - User says "switch to X" / "let's do something else" /
   mentions a different topic
@@ -145,7 +145,7 @@ contradicts itself), **first find the user's actual goal**
 backward from the goal.  3 actions in order: extract goal →
 identify main contradiction → plan backward.
 
-Default to EXECUTE, not ask-again (per user 2026-07-10
+Default to EXECUTE, not ask-again (per user directive
 'trust you / next / go').
 
 Full text (3 actions detail, anti-pattern, trust-trigger

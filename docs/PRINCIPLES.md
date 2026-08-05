@@ -4,11 +4,11 @@ status: "summary"
 ---
 
 # PRINCIPLES — Working principles (portable)
-> L0: 25 working principles (P1-P29, P28 lifted per c96, P29 lifted per c167).
+> L0: 25 working principles (P1-P29).
 > See `docs/PRINCIPLES_DETAIL.md` "Root axioms"段 (L0 categorical synthesis) + "Cross-reference to PRINCIPLES.md 类比联想段" (L1 operational mirror) for bidirectional context.
 Last P20-verified: 2026-07-15
 
-> Distilled from working on this project (2026-07-08 session).
+> Distilled from working on this project.
 > These are project-agnostic — copy them to any future project.
 > Each rule has a 1-line WHY and a HOW.
 
@@ -22,28 +22,27 @@ P7 奥卡姆 — earn its place.
 | # | Root axiom | L1 children | WHY |
 |---|---|---|---|
 | 奥卡姆 | P7, P9, P13, P23 | Minimum API, no rule until 3+ failures, no orphan nodes, doc > script (with nuance) |
-| Workflow | P1, P2, P4, P5, P22, P23 | 整理→思考→行动, plan, test pyramid, 1 commit = 1 feature, verify (P5 merged with P6 + P15 per c77a+c79), meta-rules |
-| Test | P3, P5, P18, P19, P28 | Unit → joint → integration, verify before commit (P5 merged with P6 + P15 + P16), failure → regression test, data-flow observability, recursion to self (P28) |
+| Workflow | P1, P2, P4, P5, P22, P23 | 整理→思考→行动, plan, test pyramid, 1 commit = 1 feature, verify (P5), meta-rules |
+| Test | P3, P5, P18, P19, P28 | Unit → joint → integration, verify before commit (P5), failure → regression test, data-flow observability, recursion to self (P28) |
 | Doc | P10, P11, P12, P14, P17, P20, P21 | Entity > prompt, 摘要+引用, knowledge in project, docs stay current, honest reporting, progressive disclosure, cross-project boundaries |
 
 **P27 (project self-organization)** spans **all 4 root axioms**
-(meta-meta principle per c52 SELF_ORG.md case-3 boundary
-test: "principle about principles").  It is the *operating*
+(meta-meta principle: "principle about principles").  It is the *operating*
 form of these axioms — the axioms as observed from the
 project's own behavior rather than the project's behavior
 as observed from the axioms.
 
-**P28 (recursion, lifted per c96)** — applying any
+**P28 (recursion)** — applying any
 P-n / M-* to the project itself.  Like P27, it's a
 cross-axiom meta-meta principle.  See `PRINCIPLES_FULL.md`
 "Recursion"段 (4-element段 + P28 LIFT段).
 
-**P29 (agent 主动 reduce context, lifted per c167)**
+**P29 (agent 主动 reduce context)**
 — see `PRINCIPLES_FULL.md` "P29"段.
 
 ### 类比联想 (analogy map — the 4 root essences)
 
-Per user audit 2026-07-14 ("原则中有共性的是否汇总到一起"
+Per user audit ("原则中有共性的是否汇总到一起"
 + "本质相近/能够联想的内容放在一起，这就是分治
 思想运用的方式"), the 4 root axioms above are
 **abstract categories** — but the actual 26 P-n can
@@ -58,8 +57,8 @@ axioms are categorical):
 
 | Essence family | P-n | Operational commonalities (类比) |
 |---|---|---|
-| **Plan-then-act** (sequence + organization) | P1, P2, P4, P22 | All about "step before step".  Organize workspace (P1), search before designing (P2), 1 commit per feature (P4), plan when stuck (P22).  (P15 stage-gate demoted to P5 实操 per c79.)  Essence: **don't leapfrog steps**. |
-| **Verify-don't-guess** (truth by structure) | P3, P5, P18, P19 | All about "verify by structure, not by assumption".  Test pyramid (P3, merged with P24 per c78), verify before commit (P5, merged with P6 + P15 + P16 per c47a+c79+c80), failure → regression (P18), intermediate state observable (P19).  Essence: **make the unseen testable**. |
+| **Plan-then-act** (sequence + organization) | P1, P2, P4, P22 | All about "step before step".  Organize workspace (P1), search before designing (P2), 1 commit per feature (P4), plan when stuck (P22).  (P15 的 stage-gate 实操已并入 P5.)  Essence: **don't leapfrog steps**. |
+| **Verify-don't-guess** (truth by structure) | P3, P5, P18, P19 | All about "verify by structure, not by assumption".  Test pyramid (P3, merged with P24), verify before commit (P5, merged with P6 + P15 + P16), failure → regression (P18), intermediate state observable (P19).  Essence: **make the unseen testable**. |
 | **Capture-in-writing** (docs as truth) | P10, P11, P12, P14, P17, P20, P21 | All about "if it isn't written, it isn't true".  Code over prompt (P10), 摘要+引用 (P11), knowledge in project not memory (P12), docs stay current (P14), honest reporting (P17), progressive disclosure (P20), cross-project boundaries (P21).  Essence: **commit to the record**. |
 | **Minimum-viable** (奥卡姆 + structure) | P7, P8, P9, P13 | All about "don't over-build, but make structure clear".  奥卡姆 (P7), fail-open (P8), hard rules not LLM-judged (P9), no orphan nodes (P13).  Essence: **minimum + intentional structure**. |
 | **Meta-rules** (how to reason about rules) | P22, P23, P25, P26, P27, P28 | All about "how to think about the other P-n".  Stuck→plan (P22), doc>script (P23), principle modification discipline (P25), user-acceptance fresh-agent check (P26), project self-organization (P27), recursion to self (P28).  Essence: **process for the process itself**. |
@@ -103,12 +102,9 @@ itself.
 **奥卡姆 implication**: per user "细节可能你还要
 补全一部分" + "条数多而且混乱，不符合奥卡姆" —
 some P-n were redundant.
-Per c44 audit + c47 MERGE_EVAL: P5+P6 merged into
-单一 P5 (per c47a, 2026-07-14).  Future batches
-继续 evaluate per P7:
-奥卡姆 whether to **merge** overlapping P-n.  This
-commit establishes the **analogy framework** for
-that evaluation.
+P5+P6 已合并为单一 P5。后续按 P7 奥卡姆评估是否继续
+合并重叠的 P-n；本节建立的类比框架（5 个 essence
+families）就是该评估的基础。
 
 ---
 
@@ -129,9 +125,9 @@ descends from.  Per P22 步骤 3: 找 rule 之间的共性.
 
 ## Detail (L2)
 
-For per-P-n full text (P19, P20, P20细则, P21, P25, P26, P27), P-n vs M-* boundary段, and L2 实操段, see [`PRINCIPLES_FULL.md`](PRINCIPLES_FULL.md).  (P24 merged into P3 per c78; P24段 removed from PRINCIPLES_FULL.md.)  Per R6, this companion is required for files > 7KB.
+For per-P-n full text (P19, P20, P20细则, P21, P25, P26, P27), P-n vs M-* boundary段, and L2 实操段, see [`PRINCIPLES_FULL.md`](PRINCIPLES_FULL.md).  (P24 merged into P3.)  Per R6, this companion is required for files > 7KB.
 
-## Principle protection (per user message 2026-07-16)
+## Principle protection
 
 **Question**: 如果 user says "删除 P17 老实说" or
 "增加 P30: agent should lie", can a new agent
@@ -268,4 +264,3 @@ M-n 15 6-step + be reviewed by user message explicitly.
 - `hooks/commit-msg` — whitelist enforcement
 - `AGENTS.md` § "Iterative thinking" — when to
   pause and re-think before accepting changes
-- user message 2026-07-16 — origin (this 段)
