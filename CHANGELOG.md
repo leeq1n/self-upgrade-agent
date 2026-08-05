@@ -5,6 +5,65 @@
 > the actual released state of the project on
 > [github.com/leeq1n/self-upgrade-agent](https://github.com/leeq1n/self-upgrade-agent).
 
+## 2026-07-31 — doc maintenance + Windows hook fixes
+
+### v2.22.12 — PATH bootstrap uses $BASH not command -v (P7, P11, P14, P17)
+
+**PATCH: hooks.** `install-hooks.sh` PATH bootstrap now uses `$BASH`
+instead of `command -v` (works when bash is invoked via absolute path).
+
+### v2.22.11 — .bat CRLF via gitattributes + pure-ASCII bat (P7, P11, P14, P17)
+
+**PATCH: hooks.** `install-hooks.bat` made pure-ASCII; `.gitattributes`
+handles CRLF for .bat files.
+
+### v2.22.10 — install-hooks.bat for Windows cmd/PowerShell (P7, P11, P14, P17)
+
+**FEATURE: hooks.** Windows installer for the 4 hooks (delegates to
+`install-hooks.sh` via git bash; zero-pollution: no `.hermes/` in the
+target project).
+
+### v2.22.9 — remove .hermes teaching residue from install docs (P7, P11, P14, P17)
+
+**DOCS: hooks.** Install docs no longer teach `.hermes/` scaffolding.
+
+### v2.22.8 — Windows cygpath path handling + zero-pollution installer (P7, P11, P14, P17)
+
+**FIX: hooks.** All 4 hooks convert MSYS `/c/...` paths to native
+Windows paths (`cygpath -w`) so `python` can open them.
+
+### v2.22.13 — doc library cleanup (P5, P7, P11, P14, P18, P20)
+
+**MAINTENANCE: docs + code.** Project-wide cleanup for consistency
+and functional completeness:
+
+- **Code fixes**: pre-push `validate_links` variable bug (was always
+  failing); hardcoded `hermes-root` absolute paths in 30 test/script
+  files → `__file__`-relative; dead `self_upgrade unlock` subcommand
+  call removed (preflight already unlocks); `run.py` references (file
+  no longer exists) repointed to `python -m self_upgrade`;
+  `requirements.txt` synced to actual imports; `.reasonix/` ignored;
+  Windows GBK decode failures fixed via explicit `encoding="utf-8"`
+  in tests.
+- **Docs de-historicized**: AGENTS family, PRINCIPLES, OPERATING_RULES,
+  PROJECT_STATE, README_DETAIL — removed dev-session provenance
+  (dates, commit ids, lift/demote history) per the knowledge-base-not-log
+  rule.
+- **37 historical docs deleted** (retrospectives, audits, acceptance
+  reports, decision records, graph-to-skill plans, observations log,
+  stale ISSUES/PROJECT_BRIEF); all cross-references cleaned.
+- **INDEX.md rewritten** to cover the current 77 docs; missing L0
+  lines added.
+
+Trade-off: docs-only cleanup (no feature change); cost = 37 files
+removed from git history visibility (still in git log); reversibility
+= full (git history retains everything).
+
+Pre-task scan (M-n 34): PRINCIPLES.md (P5/P7/P11/P14/P18/P20 applied),
+OPERATING_RULES.md (M-n 18 destruction, M-n 32 guardrails), INDEX.md
+(current-state rewrite), validate_links + self_health_check + pytest
+as verification gates.
+
 ## 2026-07-31 — capability frameworks + protocol additions
 
 ### v2.22.5 — v2.22.4 CHANGELOG entry (P14, P17, M-n 32, M-n 34)
