@@ -1,7 +1,7 @@
 """Legacy pipeline — skillgen path (archived, use pipeline_lg.py instead).
 
 This pipeline generates SKILL.md behavior prompts (not code patches).
-Kept for backward compatibility via `python run.py --legacy`.
+Kept for backward compatibility (legacy entry).
 
 For the current self-modification pipeline, see src/pipeline_lg.py.
 """
@@ -304,7 +304,7 @@ def run_pipeline(
                 except Exception:
                     logger.warning(f"  E. Promote failed")
             elif sandbox_ok:
-                logger.info(f"  E. Manual approval: python run.py --promote {skill_name}")
+                logger.info(f"  E. Manual approval required: review candidate {skill_name} before promoting")
             else:
                 logger.info(f"  E. Sandbox failed, candidate archived")
         else:

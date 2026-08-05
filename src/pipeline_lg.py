@@ -932,7 +932,7 @@ def node_decide(state: dict) -> dict:
                     result = promote_candidate(patch_name)
                     logger.info(f"   AUTO-PROMOTED to core/{target_module}: {result['status']}")
                 else:
-                    logger.info(f"   KEPT. Manual approval: python run.py --promote {patch_name}")
+                    logger.info(f"   KEPT. Manual approval required: review candidate {patch_name} before applying")
             else:
                 discard_candidate(patch_name)
                 logger.info(f"   REVERTED. Candidate discarded: {patch_name}")
@@ -1199,5 +1199,5 @@ def run(cfg: Config = None, dry_run: bool = False) -> dict:
     return build_graph().invoke(initial_state)
 
 
-# Alias for backward compatibility with run.py
+# Alias for backward compatibility
 run_pipeline_lg = run

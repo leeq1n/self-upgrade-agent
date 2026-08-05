@@ -165,13 +165,13 @@ def quick_test(task: str, stream: bool = True) -> Dict:
 if __name__ == "__main__":
     """使用入口：python -m core.agent "你的任务"
 
-    这是 agent 的日常使用入口，与自我升级入口 (python run.py) 分开。
+    这是 agent 的日常使用入口，与自我升级入口 (python -m self_upgrade) 分开。
     示例：
         python -m core.agent "帮我规划一个 3 天的东京旅行"
         python -m core.agent "写一个检查回文的 Python 函数"
     """
     # Load .env so users don't need to `export $(cat .env)` first.
-    # Mirrors the loader in run.py / tests/conftest.py.
+    # Mirrors the loader in tests/conftest.py.
     _ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
 
     def _load_env_file(path: str) -> None:
