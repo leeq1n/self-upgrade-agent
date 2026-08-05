@@ -82,6 +82,12 @@ fi
 echo
 echo "--- 2. validate_links ---"
 if [ -f "$VALIDATE_LINKS" ]; then
+    # Windows: python needs native paths (MSYS /c/... breaks it).
+    if command -v cygpath >/dev/null 2>&1; then
+        VALIDATE_LINKS_NATIVE="$(cygpath -w "$VALIDATE_LINKS")"
+    else
+        VALIDATE_LINKS_NATIVE="$VALIDATE_LINKS"
+    fi
     if python "$VALIDATE_LINKS_NATIVE" 2>&1; then
         echo "validate_links: PASS"
     else
