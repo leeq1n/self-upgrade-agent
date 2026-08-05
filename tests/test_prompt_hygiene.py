@@ -82,7 +82,7 @@ def test_agents_index_points_to_live_per_task_rule_source():
         "## Task-done-notify reminder",
         "## Post-completion verification suggestion",
         "## Operating rules",
-        "## Recent cross-project sync",
+        "## Cross-project sync",
     ):
         assert heading in detail, f"Missing live rule source: {heading}"
 
