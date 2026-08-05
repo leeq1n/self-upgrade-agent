@@ -3,7 +3,7 @@ import os
 import sys
 import tempfile
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT)
 
 from src.v3_multipaper import (

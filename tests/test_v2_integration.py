@@ -13,7 +13,7 @@ import json
 import tempfile
 from unittest.mock import patch as mock_patch, MagicMock
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT)
 
 import pytest

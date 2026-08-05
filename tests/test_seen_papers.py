@@ -8,7 +8,7 @@ C12: papers that fail 3+ times get auto-blacklisted
 import os, sys, tempfile
 import pytest
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT)
 
 

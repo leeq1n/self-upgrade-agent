@@ -11,7 +11,7 @@ executes the 8 unit tests against a (trivially) patched planner.
 import os, sys, shutil, hashlib, subprocess
 import pytest
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT)
 
 
@@ -49,7 +49,7 @@ def test_node_evaluate_real_calls_run_harness_mocked():
     import src.pipeline_lg as plg
 
     cfg = load_config("config.yaml")
-    trivial_patch = open(os.path.join(PROJECT, "core", "planner.py")).read()
+    trivial_patch = open(os.path.join(PROJECT, "core", "planner.py"), encoding="utf-8").read()
 
     state = {
         "config": cfg,

@@ -9,7 +9,7 @@ Verifies that:
 import os, sys
 import pytest
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT)
 
 
@@ -78,7 +78,7 @@ def test_decide_legacy_path_still_works():
 def test_node_evaluate_evaluation_dict_has_harness_key():
     """Check that the source code of node_evaluate references harness."""
     p = os.path.join(PROJECT, "src", "pipeline_lg.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     # node_evaluate should set state["evaluation"]["harness"] somewhere
     assert '"harness"' in content or "'harness'" in content, \

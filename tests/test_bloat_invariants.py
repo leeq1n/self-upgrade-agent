@@ -17,7 +17,7 @@ use /tmp/v172_stress.py (manual).
 import os, sys, json, hashlib, sqlite3, subprocess
 import pytest
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT)
 
 PLANNER = "core/planner.py"
@@ -130,7 +130,7 @@ def test_apply_patch_to_module_idempotent():
 
     try:
         # Read original content
-        with open(PLANNER) as f:
+        with open(PLANNER, encoding="utf-8") as f:
             orig_content = f.read()
 
         # Apply a real patch (valid Python function)

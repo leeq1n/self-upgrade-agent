@@ -3,7 +3,7 @@ import os, sys, ast
 from src.goals import _reseed_built_in_strategies
 import pytest
 
-PROJECT = r"C:\Users\LQ\Documents\agent-workspace\hermes-root\self-upgrade-agent"
+PROJECT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def test_seen_papers_function_exists():
@@ -21,7 +21,7 @@ def test_seen_papers_function_exists():
 def test_pipeline_lg_filters_seen_papers():
     """src/pipeline_lg.py node_research must call get_unseen_paper_ids."""
     p = os.path.join(PROJECT, "src", "pipeline_lg.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     # node_research body must include seen-papers filter
     assert "get_unseen_paper_ids" in content
@@ -31,7 +31,7 @@ def test_pipeline_lg_filters_seen_papers():
 def test_pipeline_lg_marks_seen_after_round():
     """node_decide must call mark_paper_seen."""
     p = os.path.join(PROJECT, "src", "pipeline_lg.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "mark_paper_seen" in content
 
@@ -40,7 +40,7 @@ def test_llm_stream_module_exists():
     """src/llm_stream.py must exist with chat_stream function."""
     p = os.path.join(PROJECT, "src", "llm_stream.py")
     assert os.path.exists(p)
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "def chat_stream" in content
     # Validates as Python
@@ -50,7 +50,7 @@ def test_llm_stream_module_exists():
 def test_llm_stream_handles_anthropic_and_openai():
     """chat_stream must have both code paths."""
     p = os.path.join(PROJECT, "src", "llm_stream.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     # Anthropic path: event-based
     assert "event_block_delta" in content or "content_block_delta" in content
@@ -63,7 +63,7 @@ def test_collect_papers_script_exists():
     """collect_papers.py is the bulk-fetch script."""
     p = os.path.join(PROJECT, "collect_papers.py")
     assert os.path.exists(p)
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "search_arxiv" in content
     assert "argparse" in content
@@ -76,7 +76,7 @@ def test_env_bumped_to_v181_timeouts():
     p = os.path.join(PROJECT, ".env")
     if not os.path.exists(p):
         pytest.skip("no .env (not in this session)")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     # Either 300 or whatever the v1.8.1 value is
     assert "LLM_TIMEOUT=300" in content
@@ -217,7 +217,7 @@ def test_cli_has_three_subcommands():
     """v2.x unified CLI exposes improve, replay, test-scale (per
     user feedback 2026-07-08 to consolidate entry points)."""
     p = os.path.join(PROJECT, "self_upgrade", "__main__.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "improve" in content
     assert "replay" in content
@@ -232,7 +232,7 @@ def test_run_stable_patches_research_module():
     """run_stable.py must patch BOTH plg.search_arxiv AND src.research.search_arxiv
     (since pipeline_lg imports search_arxiv as a local name)."""
     p = os.path.join(PROJECT, "run_stable.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "plg.search_arxiv" in content
     # The actual fix: also patch src.research.search_arxiv
@@ -479,7 +479,7 @@ def test_patchgen_prompt_has_loop_feedback_placeholder():
 def test_pipeline_lg_has_research_context():
     """node_research must set state['research_context']."""
     p = os.path.join(PROJECT, "src", "pipeline_lg.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "research_context" in content
     assert "_build_research_context" in content
@@ -488,7 +488,7 @@ def test_pipeline_lg_has_research_context():
 def test_pipeline_lg_passes_loop_state_to_patchgen():
     """node_generate_patch must pass loop_state to generate_patch."""
     p = os.path.join(PROJECT, "src", "pipeline_lg.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "loop_state=" in content or "loop_state =" in content
     assert "loop_state=loop_state" in content or "loop_state=state.get" in content
@@ -600,7 +600,7 @@ def test_loop_feedback_includes_recent_failures():
 def test_node_decide_calls_log_decision():
     """node_decide in pipeline_lg must call log_decision."""
     p = os.path.join(PROJECT, "src", "pipeline_lg.py")
-    with open(p) as f:
+    with open(p, encoding="utf-8") as f:
         content = f.read()
     assert "log_decision" in content
     # The function should be imported from src.learning
@@ -736,7 +736,7 @@ def test_seen_papers_filter_keeps_new_papers():
     """
     sys.path.insert(0, PROJECT)
     import re
-    with open(os.path.join(PROJECT, "src", "pipeline_lg.py")) as f:
+    with open(os.path.join(PROJECT, "src", "pipeline_lg.py"), encoding="utf-8") as f:
         content = f.read()
     # The filter logic must be `pid not in unseen_ids` (keeps new)
     assert "if pid not in unseen_ids:" in content, \
@@ -752,7 +752,7 @@ def test_run_stable_patches_both_modules():
     Without patching both, node_research still gets empty papers.
     """
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, "run_stable.py")) as f:
+    with open(os.path.join(PROJECT, "run_stable.py"), encoding="utf-8") as f:
         content = f.read()
     # Both module names must appear in the patch block
     patch_block_start = content.find("Inject fake paper")
@@ -770,7 +770,7 @@ def test_run_stable_papers_are_real_arxiv():
     2310.02170 is DyLAN).  This test catches any future regression.
     """
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, "run_stable.py")) as f:
+    with open(os.path.join(PROJECT, "run_stable.py"), encoding="utf-8") as f:
         content = f.read()
     # Spot-check that 3 fixed titles appear (the ones that were wrong)
     assert "DyLAN" in content, "DyLAN should be in real 2310.02170 abstract"
@@ -832,7 +832,7 @@ def test_patchgen_disables_thinking_for_max_content():
     code response.  Prompt itself carries the reasoning (ReAct-style).
     """
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, "src", "patchgen.py")) as f:
+    with open(os.path.join(PROJECT, "src", "patchgen.py"), encoding="utf-8") as f:
         content = f.read()
     assert "enable_thinking=False" in content
     assert "thinking_budget=0" in content
@@ -841,7 +841,7 @@ def test_patchgen_disables_thinking_for_max_content():
 def test_filter_disables_thinking_for_speed():
     """v1.8.1: src/filter.py chat_simple() disables thinking (keyword-based)."""
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, "src", "filter.py")) as f:
+    with open(os.path.join(PROJECT, "src", "filter.py"), encoding="utf-8") as f:
         content = f.read()
     assert "enable_thinking=False" in content
 
@@ -849,7 +849,7 @@ def test_filter_disables_thinking_for_speed():
 def test_env_example_has_thinking_defaults():
     """v1.8.1: .env.example documents the new thinking defaults."""
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, ".env.example")) as f:
+    with open(os.path.join(PROJECT, ".env.example"), encoding="utf-8") as f:
         content = f.read()
     assert "LLM_ENABLE_THINKING_DEFAULT" in content
     assert "LLM_THINKING_BUDGET_DEFAULT" in content
@@ -901,7 +901,7 @@ def test_filter_skips_quota_check_when_no_api_keys():
     met thresholds).  Now it skips that check entirely.
     """
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, "src", "filter.py")) as f:
+    with open(os.path.join(PROJECT, "src", "filter.py"), encoding="utf-8") as f:
         content = f.read()
     # Must have: if llm_config.api_keys: (not always check QuotaState)
     assert "if llm_config.api_keys:" in content, \
@@ -918,7 +918,7 @@ def test_try_with_fallback_handles_no_api_keys():
     config.api_keys so the loop and .index() calls work.
     """
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, "src", "llm.py")) as f:
+    with open(os.path.join(PROJECT, "src", "llm.py"), encoding="utf-8") as f:
         src = f.read()
     # Must inject sentinel when no keys
     assert 'config.api_keys = ["local-sentinel"]' in src, \
@@ -932,7 +932,7 @@ def test_try_with_fallback_handles_no_api_keys():
 def test_run_stable_preserves_logs():
     """v1.8.1: run_stable does NOT pre-run gc (logs must be preserved for debug)."""
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, "run_stable.py")) as f:
+    with open(os.path.join(PROJECT, "run_stable.py"), encoding="utf-8") as f:
         content = f.read()
     # Find the main() function and check pre-run section
     import re
@@ -952,7 +952,7 @@ def test_run_stable_preserves_logs():
 def test_run_stable_archives_old_logs():
     """v1.8.1: post-run gc moves old logs to archive/ (not delete)."""
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, "run_stable.py")) as f:
+    with open(os.path.join(PROJECT, "run_stable.py"), encoding="utf-8") as f:
         content = f.read()
     # Post-run should reference archive/
     assert "archive" in content
@@ -965,7 +965,7 @@ def test_run_stable_archives_old_logs():
 def test_env_example_documents_long_timeouts():
     """v1.8.1: .env.example documents LLM_TIMEOUT=300 not default 30s."""
     sys.path.insert(0, PROJECT)
-    with open(os.path.join(PROJECT, ".env.example")) as f:
+    with open(os.path.join(PROJECT, ".env.example"), encoding="utf-8") as f:
         content = f.read()
     # Must have LLM_TIMEOUT=300
     assert "LLM_TIMEOUT=300" in content
