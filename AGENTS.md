@@ -144,28 +144,22 @@ When agent reports task completion to user, the report MUST include:
 **Live detail**: see AGENTS_DETAIL.md § Operating rules.
 
 
-### Recent cross-project sync (2026-07-20 re-architecture)
+### Cross-project sync
 
-Per re-architecture: **SUA is the knowledge library for the hermes-root
-family; siblings are standalone or frozen, not downstream.**
-
-Active siblings (standalone, not downstream of SUA):
-- `../agent-reflection-skill/` — standalone skill
-- `../knowledge-graph-seed/` — frozen MVP (no active dev)
-
-Archived: `../skill-incubator/` (consolidated into SUA's
-`docs/SKILL_DESIGN.md`).
+**SUA is a self-contained knowledge library.**  It does not depend on
+any sibling repository; sibling projects are maintained independently
+(standalone or frozen) and are not downstream of SUA.
 
 **L4 boundary revision**:
 - (a) 1 line / typo / cross-ref = low-risk autonomous, skip 7-check
 
-**Live detail**: see AGENTS_DETAIL.md § Recent cross-project sync.
+**Live detail**: see AGENTS_DETAIL.md § Cross-project sync.
 
 
 ### 3-layer architecture
 
 This project uses a **3-layer policy** to govern documentation
-and modification rules (per `docs/THREE_LAYER_DECISION_2026-07-30.md`):
+and modification rules:
 
 | Layer | Marker | Files | Modification rule |
 |---|---|---|---|
@@ -173,7 +167,7 @@ and modification rules (per `docs/THREE_LAYER_DECISION_2026-07-30.md`):
 | **项目层** (project) | `LAYER: project` | `AGENTS.md`, `AGENTS_DETAIL.md`, `docs/*`, `README.md`, `CONTRIBUTING.md`, `LICENSE`, `tests/*` | Update as project evolves |
 | **用户层** (user) | `LAYER: user` | local-only (e.g., `~/.config/sua/USER_LAYER.md` or repo-local gitignored file) | Per-user customization, never committed to upstream |
 
-**Why**: per tua-start `AGENTS.md` "主动修改 skill" protocol,
+**Why**: per the "主动修改 skill" protocol,
 核心层修改需要尽可能少 (modify core only when absolutely necessary),
 用户层主要改 (most edits happen in user layer), 项目层随项目变
 (project layer changes with project).
@@ -215,11 +209,7 @@ should fall back to AGENTS.md (per P22).
 For session-specific learnings (5-question audit pattern, banned-
 word language habit shift, "OcCam ≠ Stop" meta-insight, project
 layer > agent layer, audit scope declaration), see
-`docs/RETROSPECTIVE_2026-07-20.md`.
-
-AGENTS_DETAIL.md already cross-refs it for per-task loaders; this
-top-level pointer ensures cold-start agents find it without
-scanning the always-loaded files twice.
+AGENTS_DETAIL.md § Retrospective notes.
 
 Apply at every commit / audit / cross-project decision; not
 encoded as always-loaded rule (per OcCam).

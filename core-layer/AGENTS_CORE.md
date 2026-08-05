@@ -10,13 +10,11 @@
 > (100% cache hit when stable).  Per-task 段s are in
 > `AGENTS.md` as references (per P11 摘要+引用).
 >
-> **2026-07-20 architecture note**: SUA is the knowledge
-> library for the hermes-root family; siblings are
-> standalone (agent-reflection-skill) or frozen
-> (knowledge-graph-seed MVP).  skill-incubator was
-> archived; its content consolidated into SUA's
-> `docs/SKILL_DESIGN.md`.  Cross-ref details in
-> AGENTS.md "Recent cross-project sync"段.
+> **Architecture note**: SUA is a self-contained
+> knowledge library; sibling repositories are
+> maintained independently (standalone or frozen)
+> and are not downstream of SUA.  Cross-ref details
+> in AGENTS.md "Cross-project sync"段.
 >
 > Cross-ref: full content here.  AGENTS.md has
 > references, not duplicates.
@@ -176,8 +174,8 @@ that motivated the change).
   (per "storage layered / read flat" principle — see
   `docs/RECURSIVE_DECOMPOSITION.md`).
 - When describing a banned word or workaround, **prefer
-  Chinese over English indirection** (per 2026-07-20
-  directive "用中文, 而不是那个英文词").  Three-paragraph
+  Chinese over English indirection** (per directive
+  "用中文, 而不是那个英文词").  Three-paragraph
   English circumlocutions ("an English noun", "that noun",
   "round-based reasoning") violate P7 Occam — they re-
   introduce the mental model the ban was meant to prevent,

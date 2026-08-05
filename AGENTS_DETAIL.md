@@ -350,8 +350,7 @@ USE all the primitives + 段s effectively?
 ### A2: User-project angle (skill fit per project)
 
 **Question**: for each project in the local
-ecosystem (SUA + agent-reflection-skill +
-knowledge-graph-seed + others), what skill applies +
+ecosystem (SUA + sibling projects + others), what skill applies +
 is it the right fit?
 
 **Sub-checks** (per project):
@@ -412,7 +411,7 @@ agent MUST apply **5 primitives** (per M-n 16 stage 1-2
 + M-n 14 two-track + M-n 25 message-pattern + M-n 26
 context-decay; codified in M-n 29 Step 2):
 
-**Per user message 2026-07-16 + M-n 14 two-track**: complete
+**Per M-n 14 two-track**: complete
 thinking needs BOTH constructive + adversarial.  Apply
 **4 critical-thinking primitives** FIRST (default-on for
 high-stakes, optional for single-file refactors, skip for
@@ -505,22 +504,18 @@ Then MUST apply **M-n 29 5-step protocol**:
 flagged.  Per M-n 32 Guardrail #4 (pre-claim): NOT
 allowed to claim PASS before 5-step is complete.
 
-**Per retrospective (2026-07-16, your turn)**: previous
+**Per retrospective**: previous
 session claimed "✅ Task DONE" multiple times without
 applying M-n 29 5-step.  This external trigger script +
 AGENTS.md reminder段 are the structural fix.
 
 See:
-- `docs/OPERATING_RULES.md` § M-acceptance-protocol (M-n 29
-  trigger S1-S5, per L0.1 commit)
-- `docs/OPERATING_RULES.md` § M-task-lifecycle (M-n 31 Phase 3
-  pre-condition, per L0.2 commit)
+- `docs/OPERATING_RULES.md` § M-acceptance-protocol (M-n 29)
+- `docs/OPERATING_RULES.md` § M-task-lifecycle (M-n 31)
 - `docs/OPERATING_RULES.md` § M-self-learning-guardrail
-  (M-n 32 Guardrail #4, per L0.3 commit)
-- `.hermes/plans/2026-07-16_fix-m29-trigger-explicit.md`
-  (full plan + 11-commit batch)
+  (M-n 32 Guardrail #4)
 - `.hermes/scripts/m_n29_5step.py` (mechanical external
-  trigger, per retrospective fix)
+  trigger)
 
 ## Post-completion verification suggestion
 
@@ -656,17 +651,11 @@ not operational).):
   4 sub-steps: Read AGENTS / Scan P-n+M-n / Apply 5 primitives
   / Document scan result.  Per `docs/M_PRE_TASK_SCAN_DETAIL.md`.)
 
-## Recent cross-project sync
+## Cross-project sync
 
-Per the 2026-07-20 re-architecture: **SUA is the knowledge
-library for the hermes-root family; siblings are standalone
-or frozen, not downstream.**  Active siblings:
-- `../agent-reflection-skill/` — standalone skill since
-  v1.0.0 (2026-07-16), NOT a downstream of SUA.
-- `../knowledge-graph-seed/` — frozen MVP (no active dev).
-Archived: `../skill-incubator/` (content consolidated into
-SUA's docs/SKILL_DESIGN.md on 2026-07-20).
-
+**SUA is a self-contained knowledge library**; sibling
+repositories are maintained independently (standalone or
+frozen) and are not downstream of SUA.
 
 **L4 boundary revision**:
 
@@ -684,20 +673,13 @@ directive.)
   in M-n 12 example text)
 - "等下次 next trigger" → "我 [active plan]"
 
-**Framework-agnostic** (per M-n 20 + user message 2026-
-07-15):
+**Framework-agnostic** (per M-n 20):
 
 - This project designed for Hermes / Codex / Claude
   Code / others.
 - File names should avoid Hermes-specific terms.
 - Future agents should be able to read this project
   without Hermes-specific knowledge.
-
-**2026-07-20 retrospective** (per M-n 33 close-loop): see
-[`docs/RETROSPECTIVE_2026-07-20.md`](docs/RETROSPECTIVE_2026-07-20.md)
-for the 5 self-audit questions that close the loop on this
-session's 7 miss-patterns.  Apply at every commit / audit /
-cross-project decision; not encoded as always-loaded rule
 (per OcCam).
 
 
