@@ -42,8 +42,12 @@ if [ -f "$SELF_HEALTH" ]; then
     else
         SELF_HEALTH_NATIVE="$SELF_HEALTH"
     fi
+    # set +e: self_health_check exits non-zero on advisory FAIL —
+    # capture rc without tripping set -e (advisory must not block).
+    set +e
     sh_output=$(python "$SELF_HEALTH_NATIVE" 2>&1)
     sh_rc=$?
+    set -e
     echo "$sh_output" | tail -3
     # Extract failure count from JSON output
     blocker_count=$(echo "$sh_output" | python -c "
