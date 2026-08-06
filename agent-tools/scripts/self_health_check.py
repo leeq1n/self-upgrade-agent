@@ -11,7 +11,7 @@ What it audits (read-only, output as JSON):
   1. Recent commits cite P-n in *body*, not just title.
   2. CHANGELOG.md mentions the most recent git tag
      (post-release discipline check).
-  3. .hermes/scripts/ exists and contains eval_before +
+  3. agent-tools/scripts/ exists and contains eval_before +
      verify_after (hooks plumbing intact).
   4. No 'this repository IS the canonical X' sentence in
      user-facing files (R137 self-referential noise).
@@ -22,7 +22,7 @@ Output: JSON to stdout. CI integration: nonzero exit if any
 check fails. By default the audit is *advisory*; fail-nonzero
 is informational and the calling hook decides enforcement.
 
-Run: python .hermes/scripts/self_health_check.py
+Run: python agent-tools/scripts/self_health_check.py
 """
 
 import json
@@ -73,11 +73,11 @@ def audit_changelog_covers_recent_tags():
     return {"missing_in_changelog": missing}
 
 
-def audit_hermes_scripts_intact():
-    p = SUA / ".hermes" / "scripts"
+def audit_sua_scripts_intact():
+    p = SUA / "agent-tools" / "scripts"
     expected = ["eval_before.py", "verify_after.py"]
     missing = [e for e in expected if not (p / e).exists()]
-    return {"missing_hermes_scripts": missing}
+    return {"missing_sua_scripts": missing}
 
 
 def audit_no_self_referential_noise():
@@ -191,7 +191,7 @@ def main():
         "checks": {
             "recent_commits_pn_in_body": audit_recent_commits_pn_in_body(),
             "changelog_covers_recent_tags": audit_changelog_covers_recent_tags(),
-            "hermes_scripts_intact": audit_hermes_scripts_intact(),
+            "sua_scripts_intact": audit_sua_scripts_intact(),
             "no_self_referential_noise": audit_no_self_referential_noise(),
             "no_verbal_commitment_in_commits": audit_no_verbal_commitment_in_commits(),
             "recent_commits_cite_tradeoff": audit_recent_commits_cite_tradeoff(),

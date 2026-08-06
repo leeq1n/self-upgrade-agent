@@ -37,8 +37,8 @@ SUA_DIR=/path/to/.sua bash .sua/install-hooks.sh
 ```
 
 **Design note (v2.22.7)**: install-hooks.sh rewrites hook script
-paths to point INSIDE the SUA clone (`<sua>/.hermes/scripts/`).
-The target project gets ONLY `.git/hooks/` entries — no `.hermes/`
+paths to point INSIDE the SUA clone (`<sua>/agent-tools/scripts/`).
+The target project gets ONLY `.git/hooks/` entries — no `agent-tools/`
 directory, no script copies. This keeps target projects clean and
 agent-agnostic (codex / claude / hermes all fine).
 
@@ -49,7 +49,7 @@ to native Windows paths before calling python. Requires git-for-windows
 ## Uninstall
 
 ```bash
-# Remove hooks only (target project has no .hermes/ to clean)
+# Remove hooks only (target project has no agent-tools/ to clean)
 rm .git/hooks/commit-msg .git/hooks/pre-commit .git/hooks/prepare-commit-msg .git/hooks/pre-push
 ```
 

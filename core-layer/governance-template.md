@@ -9,7 +9,7 @@ Any modification to:
 - `core-layer/` directory content (this project, the 3-layer marker)
 - `AGENTS.md` (L0 surface)
 - `hooks/` (mechanical enforcement layer)
-- `.hermes/scripts/` (programmatic baseline scripts)
+- `agent-tools/scripts/` (programmatic baseline scripts)
 - `../docs/OPERATING_RULES.md` (M-n codification)
 - `docs/M_*_DETAIL.md` (M-n L2 details)
 
@@ -27,7 +27,7 @@ Any modification to:
    - **总结** (M-n 26 compression): 1-paragraph L0
 3. **Run M-n 29 5-step script**:
 ```bash
-python .hermes/scripts/m_n29_5step.py --self --claim "<X>"
+python agent-tools/scripts/m_n29_5step.py --self --claim "<X>"
 ```
    - If FAIL items → re-verify (cycle per M-n 29 Step 4)
    - Otherwise proceed to verify-after
@@ -45,7 +45,7 @@ python .hermes/scripts/m_n29_5step.py --self --claim "<X>"
    - 5 primitives mentioned in commit body (per hook dedup logic)
 3. **Audit discoveries**:
    - Side effects on other files? Run M-self-audit if uncertain
-   - Cross-ref broken? Run `python .hermes/scripts/check_cross_refs.py` (if exists)
+   - Cross-ref broken? Run `python agent-tools/scripts/check_cross_refs.py` (if exists)
 4. **Update TODO / record** (M-n 31 phase 4 retrospective):
    - What was the cause of the original gap?
    - Was the gap closed?
@@ -78,7 +78,7 @@ rights** (核心 / 用户 / 项目).  Both coexist:
 - `core-layer/README.md` (L0 marker)
 - `AGENTS.md` (L0 operating rules)
 - `../docs/OPERATING_RULES.md` (M-n codification)
-- `.hermes/scripts/m_n29_5step.py` (deterministic baseline)
+- `agent-tools/scripts/m_n29_5step.py` (deterministic baseline)
 
 ---
 

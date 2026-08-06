@@ -9,9 +9,9 @@
 # "does uninstall clean remove everything?"
 #
 # Usage:
-#   bash .hermes/scripts/uninstall.sh             # remove hooks only
-#   bash .hermes/scripts/uninstall.sh --full      # remove hooks + .hermes/ + AGENTS.md + core-layer/
-#   bash .hermes/scripts/uninstall.sh --dry-run   # show what would be removed
+#   bash agent-tools/scripts/uninstall.sh             # remove hooks only
+#   bash agent-tools/scripts/uninstall.sh --full      # remove hooks + agent-tools/ + AGENTS.md + core-layer/
+#   bash agent-tools/scripts/uninstall.sh --dry-run   # show what would be removed
 
 set -e
 
@@ -27,7 +27,7 @@ for arg in "$@"; do
             echo "Usage: $0 [--full] [--dry-run]"
             echo ""
             echo "Default: remove SUA hooks from .git/hooks/"
-            echo "--full: also remove .hermes/, AGENTS.md, core-layer/, hooks/"
+            echo "--full: also remove agent-tools/, AGENTS.md, core-layer/, hooks/"
             echo "--dry-run: show what would be removed without doing it"
             exit 0
             ;;
@@ -81,7 +81,7 @@ remove_file ".git/hooks/prepare-commit-msg"
 if [ "$FULL" = true ]; then
     echo ""
     echo "--- SUA infrastructure ---"
-    remove_dir ".hermes"
+    remove_dir "agent-tools"
     remove_file "AGENTS.md"
     remove_file "AGENTS_DETAIL.md"
     remove_dir "core-layer"

@@ -38,8 +38,8 @@ See `docs/TODO_SESSION_PERSISTENCE.md` for full TODO proposal
 
 Per M-context-snapshot (`docs/OPERATING_RULES.md`), save
 session state to:
-`hermes-snapshot-<topic>-<date>.md` (use
-`tempfile.mkstemp(prefix="hermes-snapshot-",
+`sua-snapshot-<topic>-<date>.md` (use
+`tempfile.mkstemp(prefix="sua-snapshot-",
 dir=os.environ.get("TEMP", "/tmp"))` per OS-safe
 tempfile path convention)
 

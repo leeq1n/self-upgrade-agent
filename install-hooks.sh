@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 # install-hooks.sh — install SUA hooks into the CURRENT project's
 # .git/hooks/, with script paths rewritten to point INSIDE the SUA
-# clone (.sua/.hermes/scripts/). Target project stays clean: no
-# .hermes/ dir, no script copies, one command.
+# clone (.sua/agent-tools/scripts/). Target project stays clean: no
+# agent-tools/ dir, no script copies, one command.
 #
-# WHY: hooks/commit-msg + pre-commit reference .hermes/scripts/*.py
+# WHY: hooks/commit-msg + pre-commit reference agent-tools/scripts/*.py
 # + hook_principles.json. Copying only the hooks breaks commit-msg
 # ("hook_principles_loader.py not found"). Copying scripts into the
-# target's .hermes/ pollutes the project and looks alien to codex /
-# claude (hermes-specific dir name). Instead: rewrite paths to
+# target's agent-tools/ pollutes the project. Instead: rewrite paths to
 # $SUA_DIR (wherever SUA lives), so the target project only gains
 # .git/hooks/ entries — nothing else.
 #
@@ -80,7 +79,7 @@ for arg in "$@"; do
             echo "Usage: $0 [--dry-run] [--force]"
             echo "  Install SUA hooks into this project's .git/hooks/."
             echo "  Hook script paths are rewritten to point into SUA's"
-            echo "  own .hermes/scripts/ — target project stays clean."
+            echo "  own agent-tools/scripts/ — target project stays clean."
             exit 0
             ;;
     esac
@@ -93,13 +92,13 @@ echo "  Dry run:      $DRY_RUN"
 echo ""
 
 # --- Path rewrite ---
-# Hooks reference $REPO_ROOT/.hermes/scripts/... and
-# $REPO_ROOT/.hermes/hook_principles.json. Rewrite to SUA's own dir
-# so the target project needs NO .hermes/ at all.
+# Hooks reference $REPO_ROOT/agent-tools/scripts/... and
+# $REPO_ROOT/agent-tools/hook_principles.json. Rewrite to SUA's own dir
+# so the target project needs NO agent-tools/ at all.
 # Windows: SUA_DIR may be an MSYS path (/c/...); hooks run under git
 # bash (git for windows), so /c/... paths work. Keep POSIX form.
-SUA_SCRIPTS="$SUA_DIR/.hermes/scripts"
-SUA_JSON="$SUA_DIR/.hermes/hook_principles.json"
+SUA_SCRIPTS="$SUA_DIR/agent-tools/scripts"
+SUA_JSON="$SUA_DIR/agent-tools/hook_principles.json"
 
 if [ ! -d "$SUA_SCRIPTS" ]; then
     echo "ERROR: $SUA_SCRIPTS not found — is this a SUA clone?" >&2
@@ -122,9 +121,9 @@ for h in "${HOOKS[@]}"; do
         echo "  [dry-run] would install hooks/$h (paths → $SUA_DIR)"
         continue
     fi
-    # Rewrite .hermes/scripts references to SUA's own location
-    sed -e "s|\$REPO_ROOT/.hermes/scripts|$SUA_SCRIPTS|g" \
-        -e "s|\$REPO_ROOT/.hermes/hook_principles.json|$SUA_JSON|g" \
+    # Rewrite agent-tools/scripts references to SUA's own location
+    sed -e "s|\$REPO_ROOT/agent-tools/scripts|$SUA_SCRIPTS|g" \
+        -e "s|\$REPO_ROOT/agent-tools/hook_principles.json|$SUA_JSON|g" \
         "$src_hook" > "$dest_hook"
     chmod +x "$dest_hook"
     echo "  ✅ hooks/$h installed (paths → SUA clone)"
@@ -154,4 +153,4 @@ echo ""
 echo "=== Done. Hooks active on next commit. ==="
 echo "  Test: git commit -m \"test (P7)\""
 echo "  Remove: rm .git/hooks/commit-msg .git/hooks/pre-commit .git/hooks/prepare-commit-msg .git/hooks/pre-push"
-echo "  (Target project has NO .hermes/ — SUA scripts stay in $SUA_DIR)"
+echo "  (Target project has NO agent-tools/ — SUA scripts stay in $SUA_DIR)"

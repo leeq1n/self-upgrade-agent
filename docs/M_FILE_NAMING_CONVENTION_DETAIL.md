@@ -20,7 +20,7 @@ how to apply conventions across 3-project arch
 
 | # | Convention | Format | Example |
 |---|---|---|---|
-| 1 | **PLAN directory** | `.hermes/plans/` (plural) | `.hermes/plans/2026-07-15_160000-replan.md` |
+| 1 | **PLAN directory** | `agent-tools/plans/` (plural) | `agent-tools/plans/2026-07-15_160000-replan.md` |
 | 2 | **PLAN file naming** | `YYYY-MM-DD_HHMMSS-topic.md` | `2026-07-15_160000-replan.md` |
 | 3 | **M-n L2 companion** | `M_<NAME>_DETAIL.md` | `M_FILE_NAMING_CONVENTION_DETAIL.md` |
 | 4 | **M-n summary segment** | `### M-<name> (added YYYY-MM-DD, per user message ...)` | `### M-file-naming-convention (added 2026-07-15, per user message "...")` |
@@ -51,16 +51,16 @@ Per M-n 20 (framework-agnostic) + M-n 21
 | **SUA** | `docs/M_<NAME>_DETAIL.md` | per M-n 13-17, 18, 19, 20, 21, 22, 23 L2 pattern |
 | **skill-incubator** | `docs/framework/case-studies.md` (summary) + `_DETAIL.md` | per c65e4be, 8e6c694 |
 | **agent-reflection-skill** | `docs/framework/case-studies.md` (no _DETAIL yet) | per 7ef1fb2 |
-| **PLANS** | `.hermes/plans/YYYY-MM-DD_HHMMSS-topic.md` | per c112, c115 |
+| **PLANS** | `agent-tools/plans/YYYY-MM-DD_HHMMSS-topic.md` | per c112, c115 |
 
 ## Worked example: c115 (整理 + M-n 19 codify)
 
 When c115 was committed, the PLAN file was
 renamed to follow M-n 19 conventions:
 
-- Before: `.hermes/plan/2026-07-15-replan.md`
+- Before: `agent-tools/plan/2026-07-15-replan.md`
   (singular, no HHMMSS)
-- After: `.hermes/plans/2026-07-15_160000-replan.md`
+- After: `agent-tools/plans/2026-07-15_160000-replan.md`
   (plural, with HHMMSS)
 
 This was an 整理 process (per user message "recursive
@@ -102,10 +102,10 @@ compose.
 
 ## When NOT to use (anti-patterns)
 
-### Anti-pattern 1: Use singular `.hermes/plan/`
+### Anti-pattern 1: Use singular `agent-tools/plan/`
 
 Singular is wrong (per c115 detection).  Always
-use plural `.hermes/plans/`.
+use plural `agent-tools/plans/`.
 
 ### Anti-pattern 2: PLAN file name without HHMMSS
 
@@ -125,7 +125,7 @@ in OPERATING_RULES.md (per M-n 20 discoverability).
 
 ### Anti-pattern 5: Mix file naming with project naming
 
-`.hermes/` is OK (it's the directory, not the
+`agent-tools/` is OK (it's the directory, not the
 file name); but file names should be framework-
 agnostic (per M-n 20 + user message 2026-07-15).
 
@@ -183,7 +183,7 @@ This L2 doc IS M-n 19 applied to itself:
   17 L2 companion
 - `docs/M_RECURSIVE_SUMMARY_PROTOCOL_DETAIL.md` —
   M-n 18 L2 companion
-- `.hermes/plans/2026-07-15_160000-replan.md` —
+- `agent-tools/plans/2026-07-15_160000-replan.md` —
   PLAN file (M-n 19 Convention 1 + 2 example)
 - user message 2026-07-15 — origin
 

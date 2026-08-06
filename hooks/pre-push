@@ -20,8 +20,8 @@
 set -e
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-SELF_HEALTH="$REPO_ROOT/.hermes/scripts/self_health_check.py"
-VALIDATE_LINKS="$(cygpath -w "$REPO_ROOT/.hermes/scripts/validate_links.py" 2>/dev/null || echo "$REPO_ROOT/.hermes/scripts/validate_links.py")"
+SELF_HEALTH="$REPO_ROOT/agent-tools/scripts/self_health_check.py"
+VALIDATE_LINKS="$(cygpath -w "$REPO_ROOT/agent-tools/scripts/validate_links.py" 2>/dev/null || echo "$REPO_ROOT/agent-tools/scripts/validate_links.py")"
 
 echo "================================================================"
 echo "PRE-PUSH GATE (per RCA: test before release)"

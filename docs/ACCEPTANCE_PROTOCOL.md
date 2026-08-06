@@ -35,7 +35,7 @@ Per tua-start `AGENTS.md` "Task-done-notify reminder" (M-n 16 stage 1-2):
 ```
 ┌─────────────────────────────────────────────────┐
 │ Phase 1: ACCEPTANCE (verify only, NO fix)        │
-│   - Run hermes-verify-*.py scripts              │
+│   - Run sua-verify-*.py scripts              │
 │   - Produce ACCEPTANCE_<DATE>.md with findings  │
 │   - DO NOT modify any file in this phase        │
 │   - Exit with status: PASS / FAIL / DEFERRED    │
@@ -52,7 +52,7 @@ Per tua-start `AGENTS.md` "Task-done-notify reminder" (M-n 16 stage 1-2):
                       ↓
 ┌─────────────────────────────────────────────────┐
 │ Phase 3: RE-VERIFY (acceptance on fixed state)   │
-│   - Run hermes-verify-*.py AGAIN                 │
+│   - Run sua-verify-*.py AGAIN                 │
 │   - Compare results vs Phase 1                   │
 │   - If new findings → back to Phase 2            │
 │   - If all clean → ACCEPTED, ship tag            │
@@ -63,7 +63,7 @@ Per tua-start `AGENTS.md` "Task-done-notify reminder" (M-n 16 stage 1-2):
 
 | Layer | Purpose | Where |
 |---|---|---|
-| **核心层** (core) | SUA's permanent contract | .hermes/scripts/, core-layer/, hooks/ |
+| **核心层** (core) | SUA's permanent contract | agent-tools/scripts/, core-layer/, hooks/ |
 | **项目层** (project) | SUA's design + protocol | docs/, AGENTS.md, AGENTS_DETAIL.md |
 | **用户层** (user) | Per-user daily work | local file (gitignored) |
 
@@ -95,7 +95,7 @@ Each acceptance run produces a report with:
 - Platform: <Windows/Mac/Linux>
 
 ## Run command
-- bash hermes-verify-<name>.py
+- bash sua-verify-<name>.py
 - python -m pytest tests/
 
 ## Results
@@ -125,9 +125,9 @@ If FAIL → run Phase 2 (fix), then Phase 3 (re-verify)
 If DEFERRED → capture in TODO, continue
 ```
 
-## 5. Acceptance tools (hermes-verify- prefix scripts)
+## 5. Acceptance tools (sua-verify- prefix scripts)
 
-Currently 3 scripts in `.hermes/scripts/`:
+Currently 3 scripts in `agent-tools/scripts/`:
 - `self_health_check.py` — string pattern checks
 - `cross_repo_audit.py` — sibling pollution check
 - `hook_principles_loader.py` — Q2 closure registry
@@ -140,7 +140,7 @@ Recommended new tools (per gap analysis):
 These should be invoked from a single entrypoint:
 
 ```bash
-bash .hermes/scripts/run_acceptance.sh
+bash agent-tools/scripts/run_acceptance.sh
 ```
 
 This produces the ACCEPTANCE_<DATE>.md report.
@@ -158,7 +158,7 @@ Two modes:
 ### 6b. Gate mode (STRICT_EVAL=1)
 
 - Run acceptance → if FAIL, reject commit
-- Pre-commit hook: `bash .hermes/scripts/run_acceptance.sh --gate`
+- Pre-commit hook: `bash agent-tools/scripts/run_acceptance.sh --gate`
 - Set in `.git/hooks/pre-commit`
 
 ## 7. Implementation plan
@@ -168,8 +168,8 @@ This is **project-layer** change (new doc + protocol), not core-layer
 
 ### Files to create
 - `docs/ACCEPTANCE_PROTOCOL.md` (this file) — already done
-- `.hermes/scripts/run_acceptance.sh` — single entrypoint
-- `.hermes/scripts/validate_links.py` — link integrity check
+- `agent-tools/scripts/run_acceptance.sh` — single entrypoint
+- `agent-tools/scripts/validate_links.py` — link integrity check
 
 ### Files to modify
 - `hooks/pre-commit` — add acceptance run (gated by STRICT_EVAL)

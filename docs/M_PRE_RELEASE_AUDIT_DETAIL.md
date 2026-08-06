@@ -96,7 +96,7 @@ should match `git ls-tree v1.0.0` content exactly.  Use
 Per user message 2026-07-16 codification pattern
 (M-n 35 = critical-thinking, M-n 29 = 5-step):
 
-1. **Script**: `.hermes/scripts/release_audit.py`
+1. **Script**: `agent-tools/scripts/release_audit.py`
    (currently being added per this rule)
 2. **Hook**: `hooks/prepare-commit-msg` extended to
    detect "release" / "tag" / "v" keywords + auto-run
@@ -187,7 +187,7 @@ commit 比较细的项目上改, 大版本的项目尽量少
 
 **For release_audit.py specifically**:
 
-- **SUA has reference impl** (`.hermes/scripts/release_audit.py`)
+- **SUA has reference impl** (`agent-tools/scripts/release_audit.py`)
   — canonical M-n 36 codification
 - **Skill projects that ship releases copy the
   script** (per commit 55d2ef9 example) — that's

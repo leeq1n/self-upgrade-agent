@@ -119,7 +119,7 @@ Per 真凭据 + 用户 catch:
 | Planning instances (per-task) | 项目层 | `docs/PLANS/PLAN_<DATE>.md` | Per-task plans |
 | Planning runtime (per-turn) | 用户层 | in-memory + per-turn context | Ephemeral |
 | Acceptance framework | 项目层 | `docs/ACCEPTANCE_PROTOCOL.md` | Per-project protocol |
-| Acceptance scripts | 核心层 | `.hermes/scripts/*.py` | Enforced audit |
+| Acceptance scripts | 核心层 | `agent-tools/scripts/*.py` | Enforced audit |
 | Acceptance reports (per-state) | 用户层 | `~/.config/sua/acceptance/` | Per-state ephemeral |
 | Specific tasks | 项目层 + 用户层 | Various | Not core |
 

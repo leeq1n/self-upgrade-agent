@@ -91,7 +91,7 @@ Per TDD + recursive testing + 测试金字塔:
 When working on skills (or user-facing artifact):
 - **NO dev-session references** in skill content
   (e.g., dev history retrospective = not user-facing)
-- **NO internal ref** patterns (round numbers, sibling paths, hermes refs)
+- **NO internal ref** patterns (round numbers, sibling paths, harness-specific refs)
 - **NO SUA-specific examples** in skill content
 
 **Live detail**: see AGENTS_DETAIL.md § Skill context cleanliness.
@@ -163,7 +163,7 @@ and modification rules:
 
 | Layer | Marker | Files | Modification rule |
 |---|---|---|---|
-| **核心层** (core) | `LAYER: 核心` | `core-layer/AGENTS_CORE.md`, `hooks/*`, `.hermes/scripts/*` | M-n 15 multi-session + user explicit authorization |
+| **核心层** (core) | `LAYER: 核心` | `core-layer/AGENTS_CORE.md`, `hooks/*`, `agent-tools/scripts/*` | M-n 15 multi-session + user explicit authorization |
 | **项目层** (project) | `LAYER: project` | `AGENTS.md`, `AGENTS_DETAIL.md`, `docs/*`, `README.md`, `CONTRIBUTING.md`, `LICENSE`, `tests/*` | Update as project evolves |
 | **用户层** (user) | `LAYER: user` | local-only (e.g., `~/.config/sua/USER_LAYER.md` or repo-local gitignored file) | Per-user customization, never committed to upstream |
 

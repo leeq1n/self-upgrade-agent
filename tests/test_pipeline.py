@@ -2,7 +2,7 @@
 
 These tests invoke the full pipeline end-to-end, which in turn calls
 the real arXiv API.  Marked ``@pytest.mark.network`` so conftest.py
-can skip them with HERMES_SKIP_NETWORK=1 (CI default).
+can skip them with SUA_SKIP_NETWORK=1 (CI default).
 """
 import pytest
 import sys, os, tempfile, shutil

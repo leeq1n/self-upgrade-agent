@@ -44,7 +44,7 @@ Q2: Is the domain new (not searched in last 20 commits)?
 that modifications align with current state.
 
 **Worked example**: c112 (M-n 18 PLAN file) — before
-creating `.hermes/plan/2026-07-15-replan.md`, agent
+creating `agent-tools/plan/2026-07-15-replan.md`, agent
 re-read PROJECT_STATE.md + OPERATING_RULES.md M-n
 18段 + user message "写下来" directive.  This ensured
 PLAN file aligned with current 3-project arch and

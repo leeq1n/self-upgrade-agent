@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Import the script module
 SUA_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(SUA_ROOT / ".hermes" / "scripts"))
+sys.path.insert(0, str(SUA_ROOT / "agent-tools" / "scripts"))
 import cross_repo_audit  # noqa: E402
 
 
@@ -147,7 +147,7 @@ def test_cli_runs_and_returns_json(tmp_path):
     """End-to-end CLI test: pass synthetic sibling via --sibling flag."""
     sibling = _make_sibling(tmp_path, with_adapter=True)
     proc = subprocess.run(
-        ["python", str(SUA_ROOT / ".hermes" / "scripts" / "cross_repo_audit.py"),
+        ["python", str(SUA_ROOT / "agent-tools" / "scripts" / "cross_repo_audit.py"),
          "--sibling", str(sibling)],
         capture_output=True, text=True, timeout=15,
     )
@@ -161,7 +161,7 @@ def test_cli_runs_and_returns_json(tmp_path):
 def test_cli_strict_mode_exits_nonzero_on_failure(tmp_path):
     sibling = _make_sibling(tmp_path, with_adapter=False)
     proc = subprocess.run(
-        ["python", str(SUA_ROOT / ".hermes" / "scripts" / "cross_repo_audit.py"),
+        ["python", str(SUA_ROOT / "agent-tools" / "scripts" / "cross_repo_audit.py"),
          "--sibling", str(sibling), "--strict"],
         capture_output=True, text=True, timeout=15,
     )
@@ -171,7 +171,7 @@ def test_cli_strict_mode_exits_nonzero_on_failure(tmp_path):
 def test_cli_advisory_mode_exits_zero_despite_failures(tmp_path):
     sibling = _make_sibling(tmp_path, with_adapter=False)
     proc = subprocess.run(
-        ["python", str(SUA_ROOT / ".hermes" / "scripts" / "cross_repo_audit.py"),
+        ["python", str(SUA_ROOT / "agent-tools" / "scripts" / "cross_repo_audit.py"),
          "--sibling", str(sibling)],
         capture_output=True, text=True, timeout=15,
     )

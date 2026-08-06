@@ -43,7 +43,7 @@ class TestRunProjectTests:
 
     @pytest.mark.slow
     def test_real_tests_against_real_project(self):
-        """Against the actual project (HERMES_SKIP_NETWORK=1) — slow."""
+        """Against the actual project (SUA_SKIP_NETWORK=1) — slow."""
         passed, failed, rc, stderr = run_project_tests(PROJECT)
         assert rc == 0, f"tests failed: {stderr}"
         assert failed == 0
@@ -238,7 +238,7 @@ class TestRealEndToEnd:
                 [sys.executable, "-m", "pytest", "tests/test_pipeline.py",
                  "-q", "--tb=no"],
                 capture_output=True, text=True, cwd=PROJECT, timeout=30,
-                env={**os.environ, "HERMES_SKIP_NETWORK": "1"},
+                env={**os.environ, "SUA_SKIP_NETWORK": "1"},
             )
             # The pipeline test should still pass after the no-op patch
             assert r.returncode == 0, f"no-op patch broke test: {r.stdout[-500:]}"

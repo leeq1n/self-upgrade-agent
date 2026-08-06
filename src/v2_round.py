@@ -72,7 +72,7 @@ def run_project_tests(
 
     Returns (passed_count, failed_count, returncode, stderr).
 
-    We honor HERMES_SKIP_NETWORK env var.  Tests that require network
+    We honor SUA_SKIP_NETWORK env var.  Tests that require network
     (via @pytest.mark.network or via actual outbound calls) are out of
     scope for a self-improvement round.
 
@@ -82,11 +82,11 @@ def run_project_tests(
             slow on first run because tests/test_*.py are imported.
         test_path: which test directory to run (default tests/)
     """
-    # HERMES_FAST=1 skips slow / network-heavy test modules so the
+    # SUA_FAST=1 skips slow / network-heavy test modules so the
     # round completes in time even on machines with slow collection.
     # Default to fast mode for the self-improvement loop.
-    env = {**os.environ, "HERMES_SKIP_NETWORK": "1",
-           "HERMES_FAST": os.environ.get("HERMES_FAST", "1")}
+    env = {**os.environ, "SUA_SKIP_NETWORK": "1",
+           "SUA_FAST": os.environ.get("SUA_FAST", "1")}
     cmd = [
         sys.executable, "-m", "pytest", test_path,
         "--tb=no", "-q",

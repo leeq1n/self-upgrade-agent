@@ -12,8 +12,8 @@ Glob patterns (`*`, `<DATE>`) and cross-project (`../`) and
 user-layer (`~`) references are skipped (legitimate patterns).
 
 Usage:
-    python .hermes/scripts/validate_links.py [root_path]
-    # default root: parent of .hermes
+    python agent-tools/scripts/validate_links.py [root_path]
+    # default root: parent of agent-tools
 """
 import re
 import sys
@@ -68,7 +68,7 @@ def main():
                 continue  # glob / placeholder / cross-project / user-layer
             if ref.startswith(('agent-reflection', 'skill-incubator', 'knowledge-graph', 'self-upgrade-agent/')):
                 continue  # cross-project manifest (P21 legitimate)
-            if '.hermes/plans/' in ref or ref.startswith('.hermes/plan'):
+            if 'agent-tools/plans/' in ref or ref.startswith('agent-tools/plan'):
                 continue  # historical plan files (cleaned up; refs are historical traces)
             if ref == 'SKILL.md' or ref.endswith('_DETAIL.md') or ref == '_DETAIL.md':
                 continue  # Agent Skills format name / suffix pattern
@@ -76,7 +76,7 @@ def main():
                 continue  # sibling-project internal paths
             if 'SKILLS_INDEX.md' in ref or 'SKILL_GENERATION.md' in ref or 'P11.md' in ref or 'P20.md' in ref or 'P22.md' in ref or 'P25.md' in ref:
                 continue  # planned/conditional refs ("if exists", planned docs)
-            if 'hermes-snapshot' in ref or 'hermes-plan' in ref:
+            if 'sua-snapshot' in ref or 'hermes-plan' in ref or 'sua-plan' in ref:
                 continue  # historical session snapshots/plans
             if 'PHILOSOPHY.md' in ref or 'RETROSPECTIVE.md' in ref or 'case-studies' in ref or 'when-to-reflect' in ref:
                 continue  # historical/moved docs

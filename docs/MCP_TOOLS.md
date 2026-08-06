@@ -124,7 +124,7 @@ even if available in the runtime:
   workflow patterns for `zotero` + `sciverse`
 - `docs/PRINCIPLES.md` P2 (搜资料, 不拍脑门) —
   the principle that drives `zotero`/`sciverse` use
-- `~/.hermes/skills/agent-onboarding/references/M_RULE_AUTHORING.md` —
+- `~/agent-tools/skills/agent-onboarding/references/M_RULE_AUTHORING.md` —
   M-rule authoring pattern (this doc follows it)
 
 ## Per P20 progressive disclosure self-application

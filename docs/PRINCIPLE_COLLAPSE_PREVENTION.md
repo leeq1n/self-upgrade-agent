@@ -22,18 +22,18 @@ ROOT: 原则系统永不自毁
 │   └── T1.3 ✅ sibling 仍 mirror (无跨 repo enforcement)
 │
 ├── T2 [ACTIVE] clean-sua 真 ship self-enforcement framework
-│   ├── T2.1: 写 .hermes/scripts/cross_repo_audit.py
+│   ├── T2.1: 写 agent-tools/scripts/cross_repo_audit.py
 │   │        — 扫描 sibling repo 检测 mirror pollution
 │   ├── T2.2: 扩展 hooks/pre-commit 调 cross_repo_audit
 │   │        (fail-open default; STRICT_EVAL=1 promotes to block)
 │   ├── T2.3: 写 docs/PRINCIPLE_SELF_AUDIT.md
 │   │        — 原则修改协议 (修改 P-n 必须 sync hook)
-│   └── T2.4: 写 .hermes/scripts/sync_siblings.py
+│   └── T2.4: 写 agent-tools/scripts/sync_siblings.py
 │            — 当 upstream SUA release, 自动 PR 到 sibling
 │
 ├── T3 [NEXT] 原则修改同步机制 (Q2 真 fix)
 │   ├── T3.1: 把 hooks/commit-msg + hooks/pre-commit 内容
-│   │        移到 .hermes/scripts/hook_principles.json
+│   │        移到 agent-tools/scripts/hook_principles.json
 │   │        (单 source of truth)
 │   ├── T3.2: hooks/ 引用该 json (避免 drift)
 │   ├── T3.3: 修改 PRINCIPLES.md 时, hook enforce

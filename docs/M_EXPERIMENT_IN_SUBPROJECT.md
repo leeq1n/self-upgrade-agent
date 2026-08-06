@@ -51,12 +51,12 @@ main project.
 ### Sub-step 2: Spawn
 
 Create the sub-project as a sibling per P21 (separate
-git repo in `hermes-root/`, not a subdir of the main
+git repo in `<workspace>/`, not a subdir of the main
 project).
 
 **Spawn checklist**:
 
-- [ ] Create the directory: `hermes-root/<project>-
+- [ ] Create the directory: `<workspace>/<project>-
   <subproject>/`
 - [ ] `git init` in the new directory (per P21
   cross-project independence)

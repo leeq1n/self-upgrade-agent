@@ -117,7 +117,7 @@ process:
 2. **Decide**: apply the 4 conditions as a checklist;
    if all 4 ✅, proceed.
 3. **Spawn**: create a new `skill-<name>/` repo in
-   `hermes-root/` with skeleton (README + SKILL.md +
+   `<workspace>/` with skeleton (README + SKILL.md +
    AGENTS.md + HANDOFF.md).
 4. **Codify**: extract the pattern into 1 primitive per
    commit (per P4 1 logical feature per commit), with

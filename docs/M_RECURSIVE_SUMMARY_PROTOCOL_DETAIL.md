@@ -68,7 +68,7 @@ Q2: Are sub-tasks completed (any of them)?
 
 ## Worked example: c112 (PLAN file)
 
-When c112 was committed (`.hermes/plans/2026-07-
+When c112 was committed (`agent-tools/plans/2026-07-
 15_160000-replan.md` created per M-n 18 + user message
 "写下来"):
 
@@ -80,8 +80,8 @@ When c112 was committed (`.hermes/plans/2026-07-
   - Grandparent (user message) sees only PLAN summary,
     not all sub-task details
 - **Per M-n 19 (file naming)**: file path is
-  `.hermes/plans/2026-07-15_160000-replan.md`
-  (not `.hermes/plan/` singular)
+  `agent-tools/plans/2026-07-15_160000-replan.md`
+  (not `agent-tools/plan/` singular)
 
 ## Worked example: c114 (M-n 18 clarification)
 
@@ -164,7 +164,7 @@ This L2 doc IS M-n 18 applied to itself:
   — the L0/L1 段 (in SUA)
 - `OPERATING_RULES.md` § M-n 18 clarification
   (节点 生命周期管理)
-- `.hermes/plans/2026-07-15_160000-replan.md` —
+- `agent-tools/plans/2026-07-15_160000-replan.md` —
   M-n 18 applied
 - user message 2026-07-15 (multiple) — origin
 

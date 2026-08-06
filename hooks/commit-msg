@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # commit-msg hook: enforce that commit message references at least one
-# P-n from .hermes/hook_principles.json (single source of truth).
+# P-n from agent-tools/hook_principles.json (single source of truth).
 # Per AGENTS.md "Commit message contract" + decision doc Q2 closure.
 #
 # TEMPLATE — install with: cp hooks/commit-msg .git/hooks/commit-msg
@@ -41,7 +41,7 @@ MSG=$(cat "$COMMIT_MSG_FILE")
 
 # Get active P-n whitelist from registry (per Q2 closure - T3).
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-LOADER="$REPO_ROOT/.hermes/scripts/hook_principles_loader.py"
+LOADER="$REPO_ROOT/agent-tools/scripts/hook_principles_loader.py"
 
 if [ ! -f "$LOADER" ]; then
     echo "ERROR: hook_principles_loader.py not found at $LOADER" >&2
@@ -67,7 +67,7 @@ ERROR: commit message must reference at least one P-n from registry.
   Per AGENTS.md 'Commit message contract' and docs/PRINCIPLES.md,
   every commit must cite the principle that motivated the change.
 
-  Active P-n values (loaded from .hermes/hook_principles.json):
+  Active P-n values (loaded from agent-tools/hook_principles.json):
     $ACTIVE_P_LIST
 
   Examples of valid messages:

@@ -16,7 +16,7 @@
   SKILL_GENERATION.md, sub-task was skill design,
   expected 5+ commits, return criterion = "first
   skill is incubated")
-- **Spawn**: `hermes-root/skill-incubator/` with
+- **Spawn**: `<workspace>/skill-incubator/` with
   README + HANDOFF + SKILL_DESIGN
 - **Return criterion**: "first skill is incubated
   (per SKILL_DESIGN.md 5-phase process)"
@@ -41,7 +41,7 @@ empirical evidence (need 2+ more recursion demos).
 - **Decide**: 4 ✅ (lack of experience + independent
   + 5+ commits + return criterion "I have 2+ SUA
   recursion demos")
-- **Spawn**: `hermes-root/recursion-investigation/`
+- **Spawn**: `<workspace>/recursion-investigation/`
 - **Return criterion**: "I have 2+ SUA commits that
   demonstrate recursion in practice (each commit's
   message cites 'recursion' as a feature, not just

@@ -50,7 +50,7 @@ hermes learning.
 
 | Layer | Where | What | Persistence |
 |---|---|---|---|
-| **核心** | `core-layer/` + `AGENTS.md` + `hooks/` + `.hermes/scripts/` + `docs/OPERATING_RULES.md` | Agent behavior rules | Cross-project, cross-user (migrates to other users' machines via skill) |
+| **核心** | `core-layer/` + `AGENTS.md` + `hooks/` + `agent-tools/scripts/` + `docs/OPERATING_RULES.md` | Agent behavior rules | Cross-project, cross-user (migrates to other users' machines via skill) |
 | **用户** | `memory/` system + user-specific files | User habits / preferences | Cross-session (per user) |
 | **项目** | `docs/PRINCIPLES.md` + `docs/PROJECT_STATE.md` + project docs | Project-specific knowledge | Per project (NOT cross-project) |
 
@@ -483,7 +483,7 @@ Then MUST apply **M-n 29 5-step protocol**:
    external 5-step script BEFORE claiming task done:
 
    ```bash
-   python .hermes/scripts/m_n29_5step.py --self --claim "<task description>"
+   python agent-tools/scripts/m_n29_5step.py --self --claim "<task description>"
    ```
 
    This script externalizes M-n 29 5-step from
@@ -514,7 +514,7 @@ See:
 - `docs/OPERATING_RULES.md` § M-task-lifecycle (M-n 31)
 - `docs/OPERATING_RULES.md` § M-self-learning-guardrail
   (M-n 32 Guardrail #4)
-- `.hermes/scripts/m_n29_5step.py` (mechanical external
+- `agent-tools/scripts/m_n29_5step.py` (mechanical external
   trigger)
 
 ## Post-completion verification suggestion
@@ -559,7 +559,7 @@ A good verification suggestion includes:
    - Read this section for cross-refs
 
 2. **How to verify** (specific commands):
-   - `python .hermes/scripts/release_audit.py
+   - `python agent-tools/scripts/release_audit.py
      <target>`
    - `git log --oneline | head -3`
    - `git status --porcelain`
@@ -640,7 +640,7 @@ not operational).):
 - **M-n 24**: pace-continuity (commit + continue, no verbose ending)
 - **M-n 25**: message-pattern-recognition (parse user message + 5 patterns + M-n self-application 4 levels)
 - **M-n 26**: context-decay-management (detection + classification + compression + refresh)
-- **M-n 27**: knowledge-layer-architecture (3-layer core/knowledge/project + 3 sources hermes/SUA/skill + single-skill fallback)
+- **M-n 27**: knowledge-layer-architecture (3-layer core/knowledge/project + 3 sources runtime/SUA/skill + single-skill fallback)
 - **M-n 28**: plan-conditional (4-condition check: uncertain → plan; clear → continue)
 - **M-n 29**: acceptance-protocol (5-step protocol: design + 5 primitives + validate + cycle + notify)
 - **M-n 30**: knowledge-context-trade-off (4-priority: knowledge 充足 > context 管理 > trade-off via 分层+类比 > 分层 自顶向下 分治 always)
@@ -777,9 +777,9 @@ These are project-wide pointers; load if your task type matches.
 
 Load only when context has overflowed or task has switched.
 
-- `C:\Users\LQ\AppData\Local\Temp\hermes-verify-sua-onboarding-20260713.py`
+- `C:\Users\LQ\AppData\Local\Temp\sua-verify-sua-onboarding-20260713.py`
   — ad-hoc verify script for the 8-commit onboarding batch
   (30 checks; 30/30 PASS).
-- `C:\Users\LQ\AppData\Local\Temp\hermes-snapshot-sua-onboarding-20260713.md`
+- `C:\Users\LQ\AppData\Local\Temp\sua-snapshot-sua-onboarding-20260713.md`
   — session snapshot (recent commits, open todos, decisions).
   Load this on resume after context overflow.

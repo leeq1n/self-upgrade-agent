@@ -114,7 +114,7 @@ failure mode M-n 34 is designed to prevent.
    needs M-rule application OR per M-n 34 step 2.
 8. `core-layer/README.md` — L0 marker for the **3-layer
    governance**.  Read when
-   modifying AGENTS.md / hooks/ / .hermes/scripts/ /
+   modifying AGENTS.md / hooks/ / agent-tools/scripts/ /
    OPERATING_RULES.md — these are the 核心 layer (agent
    self-edit only, with eval-before + verify-after gate).
    See `core-layer/governance-template.md` for the gate

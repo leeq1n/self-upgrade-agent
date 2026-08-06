@@ -3,12 +3,12 @@
 # Per T1.2 IMPLEMENTATION_PLAN 2026-07-30 (Q3 complete).
 #
 # Usage:
-#   bash .hermes/scripts/weekly_audit.sh
-#   bash .hermes/scripts/weekly_audit.sh --strict
+#   bash agent-tools/scripts/weekly_audit.sh
+#   bash agent-tools/scripts/weekly_audit.sh --strict
 #
 # Cron setup (optional, per platform):
-#   Linux/macOS: 0 9 * * 1 cd /path/to/repo && bash .hermes/scripts/weekly_audit.sh
-#   Windows: Task Scheduler → weekly Monday 9am → bash .hermes/scripts/weekly_audit.sh
+#   Linux/macOS: 0 9 * * 1 cd /path/to/repo && bash agent-tools/scripts/weekly_audit.sh
+#   Windows: Task Scheduler → weekly Monday 9am → bash agent-tools/scripts/weekly_audit.sh
 #
 # Per "Iterative thinking" protocol: ship minimal viable automation.
 # If user wants full cron setup, ask for platform preference.
@@ -32,17 +32,17 @@ echo ""
 # 1. self_health_check
 echo "--- self_health_check ---"
 if [ -n "$STRICT_FLAG" ]; then
-    $STRICT_FLAG python .hermes/scripts/self_health_check.py
+    $STRICT_FLAG python agent-tools/scripts/self_health_check.py
     SHC_EXIT=$?
 else
-    python .hermes/scripts/self_health_check.py
+    python agent-tools/scripts/self_health_check.py
     SHC_EXIT=$?
 fi
 
 # 2. cross_repo_audit
 echo ""
 echo "--- cross_repo_audit ---"
-python .hermes/scripts/cross_repo_audit.py
+python agent-tools/scripts/cross_repo_audit.py
 CRA_EXIT=$?
 
 # 3. pytest

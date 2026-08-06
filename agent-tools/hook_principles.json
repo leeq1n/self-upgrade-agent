@@ -37,7 +37,7 @@
       },
       "mid_risk_ask": {
         "description": "1-2 files / 7-check needed",
-        "examples": ["new script in .hermes/scripts/", "new test file"],
+        "examples": ["new script in agent-tools/scripts/", "new test file"],
         "requires_user_authorization": true
       },
       "high_risk_multi_session": {

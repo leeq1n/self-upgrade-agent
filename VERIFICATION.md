@@ -61,7 +61,7 @@ twice commit once)
 - SUA `docs/OPERATING_RULES.md` — 26 M-n codified
 - SUA `AGENTS.md` — operating rules for new agents
 - SUA `docs/PROJECT_STATE.md` — current snapshot
-- SUA `.hermes/plans/2026-07-15_160000-replan_DETAIL.md` — Changelog
+- SUA `agent-tools/plans/2026-07-15_160000-replan_DETAIL.md` — Changelog
 - skill-incubator `SKILL_DESIGN.md` — 5-phase process
 - agent-reflection-skill `SKILL.md` — invocation contract
 - knowledge-graph-seed `docs/PHILOSOPHY.md` — P1-P29 sync
@@ -85,7 +85,7 @@ multiple turns — claimed DONE without applying
 5-step), this project adds mechanical external
 trigger layer:
 
-- **`.hermes/scripts/m_n29_5step.py`** (commit `05cd4d5`):
+- **`agent-tools/scripts/m_n29_5step.py`** (commit `05cd4d5`):
   deterministic baseline — 15 design criteria + 5
   primitives + validate cycle
 - **`hooks/prepare-commit-msg`** (commit `f11b145`):
@@ -104,7 +104,7 @@ reminder + commit-time trailer + external script
 all maximize external-trigger coverage.  Future
 agents reading this project should:
 
-1. Run `python .hermes/scripts/m_n29_5step.py --self`
+1. Run `python agent-tools/scripts/m_n29_5step.py --self`
    BEFORE claiming task done
 2. Apply 5 primitives (Analyze / Reason / 联想 /
    归纳 / 总结) in plan / commit message
@@ -138,7 +138,7 @@ The **核心 layer scope** (per core-layer/README.md):
 
 | In 核心 | NOT in 核心 |
 |---|---|
-| AGENTS.md, hooks/, .hermes/scripts/ | docs/PRINCIPLES.md |
+| AGENTS.md, hooks/, agent-tools/scripts/ | docs/PRINCIPLES.md |
 | OPERATING_RULES.md M-n sections | docs/PROJECT_STATE.md |
 | Mechanical enforcement trigger | docs/* (project-specific) |
 
@@ -172,7 +172,7 @@ thinking needs BOTH constructive + adversarial.
   (commit `d31e9de`)
 - `M_ACCEPTANCE_PROTOCOL_DETAIL.md` Step 2 includes
   both constructive + adversarial (commit `f0ba8b7`)
-- `.hermes/scripts/m_n29_5step.py` Step 2a runs
+- `agent-tools/scripts/m_n29_5step.py` Step 2a runs
   critical-thinking BEFORE constructive (commit
   `b3b56a1`)
 - `hooks/prepare-commit-msg` trailer checklist now
@@ -189,7 +189,7 @@ Per user message retrospective + 自顶向下原则:
 SUA codified **M-n 36 (release-audit)** for
 release-time cleanliness.
 
-**5 checks** (per `.hermes/scripts/release_audit.py`,
+**5 checks** (per `agent-tools/scripts/release_audit.py`,
 commits `c37c443` + `18e893e`):
 
 1. **Commit count** — commits since last x.0.0

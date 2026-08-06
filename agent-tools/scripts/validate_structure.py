@@ -5,8 +5,8 @@ docs/ACCEPTANCE_PROTOCOL.md, this script checks that
 all critical paths exist (per SUA 3-layer architecture).
 
 Usage:
-    python .hermes/scripts/validate_structure.py [root_path]
-    # default root: parent of .hermes
+    python agent-tools/scripts/validate_structure.py [root_path]
+    # default root: parent of agent-tools
 
 Exit codes:
     0: all critical paths exist
@@ -30,13 +30,13 @@ CRITICAL_PATHS = [
     "hooks/commit-msg", "hooks/pre-commit", "hooks/prepare-commit-msg",
     "hooks/pre-push",
     # Hermes scripts (per 3-layer governance)
-    ".hermes/scripts/self_health_check.py",
-    ".hermes/scripts/cross_repo_audit.py",
-    ".hermes/scripts/validate_links.py",
-    ".hermes/scripts/validate_structure.py",
-    ".hermes/scripts/token_budget.py",
+    "agent-tools/scripts/self_health_check.py",
+    "agent-tools/scripts/cross_repo_audit.py",
+    "agent-tools/scripts/validate_links.py",
+    "agent-tools/scripts/validate_structure.py",
+    "agent-tools/scripts/token_budget.py",
     # Hook config
-    ".hermes/hook_principles.json",
+    "agent-tools/hook_principles.json",
     # Open source compliance (per v2.3.0)
     "LICENSE", "CONTRIBUTING.md", "CODE_OF_CONDUCT.md",
     # LF enforcement (per v2.14.1)

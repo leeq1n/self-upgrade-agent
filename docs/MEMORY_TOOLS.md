@@ -34,7 +34,7 @@ It shouldn't be the database"):
 | **session_search** (Hermes DB) | cross-session | high per query | prior session content needed |
 | **TodoWrite** | this session | medium | multi-leaf task (≥3 steps) |
 | **memory block** (system prompt) | always | always-on | user/env persistent facts |
-| **Temp snapshot** (`hermes-snapshot-*.md`) | session | low per read | resume after context overflow |
+| **Temp snapshot** (`sua-snapshot-*.md`) | session | low per read | resume after context overflow |
 | **web_search** | web | medium | new pattern not in docs |
 | **sciverse (MCP)** | academic | medium | citation-grade academic lookup |
 | **arxiv (MCP)** | arxiv preprints | medium | preprint search |

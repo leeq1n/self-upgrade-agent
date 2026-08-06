@@ -19,7 +19,7 @@ git clone <sua-repo-url> .sua/          # 或放在项目子目录
 **机制**（per README "What the agent gets"）:
 - `AGENTS.md` — operating rules (always-loaded contract)
 - `core-layer/AGENTS_CORE.md` — cache-stable subset (~10 KB)
-- `.hermes/scripts/` — 自审计 + 验证工具
+- `agent-tools/scripts/` — 自审计 + 验证工具
 
 **跨 agent 通用**: Codex / Claude Code / Hermes / Cursor /
 GitHub Copilot（per docs/CROSS_RUNTIME_SKILL_BRIDGE.md）.
@@ -39,7 +39,7 @@ docs/CROSS_RUNTIME_SKILL_BRIDGE.md）:
 ├── .sua/              # SUA 本地副本（git submodule / clone）
 │   ├── AGENTS.md
 │   ├── core-layer/AGENTS_CORE.md
-│   └── .hermes/scripts/
+│   └── agent-tools/scripts/
 └── papers/            # 论文管理（LLM Wiki 三项目）
 ```
 

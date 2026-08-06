@@ -82,9 +82,9 @@ CRITICAL_PATHS = [
     "docs/ACCEPTANCE_PROTOCOL.md",
     "docs/PLANS/",  # directory
     "hooks/commit-msg", "hooks/pre-commit", "hooks/prepare-commit-msg",
-    ".hermes/scripts/self_health_check.py",
-    ".hermes/scripts/cross_repo_audit.py",
-    ".hermes/hook_principles.json",
+    "agent-tools/scripts/self_health_check.py",
+    "agent-tools/scripts/cross_repo_audit.py",
+    "agent-tools/hook_principles.json",
     "LICENSE", "CONTRIBUTING.md", "CODE_OF_CONDUCT.md",
     "README.md", ".gitattributes",
 ]
@@ -135,23 +135,23 @@ echo ""
 
 # Run all checks
 echo "--- self_health_check ---"
-python .hermes/scripts/self_health_check.py || true
+python agent-tools/scripts/self_health_check.py || true
 echo ""
 
 echo "--- cross_repo_audit ---"
-python .hermes/scripts/cross_repo_audit.py || true
+python agent-tools/scripts/cross_repo_audit.py || true
 echo ""
 
 echo "--- validate_links ---"
-python .hermes/scripts/validate_links.py || true
+python agent-tools/scripts/validate_links.py || true
 echo ""
 
 echo "--- validate_structure ---"
-python .hermes/scripts/validate_structure.py || true
+python agent-tools/scripts/validate_structure.py || true
 echo ""
 
 echo "--- token_budget ---"
-python .hermes/scripts/token_budget.py || true
+python agent-tools/scripts/token_budget.py || true
 echo ""
 
 echo "--- pytest ---"
@@ -179,8 +179,8 @@ This file:
 
 | Acceptance piece | Layer | Why |
 |---|---|---|
-| `validate_links.py` etc. | **核心层** (`.hermes/scripts/`) | Audit enforcement |
-| `run_acceptance.sh` | **核心层** (`.hermes/scripts/`) | Single entrypoint |
+| `validate_links.py` etc. | **核心层** (`agent-tools/scripts/`) | Audit enforcement |
+| `run_acceptance.sh` | **核心层** (`agent-tools/scripts/`) | Single entrypoint |
 | ACCEPTANCE_PROTOCOL.md | **项目层** (`docs/`) | Per-project protocol |
 | Acceptance reports | **用户层** (`~/.config/sua/acceptance/`) | Per-state ephemeral |
 | Acceptance criteria | **项目层** (`docs/ACCEPTANCE_PROTOCOL.md`) | Per-project spec |

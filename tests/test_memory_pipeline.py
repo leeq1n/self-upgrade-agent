@@ -13,7 +13,7 @@ import pytest
 
 # Force a tmp memory DB BEFORE importing memory_server
 _tmpdir = tempfile.mkdtemp(prefix="test_mem_pipeline_")
-os.environ["HERMES_MEMORY_DB_OVERRIDE"] = os.path.join(_tmpdir, "memory.db")
+os.environ["SUA_MEMORY_DB_OVERRIDE"] = os.path.join(_tmpdir, "memory.db")
 
 
 from src import pipeline_lg, memory_server

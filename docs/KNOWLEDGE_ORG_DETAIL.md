@@ -48,7 +48,7 @@ the same knowledge:
 Per user 2026-07-14 clarification:
 
 ```
-hermes-root/                          # parent workspace
+<workspace>/                          # parent workspace
 ├── self-upgrade-agent/               # this project (SUA)
 │   ├── docs/PRINCIPLES.md            # knowledge graph
 │   ├── docs/OPERATING_RULES.md       # knowledge graph
@@ -84,7 +84,7 @@ internal** (machine-readable, search-friendly).
 
 ### agent-onboarding-v2 role: provide the flat context
 
-The agent-onboarding skill (in hermes-root, separate
+The agent-onboarding skill (in <workspace>, separate
 project from SUA) provides:
 - **Flat, sequential reading order** for new agents
 - **L0 → L1 → L2 structure** (P20 applied)
@@ -185,7 +185,7 @@ to provide the flat view.
   + P14 — content is correct, just incomplete).
 - **Plan file needs revision** (per this doc) to
   add commits 54-57 for skill-v2 creation.
-- **hermes-root structure** = SUA (graph) + skill-v2
+- **<workspace> structure** = SUA (graph) + skill-v2
   (flat) + KG (cross-ref).
 
 

@@ -19,7 +19,7 @@ in similar-named paths.
 
 | Layer | Modifier | Where it lives (SUA) | Cross-repo location |
 |---|---|---|---|
-| **核心** (core) | Agent-only (with eval-before + verify-after) | `core-layer/` directory + `AGENTS.md` + `hooks/` + `.hermes/scripts/` + `docs/OPERATING_RULES.md` L1 | Future: skill project (per 3-layer architecture decision) |
+| **核心** (core) | Agent-only (with eval-before + verify-after) | `core-layer/` directory + `AGENTS.md` + `hooks/` + `agent-tools/scripts/` + `docs/OPERATING_RULES.md` L1 | Future: skill project (per 3-layer architecture decision) |
 | **用户** (user) | User (habits) + shared (general) | Currently implicit in memory system; needs codification | Future: skill project |
 | **项目** (project) | Project owner | `docs/PRINCIPLES.md` + `docs/PROJECT_STATE.md` + project-specific docs | Per project (intra-repo) |
 
@@ -36,7 +36,7 @@ in similar-named paths.
 
 ## Modification governance (per docs/OPERATING_RULES.md modification policy)
 
-1. **Eval-Before**: 5 primitives applied + `python .hermes/scripts/m_n29_5step.py --self`
+1. **Eval-Before**: 5 primitives applied + `python agent-tools/scripts/m_n29_5step.py --self`
 2. **Commit**: cite P-n + M-n in commit body
 3. **Verify-After**: cold-start simulation + check hooks
 4. **Failure**: revert via `git reset --hard HEAD~1` + retry
@@ -45,8 +45,8 @@ in similar-named paths.
 
 - `core-layer/governance-template.md` (L1: detailed eval-before + verify-after steps)
 - `AGENTS.md` (L0 operating rules)
-- `.hermes/notes/phase4_c1_failure.md` (failure retrospective 2026-07-16)
-- Plan: `hermes-plan-3-layer-architecture-2026-07-16.md`
+- `agent-tools/notes/phase4_c1_failure.md` (failure retrospective 2026-07-16)
+- `agent-tools/notes/phase4_c1_failure.md` (failure retrospective)
 
 ---
 

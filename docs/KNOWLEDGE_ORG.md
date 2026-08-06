@@ -84,7 +84,7 @@ content (the rules themselves) is in flat docs.
 | # | Commit | Content |
 |---|---|---|
 | **53** | (done) | Codify 图/树 + 平铺式 model (this doc) |
-| **54** | (done) | `agent-reflection-skill/` created (hermes-root, not in SUA) |
+| **54** | (done) | `agent-reflection-skill/` created (<workspace>, not in SUA) |
 | **55** | (done) | SKILL.md + 4 reasoning primitives (this turn: also compression) |
 | **61aab30** | (done) | SUA HANDOFF_DETAIL 加 Sibling project awareness 段 |
 | **04a2935** | (done) | skill HANDOFF_DETAIL 加 Upstream sync 段 (mirror) |

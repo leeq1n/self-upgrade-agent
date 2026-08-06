@@ -71,7 +71,7 @@ This is why summaries at each layer must be **identifiable**
 (by layer + sub-task ID in commit message or in Temp
 snapshot filename).  Without the layer marker, the parent
 cannot tell whether two summaries are siblings (same layer)
-or parent-child (different layers).  See `hermes-snapshot-
+or parent-child (different layers).  See `sua-snapshot-
 <topic>-<date>.md` filename convention for the pattern
 (per OPERATING_RULES.md M-context-snapshot).
 

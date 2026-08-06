@@ -12,10 +12,10 @@ import os
 import sys
 from pathlib import Path
 
-# Find repo root (script lives in .hermes/scripts/)
+# Find repo root (script lives in agent-tools/scripts/)
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
-REGISTRY_PATH = REPO_ROOT / ".hermes" / "hook_principles.json"
+REGISTRY_PATH = REPO_ROOT / "agent-tools" / "hook_principles.json"
 
 
 def load_registry():

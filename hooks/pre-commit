@@ -29,10 +29,10 @@ py() {
 }
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-EVAL_BEFORE="$REPO_ROOT/.hermes/scripts/eval_before.py"
-VERIFY_AFTER="$REPO_ROOT/.hermes/scripts/verify_after.py"
-SELF_HEALTH="$REPO_ROOT/.hermes/scripts/self_health_check.py"
-CROSS_REPO_AUDIT="$REPO_ROOT/.hermes/scripts/cross_repo_audit.py"
+EVAL_BEFORE="$REPO_ROOT/agent-tools/scripts/eval_before.py"
+VERIFY_AFTER="$REPO_ROOT/agent-tools/scripts/verify_after.py"
+SELF_HEALTH="$REPO_ROOT/agent-tools/scripts/self_health_check.py"
+CROSS_REPO_AUDIT="$REPO_ROOT/agent-tools/scripts/cross_repo_audit.py"
 
 echo "[pre-commit] Running eval_before gate..."
 
@@ -101,7 +101,7 @@ fi
 # docs/BROKEN_REFS_AUDIT_2026-07-30.md, broken refs were a
 # systemic issue caught only in audit (not pre-commit).
 echo "[pre-commit] Running validate_links..."
-VALIDATE_LINKS="$REPO_ROOT/.hermes/scripts/validate_links.py"
+VALIDATE_LINKS="$REPO_ROOT/agent-tools/scripts/validate_links.py"
 if [ -f "$VALIDATE_LINKS" ]; then
     if py "$VALIDATE_LINKS" 2>&1; then
         echo "[pre-commit] validate_links: PASS"

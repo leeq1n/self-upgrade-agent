@@ -20,7 +20,7 @@ does not depend on sibling repositories.
 | Operating contract | `core-layer/AGENTS_CORE.md` + `AGENTS.md` | always-loaded rules + per-task 段s (P11 split) |
 | Knowledge library | `docs/` | principles, operating rules, design, conventions |
 | Governance | `core-layer/` | 3-layer policy (核心/用户/项目) + modification gates |
-| Commit gates | `hooks/` + `.hermes/scripts/` | commit-msg / pre-commit / pre-push / prepare-commit-msg |
+| Commit gates | `hooks/` + `agent-tools/scripts/` | commit-msg / pre-commit / pre-push / prepare-commit-msg |
 | Legacy runtime | `core/` + `src/` + `self_upgrade/` | v1.x-v3.x self-improving agent (documented legacy, functional) |
 
 ## Current version
@@ -33,7 +33,7 @@ exercise `src/` (removing it would break CI).
 ## Tests
 
 `pytest tests/` collects ~875 tests.  Environment-dependent failures:
-- LLM / network tests skip when no API key or `HERMES_SKIP_NETWORK=1`.
+- LLM / network tests skip when no API key or `SUA_SKIP_NETWORK=1`.
 - `core/planner.py` is LLM/user-modified (a known open decision —
   keep or revert, see `test_core_planner_md5_matches_head` which is
   deselected).  Harness tests that depend on planner.py's pre-modification

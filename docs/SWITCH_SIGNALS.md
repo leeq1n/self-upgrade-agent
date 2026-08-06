@@ -40,8 +40,8 @@ User should not have to remind agent to snapshot.
 
 ## Snapshot location convention
 
-`hermes-snapshot-<topic>-<date>.md` (use
-`tempfile.mkstemp(prefix="hermes-snapshot-",
+`sua-snapshot-<topic>-<date>.md` (use
+`tempfile.mkstemp(prefix="sua-snapshot-",
 dir=os.environ.get("TEMP", "/tmp"))` per OS-safe
 tempfile path convention)
 (session_search-able by title).  NOT in repo unless user
@@ -97,7 +97,7 @@ no "do nothing".
 
 1. **Same-topic refinement** (user clarifies or adds detail
    to current task): M-context-snapshot only — capture
-   state to Temp (`hermes-snapshot-<topic>-<date>.md`),
+   state to Temp (`sua-snapshot-<topic>-<date>.md`),
    then continue current batch.  No parent verification,
    no batch close.
 

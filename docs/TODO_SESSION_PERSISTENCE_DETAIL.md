@@ -37,7 +37,7 @@ Per "1 commit = 1 logical feature":
 2. **Commit 2 (later)**: implement Tier 1 snapshot format
    (write_file helper script)
 3. **Commit 3 (later)**: implement Tier 2 archive step
-   (move to `.hermes/snapshots/`)
+   (move to `agent-tools/snapshots/`)
 4. **Commit 4 (later)**: implement restore protocol helper
 5. **Commit 5 (later)**: write first real snapshot using
    the new format + verify restore works
@@ -57,9 +57,9 @@ first, then scripts when design is stable.
   destroy step fits).
 - PRINCIPLES.md P14 (docs stay current) — the principle
   that this proposal operationalizes.
-- `~/AppData/Local/Temp/hermes-snapshot-sua-onboarding-20260713.md`
+- `~/AppData/Local/Temp/sua-snapshot-sua-onboarding-20260713.md`
   — first snapshot created in this session (4.6KB, 103L).
-- `~/AppData/Local/Temp/hermes-snapshot-self-upgrade-agent-20260713.md`
+- `~/AppData/Local/Temp/sua-snapshot-self-upgrade-agent-20260713.md`
   — second snapshot created in this session (6.5KB, 153L,
   written after NEW-3 sync).
 - `docs/EXTENSIONS.md` X2 — for cross-project skill source

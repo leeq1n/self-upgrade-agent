@@ -48,7 +48,7 @@ the canonical SUA onboarding.
 
 - `AGENTS.md` — operating rules (always-loaded contract)
 - `core-layer/AGENTS_CORE.md` — cache-stable subset (~10 KB)
-- `.hermes/scripts/` — self-audit + verification tooling
+- `agent-tools/scripts/` — self-audit + verification tooling
   (self_health_check, validate_links, validate_structure,
   token_budget, cross_repo_audit, run_acceptance)
 
@@ -134,7 +134,7 @@ git clone https://github.com/leeq1n/self-upgrade-agent.git .sua/
 
 **Hook 安装（可选）**: 想让 SUA 的 commit-msg / pre-commit
 等 hooks 在你的项目生效。**一条命令**（hooks + 依赖自动
-处理，目标项目零污染 — 不会出现 `.hermes/` 目录）：
+处理，目标项目零污染 — 不会出现 `agent-tools/` 目录）：
 
 ```bash
 # macOS / Linux / Git Bash:
@@ -148,9 +148,9 @@ bash .sua/install-hooks.sh
 覆盖已存在的 hooks 加 `--force`；预览加 `--dry-run`。
 
 > 注：install-hooks.sh / .bat 会把 hook 内的脚本路径重写
-> 到 SUA clone 内部（`.sua/.hermes/scripts/`），你的项目只
-> 增加 `.git/hooks/` 条目，不产生任何 `.hermes/` 目录（对
-> codex / claude 等非 hermes agent 友好）。Windows 下 .bat
+> 到 SUA clone 内部（`.sua/agent-tools/scripts/`），你的项目只
+> 增加 `.git/hooks/` 条目，不产生任何 `agent-tools/` 目录（对
+> codex / claude 等 agent 友好）。Windows 下 .bat
 > 自动定位 git 自带的 bash 并处理路径转换（cygpath）。
 
 ## Uninstall
@@ -163,6 +163,6 @@ bash .sua/install-hooks.sh
 才需要清理：
 
 ```bash
-# 移除 hooks（目标项目没有 .hermes/，无需清理其他）
+# 移除 hooks（目标项目没有 agent-tools/，无需清理其他）
 rm .git/hooks/commit-msg .git/hooks/pre-commit .git/hooks/prepare-commit-msg .git/hooks/pre-push
 ```

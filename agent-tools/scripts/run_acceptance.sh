@@ -19,7 +19,7 @@
 set +e  # Don't exit on error — we want to run all checks
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-SCRIPTS="$REPO_ROOT/.hermes/scripts"
+SCRIPTS="$REPO_ROOT/agent-tools/scripts"
 
 echo "================================================================"
 echo "ACCEPTANCE PROTOCOL — run_acceptance.sh"

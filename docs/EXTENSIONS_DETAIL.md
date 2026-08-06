@@ -20,7 +20,7 @@ this project LINKS to it, does not duplicate.
 
 ## X2: Agent-onboarding skill (active)
 
-**Location**: Hermes global, `~/.hermes/skills/agent-onboarding/`
+**Location**: Hermes global, `~/agent-tools/skills/agent-onboarding/`
 (not a sibling project; Hermes install detail).
 
 **Contents**: canonical M-* rule family (9 rules), AGENTS.md

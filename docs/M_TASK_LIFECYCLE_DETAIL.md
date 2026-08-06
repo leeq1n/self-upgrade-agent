@@ -108,7 +108,7 @@ Per user message prior directive "如果做完任务，
 ### Init phase
 
 - AGENTS.md created
-- PLAN file (.hermes/plans/<date>-<topic>.md)
+- PLAN file (agent-tools/plans/<date>-<topic>.md)
 - R1-R12 baseline (12 rules)
 
 ### Active phase

@@ -1,7 +1,7 @@
 """Modify agent behavior by applying skill rules.
 
 This module is the bridge between a skill file (behavior rules)
-and the actual agent configuration. It modifies ~/.hermes/config.yaml
+and the actual agent configuration. It modifies ~/agent-tools/config.yaml
 to inject new system prompt additions and behavior rules.
 """
 import os, json, shutil, logging
@@ -10,13 +10,13 @@ from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
 
-_HERMES_HOME = os.environ.get("HERMES_HOME", os.path.expanduser("~/.hermes"))
-_CONFIG_PATH = os.path.join(_HERMES_HOME, "config.yaml")
-_SKILLS_DIR = os.path.join(_HERMES_HOME, "skills")
+_SUA_HOME = os.environ.get("SUA_HOME", os.path.expanduser("~/agent-tools"))
+_CONFIG_PATH = os.path.join(_SUA_HOME, "config.yaml")
+_SKILLS_DIR = os.path.join(_SUA_HOME, "skills")
 
 
 def get_hermes_home():
-    return _HERMES_HOME
+    return _SUA_HOME
 
 
 def install_skill_file(skill_md: str, skill_name: str, skills_dir: str = None) -> str:
@@ -65,7 +65,7 @@ def backup_config() -> Optional[str]:
     """Backup current Hermes config before modifying."""
     if not os.path.exists(_CONFIG_PATH):
         return None
-    backup_dir = os.path.join(_HERMES_HOME, "backups")
+    backup_dir = os.path.join(_SUA_HOME, "backups")
     os.makedirs(backup_dir, exist_ok=True)
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     backup_path = os.path.join(backup_dir, f"config.yaml.{ts}.bak")

@@ -27,8 +27,8 @@ fails. By default the audit is advisory; the calling hook decides
 enforcement (per STRICT_EVAL convention).
 
 Run:
-  python .hermes/scripts/cross_repo_audit.py
-  python .hermes/scripts/cross_repo_audit.py --sibling /path/to/sibling
+  python agent-tools/scripts/cross_repo_audit.py
+  python agent-tools/scripts/cross_repo_audit.py --sibling /path/to/sibling
 """
 
 import argparse
